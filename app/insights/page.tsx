@@ -6,6 +6,12 @@ export const metadata: Metadata = {
   description: "Expert articles and podcasts on AI recruitment, talent strategy, executive search, and skill-based hiring from Merito.",
 };
 
+import InsightsClient from "../../components/InsightsClient";
+
+export default function InsightsPage() {
+  return <InsightsClient />;
+}
+
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
