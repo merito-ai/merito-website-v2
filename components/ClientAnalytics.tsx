@@ -6,10 +6,10 @@ export default function ClientAnalytics() {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.gtag) {
-      window.gtag("config", process.env.NEXT_PUBLIC_GTAG_ID, {
-        page_path: pathname,
-      });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const w = window as any;
+    if (typeof window !== "undefined" && w.gtag) {
+      w.gtag("config", process.env.NEXT_PUBLIC_GTAG_ID, { page_path: pathname });
     }
   }, [pathname]);
 
