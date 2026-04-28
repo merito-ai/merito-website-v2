@@ -1,10 +1,11 @@
+
+'use client';
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Insights — Recruitment & Talent Strategy",
+  title: "Insights 4 Recruitment & Talent Strategy",
   description: "Expert articles and podcasts on AI recruitment, talent strategy, executive search, and skill-based hiring from Merito.",
 };
-'use client';
 
 import Link from "next/link";
 import Image from "next/image";
