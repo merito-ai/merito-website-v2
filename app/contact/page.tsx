@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "Talk to a Merito expert. Share your talent requirements and get a curated shortlist within 57 days.",
 };
 
-import ContactForm from "../../components/ContactForm";
+import ContactForm from "@/components/ContactForm";
 
 export default function ContactPage() {
   return <ContactForm />;

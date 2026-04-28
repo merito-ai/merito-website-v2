@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "How Merito's AI-powered recruitment process delivers top 2% talent in 48 hours with 85% two-year retention.",
 };
 
-import MeritowaysClient from "../../components/MeritowaysClient";
+import MeritowaysClient from "@/components/MeritowaysClient";
 
 export default function MeritowaysPage() {
   return <MeritowaysClient />;

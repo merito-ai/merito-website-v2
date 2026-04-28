@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "Expert articles and podcasts on AI recruitment, talent strategy, executive search, and skill-based hiring from Merito.",
 };
 
-import InsightsClient from "../../components/InsightsClient";
+import InsightsClient from "@/components/InsightsClient";
 
 export default function InsightsPage() {
   return <InsightsClient />;
