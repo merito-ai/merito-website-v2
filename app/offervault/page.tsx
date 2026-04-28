@@ -1,0 +1,329 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "OfferVault — Eliminate Offer Dropouts",
+  description: "Merito OfferVault: transparent offer exchange platform that reduces candidate dropouts and improves offer-to-joining conversion.",
+};
+import Image from "next/image";
+import Link from "next/link";
+import ReputationToggle from "./ReputationToggle";
+import VideoThumbnail from "@/components/VideoThumbnail";
+
+function Eyebrow({ text }: { text: string }) {
+  return (
+    <div className="inline-flex items-center bg-[#ed1a24] px-[12px] py-[6px] rounded-full">
+      <span className="font-[family-name:var(--font-poppins)] font-bold text-[16px] text-white leading-[165%]">
+        {text}
+      </span>
+    </div>
+  );
+}
+
+const problems = [
+  {
+    icon: "https://www.figma.com/api/mcp/asset/ee21109a-3e95-47b6-92b2-00c0e52e6b60",
+    title: "Increase offer to Joining Ratio",
+    desc: "Convert more offers into successful joinings into seamless offer experience",
+    accent: "top",
+  },
+  {
+    icon: "https://www.figma.com/api/mcp/asset/f8408d8b-c8c5-49c4-99e5-c11f1782a90e",
+    title: "Eliminate Offer Shopping",
+    desc: "Leverage quantitative metrics and structured feedback to evaluate candidates objectively.",
+    accent: "top",
+  },
+  {
+    icon: "https://www.figma.com/api/mcp/asset/154bc5b3-1585-49f6-a8f1-475dd9d9bb4d",
+    title: "Avoid Joining Delay",
+    desc: "Ensure candidates join on time with better communication and proactive follow-ups.",
+    accent: "bottom",
+  },
+];
+
+const steps = [
+  {
+    num: "01",
+    color: "#ed3c42",
+    bg: "#fee9e8",
+    icon: "https://www.figma.com/api/mcp/asset/0e7602b0-5b62-4e2c-b417-d247160586e2",
+    iconBg: "transparent",
+    title: "Create New Offer",
+    desc: "Add the offer details in the Offer Vault platform",
+  },
+  {
+    num: "02",
+    color: "#feb422",
+    bg: "#fef4e2",
+    icon: "https://www.figma.com/api/mcp/asset/4acbb877-683f-41b5-a262-412e78e6c222",
+    iconBg: "#fef4e2",
+    title: "Upload Offer Letter",
+    desc: "Upload a scanned copy of the offer letter and submit on the portal.",
+  },
+  {
+    num: "03",
+    color: "#07802a",
+    bg: "#eaf5e6",
+    icon: "https://www.figma.com/api/mcp/asset/71e9602e-af1a-4317-96fd-208510f83415",
+    iconBg: "#eaf5e6",
+    title: "Share with Candidate",
+    desc: "Share a secure link with the candidate via email or message.",
+  },
+  {
+    num: "04",
+    color: "#0052de",
+    bg: "#e3eefb",
+    icon: "https://www.figma.com/api/mcp/asset/5a014996-18da-4ebc-a40a-de7d24cfdcc0",
+    iconBg: "#e3eefb",
+    title: "Secure Viewing",
+    desc: "Candidates can view the offer letter but cannot download it.",
+  },
+  {
+    num: "05",
+    color: "#661db3",
+    bg: "#e3eefb",
+    icon: "https://www.figma.com/api/mcp/asset/9ef69e17-61ed-44db-ab09-b2e8a301fefc",
+    iconBg: "#e3eefb",
+    title: "Respond with Confidence",
+    desc: "Candidates can accept, decline, or request changes to the offer.",
+  },
+  {
+    num: "06",
+    color: "#c60087",
+    bg: "#ffddf4",
+    icon: "https://www.figma.com/api/mcp/asset/148868ac-e073-4284-acfa-ccb99ae1657e",
+    iconBg: "rgba(255,219,244,0.95)",
+    title: "Dashboard",
+    desc: "Dashboard to track the candidate actions and joining timelines.",
+  },
+];
+
+export default function OfferVaultPage() {
+  return (
+    <main className="bg-white">
+      {/* Hero */}
+      <section className="relative mx-auto max-w-[1300px] px-5 pt-8">
+        <div className="relative h-[422px] rounded-[11px] overflow-hidden">
+          <Image
+            src="/offer-vault/hero-banner.png"
+            alt="Offer Vault"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-black/41" />
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center gap-5 px-8">
+            <Eyebrow text="OFFER VAULT" />
+            <h1 className="font-[family-name:var(--font-poppins)] font-semibold text-[48px] text-white leading-normal">
+              Ideas That Shape the{" "}
+              <span className="text-[#ed1a24]">Future of Talent.</span>
+            </h1>
+            <p className="font-semibold text-[24px] text-white leading-[165%] max-w-[800px]">
+              Get all the latest on all things about Merito and the industry
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Intro CTA */}
+      <section className="max-w-[1115px] mx-auto px-5 py-20 flex flex-col items-center gap-6 text-center">
+        <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black">
+          No more offer Backouts
+        </h2>
+        <p className="text-[16px] text-[#4b4b4d] leading-[165%] max-w-[700px]">
+          OfferVault helps you in ensuring guaranteed smooth offer process.
+        </p>
+        <Link
+          href="/contact"
+          className="bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[50px] px-8 rounded-[8px] flex items-center justify-center hover:bg-[#c8151e] transition-colors"
+        >
+          REGISTER NOW
+        </Link>
+      </section>
+
+      {/* Offer Vault Showcase */}
+      <section className="max-w-[900px] mx-auto px-5 py-[50px]">
+        <div className="relative w-full aspect-video rounded-[12px] overflow-hidden">
+          <VideoThumbnail
+            videoSrc="/offer-vault/intro.mp4"
+            thumbnailSrc="/offer-vault/intro.webp"
+            alt="Offer Vault Platform"
+          />
+        </div>
+      </section>
+
+      {/* Problem Cards */}
+      <section className="max-w-[1136px] mx-auto px-5 py-20 flex flex-col gap-[50px]">
+        <div className="flex flex-col items-center gap-5 text-center">
+          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black">
+            Frequent Last-minute Backouts?
+          </h2>
+          <p className="text-[16px] text-[#4b4b4d] leading-[165%] max-w-[800px]">
+            The study shows there are more than 40% candidates backouts post offer. Offer-vault helps you to overcome this challenge.
+          </p>
+        </div>
+        <div className="grid grid-cols-2 gap-[50px] justify-center max-w-[1136px] mx-auto">
+          {problems.map((p, i) => (
+            <div
+              key={p.title}
+              className={`${i === 2 ? "col-span-2 max-w-[543px] mx-auto" : ""} bg-white border-[#ed1a24] ${p.accent === "top" ? "border-t" : "border-b"} rounded-[9px] shadow-[0px_0px_4px_2px_rgba(0,0,0,0.25)] overflow-hidden w-full max-w-[543px] h-[199px] flex items-center gap-8 px-8`}
+            >
+              <div className="size-[98px] bg-white rounded-full shadow-[0px_0px_7.6px_2px_rgba(0,0,0,0.25)] flex items-center justify-center flex-shrink-0">
+                <Image src={p.icon} alt={p.title} width={55} height={55} unoptimized />
+              </div>
+              <div className="flex flex-col gap-3">
+                <h3 className="font-[family-name:var(--font-poppins)] font-semibold text-[20px] text-black">{p.title}</h3>
+                <p className="text-[16px] text-[#4b4b4d] leading-[155%]">{p.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* How it Works */}
+      <section className="bg-[#fef7f3] py-24">
+        <div className="max-w-[1282px] mx-auto px-5 flex flex-col gap-[50px]">
+          <div className="flex flex-col items-center gap-5 text-center">
+            <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black">
+              How it works?
+            </h2>
+            <p className="text-[16px] text-[#4b4b4d] leading-[165%] max-w-[700px]">
+              Offer Vault simplifies offer management between employers and candidates, bringing accountability and reducing dropouts.
+            </p>
+          </div>
+
+          <div className="flex flex-col lg:flex-row gap-8 items-start">
+            {/* Steps */}
+            <div className="flex gap-[56px] items-start flex-shrink-0">
+              {/* Number dots + line */}
+              <div className="flex flex-col gap-[14px] relative">
+                {steps.map((step, i) => (
+                  <div key={step.num} className="relative flex flex-col items-center">
+                    <div
+                      className="size-[50px] rounded-full flex items-center justify-center font-[family-name:var(--font-poppins)] font-medium text-[18px] flex-shrink-0"
+                      style={{ background: step.bg, color: step.color }}
+                    >
+                      {step.num}
+                    </div>
+                    {i < steps.length - 1 && (
+                      <div className="w-px flex-1 bg-[#ed1a24]/30 my-[14px] h-[68px]" />
+                    )}
+                  </div>
+                ))}
+              </div>
+              {/* Step cards */}
+              <div className="flex flex-col gap-[14px] w-[492px]">
+                {steps.map((step) => (
+                  <div
+                    key={step.num}
+                    className="bg-white rounded-[7px] flex gap-[30px] h-[118px] items-center pl-[20px] pr-[44px] py-[17px]"
+                  >
+                    <div
+                      className="size-[77px] rounded-[10px] flex items-center justify-center flex-shrink-0 overflow-hidden"
+                      style={{ background: step.iconBg }}
+                    >
+                      <Image src={step.icon} alt={step.title} width={44} height={44} unoptimized />
+                    </div>
+                    <div className="flex flex-col gap-3">
+                      <h3 className="font-[family-name:var(--font-poppins)] font-bold text-[18px] text-black">{step.title}</h3>
+                      <p className="text-[15px] text-[#3c3f45] leading-[155%]">{step.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Sidebar callout */}
+            <div className="bg-[#fdf0ec] rounded-[12px] p-[24px] flex flex-col gap-5 flex-1">
+              <div className="flex gap-4 items-start">
+                <Image
+                  src="https://www.figma.com/api/mcp/asset/3e32146e-7236-4ed9-82dc-a009abc6dd34"
+                  alt="Alert"
+                  width={39}
+                  height={39}
+                  unoptimized
+                />
+                <p className="font-[family-name:var(--font-poppins)] font-medium text-[16px] text-black leading-[155%]">
+                  Merito&apos;s Offer Vault is an innovative way to exchange offer letters between employers and candidates to bring accountability in the offer process and reduce offer dropouts
+                </p>
+              </div>
+              <div className="relative h-[292px] w-full rounded-[8px] overflow-hidden">
+                <VideoThumbnail
+                  videoSrc="/offer-vault/process.mp4"
+                  thumbnailSrc="/offer-vault/process.webp"
+                  alt="Offer Vault Process"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Green highlight */}
+          <div className="bg-[#eaf5e6] rounded-[10px] flex gap-[40px] items-center px-[60px] py-[20px]">
+            <Image
+              src="https://www.figma.com/api/mcp/asset/1f692904-dc17-4273-a307-fe085f789e50"
+              alt="Sparkle"
+              width={54}
+              height={54}
+              unoptimized
+            />
+            <p className="font-[family-name:var(--font-poppins)] font-semibold text-[20px] text-black leading-[155%]">
+              A transparent process. A better candidate experience. Higher offer acceptance.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Reputation Index */}
+      <section className="max-w-[1200px] mx-auto px-5 py-24 flex flex-col gap-[50px]">
+        <div className="flex flex-col items-center gap-5 text-center">
+          <Eyebrow text="IMPACT" />
+          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black">
+            Introducing Reputation Index
+          </h2>
+          <p className="text-[16px] text-[#4b4b4d] leading-[165%] max-w-[800px]">
+            To Bring Accountability in the Offer Process, both employer and candidate&apos;s reputation index are maintained.
+          </p>
+        </div>
+        <ReputationToggle />
+      </section>
+
+      {/* Reputation Index Video */}
+      <section className="bg-[#fef7f3] py-24">
+        <div className="max-w-[1200px] mx-auto px-5 flex flex-col items-center gap-[50px]">
+          <div className="flex flex-col items-center gap-5 text-center">
+            <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black">
+              How Reputation Index Works
+            </h2>
+            <p className="text-[16px] text-[#4b4b4d] leading-[165%] max-w-[800px]">
+              Understand how the reputation index system brings transparency and accountability to every offer.
+            </p>
+          </div>
+          <div className="relative h-[450px] w-full max-w-[900px] rounded-[12px] overflow-hidden">
+            <VideoThumbnail
+              videoSrc="/offer-vault/rep-index.mp4"
+              thumbnailSrc="/offer-vault/rep-index.webp"
+              alt="Reputation Index"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="max-w-[1115px] mx-auto px-5 py-24 flex flex-col items-center gap-[25px] text-center">
+        <div className="flex flex-col gap-5">
+          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black">
+            Get started with Merito
+          </h2>
+          <p className="text-[16px] text-[#4b4b4d] leading-[165%]">
+            Help us with what you are looking for and our team will get in-touch to understand your talent requirements
+          </p>
+        </div>
+        <Link
+          href="/contact"
+          className="bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[50px] px-8 rounded-[8px] flex items-center justify-center hover:bg-[#c8151e] transition-colors"
+        >
+          CONTACT US
+        </Link>
+      </section>
+    </main>
+  );
+}

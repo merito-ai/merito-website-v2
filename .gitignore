@@ -39,3 +39,59 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Secrets — NEVER COMMIT
+.mcp.json
+
+# Local tool configs
+.claude/
+.playwright-mcp/
+.vscode/
+.idea/
+
+# Dev/generated artifacts
+graphify-out/
+.graphify_python
+
+# Dev utility scripts
+clean.js
+generate_reftrack.js
+
+# Root-level design screenshots (dev artifacts)
+OfferVault.png
+articles-current.png
+contact-updated.png
+cta-current.png
+faq-current.png
+fullfunnel-current.png
+hero-1440-top.png
+hero-1440.png
+hero-after-css-fix.png
+hero-current.png
+hero-fixed.png
+misconception-after.png
+misconception-cards.png
+misconception-current.png
+offervault-current.png
+offervault-page.png
+offervault-snapshot.md
+performance-current.png
+proptech-current.png
+proptech-row2.png
+reftrack-current.png
+reftrack-snapshot.md
+reftrack-updated.png
+socialproof-after.png
+socialproof-current.png
+talenteq-current.png
+
+# Netlify local
+.netlify/
+
+# Snapshot/example docs (dev artifacts)
+public/hero-section-merito-way-component.md
+public/merito-way-example.md
+public/reftrack-example.md
+public/reftrack-example-clean.md
+public/plat-and-tools-click.md
+public/reputation-index.md
