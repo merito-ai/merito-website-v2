@@ -15,6 +15,7 @@ import {
   Waveform,
   TypingDots,
 } from "@/components/anim/MicroAnims";
+import VideoPlayer from "@/components/VideoPlayer";
 
 type Metric = {
   label: string;
@@ -346,22 +347,12 @@ function SocialProofSection() {
             intervalMs={7000}
           />
 
-          <article className="relative min-h-[460px] overflow-hidden rounded-[22px] bg-[linear-gradient(180deg,#1a1a1a_0%,#0a0a0a_100%)] shadow-[0_22px_60px_rgba(17,35,89,0.1)]">
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-              <button
-                aria-label="Play testimonial"
-                className="inline-flex size-[84px] items-center justify-center rounded-full bg-white/15 backdrop-blur-sm transition-colors hover:bg-white/25"
-              >
-                <span className="ml-1 inline-block border-y-[14px] border-y-transparent border-l-[22px] border-l-white" />
-              </button>
-            </div>
-            <div className="absolute -right-16 -top-16 size-[220px] rounded-full bg-[#ed1a24]/15 blur-[2px]" />
-            <div className="absolute -bottom-20 -left-16 size-[260px] rounded-full bg-[#ed1a24]/12 blur-[2px]" />
-            <div className="absolute inset-x-0 bottom-0 bg-[linear-gradient(180deg,transparent,rgba(0,0,0,0.85))] px-7 pb-7 pt-24">
-              <p className="text-[22px] font-semibold text-white">Udita Pal</p>
-              <p className="mt-1 text-[15px] text-white/70">on sustainable growth</p>
-            </div>
-          </article>
+          <VideoPlayer 
+            src="/Video-testimonial.mp4"
+            name="Udita Pal"
+            description="on sustainable growth"
+          />
+
         </div>
 
         <Marquee speed={60}>
