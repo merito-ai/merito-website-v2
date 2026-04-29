@@ -12,11 +12,8 @@ import GrowBars from "@/components/anim/GrowBars";
 import TestimonialCarousel from "@/components/anim/TestimonialCarousel";
 import Marquee from "@/components/anim/Marquee";
 import {
-  ScanBars,
-  FillBars,
   Waveform,
   TypingDots,
-  LiveTimer,
 } from "@/components/anim/MicroAnims";
 
 type Metric = {
@@ -188,72 +185,6 @@ function ArrowUpRightIcon() {
   );
 }
 
-function ChevronDownIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 20 20"
-      className="size-5"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m5 8 5 5 5-5" />
-    </svg>
-  );
-}
-
-function PlatformMiniCard() {
-  return (
-    <div className="w-full max-w-[330px] rounded-[18px] border border-[#f6d8d9] bg-white p-5 shadow-[0_20px_50px_rgba(237,26,36,0.12)]">
-      <p className="text-[16px] font-bold text-[#ed1a24]">Our Platforms</p>
-      <div className="mt-4 grid gap-3">
-        <Link
-          href="/reftrack"
-          className="flex items-center gap-4 rounded-[14px] border border-[#f3d8d9] bg-white px-4 py-4 transition-colors hover:border-[#ed1a24]/40"
-        >
-          <span className="inline-flex size-12 items-center justify-center rounded-[12px] bg-[#ed1a24]">
-            <Image
-              src="/figma-exports/material-symbols-light_quick-reference-all-rounded.png"
-              alt=""
-              width={22}
-              height={22}
-            />
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block text-[17px] font-semibold text-black">Reftrack</span>
-            <span className="mt-1 block text-[13px] leading-[1.45] text-[#5a5d62]">
-              Make well-informed hiring decisions with our reference platform
-            </span>
-          </span>
-          <span className="text-black">
-            <ArrowUpRightIcon />
-          </span>
-        </Link>
-
-        <Link
-          href="/offervault"
-          className="flex items-center gap-4 rounded-[14px] border border-[#f3d8d9] bg-white px-4 py-4 transition-colors hover:border-[#ed1a24]/40"
-        >
-          <span className="inline-flex size-12 items-center justify-center rounded-[12px] bg-[#ed1a24]">
-            <Image src="/figma-exports/bxs_offer.png" alt="" width={22} height={22} />
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block text-[17px] font-semibold text-black">OfferVault</span>
-            <span className="mt-1 block text-[13px] leading-[1.45] text-[#5a5d62]">
-              Overcome after dropouts with our online offer platform
-            </span>
-          </span>
-          <span className="text-black">
-            <ArrowUpRightIcon />
-          </span>
-        </Link>
-      </div>
-    </div>
-  );
-}
 
 function HeroSection() {
   return (

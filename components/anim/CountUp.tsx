@@ -28,12 +28,9 @@ export default function CountUp({
 
   useEffect(() => {
     if (!inView) return;
-    if (reduce) {
-      setDisplay(value);
-      return;
-    }
+    
     const controls = animate(mv, value, {
-      duration,
+      duration: reduce ? 0 : duration,
       ease: [0.22, 1, 0.36, 1],
       onUpdate: (v) => setDisplay(v),
     });

@@ -12,6 +12,7 @@ const articleData: Record<string, {
   readTime?: string;
   duration?: string;
   episode?: string;
+  date?: string;
   stats?: { value: string; label: string }[];
   content: string[];
 }> = {
@@ -299,17 +300,18 @@ const articleData: Record<string, {
       "Merito was built for exactly this moment. Our AI sourcing, ICE assessment framework, and tools like Offer Vault and Ref-Track are designed for the recruitment landscape that exists now — not the one that existed 10 years ago. The companies adapting to this new reality will build better teams, faster. The ones that don't will keep wondering why hiring is so hard.",
     ],
   },
-  "acquired-intelligence-talent": {
+"acquired-intelligence-talent": {
     title: "Acquired Intelligence for Talent Problems",
     titleBefore: "Acquired Intelligence for",
     titleRed: "Talent Problems",
-    date: "April 23",
+    // date: "April 23",  // Temporarily commented to fix TS until interface updated
     heroImage: "/insights-thumbnails/insight-Hero Banner.png",
     category: "Podcast",
     type: "podcast",
     episode: "Ep. 01",
     duration: "05:05",
     content: [
+
       "In the business sphere, artificial intelligence (AI) has gained popularity as many businesses look to it for problem-solving strategies. AI solutions are being sought after as a magic wand by HR and talent managers to fix their people issues.",
       "Companies should explore acquired intelligence to address these issues before implementing AI. Our distinctive method of learning from a variety of sources, such as employee evaluations, feedback, data analytics, and human intuition, is known as acquired intelligence. With the use of this gathered intelligence, businesses may spot trends, patterns, and correlations that would otherwise be difficult to spot and create focused plans to enhance hiring, retention, engagement, and performance.",
       "Companies can leverage acquired information in a variety of ways to tackle their workforce difficulties. Firstly, Businesses can use acquired intelligence to determine which traits and competencies are most crucial for success in various professions while hiring. Companies can gain a better understanding of the characteristics most predictive of success in various professions by analyzing data from personnel assessments and interview responses. By doing this, businesses may be able to hire more effectively.",
@@ -740,7 +742,7 @@ export default async function InsightPage({
                 href="/contact"
                 className="mt-8 bg-[#ed1a24] text-white font-bold text-[14px] tracking-[2px] px-10 py-4 rounded-full hover:bg-black transition-all duration-300 shadow-xl"
               >
-                LET'S CONNECT
+                LET&apos;S CONNECT
               </Link>
             </div>
           </div>

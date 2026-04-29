@@ -4,7 +4,6 @@ export const metadata: Metadata = {
   title: "Ref-Track — AI-Powered Reference Checks",
   description: "Automate 360° candidate reference checks with structured feedback and quantitative scoring. Faster, bias-free hiring decisions.",
 };
-import Image from "next/image";
 import Link from "next/link";
 import VideoThumbnail from "@/components/VideoThumbnail";
 
@@ -28,7 +27,7 @@ export default function ReftrackPage() {
             <span className="text-white">.</span>
           </h1>
           <p className="text-[18px] font-normal text-[#D9D9D9] leading-[29.7px] max-w-[800px]">
-            Merito's Ref-Track platform enables recruitment teams to collect 360-degree candidate feedback, resulting in better hiring decisions.
+            Merito&apos;s Ref-Track platform enables recruitment teams to collect 360-degree candidate feedback, resulting in better hiring decisions.
           </p>
         </div>
       </section>

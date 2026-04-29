@@ -17,12 +17,6 @@ function Eyebrow({ text }: { text: string }) {
   );
 }
 
-const timeline = [
-  { year: "2015", desc: "Career Corner Established as a Company" },
-  { year: "2021", desc: "Merito launched as recruitment services company" },
-  { year: "2023", desc: "Merito transformed itself as Merito.ai" },
-];
-
 const values = [
   {
     iconSrc: "/about-us-audit/identity.svg",

@@ -53,7 +53,7 @@ export default function HeroWinsCard() {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    setProgress(0);
+    requestAnimationFrame(() => setProgress(0));
     const start = Date.now();
     const interval = setInterval(() => {
       const elapsed = Date.now() - start;
