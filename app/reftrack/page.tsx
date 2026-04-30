@@ -6,6 +6,7 @@ export const metadata: Metadata = {
 };
 import Link from "next/link";
 import VideoThumbnail from "@/components/VideoThumbnail";
+import ContactTrigger from "@/components/ContactTrigger";
 
 export default function ReftrackPage() {
   return (
@@ -33,7 +34,7 @@ export default function ReftrackPage() {
       </section>
 
       {/* Reduce Hiring Risks */}
-      <section className="max-w-[1248px] w-full mx-auto flex flex-col items-center gap-[50px] mt-[100px] px-5 xl:px-0">
+      <section className="max-w-[1248px] w-full mx-auto flex flex-col items-center gap-[50px] py-12 px-5 xl:px-0">
         <div className="max-w-[1115px] flex flex-col items-center gap-[20px] text-center">
           <h2 className="text-[32px] font-semibold text-black leading-[1.2]">Reduce hiring bias</h2>
           <p className="text-[16px] font-normal text-[#4B4B4D] leading-[1.65]">Get structured data and insights from candidate references in real time, making your hiring process risk-free and faster than ever.</p>
@@ -51,7 +52,7 @@ export default function ReftrackPage() {
       </section>
 
       {/* Solutions */}
-      <section className="max-w-[1270px] w-full mx-auto flex flex-col items-center gap-[50px] mt-[100px] px-5 xl:px-0">
+      <section className="max-w-[1270px] w-full mx-auto flex flex-col items-center gap-[50px] py-12 px-5 xl:px-0 border-t border-[#f0f0f0]">
         <div className="max-w-[1115px] flex flex-col items-center gap-[20px] text-center">
           <h2 className="text-[32px] font-semibold text-black">Solutions to aid your hiring objectives</h2>
           <p className="text-[16px] font-normal text-[#4B4B4D] leading-[26.4px]">
@@ -125,7 +126,7 @@ export default function ReftrackPage() {
       </section>
 
       {/* Features */}
-      <section className="max-w-[1186px] w-full mx-auto flex flex-col items-center gap-[50px] mt-[100px] px-5 xl:px-0">
+      <section className="w-full flex flex-col items-center gap-[50px] py-12 px-5 xl:px-0 bg-[#fafafa]">
         <div className="max-w-[1115px] flex flex-col items-center gap-[20px] text-center">
           <div className="inline-flex items-center bg-[#ED1A24] px-[14px] py-[4.5px] rounded-[50px] outline outline-[0.2px] outline-[#ED1A24] -outline-offset-[0.2px]">
             <span className="font-bold text-[16px] text-white uppercase tracking-widest">FEATURES</span>
@@ -236,15 +237,15 @@ export default function ReftrackPage() {
       </section>
 
       {/* CTA */}
-      <section className="max-w-[1115px] mx-auto flex flex-col items-center gap-[25px] mt-[100px] mb-20 px-5 xl:px-0">
+      <section className="max-w-[1115px] mx-auto flex flex-col items-center gap-[25px] py-12 px-5 xl:px-0">
         <div className="flex flex-col items-center gap-[20px] text-center w-full">
           <h2 className="text-[32px] font-semibold text-black">Get started with Merito</h2>
           <p className="text-[16px] font-normal text-[#4B4B4D] leading-[26.4px] max-w-[800px]">Help us with what you are looking for and our team will get in-touch to understand your talent requirements</p>
         </div>
-        <Link href="/contact" className="relative w-[187px] h-[50px] bg-[#ED1A24] rounded-[8px] overflow-hidden group flex items-center justify-center mt-2">
+        <ContactTrigger className="relative w-[187px] h-[50px] bg-[#ED1A24] rounded-[8px] overflow-hidden group flex items-center justify-center mt-2">
           <span className="relative z-10 text-white font-semibold text-[16px] uppercase">CONTACT US</span>
           <div className="absolute w-[222px] h-[128px] -left-[17px] top-[52px] bg-black rounded-[40px] transition-transform duration-300 group-hover:-translate-y-[10px]" />
-        </Link>
+        </ContactTrigger>
       </section>
     </main>
   );

@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useContactModal } from "@/context/ContactModalContext";
 
 const socialLinks = [
   {
@@ -30,6 +33,8 @@ const socialLinks = [
 ];
 
 export default function Footer() {
+  const { openContact } = useContactModal();
+
   return (
     <footer className="w-full bg-black text-white">
       <div className="mx-auto flex max-w-[1328px] flex-col gap-10 px-5 py-14 sm:px-6 lg:px-10">
@@ -61,9 +66,12 @@ export default function Footer() {
                 <Link href="/meritoways" className="transition-colors hover:text-[#ed1a24]">
                   Our Approach
                 </Link>
-                <Link href="/contact" className="transition-colors hover:text-[#ed1a24]">
+                <button 
+                  onClick={openContact}
+                  className="text-left transition-colors hover:text-[#ed1a24]"
+                >
                   Contact us
-                </Link>
+                </button>
               </div>
             </div>
 

@@ -73,39 +73,41 @@ export default function TestimonialCarousel({
         </AnimatePresence>
       </div>
 
-      <div className="mt-8 flex items-center justify-between border-t border-black/8 pt-6">
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={prev}
-            aria-label="Previous testimonial"
-            className="inline-flex size-9 items-center justify-center rounded-full border border-black/10 text-black transition-colors hover:bg-black hover:text-white"
-          >
-            &lt;
-          </button>
-          {items.map((_, i) => (
+      {total > 1 && (
+        <div className="mt-8 flex items-center justify-between border-t border-black/8 pt-6">
+          <div className="flex items-center gap-2">
             <button
-              key={i}
               type="button"
-              onClick={() => setIndex(i)}
-              aria-label={`Go to testimonial ${i + 1}`}
-              className={`rounded-full transition-all ${
-                i === index
-                  ? "h-[6px] w-7 bg-black"
-                  : "size-[6px] bg-black/15 hover:bg-black/40"
-              }`}
-            />
-          ))}
-          <button
-            type="button"
-            onClick={next}
-            aria-label="Next testimonial"
-            className="inline-flex size-9 items-center justify-center rounded-full border border-black/10 text-black transition-colors hover:bg-black hover:text-white"
-          >
-            &gt;
-          </button>
+              onClick={prev}
+              aria-label="Previous testimonial"
+              className="inline-flex size-9 items-center justify-center rounded-full border border-black/10 text-black transition-colors hover:bg-black hover:text-white"
+            >
+              &lt;
+            </button>
+            {items.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => setIndex(i)}
+                aria-label={`Go to testimonial ${i + 1}`}
+                className={`rounded-full transition-all ${
+                  i === index
+                    ? "h-[6px] w-7 bg-black"
+                    : "size-[6px] bg-black/15 hover:bg-black/40"
+                }`}
+              />
+            ))}
+            <button
+              type="button"
+              onClick={next}
+              aria-label="Next testimonial"
+              className="inline-flex size-9 items-center justify-center rounded-full border border-black/10 text-black transition-colors hover:bg-black hover:text-white"
+            >
+              &gt;
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </article>
   );
 }

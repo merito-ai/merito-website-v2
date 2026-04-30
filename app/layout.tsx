@@ -64,6 +64,9 @@ export const metadata: Metadata = {
   },
 };
 
+import { ContactModalProvider } from "@/context/ContactModalContext";
+import ContactModal from "@/components/ContactModal";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -101,11 +104,15 @@ export default function RootLayout({
         />
       </head>
       <body className={`${poppins.variable} ${gabarito.variable} antialiased`}>
-        <Navbar />
-        <ClientAnalytics />
-        {children}
-        <Footer />
+        <ContactModalProvider>
+          <Navbar />
+          <ClientAnalytics />
+          <ContactModal />
+          {children}
+          <Footer />
+        </ContactModalProvider>
       </body>
     </html>
   );
 }
+

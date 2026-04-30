@@ -98,7 +98,7 @@ export default function HeroWinsCard() {
           })}
         </div>
 
-        <div className="mt-3">
+        <div className="mt-auto">
           <div className="font-[family-name:var(--font-gabarito)] text-[2.6rem] font-semibold leading-none text-black">
             {active.value}
           </div>
@@ -118,7 +118,7 @@ export default function HeroWinsCard() {
           ))}
         </div>
 
-        <div className="mt-auto h-[4px] overflow-hidden rounded-full bg-[#ececec]">
+        <div className="mt-6 h-[4px] overflow-hidden rounded-full bg-[#ececec]">
           <div
             className="h-full rounded-full bg-[#ed1a24] transition-[width] duration-[50ms] ease-linear"
             style={{ width: `${progress}%` }}

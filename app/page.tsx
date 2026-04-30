@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import HeroWinsCard from "@/components/HeroWinsCard";
@@ -16,11 +17,15 @@ import {
   TypingDots,
 } from "@/components/anim/MicroAnims";
 import VideoPlayer from "@/components/VideoPlayer";
+import { useContactModal } from "@/context/ContactModalContext";
 
 type Metric = {
   label: string;
   traditional: string;
   merito: string;
+  change: string;
+  trend: "up" | "down";
+  icon: React.ReactNode;
 };
 
 const heroStats = [
@@ -111,12 +116,88 @@ const funnelItems = [
 ];
 
 const performanceMetrics: Metric[] = [
-  { label: "Time per Hire", traditional: "60 Days", merito: "14 Days | 70%" },
-  { label: "Founder Hours", traditional: "12 Hours", merito: "2 Hours | 89%" },
-  { label: "Recruiter Hours", traditional: "40 Hours", merito: "40 Hours | 70%" },
-  { label: "Success Rate", traditional: "50%", merito: "90% higher" },
-  { label: "Retention (2yr)", traditional: "60%", merito: "85% higher" },
-  { label: "Offer Dropout", traditional: "20%", merito: "10% lower" },
+  { 
+    label: "Time per Hire", 
+    traditional: "60 Days", 
+    merito: "14 Days", 
+    change: "70%", 
+    trend: "down",
+    icon: (
+      <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 6v6l4 2" />
+      </svg>
+    )
+  },
+  { 
+    label: "Founder Hours", 
+    traditional: "12 Hours", 
+    merito: "2 Hours", 
+    change: "89%", 
+    trend: "down",
+    icon: (
+      <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+    )
+  },
+  { 
+    label: "Recruiter Hours", 
+    traditional: "40 Hours", 
+    merito: "40 Hours", 
+    change: "70%", 
+    trend: "down",
+    icon: (
+      <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+        <circle cx="11" cy="11" r="8" />
+        <path d="M21 21l-4.35-4.35" />
+      </svg>
+    )
+  },
+  { 
+    label: "Success Rate", 
+    traditional: "50%", 
+    merito: "90%", 
+    change: "", 
+    trend: "up",
+    icon: (
+      <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+        <circle cx="12" cy="12" r="10" />
+        <circle cx="12" cy="12" r="6" />
+        <circle cx="12" cy="12" r="2" />
+      </svg>
+    )
+  },
+  { 
+    label: "Retention (2yr)", 
+    traditional: "60%", 
+    merito: "85%", 
+    change: "", 
+    trend: "up",
+    icon: (
+      <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M23 21v-2a4 4 0 00-3-3.87" />
+        <path d="M16 3.13a4 4 0 010 7.75" />
+      </svg>
+    )
+  },
+  { 
+    label: "Offer Dropout", 
+    traditional: "20%", 
+    merito: "10%", 
+    change: "", 
+    trend: "up",
+    icon: (
+      <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+        <path d="M15 3h6v6" />
+        <path d="M10 14L21 3" />
+        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
+      </svg>
+    )
+  },
 ];
 
 const faqs = [
@@ -188,8 +269,9 @@ function ArrowUpRightIcon() {
 
 
 function HeroSection() {
+  const { openContact } = useContactModal();
   return (
-    <section className="bg-white pb-12 pt-8 sm:pt-12">
+    <section className="bg-white pb-6 pt-8 sm:pt-12">
       <Container>
         <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(360px,0.95fr)]">
           <RevealOnScroll className="max-w-[600px]" duration={0.7} y={20}>
@@ -206,12 +288,12 @@ function HeroSection() {
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">
-              <Link
-                href="/contact"
+              <button
+                onClick={openContact}
                 className="inline-flex min-h-[56px] items-center justify-center rounded-[12px] border border-[#ed1a24]/40 px-6 text-[18px] font-semibold text-[#6f6f71] transition-colors hover:border-[#ed1a24] hover:text-[#ed1a24]"
               >
                 Start hiring smarter
-              </Link>
+              </button>
               <Link
                 href="#proof"
                 className="inline-flex min-h-[56px] items-center gap-3 rounded-[12px] bg-[#ed1a24] px-6 text-[18px] font-semibold text-white transition-colors hover:bg-[#c8151e]"
@@ -273,9 +355,63 @@ function HeroSection() {
   );
 }
 
+function MisconceptionCard({ pair }: { pair: typeof misconceptionPairs[0] }) {
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  return (
+    <StaggerItem
+      as="article"
+      className="perspective-1000 relative min-h-[220px] w-full"
+    >
+      <div
+        className="relative h-full min-h-[220px] w-full cursor-pointer"
+        onMouseEnter={() => setIsFlipped(true)}
+        onMouseLeave={() => setIsFlipped(false)}
+      >
+        <motion.div
+          className="relative h-full w-full will-change-transform"
+          style={{ transformStyle: "preserve-3d" }}
+          animate={{ rotateY: isFlipped ? 180 : 0 }}
+          transition={{ 
+            duration: 0.6, 
+            ease: [0.23, 1, 0.32, 1] 
+          }}
+        >
+          {/* Front Side (Myth) */}
+          <div 
+            className="absolute inset-0 z-10 flex flex-col gap-5 rounded-[18px] border border-[#f4d8d8] bg-[#fef7f7] px-6 py-6 shadow-[0_18px_50px_rgba(17,35,89,0.04)]"
+            style={{ backfaceVisibility: "hidden" }}
+          >
+            <div className="inline-flex size-11 items-center justify-center rounded-[10px] bg-[#131313]">
+              <Image src={pair.icon} alt="" width={28} height={28} className="size-7" />
+            </div>
+            <p className="text-[16px] font-semibold leading-[1.45] text-black">
+              <span className="font-bold">Myth:</span> {pair.myth}
+            </p>
+          </div>
+
+          {/* Back Side (Reality) */}
+          <div 
+            className="absolute inset-0 flex h-full items-center rounded-[18px] border border-[#f4d8d8] bg-white px-6 py-6 shadow-[0_18px_50px_rgba(17,35,89,0.04)]"
+            style={{ 
+              backfaceVisibility: "hidden", 
+              transform: "rotateY(180deg)" 
+            }}
+          >
+            <p className="text-[15px] leading-[1.65] text-[#4b4b4d]">
+              <span className="font-bold text-[#ed1a24]">Reality:</span>{" "}
+              {pair.reality}
+            </p>
+          </div>
+        </motion.div>
+      </div>
+    </StaggerItem>
+  );
+}
+
 function MisconceptionSection() {
   return (
-    <section className="bg-white py-24">
+    <section className="bg-white py-12">
       <Container>
         <SectionPill text="THE MISCONCEPTION" />
         <div className="mt-8 max-w-[980px]">
@@ -292,26 +428,7 @@ function MisconceptionSection() {
 
         <StaggerGroup className="mt-12 grid gap-5 md:grid-cols-3" stagger={0.12}>
           {misconceptionPairs.map((pair) => (
-            <StaggerItem
-              key={pair.myth}
-              as="article"
-              className="group relative flex min-h-[200px] flex-col overflow-hidden rounded-[18px] border border-[#f4d8d8] bg-white shadow-[0_18px_50px_rgba(17,35,89,0.04)] transition-transform duration-300 hover:-translate-y-1"
-            >
-              <div className="absolute inset-0 flex flex-col gap-5 bg-[#fef7f7] px-6 py-6 transition-opacity duration-300 group-hover:opacity-0 group-hover:pointer-events-none">
-                <div className="inline-flex size-11 items-center justify-center rounded-[10px] bg-[#131313]">
-                  <Image src={pair.icon} alt="" width={20} height={20} className="size-5" />
-                </div>
-                <p className="text-[16px] font-semibold leading-[1.45] text-black">
-                  <span className="font-bold">Myth:</span> {pair.myth}
-                </p>
-              </div>
-              <div className="flex h-full items-center bg-white px-6 py-6 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                <p className="text-[15px] leading-[1.65] text-[#4b4b4d]">
-                  <span className="font-bold text-[#ed1a24]">Reality:</span>{" "}
-                  {pair.reality}
-                </p>
-              </div>
-            </StaggerItem>
+            <MisconceptionCard key={pair.myth} pair={pair} />
           ))}
         </StaggerGroup>
       </Container>
@@ -321,7 +438,7 @@ function MisconceptionSection() {
 
 function SocialProofSection() {
   return (
-    <section id="proof" className="bg-white py-24">
+    <section id="proof" className="bg-white py-12">
       <Container>
         <div className="text-center">
           <SectionPill text="THE REAL PROBLEM" />
@@ -342,7 +459,6 @@ function SocialProofSection() {
                 color: "bg-[#d65f64]",
                 initials: "UP",
               },
-              ...smallTestimonials,
             ]}
             intervalMs={7000}
           />
@@ -359,22 +475,22 @@ function SocialProofSection() {
           {smallTestimonials.map((testimonial) => (
             <article
               key={testimonial.name}
-              className="w-[320px] shrink-0 rounded-[18px] border border-black/8 bg-white px-5 py-6 shadow-[0_18px_50px_rgba(17,35,89,0.04)]"
+              className="flex w-[340px] min-h-[220px] flex-col shrink-0 rounded-[18px] border border-black/8 bg-white px-5 py-6 shadow-[0_18px_50px_rgba(17,35,89,0.04)]"
             >
               <p className="text-[15px] leading-[1.85] text-[#55565a]">
                 &ldquo;{testimonial.quote}&rdquo;
               </p>
-              <div className="mt-6 flex items-center gap-3">
+              <div className="mt-auto pt-6 flex items-center gap-3">
                 <span
                   className={`inline-flex size-9 items-center justify-center rounded-full text-[13px] font-semibold text-white ${testimonial.color}`}
                 >
                   {testimonial.initials}
                 </span>
                 <div>
-                  <p className="text-[16px] font-semibold text-[#35353a]">
+                  <p className="text-[16px] font-semibold text-[#35353a] leading-tight">
                     {testimonial.name}
                   </p>
-                  <p className="text-[13px] text-[#6d6f74]">{testimonial.role}</p>
+                  <p className="text-[13px] text-[#6d6f74] mt-0.5">{testimonial.role}</p>
                 </div>
               </div>
             </article>
@@ -520,7 +636,7 @@ function FullFunnelSection() {
   const activePanel = panelContent[activeFunnelIndex];
 
   return (
-    <section id="tools" className="bg-white py-24">
+    <section id="tools" className="bg-white py-12">
       <Container>
         <div className="text-center">
           <SectionPill text="THE FULL-FUNNEL SOLUTION" />
@@ -684,7 +800,7 @@ function TechnologyCard({
 
 function PropTechSection() {
   return (
-    <section className="bg-white py-24">
+    <section className="bg-white py-12">
       <Container>
         <div className="text-center">
           <SectionPill text="PROPRIETARY TECHNOLOGY" />
@@ -1000,7 +1116,7 @@ function PropTechSection() {
 
 function TalentEquationSection() {
   return (
-    <section className="bg-white py-24">
+    <section className="bg-white py-12">
       <Container>
         <div className="text-center">
           <SectionPill text="THE TALENT EQUATION" />
@@ -1053,7 +1169,7 @@ function TalentEquationSection() {
 
 function PerformanceSection() {
   return (
-    <section className="bg-white py-24">
+    <section className="bg-white py-12">
       <Container>
         <div className="text-center">
           <h2 className="mx-auto max-w-[760px] font-[family-name:var(--font-gabarito)] text-[2.4rem] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.05rem]">
@@ -1072,71 +1188,104 @@ function PerformanceSection() {
         </div>
 
         <StaggerGroup
-          className="mt-14 grid items-start gap-6 lg:grid-cols-[0.8fr_0.8fr_0.9fr] lg:px-24"
+          className="mt-14 grid items-start gap-6 lg:grid-cols-3 lg:px-12"
           stagger={0.15}
         >
+          {/* Card 1: Metric Labels */}
           <StaggerItem
             as="article"
             className="rounded-[24px] border border-black/8 bg-white px-8 py-8 shadow-[0_20px_60px_rgba(17,35,89,0.06)]"
           >
-            <h3 className="text-center text-[22px] font-semibold text-black">Metric</h3>
-            <div className="mt-8 grid gap-5 text-[16px] font-semibold text-[#28292d]">
+            <h3 className="flex h-12 items-center justify-center text-[22px] font-semibold text-black mb-8">Metric</h3>
+            <div className="grid gap-0">
               {performanceMetrics.map((metric) => (
-                <div key={metric.label} className="flex items-center gap-3">
-                  <span className="inline-flex size-6 items-center justify-center rounded-full border border-black/15">
-                    <span className="size-[7px] rounded-full bg-black" />
+                <div key={metric.label} className="flex h-14 items-center gap-4">
+                  <span className="flex size-6 items-center justify-center text-[#35353a]">
+                    {metric.icon}
                   </span>
-                  <span>{metric.label}</span>
+                  <span className="text-[16px] font-semibold text-[#35353a] whitespace-nowrap">
+                    {metric.label}
+                  </span>
                 </div>
               ))}
             </div>
           </StaggerItem>
 
+          {/* Card 2: Traditional Agencies */}
           <StaggerItem
             as="article"
             className="rounded-[24px] border border-[#f3d6d8] bg-white px-8 py-8 shadow-[0_20px_60px_rgba(17,35,89,0.06)]"
           >
-            <div className="flex items-center justify-between gap-3">
-              <h3 className="text-[22px] font-semibold text-black">
+            <div className="flex h-12 items-center justify-between gap-3 mb-8">
+              <h3 className="text-[21px] font-semibold text-black leading-tight">
                 Traditional Agencies
               </h3>
-              <span className="rounded-full bg-[#fff3f4] px-3 py-1 text-[12px] font-semibold text-[#ff8087]">
+              <span className="rounded-full bg-[#fff3f4] px-3 py-1 text-[11px] font-bold text-[#ff8087]">
                 OLD
               </span>
             </div>
-            <div className="mt-8 grid gap-5 text-[16px] font-semibold text-[#3f4145]">
+            <div className="grid gap-0">
               {performanceMetrics.map((metric) => (
-                <div key={metric.label} className="flex items-center gap-3">
-                  <span className="inline-flex size-6 items-center justify-center rounded-full border border-[#ffb4b8] text-[#ed1a24]">
-                    x
+                <div key={metric.label} className="flex h-14 items-center gap-4">
+                  <span className="flex size-6 shrink-0 items-center justify-center rounded-full border border-[#f3d6d8] text-[14px] font-bold text-[#ed1a24]">
+                    <svg className="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4">
+                      <path d="M18 6L6 18M6 6l12 12" />
+                    </svg>
                   </span>
-                  <span>{metric.traditional}</span>
+                  <span className="text-[17px] font-bold text-[#4b4b4d]">
+                    {metric.traditional}
+                  </span>
                 </div>
               ))}
             </div>
           </StaggerItem>
 
+          {/* Card 3: Merito Way */}
           <StaggerItem
             as="article"
-            className="relative overflow-hidden rounded-[24px] border border-[#d1f1d9] bg-white px-8 py-8 shadow-[0_20px_60px_rgba(17,35,89,0.06)]"
+            className="relative overflow-hidden rounded-[24px] border border-[#d6f7e1] bg-white px-8 py-8 shadow-[0_20px_60px_rgba(17,35,89,0.06)]"
           >
-            <div className="flex items-center justify-between gap-3">
-              <h3 className="text-[22px] font-semibold text-black">MERITO WAY</h3>
-              <span className="rounded-full bg-[#eefdf1] px-3 py-1 text-[12px] font-semibold text-[#40d36f]">
+            <div className="flex h-12 items-center justify-between gap-3 mb-8">
+              <h3 className="text-[22px] font-semibold text-black tracking-tight">
+                MERITO WAY
+              </h3>
+              <span className="rounded-full bg-[#eefdf1] px-3 py-1 text-[11px] font-bold text-[#40d36f]">
                 NEW
               </span>
             </div>
-            <div className="mt-8 grid gap-5 text-[16px] font-semibold text-[#1f3625]">
+            <div className="grid gap-0">
               {performanceMetrics.map((metric) => (
-                <div key={metric.label} className="flex items-center gap-3">
-                  <span className="inline-flex size-6 items-center justify-center rounded-full border border-[#9ae8ad] text-[#12b44b]">
-                    +
+                <div key={metric.label} className="flex h-14 items-center gap-4">
+                  <span className="flex size-6 shrink-0 items-center justify-center rounded-full border border-[#40d36f]/30 text-[#40d36f]">
+                    <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
                   </span>
-                  <span>{metric.merito}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[17px] font-bold text-black">
+                      {metric.merito}
+                    </span>
+                    {metric.change && (
+                      <span className="flex items-center text-[14px] font-bold text-[#40d36f] whitespace-nowrap">
+                        {metric.trend === 'down' ? '↓' : '↑'}{metric.change}
+                      </span>
+                    )}
+                    {!metric.change && (
+                      <span className="text-[14px] font-bold text-[#40d36f]">
+                        ↑
+                      </span>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
-            <div className="absolute bottom-0 right-0 h-24 w-24 bg-[linear-gradient(135deg,transparent_45%,#21cf58_46%,#18bf4c_100%)]" />
+
+            {/* Accent corner */}
+            <div className="absolute -bottom-1 -right-1 size-24 translate-x-4 translate-y-4 rounded-full bg-[#16a34a]/10 sm:block" />
+            <div className="absolute bottom-0 right-0 h-16 w-16 overflow-hidden">
+               <div className="absolute bottom-0 right-0 h-0 w-0 border-b-[60px] border-l-[60px] border-b-[#16a34a] border-l-transparent" />
+               <div className="absolute bottom-0 right-0 h-0 w-0 border-b-[40px] border-l-[40px] border-b-[#40d36f] border-l-transparent" />
+            </div>
           </StaggerItem>
         </StaggerGroup>
       </Container>
@@ -1148,7 +1297,7 @@ function FAQSection() {
   const [activeFaq, setActiveFaq] = useState<string | null>(null);
 
   return (
-    <section className="bg-white py-24">
+    <section className="bg-white py-12">
       <Container className="max-w-[980px]">
         <h2 className="text-center font-[family-name:var(--font-gabarito)] text-[2.35rem] font-semibold leading-[1.06] tracking-[-0.035em] text-black sm:text-[2.9rem]">
           Frequently Asked Questions
@@ -1179,8 +1328,9 @@ function FAQSection() {
 }
 
 function CTASection() {
+  const { openContact } = useContactModal();
   return (
-    <section className="bg-white py-24 text-center">
+    <section className="bg-white py-12 text-center">
       <Container className="max-w-[880px]">
         <RevealOnScroll>
           <SectionPill text="READY TO GROW?" />
@@ -1195,17 +1345,18 @@ function CTASection() {
             with our senior consultants to see how our Skill-based Hiring Platform
             can integrate with your team for immediate impact.
           </p>
-          <Link
-            href="/contact"
+          <button
+            onClick={openContact}
             className="mt-9 inline-flex min-h-[56px] items-center justify-center rounded-[10px] bg-[#ed1a24] px-9 text-[18px] font-semibold text-white shadow-[0_10px_30px_rgba(237,26,36,0.25)] transition-all duration-300 hover:scale-[1.04] hover:bg-[#c8151e] hover:shadow-[0_18px_40px_rgba(237,26,36,0.35)]"
           >
             Talk to an Expert
-          </Link>
+          </button>
         </RevealOnScroll>
       </Container>
     </section>
   );
 }
+
 
 export default function HomePage() {
   return (

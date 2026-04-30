@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import ReputationToggle from "./ReputationToggle";
+import VideoThumbnail from "@/components/VideoThumbnail";
+import ContactTrigger from "@/components/ContactTrigger";
 
 export const metadata: Metadata = {
   title: "OfferVault — Eliminate Offer Dropouts",
   description: "Merito OfferVault: transparent offer exchange platform that reduces candidate dropouts and improves offer-to-joining conversion.",
 };
-import Image from "next/image";
-import Link from "next/link";
-import ReputationToggle from "./ReputationToggle";
-import VideoThumbnail from "@/components/VideoThumbnail";
 
 function Eyebrow({ text }: { text: string }) {
   return (
@@ -125,24 +126,25 @@ export default function OfferVaultPage() {
       </section>
 
       {/* Intro CTA */}
-      <section className="max-w-[1115px] mx-auto px-5 py-20 flex flex-col items-center gap-6 text-center">
-        <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black">
-          No more offer Backouts
-        </h2>
-        <p className="text-[16px] text-[#4b4b4d] leading-[165%] max-w-[700px]">
-          OfferVault helps you in ensuring guaranteed smooth offer process.
-        </p>
-        <Link
-          href="/contact"
-          className="bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[50px] px-8 rounded-[8px] flex items-center justify-center hover:bg-[#c8151e] transition-colors"
-        >
-          REGISTER NOW
-        </Link>
+      <section className="w-full bg-[#fafafa]">
+        <div className="max-w-[1115px] mx-auto px-5 py-12 flex flex-col items-center gap-6 text-center">
+          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black">
+            No more offer Backouts
+          </h2>
+          <p className="text-[16px] text-[#4b4b4d] leading-[165%] max-w-[700px]">
+            OfferVault helps you in ensuring guaranteed smooth offer process.
+          </p>
+          <ContactTrigger
+            className="bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[50px] px-8 rounded-[8px] flex items-center justify-center hover:bg-[#c8151e] transition-colors"
+          >
+            REGISTER NOW
+          </ContactTrigger>
+        </div>
       </section>
 
       {/* Offer Vault Showcase */}
-      <section className="max-w-[900px] mx-auto px-5 py-[50px]">
-        <div className="relative w-full aspect-video rounded-[12px] overflow-hidden">
+      <section className="max-w-[1000px] mx-auto px-5 py-12">
+        <div className="relative w-full aspect-video rounded-[12px] overflow-hidden shadow-2xl">
           <VideoThumbnail
             videoSrc="/offer-vault/intro.mp4"
             thumbnailSrc="/offer-vault/intro.webp"
@@ -152,35 +154,37 @@ export default function OfferVaultPage() {
       </section>
 
       {/* Problem Cards */}
-      <section className="max-w-[1136px] mx-auto px-5 py-20 flex flex-col gap-[50px]">
-        <div className="flex flex-col items-center gap-5 text-center">
-          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black">
-            Frequent Last-minute Backouts?
-          </h2>
-          <p className="text-[16px] text-[#4b4b4d] leading-[165%] max-w-[800px]">
-            The study shows there are more than 40% candidates backouts post offer. Offer-vault helps you to overcome this challenge.
-          </p>
-        </div>
-        <div className="grid grid-cols-2 gap-[50px] justify-center max-w-[1136px] mx-auto">
-          {problems.map((p, i) => (
-            <div
-              key={p.title}
-              className={`${i === 2 ? "col-span-2 max-w-[543px] mx-auto" : ""} bg-white border-[#ed1a24] ${p.accent === "top" ? "border-t" : "border-b"} rounded-[9px] shadow-[0px_0px_4px_2px_rgba(0,0,0,0.25)] overflow-hidden w-full max-w-[543px] h-[199px] flex items-center gap-8 px-8`}
-            >
-              <div className="size-[98px] bg-white rounded-full shadow-[0px_0px_7.6px_2px_rgba(0,0,0,0.25)] flex items-center justify-center flex-shrink-0">
-                <Image src={p.icon} alt={p.title} width={55} height={55} unoptimized />
+      <section className="w-full border-t border-[#f0f0f0]">
+        <div className="max-w-[1136px] mx-auto px-5 py-12 flex flex-col gap-[60px]">
+          <div className="flex flex-col items-center gap-5 text-center">
+            <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black">
+              Frequent Last-minute Backouts?
+            </h2>
+            <p className="text-[16px] text-[#4b4b4d] leading-[165%] max-w-[800px]">
+              The study shows there are more than 40% candidates backouts post offer. Offer-vault helps you to overcome this challenge.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-[40px] justify-items-center">
+            {problems.map((p, i) => (
+              <div
+                key={p.title}
+                className={`${i === 2 ? "md:col-span-2" : ""} bg-white border-[#ed1a24] ${p.accent === "top" ? "border-t" : "border-b"} rounded-[12px] shadow-[0px_10px_30px_rgba(0,0,0,0.08)] overflow-hidden w-full max-w-[543px] min-h-[199px] flex flex-col sm:flex-row items-center gap-8 p-8 transition-transform hover:-translate-y-1`}
+              >
+                <div className="size-[98px] bg-white rounded-full shadow-[0px_4px_20px_rgba(0,0,0,0.1)] flex items-center justify-center flex-shrink-0">
+                  <Image src={p.icon} alt={p.title} width={55} height={55} unoptimized />
+                </div>
+                <div className="flex flex-col gap-3 text-center sm:text-left">
+                  <h3 className="font-[family-name:var(--font-poppins)] font-semibold text-[20px] text-black">{p.title}</h3>
+                  <p className="text-[16px] text-[#4b4b4d] leading-[155%]">{p.desc}</p>
+                </div>
               </div>
-              <div className="flex flex-col gap-3">
-                <h3 className="font-[family-name:var(--font-poppins)] font-semibold text-[20px] text-black">{p.title}</h3>
-                <p className="text-[16px] text-[#4b4b4d] leading-[155%]">{p.desc}</p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
       {/* How it Works */}
-      <section className="bg-[#fef7f3] py-24">
+      <section className="bg-[#fef7f3] py-12">
         <div className="max-w-[1282px] mx-auto px-5 flex flex-col gap-[50px]">
           <div className="flex flex-col items-center gap-5 text-center">
             <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black">
@@ -273,7 +277,7 @@ export default function OfferVaultPage() {
       </section>
 
       {/* Reputation Index */}
-      <section className="max-w-[1200px] mx-auto px-5 py-24 flex flex-col gap-[50px]">
+      <section className="max-w-[1200px] mx-auto px-5 py-12 flex flex-col gap-[50px]">
         <div className="flex flex-col items-center gap-5 text-center">
           <Eyebrow text="IMPACT" />
           <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black">
@@ -287,7 +291,7 @@ export default function OfferVaultPage() {
       </section>
 
       {/* Reputation Index Video */}
-      <section className="bg-[#fef7f3] py-24">
+      <section className="bg-[#fef7f3] py-12">
         <div className="max-w-[1200px] mx-auto px-5 flex flex-col items-center gap-[50px]">
           <div className="flex flex-col items-center gap-5 text-center">
             <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black">
@@ -308,7 +312,7 @@ export default function OfferVaultPage() {
       </section>
 
       {/* CTA */}
-      <section className="max-w-[1115px] mx-auto px-5 py-24 flex flex-col items-center gap-[25px] text-center">
+      <section className="max-w-[1115px] mx-auto px-5 py-12 flex flex-col items-center gap-[25px] text-center">
         <div className="flex flex-col gap-5">
           <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black">
             Get started with Merito
@@ -317,12 +321,11 @@ export default function OfferVaultPage() {
             Help us with what you are looking for and our team will get in-touch to understand your talent requirements
           </p>
         </div>
-        <Link
-          href="/contact"
+        <ContactTrigger
           className="bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[50px] px-8 rounded-[8px] flex items-center justify-center hover:bg-[#c8151e] transition-colors"
         >
           CONTACT US
-        </Link>
+        </ContactTrigger>
       </section>
     </main>
   );

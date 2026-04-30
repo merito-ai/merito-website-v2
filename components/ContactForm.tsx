@@ -21,99 +21,126 @@ export default function ContactForm() {
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white p-10 rounded-[20px] shadow-[0_20px_50px_rgba(237,26,36,0.08)] border border-[#f3d8d9] text-center"
+        className="text-center py-10"
       >
-        <div className="size-16 bg-[#ed1a24] rounded-full flex items-center justify-center mx-auto mb-6">
-          <svg className="size-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="size-20 bg-[#ed1a24] rounded-full flex items-center justify-center mx-auto mb-8 shadow-[0_12px_40px_rgba(237,26,36,0.3)]">
+          <svg className="size-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h3 className="font-[family-name:var(--font-gabarito)] text-[28px] font-bold text-black mb-3">Message Received!</h3>
-        <p className="text-[#4b4b4d] text-[17px]">Our expert team will get back to you within 24 hours.</p>
-        <button 
-          onClick={() => setStatus("idle")}
-          className="mt-8 text-[#ed1a24] font-semibold hover:underline"
-        >
-          Send another message
-        </button>
+        <h3 className="font-[family-name:var(--font-gabarito)] text-[32px] font-bold text-black mb-4">Message Received!</h3>
+        <p className="text-[#4b4b4d] text-[18px] leading-relaxed max-w-[320px] mx-auto">Our expert team will get back to you within 24 hours.</p>
       </motion.div>
     );
   }
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="w-full bg-white p-8 sm:p-10 rounded-[24px] shadow-[0_22px_60px_rgba(17,35,89,0.08)] border border-black/5"
-    >
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div className="space-y-2 text-left">
-            <label htmlFor="name" className="text-[14px] font-bold text-black uppercase tracking-wider">Full Name</label>
-            <input 
-              required
-              id="name"
-              type="text" 
-              placeholder="John Doe"
-              className="w-full h-[56px] px-5 rounded-[12px] border border-[#e0e0e0] bg-[#f9f9f9] focus:bg-white focus:border-[#ed1a24] focus:ring-1 focus:ring-[#ed1a24] outline-none transition-all font-medium"
-            />
-          </div>
-          <div className="space-y-2 text-left">
-            <label htmlFor="email" className="text-[14px] font-bold text-black uppercase tracking-wider">Email Address</label>
-            <input 
-              required
-              id="email"
-              type="email" 
-              placeholder="john@company.com"
-              className="w-full h-[56px] px-5 rounded-[12px] border border-[#e0e0e0] bg-[#f9f9f9] focus:bg-white focus:border-[#ed1a24] focus:ring-1 focus:ring-[#ed1a24] outline-none transition-all font-medium"
-            />
-          </div>
-        </div>
+    <form onSubmit={handleSubmit} className="space-y-5">
+      {/* Message Field (Top) */}
+      <div className="space-y-2">
+        <label htmlFor="message" className="flex items-center gap-2 text-[13px] font-bold text-black uppercase tracking-widest">
+          <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+          </svg>
+          Message<span className="text-[#ed1a24]">*</span>
+        </label>
+        <textarea 
+          required
+          id="message"
+          rows={3}
+          placeholder="How can we help you scale?"
+          className="w-full p-4 rounded-[12px] border border-[#e5e7eb] bg-[#f9f9fb] focus:bg-white focus:border-[#ed1a24] focus:ring-1 focus:ring-[#ed1a24] outline-none transition-all font-medium resize-none text-[15px]"
+        ></textarea>
+      </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div className="space-y-2 text-left">
-            <label htmlFor="company" className="text-[14px] font-bold text-black uppercase tracking-wider">Company</label>
-            <input 
-              id="company"
-              type="text" 
-              placeholder="Company Name"
-              className="w-full h-[56px] px-5 rounded-[12px] border border-[#e0e0e0] bg-[#f9f9f9] focus:bg-white focus:border-[#ed1a24] focus:ring-1 focus:ring-[#ed1a24] outline-none transition-all font-medium"
-            />
-          </div>
-          <div className="space-y-2 text-left">
-            <label htmlFor="role" className="text-[14px] font-bold text-black uppercase tracking-wider">Role Interested In</label>
-            <select 
-              id="role"
-              className="w-full h-[56px] px-5 rounded-[12px] border border-[#e0e0e0] bg-[#f9f9f9] focus:bg-white focus:border-[#ed1a24] focus:ring-1 focus:ring-[#ed1a24] outline-none transition-all font-medium appearance-none"
-            >
-              <option value="tech">Tech / Engineering</option>
-              <option value="product">Product Management</option>
-              <option value="sales">Sales / Growth</option>
-              <option value="leadership">Executive / Leadership</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="space-y-2 text-left">
-          <label htmlFor="message" className="text-[14px] font-bold text-black uppercase tracking-wider">Tell us your requirements</label>
-          <textarea 
+      {/* Name Fields (Split) */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <label htmlFor="firstName" className="flex items-center gap-2 text-[13px] font-bold text-black uppercase tracking-widest">
+            <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            First Name
+          </label>
+          <input 
             required
-            id="message"
-            rows={4}
-            placeholder="How can we help you scale?"
-            className="w-full p-5 rounded-[12px] border border-[#e0e0e0] bg-[#f9f9f9] focus:bg-white focus:border-[#ed1a24] focus:ring-1 focus:ring-[#ed1a24] outline-none transition-all font-medium resize-none"
-          ></textarea>
+            id="firstName"
+            type="text" 
+            placeholder="John"
+            className="w-full h-[52px] px-4 rounded-[12px] border border-[#e5e7eb] bg-[#f9f9fb] focus:bg-white focus:border-[#ed1a24] focus:ring-1 focus:ring-[#ed1a24] outline-none transition-all font-medium text-[15px]"
+          />
         </div>
+        <div className="space-y-2">
+          <label htmlFor="lastName" className="block text-[13px] font-bold text-black uppercase tracking-widest pt-6 sm:pt-0">
+            Last Name
+          </label>
+          <input 
+            required
+            id="lastName"
+            type="text" 
+            placeholder="Doe"
+            className="w-full h-[52px] px-4 rounded-[12px] border border-[#e5e7eb] bg-[#f9f9fb] focus:bg-white focus:border-[#ed1a24] focus:ring-1 focus:ring-[#ed1a24] outline-none transition-all font-medium text-[15px]"
+          />
+        </div>
+      </div>
 
-        <button 
-          type="submit"
-          disabled={status === "submitting"}
-          className="w-full h-[60px] bg-[#ed1a24] text-white rounded-[12px] font-bold text-[18px] hover:bg-[#c8151e] transition-all shadow-[0_12px_30px_rgba(237,26,36,0.22)] active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
-        >
-          {status === "submitting" ? "Sending..." : "Submit Requirements"}
-        </button>
-      </form>
-    </motion.div>
+      {/* Email Field */}
+      <div className="space-y-2">
+        <label htmlFor="email" className="flex items-center gap-2 text-[13px] font-bold text-black uppercase tracking-widest">
+          <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+          </svg>
+          Email Address
+        </label>
+        <input 
+          required
+          id="email"
+          type="email" 
+          placeholder="john@company.com"
+          className="w-full h-[52px] px-4 rounded-[12px] border border-[#e5e7eb] bg-[#f9f9fb] focus:bg-white focus:border-[#ed1a24] focus:ring-1 focus:ring-[#ed1a24] outline-none transition-all font-medium text-[15px]"
+        />
+      </div>
+
+      {/* Phone Field */}
+      <div className="space-y-2">
+        <label htmlFor="phone" className="flex items-center gap-2 text-[13px] font-bold text-black uppercase tracking-widest">
+          <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+          </svg>
+          Phone Number
+        </label>
+        <input 
+          id="phone"
+          type="tel" 
+          placeholder="+1 (555) 000-0000"
+          className="w-full h-[52px] px-4 rounded-[12px] border border-[#e5e7eb] bg-[#f9f9fb] focus:bg-white focus:border-[#ed1a24] focus:ring-1 focus:ring-[#ed1a24] outline-none transition-all font-medium text-[15px]"
+        />
+      </div>
+
+      {/* Departments Field */}
+      <div className="space-y-2">
+        <label htmlFor="departments" className="flex items-center gap-2 text-[13px] font-bold text-black uppercase tracking-widest">
+          <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+          </svg>
+          Departments<span className="text-[#ed1a24]">*</span>
+        </label>
+        <input 
+          required
+          id="departments"
+          type="text" 
+          placeholder="e.g. Technology, Sales"
+          className="w-full h-[52px] px-4 rounded-[12px] border border-[#e5e7eb] bg-[#f9f9fb] focus:bg-white focus:border-[#ed1a24] focus:ring-1 focus:ring-[#ed1a24] outline-none transition-all font-medium text-[15px]"
+        />
+      </div>
+
+      <button 
+        type="submit"
+        disabled={status === "submitting"}
+        className="w-full h-[60px] mt-4 bg-[#ed1a24] text-white rounded-[12px] font-bold text-[18px] hover:bg-[#c8151e] transition-all shadow-[0_12px_30px_rgba(237,26,36,0.22)] active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
+      >
+        {status === "submitting" ? "Sending..." : "Submit Requirements"}
+      </button>
+    </form>
   );
 }

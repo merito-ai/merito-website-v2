@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useContactModal } from "@/context/ContactModalContext";
 
 function Eyebrow({ text }: { text: string }) {
   return (
@@ -53,6 +54,26 @@ const ArrowLeftIcon = () => (
     <path d="M16 12H8" />
   </svg>
 );
+
+function FunnelBar({ label, value, targetWidth, color, delay, visible }: { label: string, value: string, targetWidth: number, color: string, delay: number, visible: boolean }) {
+  return (
+    <div className="flex flex-col gap-2 w-full">
+      <div className="flex justify-between items-end">
+        <span className="text-[14px] md:text-[16px] text-[#4b4b4d] font-medium">{label}</span>
+        <span className="font-[family-name:var(--font-poppins)] font-bold text-[20px] md:text-[24px] text-black">{value}</span>
+      </div>
+      <div className="h-[12px] w-full bg-black/5 rounded-full overflow-hidden">
+        <div 
+          className={`h-full ${color} rounded-full transition-all duration-1000 ease-out`}
+          style={{ 
+            width: visible ? `${targetWidth}%` : '0%',
+            transitionDelay: `${delay}ms`
+          }}
+        />
+      </div>
+    </div>
+  );
+}
 
 const stats = [
   { prefix: "Top", value: "+2%", label: "of talent shortlisted" },
@@ -149,30 +170,43 @@ const engagementModels = [
 ];
 
 export default function MeritowaysClient() {
+  const { openContact } = useContactModal();
   const pillarsRef = useRef<HTMLDivElement>(null);
+  const funnelRef = useRef<HTMLDivElement>(null);
   const [pillarsVisible, setPillarsVisible] = useState(false);
+  const [funnelVisible, setFunnelVisible] = useState(false);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
+    const pillarsObserver = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setPillarsVisible(true);
-          observer.disconnect();
         }
       },
       { threshold: 0.2 }
     );
 
-    if (pillarsRef.current) {
-      observer.observe(pillarsRef.current);
-    }
+    const funnelObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setFunnelVisible(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
 
-    return () => observer.disconnect();
+    if (pillarsRef.current) pillarsObserver.observe(pillarsRef.current);
+    if (funnelRef.current) funnelObserver.observe(funnelRef.current);
+
+    return () => {
+      pillarsObserver.disconnect();
+      funnelObserver.disconnect();
+    };
   }, []);
 
   return (
     <main className="bg-[#fdf8fb] overflow-hidden">
-      <section className="relative mx-auto max-w-[1272px] px-5 pt-16 pb-[25px]">
+      <section className="relative mx-auto max-w-[1272px] px-5 pt-8 pb-4">
         <Link href="/" className="absolute top-4 left-5 md:top-8 hover:opacity-70 transition-opacity">
           <ArrowLeftIcon />
         </Link>
@@ -198,7 +232,7 @@ export default function MeritowaysClient() {
         </div>
       </section>
 
-      <section className="max-w-[1272px] mx-auto px-5 pt-[25px] pb-16">
+      <section className="max-w-[1272px] mx-auto px-5 pt-4 pb-12">
         <div className="bg-[#0a0a0a] rounded-[10px] py-[25px] px-[20px] flex flex-col md:flex-row items-center justify-between gap-8 md:gap-0">
           {stats.map((s, i) => (
             <div key={i} className="flex flex-col items-center md:flex-1 relative w-full md:w-auto text-center justify-center gap-[6px]">
@@ -217,7 +251,7 @@ export default function MeritowaysClient() {
         </div>
       </section>
 
-      <section className="max-w-[1300px] mx-auto px-5 py-24 flex flex-col gap-[50px]">
+      <section className="max-w-[1300px] mx-auto px-5 py-12 flex flex-col gap-[50px]">
         <div className="flex flex-col items-center gap-4">
           <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] md:text-[40px] text-black text-center">
             Our 4 Pillars of <span className="text-[#ed1a24] uppercase">EXCELLENCE</span>
@@ -231,7 +265,7 @@ export default function MeritowaysClient() {
           {pillars.map((p, i) => (
             <div
               key={i}
-              className={`bg-white rounded-[24px] shadow-[0px_20px_60px_rgba(0,0,0,0.08)] p-8 md:p-10 flex flex-col gap-6 relative transition-all duration-700 ease-out transform
+              className={`group bg-white rounded-[24px] border-l-[3px] border-l-transparent shadow-[0px_20px_60px_rgba(0,0,0,0.08)] hover:shadow-[0px_20px_80px_rgba(237,26,36,0.12)] hover:border-l-[#ed1a24] hover:-translate-y-2 p-8 md:p-10 flex flex-col gap-6 relative transition-all duration-500 ease-out transform
                 ${pillarsVisible ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"}
               `}
               style={{ transitionDelay: `${i * 150}ms` }}
@@ -239,15 +273,15 @@ export default function MeritowaysClient() {
               <div className="size-[48px] rounded-[12px] bg-[#ed1a24] flex items-center justify-center shadow-lg shadow-[#ed1a24]/30">
                 <p.icon />
               </div>
-              <h3 className="font-[family-name:var(--font-poppins)] font-semibold text-[24px] text-black">{p.title}</h3>
+              <h3 className="font-[family-name:var(--font-poppins)] font-semibold text-[24px] text-black transition-colors group-hover:text-[#ed1a24]">{p.title}</h3>
               <p className="text-[16px] text-[#4b4b4d] leading-[165%]">{p.desc}</p>
-              <div className="w-[30px] h-[6px] rounded-full bg-[#ed1a24]/20 mt-2" />
+              <div className="w-[30px] h-[6px] rounded-full bg-[#ed1a24]/20 group-hover:bg-[#ed1a24] group-hover:w-[60px] transition-all duration-500" />
             </div>
           ))}
         </div>
       </section>
 
-      <section className="bg-[#f5f0f3] py-24">
+      <section className="bg-[#f5f0f3] py-12">
         <div className="max-w-[1100px] mx-auto px-5 flex flex-col gap-16">
           <div className="flex flex-col items-center gap-4 text-center">
             <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] md:text-[44px] text-black leading-tight">
@@ -259,36 +293,29 @@ export default function MeritowaysClient() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-[100px]">
-            <div className="flex flex-col w-full">
-              <h3 className="font-[family-name:var(--font-poppins)] font-semibold text-[22px] text-black mb-6">Traditional Way</h3>
-              <div className="flex flex-col gap-6">
-                {traditional.map((item, i) => (
-                  <div key={i} className="flex items-center justify-between border-b-[2px] border-black/10 pb-4">
-                    <span className="text-[16px] text-[#4b4b4d]">{item.label}</span>
-                    <span className="font-[family-name:var(--font-poppins)] font-bold text-[24px] text-black">{item.value}</span>
-                  </div>
-                ))}
+          <div ref={funnelRef} className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-[120px] items-start">
+            <div className="flex flex-col w-full gap-8">
+              <h3 className="font-[family-name:var(--font-poppins)] font-semibold text-[22px] text-black border-b border-black/10 pb-4 uppercase">TRADITIONAL</h3>
+              <div className="flex flex-col gap-8">
+                <FunnelBar label="Applications" value="500" targetWidth={100} color="bg-black/20" delay={0} visible={true} />
+                <FunnelBar label="Screened" value="200" targetWidth={100} color="bg-black/20" delay={0} visible={true} />
+                <FunnelBar label="Interviewed" value="50" targetWidth={100} color="bg-black/20" delay={0} visible={true} />
               </div>
             </div>
 
-            <div className="flex flex-col w-full">
-              <h3 className="font-[family-name:var(--font-poppins)] font-semibold text-[22px] text-black mb-6">The Merito&apos;s Way</h3>
-              <div className="flex flex-col gap-6">
-                {meritoWay.map((item, i) => (
-                  <div key={i} className="flex items-center justify-between border-b-[2px] border-black/10 pb-4 relative">
-                    <div className="absolute bottom-[-2px] left-0 h-[2px] bg-black/20 w-full" />
-                    <span className="text-[16px] text-[#4b4b4d]">{item.label}</span>
-                    <span className="font-[family-name:var(--font-poppins)] font-bold text-[24px] text-black">{item.value}</span>
-                  </div>
-                ))}
+            <div className="flex flex-col w-full gap-8">
+              <h3 className="font-[family-name:var(--font-poppins)] font-semibold text-[22px] text-black border-b border-black/10 pb-4">The Merito&apos;s Way</h3>
+              <div className="flex flex-col gap-8">
+                <FunnelBar label="AI Curated" value="50" targetWidth={80} color="bg-[#ed1a24]" delay={400} visible={funnelVisible} />
+                <FunnelBar label="Shortlisted" value="20" targetWidth={40} color="bg-[#ed1a24]" delay={500} visible={funnelVisible} />
+                <FunnelBar label="Interviewed" value="10" targetWidth={20} color="bg-[#ed1a24]" delay={600} visible={funnelVisible} />
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="max-w-[1300px] mx-auto px-5 py-24 flex flex-col gap-16">
+      <section className="max-w-[1300px] mx-auto px-5 py-12 flex flex-col gap-16">
         <div className="flex flex-col items-center gap-4">
           <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] md:text-[40px] text-black text-center leading-tight">
             Precision-driven <br/>
@@ -339,7 +366,7 @@ export default function MeritowaysClient() {
         </div>
       </section>
 
-      <section className="max-w-[1300px] mx-auto px-5 py-24 flex flex-col items-center gap-16">
+      <section className="max-w-[1300px] mx-auto px-5 py-12 flex flex-col items-center gap-16">
         <Eyebrow text="ENGAGEMENT MODELS" />
         <div className="flex flex-col items-center gap-4 text-center mt-[-20px]">
           <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] md:text-[40px] text-black">
@@ -392,20 +419,20 @@ export default function MeritowaysClient() {
             </h2>
           </div>
           <div className="relative z-10 flex-shrink-0 w-full md:w-auto">
-            <Link
-              href="/contact"
+            <button
+              onClick={openContact}
               className="bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[56px] px-8 rounded-[8px] flex items-center justify-center gap-3 hover:bg-[#c8151e] transition-colors w-full md:w-auto"
             >
               Book a call with us
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M7 17l9.2-9.2M17 17V7H7" />
               </svg>
-            </Link>
+            </button>
           </div>
         </div>
       </section>
 
-      <section className="bg-[#fdf8fb] py-24 pb-32">
+      <section className="bg-[#fdf8fb] py-12 pb-32">
         <div className="max-w-[800px] mx-auto px-5 flex flex-col items-center text-center gap-8">
           <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[36px] md:text-[48px] text-black">
             Get started with Merito
@@ -413,12 +440,12 @@ export default function MeritowaysClient() {
           <p className="text-[16px] md:text-[18px] text-[#4b4b4d] leading-[165%] max-w-[600px]">
             Help us with what you are looking for and our team will get in-touch understand your talent requirements
           </p>
-          <Link
-            href="/contact"
+          <button
+            onClick={openContact}
             className="mt-4 bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[50px] px-10 rounded-[8px] flex items-center justify-center hover:bg-[#c8151e] transition-colors"
           >
             CONTACT US
-          </Link>
+          </button>
         </div>
       </section>
     </main>

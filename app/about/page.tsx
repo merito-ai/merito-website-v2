@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import ContactTrigger from "@/components/ContactTrigger";
 
 export const metadata: Metadata = {
   title: "About Merito — Human-Centric AI Recruitment",
   description: "Merito combines artificial intelligence with acquired human expertise to deliver precise, fast, and scalable hiring for growth companies.",
 };
-import Image from "next/image";
-import Link from "next/link";
 
 function Eyebrow({ text }: { text: string }) {
   return (
@@ -55,6 +56,8 @@ const recruitmentTeam = [
   { name: "Sharayu Salunke", img: "https://www.figma.com/api/mcp/asset/d2ef1f0e-62e8-4c97-a7ec-940b1dbdcb3d" },
   { name: "Anish Wategaonkar", img: "https://www.figma.com/api/mcp/asset/dacc399d-b57d-43d8-85ae-3773d20852f1" },
   { name: "Simran Kewlani", img: "https://www.figma.com/api/mcp/asset/956c24a1-b94f-40e3-918f-1c518c123453" },
+  { name: "Anushka Bhasin", img: "/Anushka Bhasin.jpeg" },
+  { name: "Trisha Thatipamula", img: "/Trisha Thatipamula.jpeg" },
 ];
 
 export default function AboutPage() {
@@ -69,7 +72,6 @@ export default function AboutPage() {
             fill 
             className="object-cover" 
             priority
-            unoptimized
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/60" />
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center gap-5">
@@ -86,7 +88,7 @@ export default function AboutPage() {
       </section>
 
       {/* Our Story */}
-      <section className="max-w-[1300px] mx-auto px-5 py-24 flex flex-col gap-[50px]">
+      <section className="max-w-[1300px] mx-auto px-5 py-12 flex flex-col gap-[50px]">
         <div className="flex flex-col items-center gap-5">
           <Eyebrow text="OUR STORY" />
           <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black text-center">
@@ -126,14 +128,13 @@ export default function AboutPage() {
               width={350} 
               height={450} 
               className="w-full h-auto object-contain" 
-              unoptimized 
             />
           </div>
         </div>
       </section>
 
       {/* Vision & Mission */}
-      <section className="max-w-[1222px] mx-auto px-5 py-24 flex flex-col gap-[50px]">
+      <section className="max-w-[1222px] mx-auto px-5 py-12 flex flex-col gap-[50px]">
         <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black text-center w-full">
           Our Vision and Mission
         </h2>
@@ -156,10 +157,10 @@ export default function AboutPage() {
           ].map((card) => (
             <div
               key={card.label}
-              className="group relative bg-white border border-white/8 rounded-[20px] shadow-[0px_0px_128.7px_2px_rgba(0,0,0,0.25)] hover:shadow-[0px_0px_128.7px_2px_rgba(237,26,36,0.15)] transition-shadow p-[43px] flex flex-col gap-6 overflow-hidden"
+              className="group relative bg-white border border-white/8 rounded-[20px] shadow-[0px_0px_128.7px_2px_rgba(0,0,0,0.25)] hover:shadow-[0px_0px_128.7px_2px_rgba(237,26,36,0.15)] hover:-translate-y-2 transition-all duration-300 p-[43px] flex flex-col gap-6 overflow-hidden"
             >
               {/* Hover Left Red Bar */}
-              <div className="absolute inset-y-0 left-0 w-1.5 bg-[#ed1a24] opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute inset-y-0 left-0 w-1.5 group-hover:w-3 bg-[#ed1a24] opacity-0 group-hover:opacity-100 transition-all duration-300" />
               
               <div className={`size-[69px] rounded-[6px] ${card.iconBg} group-hover:bg-[#ed1a24] transition-colors flex items-center justify-center`}>
                 <div className="relative size-full">
@@ -179,7 +180,7 @@ export default function AboutPage() {
       </section>
 
       {/* Values — 5I's */}
-      <section className="max-w-[1193px] mx-auto px-5 py-24 flex flex-col gap-[50px]">
+      <section className="max-w-[1193px] mx-auto px-5 py-12 flex flex-col gap-[50px]">
         <div className="flex flex-col items-center gap-5">
           <Eyebrow text="VALUES" />
           <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black text-center">
@@ -191,7 +192,7 @@ export default function AboutPage() {
             <div key={v.title} className="group bg-white rounded-[7px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-[31px] flex flex-col gap-4 relative overflow-hidden w-full md:w-[calc(50%-15px)] lg:w-[calc(33.333%-20px)]">
               {/* Red corner triangle */}
               <div className="absolute top-0 right-0 w-0 h-0 border-t-[48px] border-t-[#ed1a24] border-l-[48px] border-l-transparent" />
-              <div className="size-[49px] bg-[#ed1a24] rounded-[6px] flex items-center justify-center">
+              <div className="size-[49px] bg-[#ed1a24] rounded-[6px] flex items-center justify-center shadow-[0_4px_12px_rgba(237,26,36,0.35)]">
                 <div className="relative size-full">
                   <Image src={v.iconSrc} alt={v.title} fill className="object-contain" unoptimized />
                 </div>
@@ -207,7 +208,7 @@ export default function AboutPage() {
       </section>
 
       {/* Founding Team */}
-      <section className="max-w-[1218px] mx-auto px-5 py-24 flex flex-col gap-[50px]">
+      <section className="max-w-[1218px] mx-auto px-5 py-12 flex flex-col gap-[50px]">
         <div className="flex flex-col items-center gap-5">
           <Eyebrow text="OUR TEAM" />
           <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black text-center">Know Our Team</h2>
@@ -268,19 +269,18 @@ export default function AboutPage() {
       </section>
 
       {/* CTA */}
-      <section className="max-w-[1115px] mx-auto px-5 py-24 flex flex-col items-center gap-[25px] text-center">
+      <section className="max-w-[1115px] mx-auto px-5 py-12 flex flex-col items-center gap-[25px] text-center">
         <div className="flex flex-col gap-5 w-full">
           <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black">Get started with Merito</h2>
           <p className="text-[16px] text-[#4b4b4d] leading-[165%]">
             Help us with what you are looking for and our team will get in-touch to understand your talent requirements
           </p>
         </div>
-        <Link
-          href="/contact"
+        <ContactTrigger
           className="bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[50px] px-8 rounded-[8px] flex items-center justify-center hover:bg-[#c8151e] transition-colors"
         >
           CONTACT US
-        </Link>
+        </ContactTrigger>
       </section>
     </main>
   );
