@@ -269,7 +269,6 @@ function ArrowUpRightIcon() {
 
 
 function HeroSection() {
-  const { openContact } = useContactModal();
   return (
     <section className="bg-white pb-6 pt-8 sm:pt-12">
       <Container>
@@ -288,12 +287,17 @@ function HeroSection() {
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">
-              <button
-                onClick={openContact}
-                className="inline-flex min-h-[56px] items-center justify-center rounded-[12px] border border-[#ed1a24]/40 px-6 text-[18px] font-semibold text-[#6f6f71] transition-colors hover:border-[#ed1a24] hover:text-[#ed1a24]"
-              >
-                Start hiring smarter
-              </button>
+              <div className="flex flex-col items-start gap-3">
+                <Link
+                  href="/contact"
+                  className="inline-flex min-h-[56px] items-center justify-center rounded-[12px] border border-[#ed1a24]/40 px-6 text-[18px] font-semibold text-[#6f6f71] transition-colors hover:border-[#ed1a24] hover:text-[#ed1a24]"
+                >
+                  Start hiring smarter
+                </Link>
+                <p className="pl-1 text-[13px] font-medium text-[#6d6f74]/70">
+                  No-risk consultation · Confidential discussion
+                </p>
+              </div>
               <Link
                 href="#proof"
                 className="inline-flex min-h-[56px] items-center gap-3 rounded-[12px] bg-[#ed1a24] px-6 text-[18px] font-semibold text-white transition-colors hover:bg-[#c8151e]"
@@ -777,9 +781,10 @@ function TechnologyCard({
   return (
     <StaggerItem
       as="article"
-      className="flex h-full flex-col rounded-[20px] border border-black/8 bg-white p-5 shadow-[0_18px_50px_rgba(17,35,89,0.05)] transition-transform duration-300 hover:-translate-y-1.5"
+      y={40}
+      className="group flex h-full flex-col rounded-[20px] border border-black/8 bg-white p-5 shadow-[0_18px_50px_rgba(17,35,89,0.05)] transition-transform duration-300 hover:-translate-y-1.5"
     >
-      <div className="mb-5 inline-flex size-11 shrink-0 items-center justify-center rounded-[10px] bg-[#0d1427] overflow-hidden">
+      <div className="mb-5 inline-flex size-11 shrink-0 items-center justify-center rounded-[10px] bg-[#0d1427] overflow-hidden transition-colors duration-300 group-hover:bg-[#ed1a24]">
         <Image
           src={iconSrc}
           alt={title}
@@ -855,10 +860,10 @@ function PropTechSection() {
                     ),
                   },
                 ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-3 rounded-[10px] bg-white px-4 py-3 shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
+                  <motion.div key={i} initial={{ opacity: 0, x: -18 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.11, duration: 0.4, ease: [0.22, 1, 0.36, 1] }} className="flex items-center gap-3 rounded-[10px] bg-white px-4 py-3 shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
                     <span className="flex size-7 items-center justify-center">{item.icon}</span>
                     <span className="font-bold text-[#545558] text-[15px]">{item.label}</span>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </div>
@@ -874,11 +879,11 @@ function PropTechSection() {
           >
             <div className="grid gap-3">
               {[
-                { name: "Arun Kumar", score: "87%" },
-                { name: "Swathi Killi", score: "94%" },
-                { name: "Mahesh Rao", score: "99%" },
+                { name: "Arun Kumar", score: 87 },
+                { name: "Swathi Killi", score: 94 },
+                { name: "Mahesh Rao", score: 99 },
               ].map((c, i) => (
-                <div key={i} className="flex items-center justify-between rounded-[12px] border border-[#a2e6b5] bg-[#f2fbf5] p-3 shadow-sm">
+                <motion.div key={i} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.13, duration: 0.4, ease: [0.22, 1, 0.36, 1] }} className="flex items-center justify-between rounded-[12px] border border-[#a2e6b5] bg-[#f2fbf5] p-3 shadow-sm">
                   <div className="flex items-center gap-4">
                     <div className="flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-black/10 text-black/40">
                        <svg className="size-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
@@ -891,8 +896,8 @@ function PropTechSection() {
                       </p>
                     </div>
                   </div>
-                  <div className="text-[26px] font-bold tracking-tight text-[#22c55e]">{c.score}</div>
-                </div>
+                  <div className="text-[26px] font-bold tracking-tight text-[#22c55e]"><CountUp value={c.score} suffix="%" duration={1.2} /></div>
+                </motion.div>
               ))}
             </div>
             <p className="mt-4 text-[15px] leading-[1.7] text-[#66686d]">
@@ -924,22 +929,22 @@ function PropTechSection() {
                   />
               </div>
 
-              <div className="flex gap-3">
+              <motion.div initial={{ opacity: 0, x: -16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.2, duration: 0.4, ease: [0.22, 1, 0.36, 1] }} className="flex gap-3">
                 <div className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#fce7f3] text-[#db2777]">
                    <svg className="size-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                 </div>
                 <div className="rounded-[12px] rounded-tl-sm bg-[#4b4b4d] px-4 py-4 text-[14px] leading-snug font-bold text-white shadow-sm">
                   &ldquo;Hi Stephen, confirming your interview at tomorrow at 10 AM?&rdquo;
                 </div>
-              </div>
-              <div className="mt-3 flex justify-end gap-3">
+              </motion.div>
+              <motion.div initial={{ opacity: 0, x: 16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.4, duration: 0.4, ease: [0.22, 1, 0.36, 1] }} className="mt-3 flex justify-end gap-3">
                 <div className="rounded-[24px] rounded-br-sm border border-black/20 bg-white px-5 py-3 text-[14px] font-bold text-[#686a70] shadow-sm">
                   &ldquo;Yes! Can you send the meeting link?&rdquo;
                 </div>
                 <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#d7d7d7] text-black/60">
                   <svg className="size-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                 </div>
-              </div>
+              </motion.div>
             </div>
             <p className="mt-4 text-[15px] leading-[1.7] text-[#66686d]">
               Natural AI voice that candidates actually respond to.
@@ -953,13 +958,42 @@ function PropTechSection() {
           >
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
-                <div className="flex h-[110px] items-center justify-center overflow-hidden rounded-[14px] bg-black">
-                   <div className="size-[60px] rounded-full border-[3px] border-t-[#ff48d2] border-r-[#4027ff] border-b-[#4027ff] border-l-[#ff48d2] mix-blend-screen shadow-[0_0_15px_#ff48d2]"></div>
+                {/* AI Thinking panel */}
+                <div className="relative flex h-[110px] items-center justify-center overflow-hidden rounded-[14px] bg-black">
+                  {/* ambient glow breathes */}
+                  <motion.div
+                    className="absolute inset-0"
+                    animate={{ opacity: [0.4, 0.9, 0.4] }}
+                    transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+                    style={{ background: "radial-gradient(ellipse at center, rgba(255,72,210,0.18) 0%, rgba(64,39,255,0.14) 50%, transparent 75%)" }}
+                  />
+                  {/* outer ring — spins clockwise */}
+                  <motion.div
+                    className="absolute size-[62px] rounded-full border-[3px] border-t-[#ff48d2] border-r-[#4027ff] border-b-[#4027ff] border-l-[#ff48d2] mix-blend-screen"
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                    style={{ filter: "drop-shadow(0 0 8px #ff48d2)" }}
+                  />
+                  {/* inner ring — counter-spins */}
+                  <motion.div
+                    className="absolute size-[36px] rounded-full border-[2px] border-t-[#4027ff] border-r-[#ff48d2] border-b-[#ff48d2] border-l-[#4027ff] mix-blend-screen"
+                    animate={{ rotate: -360 }}
+                    transition={{ duration: 1.4, repeat: Infinity, ease: "linear" }}
+                    style={{ filter: "drop-shadow(0 0 5px #4027ff)" }}
+                  />
+                  {/* center pulse dot */}
+                  <motion.div
+                    className="absolute size-[8px] rounded-full bg-white mix-blend-screen"
+                    animate={{ scale: [1, 1.6, 1], opacity: [0.8, 1, 0.8] }}
+                    transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+                  />
                 </div>
-                <div className="relative flex h-[110px] items-end overflow-hidden rounded-[14px] bg-[linear-gradient(180deg,#2b2d35,#181920)] border border-black/10">
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                {/* Adarsh V panel */}
+                <div className="relative flex h-[110px] items-end overflow-hidden rounded-[14px] border border-black/10">
+                  <Image src="/adarsh v.png" alt="Adarsh V" fill className="object-cover object-top" unoptimized />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                   <div className="relative w-full p-3 text-center">
-                    <span className="inline-block rounded bg-black px-3 py-1.5 text-[11px] font-bold text-white shadow-xl">Adarsh V</span>
+                    <span className="inline-block rounded bg-black/70 px-3 py-1.5 text-[11px] font-bold text-white shadow-xl">Adarsh V</span>
                   </div>
                 </div>
               </div>
@@ -974,17 +1008,17 @@ function PropTechSection() {
                 </div>
                 <div className="space-y-5">
                   {[
-                    { label: "Technical Depth", score: "100%", width: "100%" },
-                    { label: "Problem Solving", score: "86%", width: "86%" },
-                    { label: "Communication", score: "92%", width: "92%" }
+                    { label: "Technical Depth", score: 100 },
+                    { label: "Problem Solving", score: 86 },
+                    { label: "Communication", score: 92 },
                   ].map((skill, i) => (
                     <div key={i}>
                       <div className="mb-2 flex justify-between text-[12px] font-semibold text-white">
                         <span>{skill.label}</span>
-                        <span>{skill.score}</span>
+                        <CountUp value={skill.score} suffix="%" duration={1.0} />
                       </div>
                       <div className="h-2 w-full rounded-full bg-white/20">
-                        <div className="h-full rounded-full bg-[#22c55e]" style={{ width: skill.width }}></div>
+                        <motion.div className="h-full rounded-full bg-[#22c55e]" initial={{ width: 0 }} whileInView={{ width: `${skill.score}%` }} viewport={{ once: true }} transition={{ delay: i * 0.15 + 0.3, duration: 0.9, ease: [0.22, 1, 0.36, 1] }} />
                       </div>
                     </div>
                   ))}
@@ -1006,12 +1040,12 @@ function PropTechSection() {
                 <div className="rounded-[14px] border border-black/10 bg-white p-4 shadow-sm flex flex-col justify-between">
                   <div className="flex h-[70px] items-end justify-center gap-2.5 px-2 border-b border-black/10 pb-1 relative">
                     <div className="absolute bottom-0 w-full border-b border-dashed border-black/20 pb-4 h-0" />
-                    <div className="w-[14px] rounded-t-sm bg-[#f2a65a] h-[40%] border-[1.5px] border-black"></div>
-                    <div className="w-[14px] rounded-t-sm bg-[#ed1a24] h-[80%] border-[1.5px] border-black relative">
+                    <motion.div initial={{ scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ once: true }} transition={{ delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }} style={{ originY: 1 }} className="w-[14px] rounded-t-sm bg-[#f2a65a] h-[40%] border-[1.5px] border-black" />
+                    <motion.div initial={{ scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ once: true }} transition={{ delay: 0.2, duration: 0.5, ease: [0.22, 1, 0.36, 1] }} style={{ originY: 1 }} className="w-[14px] rounded-t-sm bg-[#ed1a24] h-[80%] border-[1.5px] border-black relative">
                       <div className="absolute -top-[10px] left-1/2 w-8 border-t-[1.5px] border-black -translate-x-1/2"></div>
                       <div className="absolute -top-[13px] left-1/2 size-1.5 bg-[#ed1a24] border border-black -translate-x-1/2 rounded-full"></div>
-                    </div>
-                    <div className="w-[14px] rounded-t-sm bg-[#5bc0be] h-[60%] border-[1.5px] border-black"></div>
+                    </motion.div>
+                    <motion.div initial={{ scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ once: true }} transition={{ delay: 0.3, duration: 0.5, ease: [0.22, 1, 0.36, 1] }} style={{ originY: 1 }} className="w-[14px] rounded-t-sm bg-[#5bc0be] h-[60%] border-[1.5px] border-black" />
                   </div>
                   <div className="mt-4 text-center text-[12px] leading-snug font-bold text-[#4b4b4d]">
                     <p className="italic">AI Interview report</p>
@@ -1026,7 +1060,7 @@ function PropTechSection() {
                     ].map((bar, i) => (
                       <div key={i} className="flex items-center gap-2">
                         <div className="h-[6px] flex-1 rounded-full bg-black/5">
-                          <div className="h-full rounded-full" style={{ width: `${bar.w}%`, backgroundColor: bar.c }}></div>
+                          <motion.div className="h-full rounded-full" style={{ backgroundColor: bar.c }} initial={{ width: 0 }} whileInView={{ width: `${bar.w}%` }} viewport={{ once: true }} transition={{ delay: i * 0.08 + 0.25, duration: 0.7, ease: [0.22, 1, 0.36, 1] }} />
                         </div>
                         <span className="text-[8px] font-bold text-[#4b4b4d] w-5">{bar.w}%</span>
                       </div>
@@ -1043,7 +1077,7 @@ function PropTechSection() {
                   {[
                     { label: "AI Assistant", val: "", icon: (<svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>), dark: false },
                     { label: "Big 5 personality test", val: "", icon: (<svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>), dark: false },
-                    { label: "Sourcing assessment", val: "84/100", icon: (<svg className="size-5 text-[#f59e0b]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>), dark: true },
+                    { label: "Sourcing assessment", val: 84, icon: (<svg className="size-5 text-[#f59e0b]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>), dark: true },
                   ].map((item, i) => (
                     <div key={i} className={`flex items-center justify-between rounded-[10px] px-4 py-3 ${item.dark ? 'bg-[#3b3b3d] border border-white/10' : 'bg-white'}`}>
                       <div className={`flex items-center gap-3 ${item.dark ? 'text-white' : 'text-[#4b4b4d]'}`}>
@@ -1051,7 +1085,7 @@ function PropTechSection() {
                         <span className="text-[14px] font-bold">{item.label}</span>
                       </div>
                       {item.val ? (
-                         <span className="text-[14px] font-bold text-[#ed1a24]">{item.val}</span>
+                         <span className="text-[14px] font-bold text-[#ed1a24]"><CountUp value={typeof item.val === "number" ? item.val : 0} suffix="/100" duration={1.2} /></span>
                       ) : (
                          <span className="size-2.5 rounded-full bg-[#ed1a24]"></span>
                       )}
@@ -1076,20 +1110,20 @@ function PropTechSection() {
                 <p className="text-[11px] text-white/70">Online</p>
               </div>
               <div className="space-y-3 px-3 py-4 text-[12px]">
-                <div className="max-w-[82%] rounded-[12px] rounded-tl-sm bg-white px-3 py-2 text-[#4b4b4d] shadow-[0_8px_18px_rgba(17,35,89,0.06)]">
+                <motion.div initial={{ opacity: 0, x: -12 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.1, duration: 0.35 }} className="max-w-[82%] rounded-[12px] rounded-tl-sm bg-white px-3 py-2 text-[#4b4b4d] shadow-[0_8px_18px_rgba(17,35,89,0.06)]">
                   Hi Akash, We have an exciting Senior Developer role at TechCorp.
                   Interested?
-                </div>
-                <div className="ml-auto max-w-[70%] rounded-[12px] rounded-tr-sm bg-[#dbf9c8] px-3 py-2 text-[#2a5536]">
+                </motion.div>
+                <motion.div initial={{ opacity: 0, x: 12 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.28, duration: 0.35 }} className="ml-auto max-w-[70%] rounded-[12px] rounded-tr-sm bg-[#dbf9c8] px-3 py-2 text-[#2a5536]">
                   Yes, tell me more!
-                </div>
-                <div className="max-w-[82%] rounded-[12px] rounded-tl-sm bg-white px-3 py-2 text-[#4b4b4d] shadow-[0_8px_18px_rgba(17,35,89,0.06)]">
+                </motion.div>
+                <motion.div initial={{ opacity: 0, x: -12 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.46, duration: 0.35 }} className="max-w-[82%] rounded-[12px] rounded-tl-sm bg-white px-3 py-2 text-[#4b4b4d] shadow-[0_8px_18px_rgba(17,35,89,0.06)]">
                   Great! It&apos;s a remote-first role with 26-35 LPA. Can you share
                   your updated resume?
-                </div>
-                <div className="ml-auto max-w-[70%] rounded-[12px] rounded-tr-sm bg-[#dbf9c8] px-3 py-2 text-[#2a5536]">
+                </motion.div>
+                <motion.div initial={{ opacity: 0, x: 12 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.64, duration: 0.35 }} className="ml-auto max-w-[70%] rounded-[12px] rounded-tr-sm bg-[#dbf9c8] px-3 py-2 text-[#2a5536]">
                   Sure, here it is.
-                </div>
+                </motion.div>
                 <div className="max-w-[40%] rounded-[12px] rounded-tl-sm bg-white px-3 py-2 shadow-[0_8px_18px_rgba(17,35,89,0.06)]">
                   <TypingDots
                     className="flex items-end gap-1"
@@ -1345,12 +1379,17 @@ function CTASection() {
             with our senior consultants to see how our Skill-based Hiring Platform
             can integrate with your team for immediate impact.
           </p>
-          <button
-            onClick={openContact}
-            className="mt-9 inline-flex min-h-[56px] items-center justify-center rounded-[10px] bg-[#ed1a24] px-9 text-[18px] font-semibold text-white shadow-[0_10px_30px_rgba(237,26,36,0.25)] transition-all duration-300 hover:scale-[1.04] hover:bg-[#c8151e] hover:shadow-[0_18px_40px_rgba(237,26,36,0.35)]"
-          >
-            Talk to an Expert
-          </button>
+          <div className="flex flex-col items-center gap-3">
+            <button
+              onClick={openContact}
+              className="mt-9 inline-flex min-h-[56px] items-center justify-center rounded-[10px] bg-[#ed1a24] px-9 text-[18px] font-semibold text-white shadow-[0_10px_30px_rgba(237,26,36,0.25)] transition-all duration-300 hover:scale-[1.04] hover:bg-[#c8151e] hover:shadow-[0_18px_40px_rgba(237,26,36,0.35)]"
+            >
+              Talk to an Expert
+            </button>
+            <p className="text-[14px] font-medium text-[#52545b]/80">
+              No-risk consultation · Confidential discussion
+            </p>
+          </div>
         </RevealOnScroll>
       </Container>
     </section>

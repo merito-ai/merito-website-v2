@@ -36,22 +36,7 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-      {/* Message Field (Top) */}
-      <div className="space-y-2">
-        <label htmlFor="message" className="flex items-center gap-2 text-[13px] font-bold text-black uppercase tracking-widest">
-          <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-          </svg>
-          Message<span className="text-[#ed1a24]">*</span>
-        </label>
-        <textarea 
-          required
-          id="message"
-          rows={3}
-          placeholder="How can we help you scale?"
-          className="w-full p-4 rounded-[12px] border border-[#e5e7eb] bg-[#f9f9fb] focus:bg-white focus:border-[#ed1a24] focus:ring-1 focus:ring-[#ed1a24] outline-none transition-all font-medium resize-none text-[15px]"
-        ></textarea>
-      </div>
+
 
       {/* Name Fields (Split) */}
       <div className="grid grid-cols-2 gap-4">
@@ -132,6 +117,23 @@ export default function ContactForm() {
           placeholder="e.g. Technology, Sales"
           className="w-full h-[52px] px-4 rounded-[12px] border border-[#e5e7eb] bg-[#f9f9fb] focus:bg-white focus:border-[#ed1a24] focus:ring-1 focus:ring-[#ed1a24] outline-none transition-all font-medium text-[15px]"
         />
+      </div>
+
+      {/* Message Field (Bottom) */}
+      <div className="space-y-2">
+        <label htmlFor="message" className="flex items-center gap-2 text-[13px] font-bold text-black uppercase tracking-widest">
+          <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+          </svg>
+          Message<span className="text-[#ed1a24]">*</span>
+        </label>
+        <textarea 
+          required
+          id="message"
+          rows={3}
+          placeholder="How can we help you scale?"
+          className="w-full p-4 rounded-[12px] border border-[#e5e7eb] bg-[#f9f9fb] focus:bg-white focus:border-[#ed1a24] focus:ring-1 focus:ring-[#ed1a24] outline-none transition-all font-medium resize-none text-[15px]"
+        ></textarea>
       </div>
 
       <button 

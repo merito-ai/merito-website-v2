@@ -1,6 +1,6 @@
 "use client";
 
-import { useContactModal } from "@/context/ContactModalContext";
+import Link from "next/link";
 
 export default function ContactTrigger({ 
   children, 
@@ -9,11 +9,9 @@ export default function ContactTrigger({
   children: React.ReactNode; 
   className?: string;
 }) {
-  const { openContact } = useContactModal();
-  
   return (
-    <button onClick={openContact} className={className}>
+    <Link href="/contact" className={className}>
       {children}
-    </button>
+    </Link>
   );
 }

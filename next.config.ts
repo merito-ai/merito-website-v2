@@ -25,6 +25,15 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: '/our-approach',
+        destination: '/meritoways',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

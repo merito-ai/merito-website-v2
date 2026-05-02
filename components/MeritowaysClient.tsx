@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useContactModal } from "@/context/ContactModalContext";
 
 function Eyebrow({ text }: { text: string }) {
   return (
@@ -170,7 +169,6 @@ const engagementModels = [
 ];
 
 export default function MeritowaysClient() {
-  const { openContact } = useContactModal();
   const pillarsRef = useRef<HTMLDivElement>(null);
   const funnelRef = useRef<HTMLDivElement>(null);
   const [pillarsVisible, setPillarsVisible] = useState(false);
@@ -379,7 +377,7 @@ export default function MeritowaysClient() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
           {engagementModels.map((m, i) => (
-            <div key={i} className={`rounded-[24px] overflow-hidden flex flex-col ${m.dark ? "bg-gradient-to-br from-black via-[#1a1a1a] to-[#2d0a0c] text-white" : "bg-white border border-black/5 shadow-[0px_8px_32px_rgba(0,0,0,0.04)]"}`}>
+            <div key={i} className={`rounded-[24px] overflow-hidden flex flex-col ${m.dark ? "bg-gradient-to-br from-black via-[#1a1a1a] to-[#2d0a0c] text-white shadow-[0px_8px_48px_rgba(0,0,0,0.4)]" : "bg-white border border-black/5 shadow-[0px_8px_32px_rgba(0,0,0,0.04)]"}`}>
               <div className="p-10 pb-8 flex flex-col gap-6">
                 <div className="self-start">
                   <Eyebrow text={m.tag} />
@@ -394,7 +392,7 @@ export default function MeritowaysClient() {
               </div>
               <div className="flex-1 flex flex-col px-10 pb-10 gap-6 mt-4">
                 {m.features.map((f, idx) => (
-                  <div key={idx} className="flex flex-col sm:flex-row gap-2 sm:gap-6 border-b border-white/10 pb-6 last:border-0 last:pb-0">
+                  <div key={idx} className="flex flex-col sm:flex-row gap-2 sm:gap-6 border-b border-white/20 pb-6 last:border-0 last:pb-0">
                     <span className={`text-[12px] font-bold tracking-[1px] uppercase w-[100px] flex-shrink-0 ${m.dark ? "text-white/50" : "text-black/50"}`}>
                       {f.label}
                     </span>
@@ -418,16 +416,19 @@ export default function MeritowaysClient() {
               Let&apos;s find the 2% who will move your business forward.
             </h2>
           </div>
-          <div className="relative z-10 flex-shrink-0 w-full md:w-auto">
-            <button
-              onClick={openContact}
+          <div className="relative z-10 flex flex-col items-center gap-3 w-full md:w-auto">
+            <Link
+              href="/contact"
               className="bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[56px] px-8 rounded-[8px] flex items-center justify-center gap-3 hover:bg-[#c8151e] transition-colors w-full md:w-auto"
             >
               Book a call with us
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M7 17l9.2-9.2M17 17V7H7" />
               </svg>
-            </button>
+            </Link>
+            <p className="text-[13px] font-medium text-white/60">
+              No-risk consultation · Confidential discussion
+            </p>
           </div>
         </div>
       </section>
@@ -440,12 +441,17 @@ export default function MeritowaysClient() {
           <p className="text-[16px] md:text-[18px] text-[#4b4b4d] leading-[165%] max-w-[600px]">
             Help us with what you are looking for and our team will get in-touch understand your talent requirements
           </p>
-          <button
-            onClick={openContact}
-            className="mt-4 bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[50px] px-10 rounded-[8px] flex items-center justify-center hover:bg-[#c8151e] transition-colors"
-          >
-            CONTACT US
-          </button>
+          <div className="flex flex-col items-center gap-3">
+            <Link
+              href="/contact"
+              className="mt-4 bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[50px] px-10 rounded-[8px] flex items-center justify-center hover:bg-[#c8151e] transition-colors"
+            >
+              CONTACT US
+            </Link>
+            <p className="text-[14px] font-medium text-[#6d6f74]/70">
+              No-risk consultation · 100% confidential
+            </p>
+          </div>
         </div>
       </section>
     </main>

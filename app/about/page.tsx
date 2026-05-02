@@ -4,8 +4,16 @@ import Link from "next/link";
 import ContactTrigger from "@/components/ContactTrigger";
 
 export const metadata: Metadata = {
-  title: "About Merito — Human-Centric AI Recruitment",
-  description: "Merito combines artificial intelligence with acquired human expertise to deliver precise, fast, and scalable hiring for growth companies.",
+  title: "About Merito — Human-Centric AI Recruitment Agency India",
+  description: "Merito is India's human-centric AI recruitment agency. We combine artificial intelligence with acquired human expertise to deliver precise, fast hiring for growth companies. Meet the team.",
+  openGraph: {
+    title: "About Merito — Human-Centric AI Recruitment Agency India",
+    description: "Meet the team behind India's human-centric AI recruitment agency. AI + Acquired Intelligence = top 2% talent in 48 hours.",
+    url: "https://meritoai.netlify.app/about",
+  },
+  alternates: {
+    canonical: "/about",
+  },
 };
 
 function Eyebrow({ text }: { text: string }) {
@@ -276,11 +284,16 @@ export default function AboutPage() {
             Help us with what you are looking for and our team will get in-touch to understand your talent requirements
           </p>
         </div>
-        <ContactTrigger
-          className="bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[50px] px-8 rounded-[8px] flex items-center justify-center hover:bg-[#c8151e] transition-colors"
-        >
-          CONTACT US
-        </ContactTrigger>
+        <div className="flex flex-col items-center gap-3">
+          <ContactTrigger
+            className="bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[50px] px-8 rounded-[8px] flex items-center justify-center hover:bg-[#c8151e] transition-colors"
+          >
+            CONTACT US
+          </ContactTrigger>
+          <p className="text-[14px] font-medium text-[#6d6f74]/70">
+            No-risk consultation · 100% confidential
+          </p>
+        </div>
       </section>
     </main>
   );

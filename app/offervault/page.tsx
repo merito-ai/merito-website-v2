@@ -6,8 +6,16 @@ import VideoThumbnail from "@/components/VideoThumbnail";
 import ContactTrigger from "@/components/ContactTrigger";
 
 export const metadata: Metadata = {
-  title: "OfferVault — Eliminate Offer Dropouts",
-  description: "Merito OfferVault: transparent offer exchange platform that reduces candidate dropouts and improves offer-to-joining conversion.",
+  title: "OfferVault — Eliminate Offer Dropouts | Merito",
+  description: "Merito OfferVault is a transparent offer exchange platform that eliminates candidate dropouts and improves offer-to-joining conversion. Stop losing candidates after the offer.",
+  openGraph: {
+    title: "OfferVault — Eliminate Offer Dropouts | Merito",
+    description: "Stop losing candidates after the offer. OfferVault by Merito creates transparent offer exchanges that improve joining conversion rates.",
+    url: "https://meritoai.netlify.app/offervault",
+  },
+  alternates: {
+    canonical: "/offervault",
+  },
 };
 
 function Eyebrow({ text }: { text: string }) {
@@ -134,11 +142,16 @@ export default function OfferVaultPage() {
           <p className="text-[16px] text-[#4b4b4d] leading-[165%] max-w-[700px]">
             OfferVault helps you in ensuring guaranteed smooth offer process.
           </p>
-          <ContactTrigger
-            className="bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[50px] px-8 rounded-[8px] flex items-center justify-center hover:bg-[#c8151e] transition-colors"
-          >
-            REGISTER NOW
-          </ContactTrigger>
+          <div className="flex flex-col items-center gap-3">
+            <ContactTrigger
+              className="bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[50px] px-8 rounded-[8px] flex items-center justify-center hover:bg-[#c8151e] transition-colors"
+            >
+              REGISTER NOW
+            </ContactTrigger>
+            <p className="text-[14px] font-medium text-[#6d6f74]/70">
+              Free setup · No-risk consultation
+            </p>
+          </div>
         </div>
       </section>
 
@@ -321,11 +334,16 @@ export default function OfferVaultPage() {
             Help us with what you are looking for and our team will get in-touch to understand your talent requirements
           </p>
         </div>
-        <ContactTrigger
-          className="bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[50px] px-8 rounded-[8px] flex items-center justify-center hover:bg-[#c8151e] transition-colors"
-        >
-          CONTACT US
-        </ContactTrigger>
+        <div className="flex flex-col items-center gap-3">
+          <ContactTrigger
+            className="bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[50px] px-8 rounded-[8px] flex items-center justify-center hover:bg-[#c8151e] transition-colors"
+          >
+            CONTACT US
+          </ContactTrigger>
+          <p className="text-[14px] font-medium text-[#6d6f74]/70">
+            No-risk consultation · 100% confidential
+          </p>
+        </div>
       </section>
     </main>
   );

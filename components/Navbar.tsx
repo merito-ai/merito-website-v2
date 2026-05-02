@@ -3,7 +3,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
-import { useContactModal } from "@/context/ContactModalContext";
 
 const navLinks = [
   { label: "About us", href: "/about" },
@@ -13,7 +12,6 @@ const navLinks = [
 ];
 
 export default function Navbar() {
-  const { openContact } = useContactModal();
   const [open, setOpen] = useState(false);
   const [platformsOpen, setPlatformsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -122,12 +120,12 @@ export default function Navbar() {
         </div>
 
         {/* CTA */}
-        <button
-          onClick={openContact}
+        <Link
+          href="/contact"
           className="relative hidden h-[50px] items-center justify-center overflow-hidden whitespace-nowrap rounded-[8px] bg-[#ed1a24] px-6 font-[family-name:var(--font-poppins)] text-[16px] font-semibold text-white transition-colors hover:bg-[#c8151e] md:flex"
         >
           <span className="relative z-10">Talk to an expert</span>
-        </button>
+        </Link>
 
         {/* Mobile hamburger */}
         <button
@@ -176,12 +174,13 @@ export default function Navbar() {
               </Link>
             );
           })}
-          <button
-            onClick={() => { setOpen(false); openContact(); }}
+          <Link
+            href="/contact"
+            onClick={() => setOpen(false)}
             className="flex items-center justify-center bg-[#ed1a24] text-white font-semibold text-[16px] px-6 h-[50px] rounded-[8px] mt-2"
           >
             Talk to an expert
-          </button>
+          </Link>
         </div>
       )}
     </header>

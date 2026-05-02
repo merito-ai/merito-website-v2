@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
   const isStaging = process.env.NEXT_PUBLIC_ENV === "staging";
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://merito.in";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://meritoai.netlify.app";
 
   if (isStaging) {
     return {

@@ -21,7 +21,7 @@ const gabarito = Gabarito({
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://merito.in"
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://meritoai.netlify.app"
   ),
   title: {
     default: "Merito — AI-Enabled Full-Funnel Recruitment Partner",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     "executive search",
     "India hiring",
   ],
-  authors: [{ name: "Merito", url: "https://merito.in" }],
+  authors: [{ name: "Merito", url: "https://meritoai.netlify.app" }],
   openGraph: {
     type: "website",
     locale: "en_IN",
@@ -62,10 +62,14 @@ export const metadata: Metadata = {
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_VERIFY ?? "",
   },
+  alternates: {
+    canonical: "./",
+  },
 };
 
 import { ContactModalProvider } from "@/context/ContactModalContext";
 import ContactModal from "@/components/ContactModal";
+import FloatingContactButton from "@/components/FloatingContactButton";
 
 export default function RootLayout({
   children,
@@ -102,12 +106,96 @@ export default function RootLayout({
           src="https://salesiq.zohopublic.in/widget?wc=siq60bd6a01da5298e0b5a2257627058c326d697a43094bec2499eb32efa03229e0"
           strategy="afterInteractive"
         />
+        {/* JSON-LD Schema Markup */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "Merito",
+              "alternateName": "Career Corner Education Pvt. Ltd",
+              "url": "https://meritoai.netlify.app",
+              "logo": "https://meritoai.netlify.app/logo.png",
+              "contactPoint": {
+                "@type": "ContactPoint",
+                "telephone": "+91 97676-63123",
+                "contactType": "customer service",
+                "email": "admin@merito.ai",
+                "areaServed": "IN",
+                "availableLanguage": "en"
+              },
+              "sameAs": [
+                "https://www.linkedin.com/company/merito-ai"
+              ]
+            })
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Service",
+              "serviceType": "AI Recruitment Agency",
+              "provider": {
+                "@type": "Organization",
+                "name": "Merito"
+              },
+              "areaServed": {
+                "@type": "Country",
+                "name": "India"
+              },
+              "description": "Human-centric AI recruitment agency blending strategic human insight with a proprietary Skill-based Hiring Platform to deliver top 2% talent in 48 hours.",
+              "offers": {
+                "@type": "Offer",
+                "description": "AI Consulting and Agency Partner models"
+              }
+            })
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              "mainEntity": [
+                {
+                  "@type": "Question",
+                  "name": "What is Merito's approach to hiring?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Merito uses an AI-powered precision hiring approach, screening and shortlisting only the top 2% of talent using advanced data and behavioral insights."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "How much can Merito reduce time-to-hire?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Merito typically delivers a 60% reduction in time-to-hire compared to traditional recruitment processes."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "What proprietary tools does Merito use?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Merito uses unique tools like Ref-Track and AI-driven workflows to eliminate hiring risks and evaluate candidate reputation."
+                  }
+                }
+              ]
+            })
+          }}
+        />
       </head>
       <body className={`${poppins.variable} ${gabarito.variable} antialiased`}>
         <ContactModalProvider>
           <Navbar />
           <ClientAnalytics />
           <ContactModal />
+          <FloatingContactButton />
           {children}
           <Footer />
         </ContactModalProvider>

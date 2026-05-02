@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import ContactTrigger from "@/components/ContactTrigger";
 
 const articleData: Record<string, {
   title: string;
@@ -13,22 +14,23 @@ const articleData: Record<string, {
   duration?: string;
   episode?: string;
   date?: string;
+  thumbnail?: string;
   stats?: { value: string; label: string }[];
   content: string[];
 }> = {
   "invisible-burn": {
     title: "The Invisible Burn: How an AI Recruitment Agency Slashes Startup Hiring Gap by 40%",
-    titleBefore: "THE INVISIBLE",
-    titleRed: "BURN",
+    titleBefore: "The Invisible",
+    titleRed: "Burn",
     excerpt: "How an AI Recruitment Agency Slashes Startup Hiring Gap by 40%.",
     heroImage: "/insights-thumbnails/The invisible burn.png",
-    category: "AI RECRUITMENT",
+    category: "AI Recruitment",
     type: "article",
     readTime: "7 min read",
     stats: [
-      { value: "40%", label: "LOWER HIRING SPEND" },
-      { value: "3x", label: "FASTER HIRING" },
-      { value: "ICE ASSESSMENT", label: "INCLUDED" },
+      { value: "40%", label: "Lower Hiring Spend" },
+      { value: "3x", label: "Faster Hiring" },
+      { value: "ICE Assessment", label: "Included" },
     ],
     content: [
       "Startup hiring burns slow. It's rarely a single catastrophic failure — it's the accumulation of small inefficiencies, each one invisible on its own. A two-week delay in sourcing. A misaligned hiring brief. Three rounds of interviews that end in a withdrawn offer. By the time you notice the damage, you've lost months and missed the window for critical growth.",
@@ -40,11 +42,11 @@ const articleData: Record<string, {
   },
   "human-centric-ai": {
     title: "How a Human-Centric AI Recruitment Agency Is Solving the Startup Hiring Gap",
-    titleBefore: "HUMAN CENTRIC",
+    titleBefore: "Human Centric",
     titleRed: "AI",
     excerpt: "How a Human-Centric AI Recruitment Agency is Solving the Startup Hiring Gap.",
     heroImage: "/insights-thumbnails/Human centric AI.png",
-    category: "AI RECRUITMENT",
+    category: "AI Recruitment",
     type: "article",
     readTime: "6 min read",
     stats: [
@@ -63,11 +65,11 @@ const articleData: Record<string, {
   },
   "right-path": {
     title: "How to Choose the Right Path: Recruitment Agency vs. Specialized Agency",
-    titleBefore: "HOW TO CHOOSE",
-    titleRed: "THE RIGHT PATH",
+    titleBefore: "How to Choose",
+    titleRed: "The Right Path",
     excerpt: "Recruitment Agency vs Specialized Agency — Your Business Hiring Decision.",
     heroImage: "/insights-thumbnails/How to choose the right path.png",
-    category: "HIRING STRATEGY",
+    category: "Hiring Strategy",
     type: "article",
     readTime: "5 min read",
     content: [
@@ -80,11 +82,11 @@ const articleData: Record<string, {
   },
   "choose-right": {
     title: "How to Choose Right: Making Decisions That Move Your Business Forward",
-    titleBefore: "HOW TO CHOOSE",
-    titleRed: "RIGHT",
+    titleBefore: "How to Choose",
+    titleRed: "Right",
     excerpt: "Making decisions that move your business forward.",
     heroImage: "/insights-thumbnails/How to choose right.png",
-    category: "HIRING STRATEGY",
+    category: "Hiring Strategy",
     type: "article",
     readTime: "4 min read",
     content: [
@@ -96,11 +98,11 @@ const articleData: Record<string, {
   },
   "ditch-internal": {
     title: "Ditch Internal — Why Fast-Growing Companies Should Specialise Their Hiring",
-    titleBefore: "DITCH INTERNAL",
-    titleRed: "SPECIALISE",
+    titleBefore: "Ditch Internal",
+    titleRed: "Specialise",
     excerpt: "Why fast-growing companies should specialise their hiring.",
     heroImage: "/insights-thumbnails/Dutch Internal specialise.jpg",
-    category: "HIRING STRATEGY",
+    category: "Hiring Strategy",
     type: "article",
     readTime: "5 min read",
     content: [
@@ -112,11 +114,11 @@ const articleData: Record<string, {
   },
   "retain-top-1": {
     title: "Retain the Top 1%: Executive Search for the Era of Intelligence",
-    titleBefore: "RETAIN THE TOP",
+    titleBefore: "Retain the Top",
     titleRed: "1%",
     excerpt: "Executive Search for the Era of Intelligence.",
     heroImage: "/insights-thumbnails/Retain the top 1%.png",
-    category: "EXECUTIVE SEARCH",
+    category: "Executive Search",
     type: "article",
     readTime: "6 min read",
     content: [
@@ -248,6 +250,7 @@ const articleData: Record<string, {
       "The ROI is real. Companies with top-quartile candidate experience see 70% higher offer acceptance rates and significantly higher quality of applicant — because strong candidates have the most options and choose the companies that treat them best.",
     ],
   },
+
   "recruiter-vs-hiring-manager": {
     title: "The Recruiter-Hiring Manager Alignment Problem (And How to Solve It)",
     category: "Talent Strategy",
@@ -390,17 +393,17 @@ const articleData: Record<string, {
   },
   "strategy-2026": {
     title: "Why Your 2026 Strategy Needs a Specialist Executive Search Partner",
-    titleBefore: "YOUR 2026",
-    titleRed: "STRATEGY",
+    titleBefore: "Your 2026",
+    titleRed: "Strategy",
     excerpt: "Why Your 2026 Strategy Needs a Specialist Executive Search Partner.",
     heroImage: "/insights-thumbnails/Your 2026 stratergy.jpg",
-    category: "LEADERSHIP HIRING",
+    category: "Leadership Hiring",
     type: "article",
     readTime: "6 min read",
     stats: [
-      { value: "40%", label: "FASTER HIRING WITH AI" },
-      { value: "78%", label: "OF 2026 GROWTH PLANS" },
-      { value: "TALENT GAPS", label: "BLOCK PROGRESS" },
+      { value: "40%", label: "Faster Hiring With AI" },
+      { value: "78%", label: "Of 2026 Growth Plans" },
+      { value: "Talent Gaps", label: "Block Progress" },
     ],
     content: [
       "As we move toward 2026, the narrative around recruitment is dominated by one thing: automation. AI is no longer a futuristic concept; it is a baseline tool for support functions across every enterprise. But as the market becomes saturated with AI-driven sourcing bots and automated outreach, a critical question arises for founders and boards: If every company has access to the same AI tools, what constitutes a competitive advantage in hiring?",
@@ -413,17 +416,17 @@ const articleData: Record<string, {
   },
   "hire-from-within": {
     title: "Why the Best Way to Hire Top Talent is to Start With Your Current Team's Culture",
-    titleBefore: "HIRE FROM",
-    titleRed: "WITHIN",
+    titleBefore: "Hire From",
+    titleRed: "Within",
     excerpt: "Why the best way to hire top talent is to start with your current team's culture.",
     heroImage: "/insights-thumbnails/hire from within.jpg",
-    category: "TALENT & CULTURE",
+    category: "Talent & Culture",
     type: "article",
     readTime: "5 min read",
     stats: [
-      { value: "40%", label: "LOWER MIS-HIRE RATE" },
-      { value: "89%", label: "OF BAD HIRES" },
-      { value: "CULTURE FIT", label: "ROOT CAUSE" },
+      { value: "40%", label: "Lower Mis-hire Rate" },
+      { value: "89%", label: "Of Bad Hires" },
+      { value: "Culture Fit", label: "Root Cause" },
     ],
     content: [
       "In the early days of a startup, culture isn't a handbook or a set of posters on the wall — it's the founder's psyche. It is the invisible set of values, quirks, and work ethics that exist in the founder's head. But as you scale, that internal compass becomes harder to share. This 'cultural riddle' is the single biggest bottleneck to scaling.",
@@ -436,17 +439,17 @@ const articleData: Record<string, {
   },
   "slow-hiring-costs": {
     title: "Is Your Lengthy Recruitment Process Costing You Top Talent?",
-    titleBefore: "SLOW HIRING",
-    titleRed: "COSTS YOU",
+    titleBefore: "Slow Hiring",
+    titleRed: "Costs You",
     excerpt: "Is Your Lengthy Recruitment Process Costing You Top Talent?",
     heroImage: "/insights-thumbnails/Slow hiring costs you.jpg",
-    category: "HIRING PROCESS",
+    category: "Hiring Process",
     type: "article",
     readTime: "5 min read",
     stats: [
-      { value: "40%", label: "FASTER HIRING" },
-      { value: "10 DAYS", label: "IS THE WINDOW" },
-      { value: "BEFORE TOP TALENT", label: "ACCEPTS ELSEWHERE" },
+      { value: "40%", label: "Faster Hiring" },
+      { value: "10 Days", label: "Is The Window" },
+      { value: "Before Top Talent", label: "Accepts Elsewhere" },
     ],
     content: [
       "In the competitive race to hire top talent, many founders and HR leaders operate under a dangerous myth: that a high number of interview rounds equates to a high quality of hire. A bloated, repetitive, and lengthy process doesn't filter for the best — it filters for the most desperate. The most elite candidates are passive 'top 2%' who aren't actively looking and are often being approached by five other companies simultaneously. The moment your process hits the fifth or sixth round, you aren't just measuring their skills — you are testing their patience.",
@@ -459,17 +462,17 @@ const articleData: Record<string, {
   },
   "modern-playbook": {
     title: "The Modern Playbook to Hire Top Talent in a High-Churn Market",
-    titleBefore: "THE MODERN",
-    titleRed: "PLAYBOOK",
+    titleBefore: "The Modern",
+    titleRed: "Playbook",
     excerpt: "The Modern Playbook to Hire Top Talent in a High-Churn Market.",
     heroImage: "/insights-thumbnails/The modern playbook.jpg",
-    category: "TALENT STRATEGY",
+    category: "Talent Strategy",
     type: "article",
     readTime: "6 min read",
     stats: [
-      { value: "85%", label: "TWO-YEAR RETENTION RATE" },
-      { value: "3 in 5", label: "TOP PERFORMERS" },
-      { value: "OPEN TO LEAVING", label: "WITHIN 12 MONTHS" },
+      { value: "85%", label: "Two-Year Retention Rate" },
+      { value: "3 in 5", label: "Top Performers" },
+      { value: "Open To Leaving", label: "Within 12 Months" },
     ],
     content: [
       "In today's volatile job market, the 'Great Resignation' has evolved into the 'Constant Churn.' Average retention periods have plummeted, driven by a Gen Z workforce that values alignment over traditional loyalty. For founders and HR leaders, the challenge has shifted: it's no longer just about filling a seat — it's about finding the 'Stickiness Factor.' By moving away from gut-feel and toward data-driven intelligence, Merito helps companies achieve an 85% two-year retention rate.",
@@ -482,17 +485,17 @@ const articleData: Record<string, {
   },
   "rest-to-reality": {
     title: "How a Skill-Based Hiring Platform Turns Assessments into Real-World Simulations",
-    titleBefore: "FROM TEST TO",
-    titleRed: "REALITY",
+    titleBefore: "From Test To",
+    titleRed: "Reality",
     excerpt: "How a Skill-Based Hiring Platform Turns Assessments into Real-World Simulations.",
     heroImage: "/insights-thumbnails/From rest to reality.jpg",
-    category: "AI RECRUITMENT",
+    category: "AI Recruitment",
     type: "article",
     readTime: "5 min read",
     stats: [
-      { value: "4x", label: "MORE PREDICTIVE ACCURACY" },
-      { value: "92%", label: "HIRE CONFIDENCE" },
-      { value: "ICE FRAMEWORK", label: "INCLUDED" },
+      { value: "4x", label: "More Predictive Accuracy" },
+      { value: "92%", label: "Hire Confidence" },
+      { value: "ICE Framework", label: "Included" },
     ],
     content: [
       "In the traditional hiring landscape, the gap between 'passing an interview' and 'performing on the job' has always been a costly risk for startups. For years, the standard solution was the take-home assignment — a process that often led to candidate dropout because top-tier talent simply doesn't have 10 hours to spend on a hypothetical context they haven't been briefed on. The industry is now witnessing a massive shift. A modern Skill-based Hiring Platform like Merito is doing away with boring, static assessments and replacing them with real-world project simulations.",
@@ -504,17 +507,17 @@ const articleData: Record<string, {
   },
   "resume-is-dead": {
     title: "The Death of the Traditional Resume: Why Skill-Based Hiring is the Future of Tech",
-    titleBefore: "THE OLD RESUME",
-    titleRed: "IS DEAD",
+    titleBefore: "The Old Resume",
+    titleRed: "Is Dead",
     excerpt: "The Death of the Traditional Resume: Why Skill-Based Hiring is the Future of Tech.",
     heroImage: "/insights-thumbnails/The old resume is dead.jpg",
-    category: "FUTURE OF HIRING",
+    category: "Future of Hiring",
     type: "article",
     readTime: "6 min read",
     stats: [
-      { value: "6 in 10", label: "TECH HIRES THAT FAIL" },
-      { value: "85%", label: "TWO-YEAR RETENTION" },
-      { value: "ZERO CV BIAS", label: "BLIND SCREENING" },
+      { value: "6 in 10", label: "Tech Hires That Fail" },
+      { value: "85%", label: "Two-Year Retention" },
+      { value: "Zero CV Bias", label: "Blind Screening" },
     ],
     content: [
       "For decades, the resume has been the 'golden ticket' of the hiring world. But in 2026, the document is dying. With the explosion of Generative AI, candidates have become experts at gaming the system — rewriting their CVs in seconds to ensure a perfect keyword match for any job description. If your company is still relying on a legacy ATS to filter talent, you aren't finding the best people; you're simply finding the best keyword optimizers.",
@@ -527,17 +530,17 @@ const articleData: Record<string, {
   },
   "degree-doesnt-define": {
     title: "Why 60% of Fortune 500s are Ditching University Rankings for a Skill-Based Hiring Platform",
-    titleBefore: "DEGREE DOESN'T",
-    titleRed: "DEFINE IT",
+    titleBefore: "Degree Doesn't",
+    titleRed: "Define It",
     excerpt: "Why 60% of Fortune 500s are Ditching University Rankings for a Skill-Based Hiring Platform.",
     heroImage: "/insights-thumbnails/DEgree doesn't define it.jpg",
-    category: "SKILL BASED HIRING",
+    category: "Skill Based Hiring",
     type: "article",
     readTime: "5 min read",
     stats: [
-      { value: "60%", label: "OF FORTUNE 500 COMPANIES" },
-      { value: "85%", label: "RETENTION RATE" },
-      { value: "SKILLS OVER", label: "CREDENTIALS" },
+      { value: "60%", label: "Of Fortune 500 Companies" },
+      { value: "85%", label: "Retention Rate" },
+      { value: "Skills Over", label: "Credentials" },
     ],
     content: [
       "For nearly a century, the 'Ivy League' or 'IIT' stamp was the ultimate proxy for talent. But as we enter 2026, that filter is officially broken. Recent data shows that 60% of Fortune 500 companies have fundamentally restructured their hiring policies, moving away from degree-based requirements in favour of a Skill-based Hiring Platform. The reason is simple: a degree is a measure of what someone learned years ago; a skill is a measure of what they can execute today.",
@@ -605,7 +608,7 @@ export default async function InsightPage({
     );
   }
 
-  const heroImage = post.heroImage ?? "/insights-thumbnails/insight-Hero Banner.png";
+  const heroImage = post.heroImage ?? post.thumbnail ?? "/insights-thumbnails/insight-Hero Banner.png";
 
   // PODCAST LAYOUT
   if (post.type === "podcast") {
@@ -634,7 +637,7 @@ export default async function InsightPage({
               PODCAST
             </div>
             
-            <h1 className="mt-6 font-[family-name:var(--font-poppins)] font-bold text-[42px] md:text-[56px] text-white leading-[1.1] uppercase max-w-[1000px]">
+            <h1 className="mt-6 font-[family-name:var(--font-poppins)] font-bold text-[42px] md:text-[56px] text-white leading-[1.1] max-w-[1000px]">
               {post.titleBefore}{" "}
               <span className="text-[#ed1a24]">{post.titleRed}</span>
             </h1>
@@ -791,7 +794,7 @@ export default async function InsightPage({
           {/* Title row */}
           <div className="flex gap-[60px] items-start">
             <div className="flex-1">
-              <h1 className="font-[family-name:var(--font-poppins)] font-bold text-[40px] text-black leading-[115%] uppercase">
+              <h1 className="font-[family-name:var(--font-poppins)] font-bold text-[40px] text-black leading-[115%]">
                 {post.titleBefore ? (
                   <>
                     {post.titleBefore}{" "}
@@ -883,12 +886,16 @@ export default async function InsightPage({
             <p className="text-[16px] text-[#4b4b4d] leading-[155%] max-w-[500px]">
               Talk to a Merito expert and discover how AI-powered precision hiring can work for your team.
             </p>
-            <Link
-              href="/contact"
-              className="bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[50px] px-8 rounded-[8px] flex items-center justify-center hover:bg-[#c8151e] transition-colors"
-            >
-              Talk to an Expert
-            </Link>
+            <div className="flex flex-col items-center gap-3">
+              <ContactTrigger
+                className="bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[50px] px-8 rounded-[8px] flex items-center justify-center hover:bg-[#c8151e] transition-colors"
+              >
+                Talk to an Expert
+              </ContactTrigger>
+              <p className="text-[14px] font-medium text-[#6d6f74]/70">
+                No-risk consultation · 100% confidential
+              </p>
+            </div>
           </div>
 
         </div>
