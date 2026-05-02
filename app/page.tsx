@@ -782,7 +782,7 @@ function TechnologyCard({
     <StaggerItem
       as="article"
       y={40}
-      className="group flex h-full flex-col rounded-[20px] border border-black/8 bg-white p-5 shadow-[0_18px_50px_rgba(17,35,89,0.05)] transition-transform duration-300 hover:-translate-y-1.5"
+      className="group flex h-[600px] flex-col overflow-hidden rounded-[20px] border border-black/8 bg-white p-5 shadow-[0_18px_50px_rgba(17,35,89,0.05)] transition-transform duration-300 hover:-translate-y-1.5"
     >
       <div className="mb-5 inline-flex size-11 shrink-0 items-center justify-center rounded-[10px] bg-[#0d1427] overflow-hidden transition-colors duration-300 group-hover:bg-[#ed1a24]">
         <Image
