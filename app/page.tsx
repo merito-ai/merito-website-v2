@@ -771,11 +771,13 @@ function TechnologyCard({
   title,
   body,
   iconSrc,
+  tagline,
   children,
 }: {
   title: string;
   body: string;
   iconSrc: string;
+  tagline: string;
   children: React.ReactNode;
 }) {
   return (
@@ -798,7 +800,8 @@ function TechnologyCard({
         {title}
       </h3>
       <p className="mt-4 text-[16px] leading-[1.7] text-[#595b61]">{body}</p>
-      <div className="mt-6 flex-1 flex flex-col justify-between">{children}</div>
+      <div className="mt-6 flex-1 overflow-hidden">{children}</div>
+      <p className="mt-4 shrink-0 text-[15px] leading-[1.7] text-[#66686d]">{tagline}</p>
     </StaggerItem>
   );
 }
@@ -823,6 +826,7 @@ function PropTechSection() {
             title="Multi-Channel Sourcing"
             body="Find the right candidates before your competitors do."
             iconSrc="/homepage-6-cards-icons/Multichannel sourcing.svg"
+            tagline="Scans LinkedIn, job boards & GitHub — simultaneously, silently, non-stop."
           >
             <div className="rounded-[16px] bg-[#4b4b4d] p-5">
               <div className="grid gap-3">
@@ -867,15 +871,13 @@ function PropTechSection() {
                 ))}
               </div>
             </div>
-            <p className="mt-4 text-[15px] leading-[1.7] text-[#66686d]">
-              Scans LinkedIn, job boards & GitHub — simultaneously, silently, non-stop.
-            </p>
           </TechnologyCard>
 
           <TechnologyCard
             title="AI Resume Sourcing"
             body="No more reading 300 resumes. Merito reads them for you."
             iconSrc="/homepage-6-cards-icons/AI resume sourcing.svg"
+            tagline="Ranks by fit, not just keywords — because context is everything in hiring."
           >
             <div className="grid gap-3">
               {[
@@ -900,15 +902,13 @@ function PropTechSection() {
                 </motion.div>
               ))}
             </div>
-            <p className="mt-4 text-[15px] leading-[1.7] text-[#66686d]">
-              Ranks by fit, not just keywords — because context is everything in hiring.
-            </p>
           </TechnologyCard>
 
           <TechnologyCard
             title="AI Agent Screening"
             body="Your outreach never sleeps. Ours calls, follows up & books — 24/7."
             iconSrc="/homepage-6-cards-icons/Ai agent screening.svg"
+            tagline="Natural AI voice that candidates actually respond to."
           >
             <div className="space-y-4">
               <div className="rounded-[16px] bg-[#d7d7d7] p-5 shadow-sm">
@@ -946,15 +946,13 @@ function PropTechSection() {
                 </div>
               </motion.div>
             </div>
-            <p className="mt-4 text-[15px] leading-[1.7] text-[#66686d]">
-              Natural AI voice that candidates actually respond to.
-            </p>
           </TechnologyCard>
 
           <TechnologyCard
             title="AI Video Interview"
             body="Run hundreds of technical interviews — without a single interviewer."
             iconSrc="/homepage-6-cards-icons/AI video interview.svg"
+            tagline="Merito evaluates depth, not just answers. Available round the clock."
           >
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
@@ -1025,15 +1023,13 @@ function PropTechSection() {
                 </div>
               </div>
             </div>
-            <p className="mt-4 text-[15px] leading-[1.7] text-[#66686d]">
-              Merito evaluates depth, not just answers. Available round the clock.
-            </p>
           </TechnologyCard>
 
           <TechnologyCard
             title="Candidate Brief"
             body="Your sharpest interviewer, now with an AI whispering in their ear."
             iconSrc="/homepage-6-cards-icons/candidate brief.svg"
+            tagline="AI interview insights, personality traits & sourcing score - so you hire with confidence."
           >
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
@@ -1094,15 +1090,13 @@ function PropTechSection() {
                 </div>
               </div>
             </div>
-            <p className="mt-4 text-[15px] leading-[1.7] text-[#66686d]">
-              AI interview insights, personality traits & sourcing score - so you hire with confidence.
-            </p>
           </TechnologyCard>
 
           <TechnologyCard
             title="WhatsApp Engagement"
             body="Candidates don't check emails. They check WhatsApp. So that's where Merito shows up."
             iconSrc="/homepage-6-cards-icons/whatsapp 1.svg"
+            tagline="Instant replies, smart nudges - zero ghosting."
           >
             <div className="mx-auto max-w-[280px] rounded-[34px] border-[6px] border-black bg-[#f1efe7] p-3 shadow-[0_20px_40px_rgba(17,35,89,0.12)]">
               <div className="rounded-[24px] bg-[#0d6c60] px-4 py-3 text-white">
@@ -1138,9 +1132,6 @@ function PropTechSection() {
                 </span>
               </div>
             </div>
-            <p className="mt-4 text-[15px] leading-[1.7] text-[#66686d]">
-              Instant replies, smart nudges - zero ghosting.
-            </p>
           </TechnologyCard>
         </StaggerGroup>
       </Container>
