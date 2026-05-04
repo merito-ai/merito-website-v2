@@ -7,27 +7,52 @@ const socialLinks = [
   {
     label: "Instagram",
     href: "https://instagram.com",
-    icon: "https://www.figma.com/api/mcp/asset/5c4e2bc3-50cb-46e2-acda-b4548cda473e",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-6 h-6">
+        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+        <circle cx="12" cy="12" r="4"/>
+        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+      </svg>
+    ),
   },
   {
     label: "LinkedIn",
-    href: "https://linkedin.com",
-    icon: "https://www.figma.com/api/mcp/asset/3957b304-bdb2-4943-8c0f-4bf773f1bef9",
+    href: "https://www.linkedin.com/company/merito-ai",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-6 h-6">
+        <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/>
+        <rect x="2" y="9" width="4" height="12"/>
+        <circle cx="4" cy="4" r="2"/>
+      </svg>
+    ),
   },
   {
     label: "Facebook",
     href: "https://facebook.com",
-    icon: "https://www.figma.com/api/mcp/asset/73a1eff5-58fb-4245-81e5-b5a7197b37e9",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-6 h-6">
+        <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
+      </svg>
+    ),
   },
   {
     label: "Twitter",
     href: "https://twitter.com",
-    icon: "https://www.figma.com/api/mcp/asset/23a24c6f-9aae-4ae1-bd6d-952356b11fba",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-6 h-6">
+        <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>
+      </svg>
+    ),
   },
   {
     label: "YouTube",
     href: "https://youtube.com",
-    icon: "https://www.figma.com/api/mcp/asset/98b28dc8-c3a0-4614-a89a-999242541256",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-6 h-6">
+        <path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96A29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.54C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.96A29 29 0 0023 12a29 29 0 00-.46-5.58z"/>
+        <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/>
+      </svg>
+    ),
   },
 ];
 
@@ -39,7 +64,7 @@ export default function Footer() {
           <div className="flex max-w-[430px] flex-col gap-7">
             <Link href="/">
               <Image
-                src="https://www.figma.com/api/mcp/asset/6a443386-2f6d-4bd2-bdb5-f947a154298b"
+                src="/logo.png"
                 alt="Merito"
                 width={121}
                 height={60}
@@ -63,7 +88,7 @@ export default function Footer() {
                 <Link href="/meritoways" className="transition-colors hover:text-[#ed1a24]">
                   Our Approach
                 </Link>
-                <Link 
+                <Link
                   href="/contact"
                   className="text-left transition-colors hover:text-[#ed1a24]"
                 >
@@ -100,13 +125,10 @@ export default function Footer() {
 
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-5">
-            <Image
-              src="https://www.figma.com/api/mcp/asset/d0140a3a-ba13-4347-a2a0-44ab059e4549"
-              alt="Email"
-              width={26}
-              height={26}
-              unoptimized
-            />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-6 h-6 flex-shrink-0">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
             <a
               href="mailto:admin@merito.ai"
               className="text-[15px] font-medium underline transition-colors hover:text-[#ed1a24]"
@@ -115,13 +137,9 @@ export default function Footer() {
             </a>
           </div>
           <div className="flex items-center gap-5">
-            <Image
-              src="https://www.figma.com/api/mcp/asset/eca2d5e3-b192-4694-9173-94318338d4d5"
-              alt="Phone"
-              width={26}
-              height={26}
-              unoptimized
-            />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-6 h-6 flex-shrink-0">
+              <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.13a19.79 19.79 0 01-3.07-8.67A2 2 0 012 .5h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.35a16 16 0 006.56 6.56l1.11-1.16a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+            </svg>
             <a
               href="tel:+919767663123"
               className="text-[15px] font-medium underline transition-colors hover:text-[#ed1a24]"
@@ -143,15 +161,9 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={social.label}
-                className="size-6 transition-opacity hover:opacity-70"
+                className="text-white transition-opacity hover:opacity-70"
               >
-                <Image
-                  src={social.icon}
-                  alt={social.label}
-                  width={24}
-                  height={24}
-                  unoptimized
-                />
+                {social.icon}
               </a>
             ))}
           </div>

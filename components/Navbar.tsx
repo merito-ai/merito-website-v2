@@ -34,7 +34,7 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/" className="flex-shrink-0">
           <Image
-            src="https://www.figma.com/api/mcp/asset/519fda0f-8bff-4459-baa0-a782d81bd783"
+            src="/logo.png"
             alt="Merito"
             width={121}
             height={60}
