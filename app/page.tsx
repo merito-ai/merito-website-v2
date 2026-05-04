@@ -1104,36 +1104,31 @@ function PropTechSection() {
             body="Candidates don't check emails. They check WhatsApp. So that's where Merito shows up."
             iconSrc="/homepage-6-cards-icons/whatsapp 1.svg"
           >
-            <div className="mx-auto max-w-[280px] rounded-[34px] border-[6px] border-black bg-[#f1efe7] p-3 shadow-[0_20px_40px_rgba(17,35,89,0.12)]">
-              <div className="rounded-[24px] bg-[#0d6c60] px-4 py-3 text-white">
-                <p className="text-[14px] font-semibold">Merito AI</p>
-                <p className="text-[11px] text-white/70">Online</p>
+            <div className="mx-auto max-w-[220px] rounded-[28px] border-[4px] border-black bg-[#f1efe7] p-2 shadow-[0_20px_40px_rgba(17,35,89,0.12)]">
+              <div className="rounded-[20px] bg-[#0d6c60] px-3 py-2 text-white">
+                <p className="text-[12px] font-semibold">Merito AI</p>
+                <p className="text-[10px] text-white/70">Online</p>
               </div>
-              <div className="space-y-3 px-3 py-4 text-[12px]">
-                <motion.div initial={{ opacity: 0, x: -12 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.1, duration: 0.35 }} className="max-w-[82%] rounded-[12px] rounded-tl-sm bg-white px-3 py-2 text-[#4b4b4d] shadow-[0_8px_18px_rgba(17,35,89,0.06)]">
-                  Hi Akash, We have an exciting Senior Developer role at TechCorp.
-                  Interested?
+              <div className="space-y-2 px-2 py-3 text-[11px]">
+                <motion.div initial={{ opacity: 0, x: -12 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.1, duration: 0.35 }} className="max-w-[85%] rounded-[10px] rounded-tl-sm bg-white px-2.5 py-1.5 text-[#4b4b4d] shadow-[0_4px_10px_rgba(17,35,89,0.06)]">
+                  Hi Akash, exciting Senior Dev role at TechCorp. Interested?
                 </motion.div>
-                <motion.div initial={{ opacity: 0, x: 12 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.28, duration: 0.35 }} className="ml-auto max-w-[70%] rounded-[12px] rounded-tr-sm bg-[#dbf9c8] px-3 py-2 text-[#2a5536]">
+                <motion.div initial={{ opacity: 0, x: 12 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.28, duration: 0.35 }} className="ml-auto max-w-[70%] rounded-[10px] rounded-tr-sm bg-[#dbf9c8] px-2.5 py-1.5 text-[#2a5536]">
                   Yes, tell me more!
                 </motion.div>
-                <motion.div initial={{ opacity: 0, x: -12 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.46, duration: 0.35 }} className="max-w-[82%] rounded-[12px] rounded-tl-sm bg-white px-3 py-2 text-[#4b4b4d] shadow-[0_8px_18px_rgba(17,35,89,0.06)]">
-                  Great! It&apos;s a remote-first role with 26-35 LPA. Can you share
-                  your updated resume?
+                <motion.div initial={{ opacity: 0, x: -12 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.46, duration: 0.35 }} className="max-w-[85%] rounded-[10px] rounded-tl-sm bg-white px-2.5 py-1.5 text-[#4b4b4d] shadow-[0_4px_10px_rgba(17,35,89,0.06)]">
+                  Remote-first, 26-35 LPA. Share your resume?
                 </motion.div>
-                <motion.div initial={{ opacity: 0, x: 12 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.64, duration: 0.35 }} className="ml-auto max-w-[70%] rounded-[12px] rounded-tr-sm bg-[#dbf9c8] px-3 py-2 text-[#2a5536]">
-                  Sure, here it is.
-                </motion.div>
-                <div className="max-w-[40%] rounded-[12px] rounded-tl-sm bg-white px-3 py-2 shadow-[0_8px_18px_rgba(17,35,89,0.06)]">
+                <div className="max-w-[45%] rounded-[10px] rounded-tl-sm bg-white px-2.5 py-1.5 shadow-[0_4px_10px_rgba(17,35,89,0.06)]">
                   <TypingDots
                     className="flex items-end gap-1"
                     dotClassName="size-1.5 rounded-full bg-[#9b9da3] inline-block"
                   />
                 </div>
               </div>
-              <div className="flex items-center gap-2 rounded-[18px] bg-white px-3 py-2 text-[12px] text-[#8b8d92]">
+              <div className="flex items-center gap-2 rounded-[14px] bg-white px-2.5 py-1.5 text-[11px] text-[#8b8d92]">
                 <span className="flex-1">Type a message</span>
-                <span className="inline-flex size-7 items-center justify-center rounded-full bg-[#0d6c60] text-white">
+                <span className="inline-flex size-6 items-center justify-center rounded-full bg-[#0d6c60] text-white">
                   <ArrowUpRightIcon />
                 </span>
               </div>
