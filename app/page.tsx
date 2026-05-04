@@ -959,7 +959,7 @@ function PropTechSection() {
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 {/* AI Thinking panel */}
-                <div className="relative flex h-[110px] items-center justify-center overflow-hidden rounded-[14px] bg-black">
+                <div className="relative flex h-[90px] items-center justify-center overflow-hidden rounded-[14px] bg-black">
                   {/* ambient glow breathes */}
                   <motion.div
                     className="absolute inset-0"
@@ -989,7 +989,7 @@ function PropTechSection() {
                   />
                 </div>
                 {/* Adarsh V panel */}
-                <div className="relative flex h-[110px] items-end overflow-hidden rounded-[14px] border border-black/10">
+                <div className="relative flex h-[90px] items-end overflow-hidden rounded-[14px] border border-black/10">
                   <Image src="/adarsh v.png" alt="Adarsh V" fill className="object-cover object-top" unoptimized />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                   <div className="relative w-full p-3 text-center">
@@ -998,15 +998,15 @@ function PropTechSection() {
                 </div>
               </div>
               
-              <div className="rounded-[16px] bg-[#4b4b4d] p-5 text-white shadow-sm">
-                <div className="flex items-center justify-between text-[15px] mb-6">
+              <div className="rounded-[16px] bg-[#4b4b4d] p-4 text-white shadow-sm">
+                <div className="flex items-center justify-between text-[14px] mb-3">
                   <span className="font-bold">Live Skills Evaluation</span>
-                  <span className="flex items-center gap-1.5 text-[12px] text-white/90">
+                  <span className="flex items-center gap-1.5 text-[11px] text-white/90">
                     <svg className="size-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
                     Listening
                   </span>
                 </div>
-                <div className="space-y-5">
+                <div className="space-y-3">
                   {[
                     { label: "Technical Depth", score: 100 },
                     { label: "Problem Solving", score: 86 },
@@ -1037,8 +1037,8 @@ function PropTechSection() {
           >
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-[14px] border border-black/10 bg-white p-4 shadow-sm flex flex-col justify-between">
-                  <div className="flex h-[70px] items-end justify-center gap-2.5 px-2 border-b border-black/10 pb-1 relative">
+                <div className="rounded-[14px] border border-black/10 bg-white p-3 shadow-sm flex flex-col justify-between">
+                  <div className="flex h-[56px] items-end justify-center gap-2.5 px-2 border-b border-black/10 pb-1 relative">
                     <div className="absolute bottom-0 w-full border-b border-dashed border-black/20 pb-4 h-0" />
                     <motion.div initial={{ scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ once: true }} transition={{ delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }} style={{ originY: 1 }} className="w-[14px] rounded-t-sm bg-[#f2a65a] h-[40%] border-[1.5px] border-black" />
                     <motion.div initial={{ scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ once: true }} transition={{ delay: 0.2, duration: 0.5, ease: [0.22, 1, 0.36, 1] }} style={{ originY: 1 }} className="w-[14px] rounded-t-sm bg-[#ed1a24] h-[80%] border-[1.5px] border-black relative">
@@ -1047,13 +1047,13 @@ function PropTechSection() {
                     </motion.div>
                     <motion.div initial={{ scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ once: true }} transition={{ delay: 0.3, duration: 0.5, ease: [0.22, 1, 0.36, 1] }} style={{ originY: 1 }} className="w-[14px] rounded-t-sm bg-[#5bc0be] h-[60%] border-[1.5px] border-black" />
                   </div>
-                  <div className="mt-4 text-center text-[12px] leading-snug font-bold text-[#4b4b4d]">
+                  <div className="mt-2 text-center text-[11px] leading-snug font-bold text-[#4b4b4d]">
                     <p className="italic">AI Interview report</p>
                     <p className="text-[#6d6f74] italic font-semibold">Full assessment</p>
                   </div>
                 </div>
-                <div className="rounded-[14px] border border-black/10 bg-white p-4 shadow-sm flex flex-col justify-between">
-                  <div className="flex h-[70px] flex-col justify-center gap-[6px] relative">
+                <div className="rounded-[14px] border border-black/10 bg-white p-3 shadow-sm flex flex-col justify-between">
+                  <div className="flex h-[56px] flex-col justify-center gap-[5px] relative">
                     <div className="absolute -top-3 -right-2 rounded-[10px] bg-[#22c55e] px-2 py-0.5 text-[9px] text-white font-bold tracking-wider">● 75%</div>
                     {[
                       {w: 71, c: '#22c55e'}, {w: 100, c: '#22c55e'}, {w: 64, c: '#22c55e'}, {w: 91, c: '#a3e635'}, {w: 57, c: '#eab308'}
@@ -1066,20 +1066,20 @@ function PropTechSection() {
                       </div>
                     ))}
                   </div>
-                  <div className="mt-4 text-center text-[12px] italic font-bold text-[#4b4b4d]">
+                  <div className="mt-2 text-center text-[11px] italic font-bold text-[#4b4b4d]">
                     Personality test
                   </div>
                 </div>
               </div>
 
-              <div className="rounded-[16px] bg-[#4b4b4d] p-5 shadow-sm">
-                <div className="grid gap-3">
+              <div className="rounded-[16px] bg-[#4b4b4d] p-4 shadow-sm">
+                <div className="grid gap-2">
                   {[
-                    { label: "AI Assistant", val: "", icon: (<svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>), dark: false },
-                    { label: "Big 5 personality test", val: "", icon: (<svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>), dark: false },
-                    { label: "Sourcing assessment", val: 84, icon: (<svg className="size-5 text-[#f59e0b]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>), dark: true },
+                    { label: "AI Assistant", val: "", icon: (<svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>), dark: false },
+                    { label: "Big 5 personality test", val: "", icon: (<svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>), dark: false },
+                    { label: "Sourcing assessment", val: 84, icon: (<svg className="size-4 text-[#f59e0b]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>), dark: true },
                   ].map((item, i) => (
-                    <div key={i} className={`flex items-center justify-between rounded-[10px] px-4 py-3 ${item.dark ? 'bg-[#3b3b3d] border border-white/10' : 'bg-white'}`}>
+                    <div key={i} className={`flex items-center justify-between rounded-[10px] px-3 py-2.5 ${item.dark ? 'bg-[#3b3b3d] border border-white/10' : 'bg-white'}`}>
                       <div className={`flex items-center gap-3 ${item.dark ? 'text-white' : 'text-[#4b4b4d]'}`}>
                         <span className="flex size-6 items-center justify-center">{item.icon}</span>
                         <span className="text-[14px] font-bold">{item.label}</span>
