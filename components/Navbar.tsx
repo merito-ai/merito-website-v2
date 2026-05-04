@@ -39,6 +39,7 @@ export default function Navbar() {
             width={121}
             height={60}
             className="h-[60px] w-auto object-contain"
+            priority
             unoptimized
           />
         </Link>
@@ -122,7 +123,7 @@ export default function Navbar() {
         {/* CTA */}
         <Link
           href="/contact"
-          className="relative hidden h-[50px] items-center justify-center overflow-hidden whitespace-nowrap rounded-[8px] bg-[#ed1a24] px-6 font-[family-name:var(--font-poppins)] text-[16px] font-semibold text-white transition-colors hover:bg-[#c8151e] md:flex"
+          className="relative hidden h-[50px] items-center justify-center overflow-hidden whitespace-nowrap rounded-[8px] bg-[#ed1a24] px-6 font-[family-name:var(--font-poppins)] text-[16px] font-semibold text-white transition-all duration-200 hover:bg-black hover:text-white hover:scale-[1.03] active:scale-[0.97] md:flex"
         >
           <span className="relative z-10">Talk to an expert</span>
         </Link>

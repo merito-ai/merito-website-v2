@@ -145,7 +145,7 @@ export default function InsightsClient() {
         </div>
         {visibleCount < articles.length && (
           <div className="flex justify-center pt-4">
-            <button onClick={() => setVisibleCount(visibleCount + 3)} className="bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[15px] h-[48px] px-10 rounded-[8px] hover:bg-[#c8151e] transition-colors">
+            <button onClick={() => setVisibleCount(visibleCount + 3)} className="bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[15px] h-[48px] px-10 rounded-[8px] transition-all duration-200 hover:bg-black hover:text-white active:scale-[0.97]">
               Load more
             </button>
           </div>
@@ -166,7 +166,7 @@ export default function InsightsClient() {
         <p className="text-[16px] text-[#4b4b4d] leading-[165%]">We write about talent, AI, and the future of hiring. No spam — just signal.</p>
         <div className="flex gap-3 w-full max-w-[480px]">
           <input type="email" placeholder="Enter your email" className="flex-1 h-[50px] px-4 rounded-[8px] border border-gray-200 text-[15px] focus:outline-none focus:border-[#ed1a24] bg-white" />
-          <button className="bg-[#ed1a24] text-white font-semibold text-[15px] h-[50px] px-6 rounded-[8px] hover:bg-[#c8151e] transition-colors whitespace-nowrap">Subscribe</button>
+          <button className="bg-[#ed1a24] text-white font-semibold text-[15px] h-[50px] px-6 rounded-[8px] transition-all duration-200 hover:bg-black hover:text-white active:scale-[0.97] whitespace-nowrap">Subscribe</button>
         </div>
       </section>
     </main>
