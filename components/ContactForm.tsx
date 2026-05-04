@@ -14,7 +14,7 @@ export default function ContactForm() {
     const params = new URLSearchParams();
     formData.forEach((value, key) => { params.append(key, value.toString()); });
     try {
-      const res = await fetch("/", {
+      const res = await fetch("/__forms.html", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: params.toString(),
@@ -57,6 +57,7 @@ export default function ContactForm() {
       className="space-y-5"
       name="contact"
       method="POST"
+      action="/__forms.html"
       data-netlify="true"
       data-netlify-honeypot="bot-field"
     >
