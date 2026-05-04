@@ -22,7 +22,7 @@ export function StaggerGroup({
       className={className}
       initial={reduce ? false : "hidden"}
       whileInView={reduce ? undefined : "show"}
-      viewport={{ once: true, margin: "-80px" }}
+      viewport={{ once: true, margin: "-140px" }}
       variants={{
         hidden: {},
         show: {
@@ -47,7 +47,7 @@ export function StaggerItem({
   children,
   className,
   y = 20,
-  duration = 0.5,
+  duration = 0.65,
   as = "div",
 }: ItemProps) {
   const MotionTag = motion[as];

@@ -38,11 +38,21 @@ export default function VideoPlayer({ src, poster, name, description }: VideoPla
           
           {/* Default Gradient if no poster */}
           {!poster && (
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,#1a1a1a_0%,#0a0a0a_100%)]" />
+            <div className="absolute inset-0 overflow-hidden">
+              <div className="absolute inset-0 bg-[linear-gradient(135deg,#111111_0%,#1c1c1e_50%,#0a0a0a_100%)]" />
+              <div
+                className="absolute inset-0 opacity-[0.07]"
+                style={{ backgroundImage: "radial-gradient(circle, #ffffff 1px, transparent 1px)", backgroundSize: "24px 24px" }}
+              />
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#ed1a24]" />
+              <div className="absolute top-8 right-8 text-[120px] font-bold leading-none text-[#ed1a24] opacity-10 select-none font-[family-name:var(--font-gabarito)]">&ldquo;</div>
+              <div className="absolute bottom-0 right-0 w-64 h-64 bg-[#ed1a24] rounded-full blur-[100px] opacity-10" />
+            </div>
           )}
 
           {/* Play Button */}
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center gap-3">
+            <span className="text-[10px] font-bold tracking-[0.2em] text-white/50 uppercase">Watch Testimonial</span>
             <button
               aria-label="Play testimonial"
               className="inline-flex size-[80px] items-center justify-center rounded-full bg-[#ed1a24] transition-transform duration-300 group-hover:scale-110 shadow-2xl"
@@ -77,6 +87,7 @@ export default function VideoPlayer({ src, poster, name, description }: VideoPla
           />
           <button
             onClick={() => setIsPlaying(false)}
+            aria-label="Close video"
             className="absolute top-4 right-4 z-20 size-10 rounded-full bg-black/40 text-white flex items-center justify-center hover:bg-black/60 transition-colors"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

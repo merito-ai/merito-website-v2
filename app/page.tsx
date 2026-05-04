@@ -83,11 +83,27 @@ const smallTestimonials = [
   },
   {
     quote:
-      "We were building fast and needed the right talent in Tech and HR — quickly. Merito's assessment-driven recruitment meant we only engaged with candidates who were truly aligned, and both roles were closed in just 2 weeks.",
-    name: "Darshan Teredesai",
-    role: "Co-founder - Olous App",
-    initials: "DT",
-    color: "bg-[#8b5cf6]",
+      "We were looking to build our sales team which involves customer-facing SDRs and a Sales Head. Merito mapped capabilities needed to the assessments and helped us interview matching candidates. Thanks to them we closed the Sales Head role within 10 days.",
+    name: "Jay Sharda",
+    role: "Co-founder - IOT Ready",
+    initials: "JS",
+    color: "bg-[#0ea5e9]",
+  },
+  {
+    quote:
+      "Partnering with Merito was a turning point for our people strategy. They took the time to understand our culture and growth stage, and delivered shortlists that were genuinely impressive — no noise, just the right candidates.",
+    name: "Rohit Ashwa",
+    role: "CEO - Carrot",
+    initials: "RA",
+    color: "bg-[#f97316]",
+  },
+  {
+    quote:
+      "We needed a customer success leader in a very niche domain — something we had struggled with for months. The Merito team brought a level of rigor and market knowledge that we hadn't seen before, and we made the hire in under three weeks.",
+    name: "Dhyanesh Shah",
+    role: "Co-founder - Man Matters",
+    initials: "DS",
+    color: "bg-[#7c3aed]",
   },
 ];
 
@@ -290,13 +306,13 @@ function HeroSection() {
               <div className="flex flex-wrap items-center gap-4">
                 <Link
                   href="/contact"
-                  className="inline-flex min-h-[56px] items-center justify-center rounded-[12px] border border-[#ed1a24]/40 px-6 text-[18px] font-semibold text-[#6f6f71] transition-colors hover:border-[#ed1a24] hover:text-[#ed1a24]"
+                  className="inline-flex min-h-[56px] items-center justify-center rounded-[12px] border border-[#ed1a24]/40 px-6 text-[18px] font-semibold text-[#6f6f71] transition-all duration-200 hover:border-[#ed1a24] hover:text-[#ed1a24] hover:bg-[#ed1a24]/5 hover:scale-[1.02] active:scale-[0.98]"
                 >
                   Start hiring smarter
                 </Link>
                 <Link
                   href="#proof"
-                  className="inline-flex min-h-[56px] items-center gap-3 rounded-[12px] bg-[#ed1a24] px-6 text-[18px] font-semibold text-white transition-colors hover:bg-[#c8151e]"
+                  className="inline-flex min-h-[56px] items-center gap-3 rounded-[12px] bg-[#ed1a24] px-6 text-[18px] font-semibold text-white transition-all duration-200 hover:bg-black hover:text-white hover:scale-[1.03] hover:shadow-[0_8px_24px_rgba(0,0,0,0.25)] active:scale-[0.97]"
                 >
                   <span>See our Results</span>
                   <span className="inline-flex size-7 items-center justify-center rounded-full bg-black text-white">
@@ -457,20 +473,20 @@ function SocialProofSection() {
             items={[
               {
                 quote:
-                  "We were doing ads, campaigns we were doing everything but the biggest game change for us was to understand the logic behind why and how things are working, and that only came because your smart team was in picture.",
-                name: "Udita Pal",
-                role: "Co-founder - Salt",
-                color: "bg-[#d65f64]",
-                initials: "UP",
+                  "We were building fast and needed the right talent in Tech and HR — quickly. Merito's assessment-driven recruitment meant we only engaged with candidates who were truly aligned, and both roles were closed in just 2 weeks.",
+                name: "Darshan Teredesai",
+                role: "Co-founder - Olous App",
+                color: "bg-[#8b5cf6]",
+                initials: "DT",
               },
             ]}
             intervalMs={7000}
           />
 
-          <VideoPlayer 
+          <VideoPlayer
             src="/Video-testimonial.mp4"
-            name="Udita Pal"
-            description="on sustainable growth"
+            name="Darshan Teredesai"
+            description="on assessment-driven hiring"
           />
 
         </div>
@@ -781,10 +797,10 @@ function TechnologyCard({
   return (
     <StaggerItem
       as="article"
-      y={40}
-      className="group flex h-[600px] flex-col rounded-[20px] border border-black/8 bg-white p-5 shadow-[0_18px_50px_rgba(17,35,89,0.05)] transition-transform duration-300 hover:-translate-y-1.5"
+      y={24}
+      className="flex h-[600px] flex-col rounded-[20px] border border-black/8 bg-white p-5 shadow-[0_18px_50px_rgba(17,35,89,0.05)]"
     >
-      <div className="mb-5 inline-flex size-11 shrink-0 items-center justify-center rounded-[10px] bg-[#0d1427] overflow-hidden transition-colors duration-300 group-hover:bg-[#ed1a24]">
+      <div className="mb-5 inline-flex size-11 shrink-0 items-center justify-center rounded-[10px] bg-[#0d1427] overflow-hidden">
         <Image
           src={iconSrc}
           alt={title}
@@ -860,7 +876,7 @@ function PropTechSection() {
                     ),
                   },
                 ].map((item, i) => (
-                  <motion.div key={i} initial={{ opacity: 0, x: -18 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.11, duration: 0.4, ease: [0.22, 1, 0.36, 1] }} className="flex items-center gap-3 rounded-[10px] bg-white px-4 py-3 shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
+                  <motion.div key={i} initial={{ opacity: 0, x: -18 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.11, duration: 0.65, ease: [0.22, 1, 0.36, 1] }} className="flex items-center gap-3 rounded-[10px] bg-white px-4 py-3 shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
                     <span className="flex size-7 items-center justify-center">{item.icon}</span>
                     <span className="font-bold text-[#545558] text-[15px]">{item.label}</span>
                   </motion.div>
@@ -879,14 +895,15 @@ function PropTechSection() {
           >
             <div className="grid gap-3">
               {[
-                { name: "Arun Kumar", score: 87 },
-                { name: "Swathi Killi", score: 94 },
-                { name: "Mahesh Rao", score: 99 },
+                { name: "Arun Kumar", score: 87, initials: "AK", gradient: "from-[#667eea] to-[#764ba2]" },
+                { name: "Priya Mehta", score: 91, initials: "PM", gradient: "from-[#f093fb] to-[#f5576c]" },
+                { name: "Swathi Killi", score: 94, initials: "SK", gradient: "from-[#4facfe] to-[#00c6fb]" },
+                { name: "Mahesh Rao", score: 99, initials: "MR", gradient: "from-[#43e97b] to-[#38f9d7]" },
               ].map((c, i) => (
-                <motion.div key={i} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.13, duration: 0.4, ease: [0.22, 1, 0.36, 1] }} className="flex items-center justify-between rounded-[12px] border border-[#a2e6b5] bg-[#f2fbf5] p-3 shadow-sm">
+                <motion.div key={i} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.13, duration: 0.65, ease: [0.22, 1, 0.36, 1] }} className="flex items-center justify-between rounded-[12px] border border-[#a2e6b5] bg-[#f2fbf5] p-3 shadow-sm">
                   <div className="flex items-center gap-4">
-                    <div className="flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-black/10 text-black/40">
-                       <svg className="size-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                    <div className={`flex size-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${c.gradient} text-white text-[13px] font-bold shadow-sm`}>
+                      {c.initials}
                     </div>
                     <div>
                       <p className="text-[15px] font-bold text-[#4b4b4d]">{c.name}</p>
@@ -929,7 +946,7 @@ function PropTechSection() {
                   />
               </div>
 
-              <motion.div initial={{ opacity: 0, x: -16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.2, duration: 0.4, ease: [0.22, 1, 0.36, 1] }} className="flex gap-3">
+              <motion.div initial={{ opacity: 0, x: -16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.2, duration: 0.65, ease: [0.22, 1, 0.36, 1] }} className="flex gap-3">
                 <div className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#fce7f3] text-[#db2777]">
                    <svg className="size-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                 </div>
@@ -937,7 +954,7 @@ function PropTechSection() {
                   &ldquo;Hi Stephen, confirming your interview at tomorrow at 10 AM?&rdquo;
                 </div>
               </motion.div>
-              <motion.div initial={{ opacity: 0, x: 16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.4, duration: 0.4, ease: [0.22, 1, 0.36, 1] }} className="mt-3 flex justify-end gap-3">
+              <motion.div initial={{ opacity: 0, x: 16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.4, duration: 0.65, ease: [0.22, 1, 0.36, 1] }} className="mt-3 flex justify-end gap-3">
                 <div className="rounded-[24px] rounded-br-sm border border-black/20 bg-white px-5 py-3 text-[14px] font-bold text-[#686a70] shadow-sm">
                   &ldquo;Yes! Can you send the meeting link?&rdquo;
                 </div>
@@ -1377,7 +1394,7 @@ function CTASection() {
           <div className="flex flex-col items-center gap-3">
             <button
               onClick={openContact}
-              className="mt-9 inline-flex min-h-[56px] items-center justify-center rounded-[10px] bg-[#ed1a24] px-9 text-[18px] font-semibold text-white shadow-[0_10px_30px_rgba(237,26,36,0.25)] transition-all duration-300 hover:scale-[1.04] hover:bg-[#c8151e] hover:shadow-[0_18px_40px_rgba(237,26,36,0.35)]"
+              className="mt-9 inline-flex min-h-[56px] items-center justify-center rounded-[10px] bg-[#ed1a24] px-9 text-[18px] font-semibold text-white shadow-[0_10px_30px_rgba(237,26,36,0.25)] transition-all duration-200 hover:scale-[1.03] hover:bg-black hover:text-white hover:shadow-[0_18px_40px_rgba(0,0,0,0.3)] active:scale-[0.97]"
             >
               Talk to an Expert
             </button>
