@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 
 const navLinks = [
@@ -32,15 +31,11 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 flex justify-center bg-transparent px-4 py-4">
       <nav className="flex h-[82px] w-full max-w-[1328px] items-center justify-between rounded-[8px] border border-black/12 bg-white px-4 shadow-[0_8px_22px_rgba(17,35,89,0.08)] sm:px-5 lg:px-6">
         {/* Logo */}
-        <Link href="/" className="flex-shrink-0">
-          <Image
-            src="https://www.figma.com/api/mcp/asset/519fda0f-8bff-4459-baa0-a782d81bd783"
-            alt="Merito"
-            width={121}
-            height={60}
-            className="h-[60px] w-auto object-contain"
-            unoptimized
-          />
+        <Link href="/" className="flex-shrink-0 flex items-center gap-2">
+          <div className="w-[48px] h-[48px] bg-[#ed1a24] rounded-[8px] flex items-center justify-center flex-shrink-0">
+            <span className="text-white font-[family-name:var(--font-poppins)] font-bold text-[24px]">M</span>
+          </div>
+          <span className="hidden sm:inline font-[family-name:var(--font-poppins)] font-bold text-[18px] text-black">Merito</span>
         </Link>
 
         {/* Desktop nav links */}
