@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import ContactTrigger from "@/components/ContactTrigger";
+import PodcastPlayer from "@/components/PodcastPlayer";
 
 const articleData: Record<string, {
   title: string;
@@ -564,25 +565,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return { title: `${post.title} | Merito Insights` };
 }
 
-// Icons
-const SpotifyIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zm5.508 17.302c-.216.354-.675.467-1.028.249-2.831-1.73-6.395-2.121-10.59-1.163-.406.092-.812-.162-.904-.568-.092-.406.162-.812.569-.904 4.587-1.049 8.52-.596 11.698 1.348.354.216.467.675.249 1.028a.747.747 0 01-.002.001zm1.468-3.26c-.272.443-.848.583-1.291.311-3.24-1.99-8.179-2.569-11.998-1.41-.504.152-1.036-.134-1.188-.638-.152-.504.134-1.036.638-1.188 4.368-1.326 9.816-.677 13.541 1.611.442.271.583.847.311 1.29l-.013.024zm.126-3.407c-3.886-2.308-10.309-2.521-14.053-1.384-.596.181-1.224-.153-1.405-.749-.181-.596.153-1.224.749-1.405 4.3-1.305 11.393-1.054 15.864 1.601.536.318.712 1.011.394 1.547-.318.536-1.011.712-1.547.394l-.002-.004z" />
-  </svg>
-);
-
-const PlusIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="12" y1="5" x2="12" y2="19"></line>
-    <line x1="5" y1="12" x2="19" y2="12"></line>
-  </svg>
-);
-
-const PlayIcon = () => (
-  <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
-    <path d="M8 5v14l11-7z" />
-  </svg>
-);
 
 export default async function InsightPage({
   params,
@@ -591,6 +573,14 @@ export default async function InsightPage({
 }) {
   const { slug } = await params;
   const post = articleData[slug];
+
+  const podcastAudioMap: Record<string, string> = {
+    "acquired-intelligence-talent": "/insights-thumbnails/Acquired intelligence.mp3",
+    "recruitment-as-sales": "/insights-thumbnails/Think recruitment as sales.mp3",
+    "ice-in-hiring": "/insights-thumbnails/Do you have ICE in your hiring.mp3",
+    "improve-hiring-experience": "/insights-thumbnails/what company can do to improve hiring experience.mp3",
+  };
+  const audioSrc = podcastAudioMap[slug] ?? null;
 
   if (!post) {
     return (
@@ -669,49 +659,13 @@ export default async function InsightPage({
               </div>
             </div>
 
-            {/* Right: Red Player Panel */}
-            <div className="md:w-[55%] bg-[#ed1a24] p-10 md:p-12 flex flex-col justify-between text-white relative">
-              <div className="absolute top-10 right-10 opacity-40">
-                <SpotifyIcon />
-              </div>
-              
-              <div>
-                <div className="flex items-center gap-3 text-[12px] font-bold tracking-[3px] opacity-80 uppercase">
-                  <span>{post.episode}</span>
-                  <span className="w-1.5 h-1.5 rounded-full bg-white/40" />
-                  <span>{post.date}</span>
-                </div>
-                <h2 className="font-[family-name:var(--font-poppins)] font-bold text-[32px] md:text-[38px] mt-4 leading-[1.1] tracking-tight">
-                  {post.title}
-                </h2>
-                <p className="mt-4 text-white/70 text-[15px] max-w-[400px] leading-relaxed">
-                  Join us as we explore the intersection of talent, technology, and human intelligence.
-                </p>
-              </div>
-
-              <div className="flex flex-col sm:flex-row sm:items-center gap-8 mt-10">
-                <button className="bg-[#1DB954] text-white font-bold text-[14px] tracking-[1px] px-8 py-4 rounded-full flex items-center justify-center gap-3 hover:bg-[#1ed760] transition-all shadow-lg active:scale-95">
-                  <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center text-[#1DB954]">
-                    <PlusIcon />
-                  </div>
-                  SAVE ON SPOTIFY
-                </button>
-                
-                <div className="flex-1 flex flex-col gap-3">
-                  <div className="flex items-center gap-4">
-                    <button className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
-                      <PlayIcon />
-                    </button>
-                    <div className="flex-1 h-1.5 bg-white/20 rounded-full relative overflow-hidden">
-                      <div className="absolute top-0 left-0 h-full bg-white rounded-full w-[35%]" />
-                    </div>
-                    <span className="text-[13px] font-bold opacity-80 tabular-nums">
-                      {post.duration}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <PodcastPlayer
+              audioSrc={audioSrc}
+              episode={post.episode ?? ""}
+              date={post.date}
+              title={post.title}
+              duration={post.duration ?? ""}
+            />
           </div>
 
           {/* Transcript Content */}
@@ -743,7 +697,7 @@ export default async function InsightPage({
               </p>
               <Link
                 href="/contact"
-                className="mt-8 bg-[#ed1a24] text-white font-bold text-[14px] tracking-[2px] px-10 py-4 rounded-full hover:bg-black transition-all duration-300 shadow-xl"
+                className="mt-8 bg-[#ed1a24] text-white font-bold text-[14px] tracking-[2px] px-10 py-4 rounded-full hover:bg-black hover:text-white hover:scale-[1.03] hover:shadow-[0_8px_24px_rgba(0,0,0,0.25)] active:scale-[0.97] transition-all duration-200 shadow-xl"
               >
                 LET&apos;S CONNECT
               </Link>
@@ -888,7 +842,7 @@ export default async function InsightPage({
             </p>
             <div className="flex flex-col items-center gap-3">
               <ContactTrigger
-                className="bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[50px] px-8 rounded-[8px] flex items-center justify-center hover:bg-[#c8151e] transition-colors"
+                className="bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[50px] px-8 rounded-[8px] flex items-center justify-center transition-all duration-200 hover:bg-black hover:text-white hover:scale-[1.03] hover:shadow-[0_8px_24px_rgba(0,0,0,0.25)] active:scale-[0.97]"
               >
                 Talk to an Expert
               </ContactTrigger>
