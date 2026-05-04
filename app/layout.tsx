@@ -19,7 +19,7 @@ const gabarito = Gabarito({
   variable: "--font-gabarito",
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.merito.in";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://meritoai.netlify.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

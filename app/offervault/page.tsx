@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "OfferVault — Eliminate Offer Dropouts | Merito",
     description: "Stop losing candidates after the offer. OfferVault by Merito creates transparent offer exchanges that improve joining conversion rates.",
-    url: "https://www.merito.in/offervault",
+    url: "https://meritoai.netlify.app/offervault",
   },
   alternates: {
     canonical: "/offervault",

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "The Merito Way — Our AI Recruitment Process",
     description: "48-hour sourcing. ICE assessment. 85% two-year retention. See how Merito hires differently.",
-    url: "https://www.merito.in/meritoways",
+    url: "https://meritoai.netlify.app/meritoways",
   },
   alternates: {
     canonical: "/meritoways",
