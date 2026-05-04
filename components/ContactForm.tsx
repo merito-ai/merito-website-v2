@@ -9,16 +9,25 @@ export default function ContactForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("submitting");
-    
-    // Simulate API call
-    setTimeout(() => {
-      setStatus("success");
-    }, 1500);
+    const form = e.currentTarget as HTMLFormElement;
+    const formData = new FormData(form);
+    const params = new URLSearchParams();
+    formData.forEach((value, key) => { params.append(key, value.toString()); });
+    try {
+      const res = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params.toString(),
+      });
+      if (res.ok) { setStatus("success"); } else { setStatus("error"); }
+    } catch {
+      setStatus("error");
+    }
   };
 
   if (status === "success") {
     return (
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="text-center py-10"
@@ -34,9 +43,25 @@ export default function ContactForm() {
     );
   }
 
-  return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+  if (status === "error") {
+    return (
+      <p className="text-center text-[#ed1a24] font-semibold py-6">
+        Something went wrong. Please try again or email us directly.
+      </p>
+    );
+  }
 
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-5"
+      name="contact"
+      method="POST"
+      data-netlify="true"
+      data-netlify-honeypot="bot-field"
+    >
+      <input type="hidden" name="form-name" value="contact" />
+      <input type="text" name="bot-field" className="hidden" aria-hidden="true" />
 
       {/* Name Fields (Split) */}
       <div className="grid grid-cols-2 gap-4">
@@ -47,10 +72,11 @@ export default function ContactForm() {
             </svg>
             First Name
           </label>
-          <input 
+          <input
             required
             id="firstName"
-            type="text" 
+            name="firstName"
+            type="text"
             placeholder="John"
             className="w-full h-[52px] px-4 rounded-[12px] border border-[#e5e7eb] bg-[#f9f9fb] focus:bg-white focus:border-[#ed1a24] focus:ring-1 focus:ring-[#ed1a24] outline-none transition-all font-medium text-[15px]"
           />
@@ -59,10 +85,11 @@ export default function ContactForm() {
           <label htmlFor="lastName" className="block text-[13px] font-bold text-black uppercase tracking-widest pt-6 sm:pt-0">
             Last Name
           </label>
-          <input 
+          <input
             required
             id="lastName"
-            type="text" 
+            name="lastName"
+            type="text"
             placeholder="Doe"
             className="w-full h-[52px] px-4 rounded-[12px] border border-[#e5e7eb] bg-[#f9f9fb] focus:bg-white focus:border-[#ed1a24] focus:ring-1 focus:ring-[#ed1a24] outline-none transition-all font-medium text-[15px]"
           />
@@ -77,10 +104,11 @@ export default function ContactForm() {
           </svg>
           Email Address
         </label>
-        <input 
+        <input
           required
           id="email"
-          type="email" 
+          name="email"
+          type="email"
           placeholder="john@company.com"
           className="w-full h-[52px] px-4 rounded-[12px] border border-[#e5e7eb] bg-[#f9f9fb] focus:bg-white focus:border-[#ed1a24] focus:ring-1 focus:ring-[#ed1a24] outline-none transition-all font-medium text-[15px]"
         />
@@ -94,9 +122,10 @@ export default function ContactForm() {
           </svg>
           Phone Number
         </label>
-        <input 
+        <input
           id="phone"
-          type="tel" 
+          name="phone"
+          type="tel"
           placeholder="+1 (555) 000-0000"
           className="w-full h-[52px] px-4 rounded-[12px] border border-[#e5e7eb] bg-[#f9f9fb] focus:bg-white focus:border-[#ed1a24] focus:ring-1 focus:ring-[#ed1a24] outline-none transition-all font-medium text-[15px]"
         />
@@ -110,10 +139,11 @@ export default function ContactForm() {
           </svg>
           Departments<span className="text-[#ed1a24]">*</span>
         </label>
-        <input 
+        <input
           required
           id="departments"
-          type="text" 
+          name="departments"
+          type="text"
           placeholder="e.g. Technology, Sales"
           className="w-full h-[52px] px-4 rounded-[12px] border border-[#e5e7eb] bg-[#f9f9fb] focus:bg-white focus:border-[#ed1a24] focus:ring-1 focus:ring-[#ed1a24] outline-none transition-all font-medium text-[15px]"
         />
@@ -127,19 +157,20 @@ export default function ContactForm() {
           </svg>
           Message<span className="text-[#ed1a24]">*</span>
         </label>
-        <textarea 
+        <textarea
           required
           id="message"
+          name="message"
           rows={3}
           placeholder="How can we help you scale?"
           className="w-full p-4 rounded-[12px] border border-[#e5e7eb] bg-[#f9f9fb] focus:bg-white focus:border-[#ed1a24] focus:ring-1 focus:ring-[#ed1a24] outline-none transition-all font-medium resize-none text-[15px]"
         ></textarea>
       </div>
 
-      <button 
+      <button
         type="submit"
         disabled={status === "submitting"}
-        className="w-full h-[60px] mt-4 bg-[#ed1a24] text-white rounded-[12px] font-bold text-[18px] hover:bg-[#c8151e] transition-all shadow-[0_12px_30px_rgba(237,26,36,0.22)] active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
+        className="w-full h-[60px] mt-4 bg-[#ed1a24] text-white rounded-[12px] font-bold text-[18px] transition-all duration-200 hover:bg-black hover:text-white hover:scale-[1.02] hover:shadow-[0_12px_30px_rgba(0,0,0,0.25)] active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
       >
         {status === "submitting" ? "Sending..." : "Submit Requirements"}
       </button>
