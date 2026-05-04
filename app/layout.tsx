@@ -43,13 +43,13 @@ export const metadata: Metadata = {
     siteName: "Merito",
     title: "Merito — AI-Enabled Full-Funnel Recruitment Partner",
     description: "Human-centric AI recruitment agency. 48-hour sourcing. Top 2% talent.",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Merito — AI Recruitment Partner" }],
+    images: [{ url: "/logo.png", width: 1200, height: 630, alt: "Merito — AI Recruitment Partner" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Merito — AI Recruitment Partner",
     description: "Human-centric AI recruitment. 48-hour sourcing.",
-    images: ["/og-image.png"],
+    images: ["/logo.png"],
   },
   robots: {
     index: process.env.NEXT_PUBLIC_ENV !== "staging",
