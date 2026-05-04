@@ -286,27 +286,27 @@ function HeroSection() {
               talent from day one.
             </p>
 
-            <div className="mt-8 flex flex-wrap gap-4">
-              <div className="flex flex-col items-start gap-3">
+            <div className="mt-8 flex flex-col items-start gap-3">
+              <div className="flex flex-wrap items-center gap-4">
                 <Link
                   href="/contact"
                   className="inline-flex min-h-[56px] items-center justify-center rounded-[12px] border border-[#ed1a24]/40 px-6 text-[18px] font-semibold text-[#6f6f71] transition-colors hover:border-[#ed1a24] hover:text-[#ed1a24]"
                 >
                   Start hiring smarter
                 </Link>
-                <p className="pl-1 text-[13px] font-medium text-[#6d6f74]/70">
-                  No-risk consultation · Confidential discussion
-                </p>
+                <Link
+                  href="#proof"
+                  className="inline-flex min-h-[56px] items-center gap-3 rounded-[12px] bg-[#ed1a24] px-6 text-[18px] font-semibold text-white transition-colors hover:bg-[#c8151e]"
+                >
+                  <span>See our Results</span>
+                  <span className="inline-flex size-7 items-center justify-center rounded-full bg-black text-white">
+                    <ArrowUpRightIcon />
+                  </span>
+                </Link>
               </div>
-              <Link
-                href="#proof"
-                className="inline-flex min-h-[56px] items-center gap-3 rounded-[12px] bg-[#ed1a24] px-6 text-[18px] font-semibold text-white transition-colors hover:bg-[#c8151e]"
-              >
-                <span>See our Results</span>
-                <span className="inline-flex size-7 items-center justify-center rounded-full bg-black text-white">
-                  <ArrowUpRightIcon />
-                </span>
-              </Link>
+              <p className="pl-1 text-[13px] font-medium text-[#6d6f74]/70">
+                No-risk consultation · Confidential discussion
+              </p>
             </div>
 
             <div className="mt-8 flex flex-wrap items-center gap-4">
