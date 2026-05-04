@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "About Merito — Human-Centric AI Recruitment Agency India",
     description: "Meet the team behind India's human-centric AI recruitment agency. AI + Acquired Intelligence = top 2% talent in 48 hours.",
-    url: "https://meritoai.netlify.app/about",
+    url: "https://www.merito.in/about",
   },
   alternates: {
     canonical: "/about",

@@ -1,6 +1,6 @@
 import { MetadataRoute } from "next";
 
-const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://meritoai.netlify.app";
+const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.merito.in";
 
 const staticRoutes = [
   { path: "/",           priority: 1.0,  changeFrequency: "weekly"  },

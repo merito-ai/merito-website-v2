@@ -19,10 +19,10 @@ const gabarito = Gabarito({
   variable: "--font-gabarito",
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.merito.in";
+
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://meritoai.netlify.app"
-  ),
+  metadataBase: new URL(siteUrl),
   title: {
     default: "Merito — AI-Enabled Full-Funnel Recruitment Partner",
     template: "%s | Merito",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     "executive search",
     "India hiring",
   ],
-  authors: [{ name: "Merito", url: "https://meritoai.netlify.app" }],
+  authors: [{ name: "Merito", url: siteUrl }],
   openGraph: {
     type: "website",
     locale: "en_IN",
@@ -108,8 +108,8 @@ export default function RootLayout({
               "@type": "Organization",
               "name": "Merito",
               "alternateName": "Career Corner Education Pvt. Ltd",
-              "url": "https://meritoai.netlify.app",
-              "logo": "https://meritoai.netlify.app/logo.png",
+              "url": siteUrl,
+              "logo": `${siteUrl}/logo.png`,
               "contactPoint": {
                 "@type": "ContactPoint",
                 "telephone": "+91 97676-63123",
