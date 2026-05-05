@@ -99,7 +99,7 @@ export default function HeroWinsCard() {
         </div>
 
         <div className="mt-auto">
-          <div className="font-[family-name:var(--font-gabarito)] text-[2.6rem] font-semibold leading-none text-black">
+          <div className="font-[family-name:var(--font-gabarito)] text-[4rem] font-semibold leading-none text-black">
             {active.value}
           </div>
           <p className="mt-3 max-w-[420px] text-[14px] font-medium leading-[1.5] text-[#4b4b4d]">
