@@ -214,17 +214,19 @@ export default function OfferVaultPage() {
             <div className="flex gap-[56px] items-start flex-shrink-0">
               {/* Number dots + line */}
               <div className="flex flex-col gap-[14px] relative">
-                {steps.map((step, i) => (
-                  <div key={step.num} className="relative flex flex-col items-center">
+                {/* single connector line behind the cells */}
+                <div className="pointer-events-none absolute left-1/2 top-[25px] bottom-[25px] w-px -translate-x-1/2 bg-[#ed1a24]/30" />
+                {steps.map((step) => (
+                  <div
+                    key={step.num}
+                    className="relative h-[118px] flex items-center justify-center"
+                  >
                     <div
-                      className="size-[50px] rounded-full flex items-center justify-center font-[family-name:var(--font-poppins)] font-medium text-[18px] flex-shrink-0"
+                      className="size-[50px] rounded-full flex items-center justify-center font-[family-name:var(--font-poppins)] font-medium text-[18px] flex-shrink-0 relative"
                       style={{ background: step.bg, color: step.color }}
                     >
                       {step.num}
                     </div>
-                    {i < steps.length - 1 && (
-                      <div className="w-px flex-1 bg-[#ed1a24]/30 my-[14px] h-[68px]" />
-                    )}
                   </div>
                 ))}
               </div>
