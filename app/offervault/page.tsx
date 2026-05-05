@@ -31,19 +31,19 @@ function Eyebrow({ text }: { text: string }) {
 
 const problems = [
   {
-    icon: "https://www.figma.com/api/mcp/asset/ee21109a-3e95-47b6-92b2-00c0e52e6b60",
+    icon: "/offervault/icon-problem-1.svg",
     title: "Increase offer to Joining Ratio",
     desc: "Convert more offers into successful joinings into seamless offer experience",
     accent: "top",
   },
   {
-    icon: "https://www.figma.com/api/mcp/asset/f8408d8b-c8c5-49c4-99e5-c11f1782a90e",
+    icon: "/offervault/icon-problem-2.svg",
     title: "Eliminate Offer Shopping",
     desc: "Leverage quantitative metrics and structured feedback to evaluate candidates objectively.",
     accent: "top",
   },
   {
-    icon: "https://www.figma.com/api/mcp/asset/154bc5b3-1585-49f6-a8f1-475dd9d9bb4d",
+    icon: "/offervault/icon-problem-3.svg",
     title: "Avoid Joining Delay",
     desc: "Ensure candidates join on time with better communication and proactive follow-ups.",
     accent: "bottom",
@@ -55,7 +55,7 @@ const steps = [
     num: "01",
     color: "#ed3c42",
     bg: "#fee9e8",
-    icon: "https://www.figma.com/api/mcp/asset/0e7602b0-5b62-4e2c-b417-d247160586e2",
+    icon: "/offervault/icon-step-1.svg",
     iconBg: "transparent",
     title: "Create New Offer",
     desc: "Add the offer details in the Offer Vault platform",
@@ -64,7 +64,7 @@ const steps = [
     num: "02",
     color: "#feb422",
     bg: "#fef4e2",
-    icon: "https://www.figma.com/api/mcp/asset/4acbb877-683f-41b5-a262-412e78e6c222",
+    icon: "/offervault/icon-step-2.svg",
     iconBg: "#fef4e2",
     title: "Upload Offer Letter",
     desc: "Upload a scanned copy of the offer letter and submit on the portal.",
@@ -73,7 +73,7 @@ const steps = [
     num: "03",
     color: "#07802a",
     bg: "#eaf5e6",
-    icon: "https://www.figma.com/api/mcp/asset/71e9602e-af1a-4317-96fd-208510f83415",
+    icon: "/offervault/icon-step-3.svg",
     iconBg: "#eaf5e6",
     title: "Share with Candidate",
     desc: "Share a secure link with the candidate via email or message.",
@@ -82,7 +82,7 @@ const steps = [
     num: "04",
     color: "#0052de",
     bg: "#e3eefb",
-    icon: "https://www.figma.com/api/mcp/asset/5a014996-18da-4ebc-a40a-de7d24cfdcc0",
+    icon: "/offervault/icon-step-4.svg",
     iconBg: "#e3eefb",
     title: "Secure Viewing",
     desc: "Candidates can view the offer letter but cannot download it.",
@@ -91,7 +91,7 @@ const steps = [
     num: "05",
     color: "#661db3",
     bg: "#e3eefb",
-    icon: "https://www.figma.com/api/mcp/asset/9ef69e17-61ed-44db-ab09-b2e8a301fefc",
+    icon: "/offervault/icon-step-5.svg",
     iconBg: "#e3eefb",
     title: "Respond with Confidence",
     desc: "Candidates can accept, decline, or request changes to the offer.",
@@ -100,7 +100,7 @@ const steps = [
     num: "06",
     color: "#c60087",
     bg: "#ffddf4",
-    icon: "https://www.figma.com/api/mcp/asset/148868ac-e073-4284-acfa-ccb99ae1657e",
+    icon: "/offervault/icon-step-6.svg",
     iconBg: "rgba(255,219,244,0.95)",
     title: "Dashboard",
     desc: "Dashboard to track the candidate actions and joining timelines.",
@@ -214,17 +214,19 @@ export default function OfferVaultPage() {
             <div className="flex gap-[56px] items-start flex-shrink-0">
               {/* Number dots + line */}
               <div className="flex flex-col gap-[14px] relative">
-                {steps.map((step, i) => (
-                  <div key={step.num} className="relative flex flex-col items-center">
+                {/* single connector line behind the cells */}
+                <div className="pointer-events-none absolute left-1/2 top-[25px] bottom-[25px] w-px -translate-x-1/2 bg-[#ed1a24]/30" />
+                {steps.map((step) => (
+                  <div
+                    key={step.num}
+                    className="relative h-[118px] flex items-center justify-center"
+                  >
                     <div
-                      className="size-[50px] rounded-full flex items-center justify-center font-[family-name:var(--font-poppins)] font-medium text-[18px] flex-shrink-0"
+                      className="size-[50px] rounded-full flex items-center justify-center font-[family-name:var(--font-poppins)] font-medium text-[18px] flex-shrink-0 relative"
                       style={{ background: step.bg, color: step.color }}
                     >
                       {step.num}
                     </div>
-                    {i < steps.length - 1 && (
-                      <div className="w-px flex-1 bg-[#ed1a24]/30 my-[14px] h-[68px]" />
-                    )}
                   </div>
                 ))}
               </div>
@@ -254,7 +256,7 @@ export default function OfferVaultPage() {
             <div className="bg-[#fdf0ec] rounded-[12px] p-[24px] flex flex-col gap-5 flex-1">
               <div className="flex gap-4 items-start">
                 <Image
-                  src="https://www.figma.com/api/mcp/asset/3e32146e-7236-4ed9-82dc-a009abc6dd34"
+                  src="/offervault/icon-alert.svg"
                   alt="Alert"
                   width={39}
                   height={39}
@@ -277,7 +279,7 @@ export default function OfferVaultPage() {
           {/* Green highlight */}
           <div className="bg-[#eaf5e6] rounded-[10px] flex gap-[40px] items-center px-[60px] py-[20px]">
             <Image
-              src="https://www.figma.com/api/mcp/asset/1f692904-dc17-4273-a307-fe085f789e50"
+              src="/offervault/icon-sparkle.svg"
               alt="Sparkle"
               width={54}
               height={54}

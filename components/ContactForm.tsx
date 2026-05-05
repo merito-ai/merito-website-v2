@@ -77,7 +77,7 @@ export default function ContactForm() {
             id="firstName"
             name="firstName"
             type="text"
-            placeholder="John"
+            placeholder="Aarav"
             className="w-full h-[52px] px-4 rounded-[12px] border border-[#e5e7eb] bg-[#f9f9fb] focus:bg-white focus:border-[#ed1a24] focus:ring-1 focus:ring-[#ed1a24] outline-none transition-all font-medium text-[15px]"
           />
         </div>
@@ -90,7 +90,7 @@ export default function ContactForm() {
             id="lastName"
             name="lastName"
             type="text"
-            placeholder="Doe"
+            placeholder="Sharma"
             className="w-full h-[52px] px-4 rounded-[12px] border border-[#e5e7eb] bg-[#f9f9fb] focus:bg-white focus:border-[#ed1a24] focus:ring-1 focus:ring-[#ed1a24] outline-none transition-all font-medium text-[15px]"
           />
         </div>
@@ -109,7 +109,7 @@ export default function ContactForm() {
           id="email"
           name="email"
           type="email"
-          placeholder="john@company.com"
+          placeholder="aarav@company.in"
           className="w-full h-[52px] px-4 rounded-[12px] border border-[#e5e7eb] bg-[#f9f9fb] focus:bg-white focus:border-[#ed1a24] focus:ring-1 focus:ring-[#ed1a24] outline-none transition-all font-medium text-[15px]"
         />
       </div>
@@ -126,7 +126,7 @@ export default function ContactForm() {
           id="phone"
           name="phone"
           type="tel"
-          placeholder="+1 (555) 000-0000"
+          placeholder="+91 98765 43210"
           className="w-full h-[52px] px-4 rounded-[12px] border border-[#e5e7eb] bg-[#f9f9fb] focus:bg-white focus:border-[#ed1a24] focus:ring-1 focus:ring-[#ed1a24] outline-none transition-all font-medium text-[15px]"
         />
       </div>

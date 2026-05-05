@@ -76,7 +76,7 @@ export default function ContactPage() {
                   hello@merito.ai
                 </a>
               </div>
-              <p className="text-[14px] font-medium text-[#8b8d92] mt-2 ml-8">Response time: &lt; 24h</p>
+              <p className="text-[14px] font-medium text-[#8b8d92] mt-2 ml-8">Response time: &lt; 24hr</p>
             </div>
           </div>
 

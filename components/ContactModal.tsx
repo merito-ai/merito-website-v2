@@ -54,7 +54,7 @@ export default function ContactModal() {
                   Start Hiring <span className="text-[#ed1a24]">Smarter.</span>
                 </h2>
                 <p className="mt-2 text-[#4b4b4d] text-[15px] font-medium">
-                  Share your requirements and we&apos;ll get back within 24h.
+                  Share your requirements and we&apos;ll get back within 24hr.
                 </p>
               </div>
               <button 

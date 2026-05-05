@@ -57,14 +57,14 @@ const values = [
 
 const foundingTeam = [
   { name: "Rushikesh Humbe", role: "Founder", img: "/about-us-audit/founder-image.png" },
-  { name: "Urmila Humbe", role: "CoFounder", img: "https://www.figma.com/api/mcp/asset/58e44e20-fd29-4fd5-bf28-ab5f01cbfad8" },
-  { name: "Sneh Priya", role: "Head Recruitment Delivery", img: "https://www.figma.com/api/mcp/asset/cc566eff-b219-4ccf-8df8-cda95797b615" },
+  { name: "Urmila Humbe", role: "CoFounder", img: "/Urmila Humbe.jpeg" },
+  { name: "Sneha Priya", role: "Head Recruitment Delivery", img: "/Sneha Priya.jpeg" },
 ];
 
 const recruitmentTeam = [
-  { name: "Sharayu Salunke", img: "https://www.figma.com/api/mcp/asset/d2ef1f0e-62e8-4c97-a7ec-940b1dbdcb3d" },
-  { name: "Anish Wategaonkar", img: "https://www.figma.com/api/mcp/asset/dacc399d-b57d-43d8-85ae-3773d20852f1" },
-  { name: "Simran Kewlani", img: "https://www.figma.com/api/mcp/asset/956c24a1-b94f-40e3-918f-1c518c123453" },
+  { name: "Sharayu Salunke", img: "/Sharayu Salunke.png" },
+  { name: "Anish Wategaonkar", img: "/Anish Wategaonkar.jpeg" },
+  { name: "Simran Kewlani", img: "/Simran Kewlani.png" },
   { name: "Anushka Bhasin", img: "/Anushka Bhasin.jpeg" },
   { name: "Trisha Thatipamula", img: "/Trisha Thatipamula.jpeg" },
 ];
@@ -259,7 +259,7 @@ export default function AboutPage() {
 
         {/* Recruitment team */}
         <div className="flex flex-col gap-[70px] items-center w-full mt-8">
-          <h3 className="font-semibold text-[32px] text-black text-center">Meet our Recruitment Team</h3>
+          <h3 className="font-semibold text-[32px] text-black text-center">Meet our Team</h3>
           <div className="flex gap-[40px] md:gap-[50px] items-center flex-wrap justify-center">
             {recruitmentTeam.map((m) => (
               <div key={m.name} className="bg-[#f2f2f2] rounded-[5px] shadow-[0px_4px_15px_rgba(0,0,0,0.05)] overflow-hidden w-[260px]">

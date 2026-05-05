@@ -76,7 +76,7 @@ const smallTestimonials = [
   {
     quote:
       "As we scaled our D2C presence, Merito stepped up with speed and precision. They helped us hire leadership across Finance, Operations, and Marketing with a time-to-hire that was nothing short of remarkable.",
-    name: "Sneh Jain",
+    name: "Sneha Jain",
     role: "Co-founder - The Bakers Dozen",
     initials: "SJ",
     color: "bg-[#f59e0b]",
@@ -973,7 +973,7 @@ function PropTechSection() {
             body="Run hundreds of technical interviews — without a single interviewer."
             iconSrc="/homepage-6-cards-icons/AI video interview.svg"
           >
-            <div className="space-y-4">
+            <div className="flex flex-col gap-4 flex-1">
               <div className="grid grid-cols-2 gap-3">
                 {/* AI Thinking panel */}
                 <div className="relative flex h-[90px] items-center justify-center overflow-hidden rounded-[14px] bg-black">
@@ -1015,7 +1015,7 @@ function PropTechSection() {
                 </div>
               </div>
               
-              <div className="rounded-[16px] bg-[#4b4b4d] p-4 text-white shadow-sm">
+              <div className="flex-1 rounded-[16px] bg-[#4b4b4d] p-4 text-white shadow-sm">
                 <div className="flex items-center justify-between text-[14px] mb-3">
                   <span className="font-bold">Live Skills Evaluation</span>
                   <span className="flex items-center gap-1.5 text-[11px] text-white/90">

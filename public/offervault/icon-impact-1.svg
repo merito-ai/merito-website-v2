@@ -1,0 +1,6 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 63 63" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="mdi:calendar">
+<rect width="63" height="63" rx="31.5" fill="var(--fill-0, #FEF0EE)"/>
+<path id="Vector" d="M42.7 43.8H20.3V26.2H42.7M37.9 15V18.2H25.1V15H21.9V18.2H20.3C18.524 18.2 17.1 19.624 17.1 21.4V43.8C17.1 44.6487 17.4371 45.4626 18.0373 46.0627C18.6374 46.6629 19.4513 47 20.3 47H42.7C43.5487 47 44.3626 46.6629 44.9627 46.0627C45.5629 45.4626 45.9 44.6487 45.9 43.8V21.4C45.9 20.5513 45.5629 19.7374 44.9627 19.1373C44.3626 18.5371 43.5487 18.2 42.7 18.2H41.1V15M39.5 32.6H31.5V40.6H39.5V32.6Z" fill="var(--fill-0, #F31921)"/>
+</g>
+</svg>
