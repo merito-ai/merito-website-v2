@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import ContactTrigger from "@/components/ContactTrigger";
+import { getAbsoluteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About Merito — Human-Centric AI Recruitment Agency India",
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "About Merito — Human-Centric AI Recruitment Agency India",
     description: "Meet the team behind India's human-centric AI recruitment agency. AI + Acquired Intelligence = top 2% talent in 48 hours.",
-    url: "https://meritoai.netlify.app/about",
+    url: getAbsoluteUrl("/about"),
   },
   alternates: {
     canonical: "/about",

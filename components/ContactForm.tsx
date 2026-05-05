@@ -11,15 +11,20 @@ export default function ContactForm() {
     setStatus("submitting");
     const form = e.currentTarget as HTMLFormElement;
     const formData = new FormData(form);
-    const params = new URLSearchParams();
-    formData.forEach((value, key) => { params.append(key, value.toString()); });
+    const payload = Object.fromEntries(formData.entries());
+
     try {
-      const res = await fetch("/__forms.html", {
+      const res = await fetch("/api/contact", {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: params.toString(),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
-      if (res.ok) { setStatus("success"); } else { setStatus("error"); }
+      if (res.ok) {
+        form.reset();
+        setStatus("success");
+      } else {
+        setStatus("error");
+      }
     } catch {
       setStatus("error");
     }
@@ -55,13 +60,7 @@ export default function ContactForm() {
     <form
       onSubmit={handleSubmit}
       className="space-y-5"
-      name="contact"
-      method="POST"
-      action="/__forms.html"
-      data-netlify="true"
-      data-netlify-honeypot="bot-field"
     >
-      <input type="hidden" name="form-name" value="contact" />
       <input type="text" name="bot-field" className="hidden" aria-hidden="true" />
 
       {/* Name Fields (Split) */}

@@ -4,6 +4,7 @@ import Link from "next/link";
 import ReputationToggle from "./ReputationToggle";
 import VideoThumbnail from "@/components/VideoThumbnail";
 import ContactTrigger from "@/components/ContactTrigger";
+import { getAbsoluteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "OfferVault — Eliminate Offer Dropouts | Merito",
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "OfferVault — Eliminate Offer Dropouts | Merito",
     description: "Stop losing candidates after the offer. OfferVault by Merito creates transparent offer exchanges that improve joining conversion rates.",
-    url: "https://meritoai.netlify.app/offervault",
+    url: getAbsoluteUrl("/offervault"),
   },
   alternates: {
     canonical: "/offervault",

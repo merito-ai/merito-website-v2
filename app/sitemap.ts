@@ -1,6 +1,5 @@
 import { MetadataRoute } from "next";
-
-const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://meritoai.netlify.app";
+import { siteUrl } from "@/lib/site";
 
 const staticRoutes = [
   { path: "/",           priority: 1.0,  changeFrequency: "weekly"  },
@@ -22,14 +21,14 @@ const articleSlugs = [
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const statics = staticRoutes.map(({ path, priority, changeFrequency }) => ({
-    url: `${BASE}${path}`,
+    url: `${siteUrl}${path}`,
     lastModified: new Date(),
     changeFrequency,
     priority,
   }));
 
   const articles = articleSlugs.map((slug) => ({
-    url: `${BASE}/insights/${slug}`,
+    url: `${siteUrl}/insights/${slug}`,
     lastModified: new Date(),
     changeFrequency: "monthly" as const,
     priority: 0.7,

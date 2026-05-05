@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import InsightsClient from "@/components/InsightsClient";
+import { getAbsoluteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Insights — Recruitment & Talent Strategy | Merito",
@@ -7,7 +8,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Insights — Recruitment & Talent Strategy | Merito",
     description: "Expert articles on AI recruitment, campus hiring, and talent strategy from Merito.",
-    url: "https://meritoai.netlify.app/insights",
+    url: getAbsoluteUrl("/insights"),
   },
   alternates: {
     canonical: "/insights",

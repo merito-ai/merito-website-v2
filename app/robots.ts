@@ -1,8 +1,8 @@
 import { MetadataRoute } from "next";
+import { siteUrl } from "@/lib/site";
 
 export default function robots(): MetadataRoute.Robots {
   const isStaging = process.env.NEXT_PUBLIC_ENV === "staging";
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://meritoai.netlify.app";
 
   if (isStaging) {
     return {
@@ -12,6 +12,6 @@ export default function robots(): MetadataRoute.Robots {
 
   return {
     rules: { userAgent: "*", allow: "/" },
-    sitemap: `${baseUrl}/sitemap.xml`,
+    sitemap: `${siteUrl}/sitemap.xml`,
   };
 }

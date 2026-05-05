@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Script from "next/script";
 import ClientAnalytics from "@/components/ClientAnalytics";
+import { siteUrl } from "@/lib/site";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -18,8 +19,6 @@ const gabarito = Gabarito({
   weight: ["400", "500", "600", "700"],
   variable: "--font-gabarito",
 });
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://meritoai.netlify.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

@@ -1,0 +1,111 @@
+import { Resend } from "resend";
+
+type ContactPayload = {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  departments?: string;
+  message?: string;
+  "bot-field"?: string;
+};
+
+function normalize(value: unknown) {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function isValidEmail(value: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+export async function POST(request: Request) {
+  let payload: ContactPayload;
+
+  try {
+    payload = await request.json();
+  } catch {
+    return Response.json({ error: "Invalid request body." }, { status: 400 });
+  }
+
+  if (normalize(payload["bot-field"])) {
+    return Response.json({ ok: true });
+  }
+
+  const firstName = normalize(payload.firstName);
+  const lastName = normalize(payload.lastName);
+  const email = normalize(payload.email);
+  const phone = normalize(payload.phone);
+  const departments = normalize(payload.departments);
+  const message = normalize(payload.message);
+  const safeFullName = escapeHtml(`${firstName} ${lastName}`);
+  const safeEmail = escapeHtml(email);
+  const safePhone = escapeHtml(phone || "Not provided");
+  const safeDepartments = escapeHtml(departments);
+  const safeMessage = escapeHtml(message).replace(/\n/g, "<br />");
+
+  if (!firstName || !lastName || !email || !departments || !message) {
+    return Response.json({ error: "Missing required fields." }, { status: 400 });
+  }
+
+  if (!isValidEmail(email)) {
+    return Response.json({ error: "Invalid email address." }, { status: 400 });
+  }
+
+  const apiKey = process.env.RESEND_API_KEY;
+  const fromEmail = process.env.CONTACT_FROM_EMAIL;
+  const toEmail = process.env.CONTACT_TO_EMAIL;
+
+  if (!apiKey || !fromEmail || !toEmail) {
+    return Response.json({ error: "Email service is not configured." }, { status: 500 });
+  }
+
+  const resend = new Resend(apiKey);
+  const recipients = toEmail
+    .split(",")
+    .map((recipient) => recipient.trim())
+    .filter(Boolean);
+
+  if (recipients.length === 0) {
+    return Response.json({ error: "Email recipients are not configured." }, { status: 500 });
+  }
+
+  try {
+    await resend.emails.send({
+      from: fromEmail,
+      to: recipients,
+      replyTo: email,
+      subject: `New contact form submission from ${firstName} ${lastName}`,
+      text: [
+        `Name: ${firstName} ${lastName}`,
+        `Email: ${email}`,
+        `Phone: ${phone || "Not provided"}`,
+        `Departments: ${departments}`,
+        "",
+        "Message:",
+        message,
+      ].join("\n"),
+      html: `
+        <h2>New contact form submission</h2>
+        <p><strong>Name:</strong> ${safeFullName}</p>
+        <p><strong>Email:</strong> ${safeEmail}</p>
+        <p><strong>Phone:</strong> ${safePhone}</p>
+        <p><strong>Departments:</strong> ${safeDepartments}</p>
+        <p><strong>Message:</strong></p>
+        <p>${safeMessage}</p>
+      `,
+    });
+
+    return Response.json({ ok: true });
+  } catch {
+    return Response.json({ error: "Unable to send message." }, { status: 500 });
+  }
+}
