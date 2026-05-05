@@ -10,13 +10,13 @@ const tabs: { id: Tab; title: string; desc: string; icon: string }[] = [
     id: "company",
     title: "Company",
     desc: "Track and improve your reputation in the job market",
-    icon: "https://www.figma.com/api/mcp/asset/6eba631b-fd67-41f6-9f4a-aceabbb4b87f",
+    icon: "/offervault/icon-company.svg",
   },
   {
     id: "candidate",
     title: "Candidate",
     desc: "Make confident career moves with transparency",
-    icon: "https://www.figma.com/api/mcp/asset/eb762649-518a-4ffd-9634-743c88a35931",
+    icon: "/offervault/icon-candidate.svg",
   },
 ];
 
@@ -25,11 +25,11 @@ const impacts: Record<Tab, { title: string; rows: { icon: string; label: string 
     title: "What impacts company's",
     rows: [
       {
-        icon: "https://www.figma.com/api/mcp/asset/19f84a3b-1511-4142-bbb1-ac7e91b557b3",
+        icon: "/offervault/icon-impact-1.svg",
         label: "Delay in the joining date",
       },
       {
-        icon: "https://www.figma.com/api/mcp/asset/95c9dc65-d396-414c-86d7-14ecbc4961d6",
+        icon: "/offervault/icon-impact-2.svg",
         label: "Deviation in offered & actual salary",
       },
     ],
@@ -38,11 +38,11 @@ const impacts: Record<Tab, { title: string; rows: { icon: string; label: string 
     title: "What impacts candidate's",
     rows: [
       {
-        icon: "https://www.figma.com/api/mcp/asset/19f84a3b-1511-4142-bbb1-ac7e91b557b3",
+        icon: "/offervault/icon-impact-1.svg",
         label: "Delay in the joining date",
       },
       {
-        icon: "https://www.figma.com/api/mcp/asset/95c9dc65-d396-414c-86d7-14ecbc4961d6",
+        icon: "/offervault/icon-impact-2.svg",
         label: "Failure to join after accepting offer",
       },
     ],
@@ -71,7 +71,9 @@ export default function ReputationToggle() {
               }`}
             >
               {isActive ? (
-                <Image src={tab.icon} alt={tab.title} width={65} height={65} unoptimized />
+                <div className="size-[65px] flex items-center justify-center overflow-hidden flex-shrink-0">
+                  <Image src={tab.icon} alt={tab.title} width={65} height={65} unoptimized />
+                </div>
               ) : (
                 <div className="size-[65px] bg-[#e2e2e2] rounded-full shadow-[0px_0px_5px_1px_rgba(0,0,0,0.25)] flex items-center justify-center overflow-hidden flex-shrink-0">
                   <Image src={tab.icon} alt={tab.title} width={40} height={40} unoptimized />
@@ -101,9 +103,11 @@ export default function ReputationToggle() {
         {data.rows.map((row, i) => (
           <div key={row.label + i} className="flex items-center gap-[43px]">
             {i === 0 ? (
-              <Image src={row.icon} alt={row.label} width={63} height={63} unoptimized />
+              <div className="size-[63px] rounded-full flex items-center justify-center overflow-hidden flex-shrink-0">
+                <Image src={row.icon} alt={row.label} width={63} height={63} unoptimized />
+              </div>
             ) : (
-              <div className="size-[63px] rounded-full bg-[#fef0ee] flex items-center justify-center flex-shrink-0">
+              <div className="size-[63px] rounded-full bg-[#fef0ee] flex items-center justify-center overflow-hidden flex-shrink-0">
                 <Image src={row.icon} alt={row.label} width={39} height={39} unoptimized />
               </div>
             )}
