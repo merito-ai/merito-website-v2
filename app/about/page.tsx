@@ -58,7 +58,7 @@ const values = [
 const foundingTeam = [
   { name: "Rushikesh Humbe", role: "Founder", img: "/about-us-audit/founder-image.png" },
   { name: "Urmila Humbe", role: "CoFounder", img: "/Urmila Humbe.jpeg" },
-  { name: "Sneh Priya", role: "Head Recruitment Delivery", img: "/Sneha Priya.jpeg" },
+  { name: "Sneha Priya", role: "Head Recruitment Delivery", img: "/Sneha Priya.jpeg" },
 ];
 
 const recruitmentTeam = [
@@ -259,7 +259,7 @@ export default function AboutPage() {
 
         {/* Recruitment team */}
         <div className="flex flex-col gap-[70px] items-center w-full mt-8">
-          <h3 className="font-semibold text-[32px] text-black text-center">Meet our Recruitment Team</h3>
+          <h3 className="font-semibold text-[32px] text-black text-center">Meet our Team</h3>
           <div className="flex gap-[40px] md:gap-[50px] items-center flex-wrap justify-center">
             {recruitmentTeam.map((m) => (
               <div key={m.name} className="bg-[#f2f2f2] rounded-[5px] shadow-[0px_4px_15px_rgba(0,0,0,0.05)] overflow-hidden w-[260px]">
