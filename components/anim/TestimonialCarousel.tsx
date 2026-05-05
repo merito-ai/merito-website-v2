@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export type CarouselItem = {
   quote: string;
@@ -25,6 +25,7 @@ export default function TestimonialCarousel({
   const [index, setIndex] = useState(0);
   const reduce = useReducedMotion();
   const total = items.length;
+  const pausedRef = useRef(false);
 
   const next = useCallback(() => setIndex((i) => (i + 1) % total), [total]);
   const prev = useCallback(
@@ -34,7 +35,9 @@ export default function TestimonialCarousel({
 
   useEffect(() => {
     if (reduce) return;
-    const id = setInterval(next, intervalMs);
+    const id = setInterval(() => {
+      if (!pausedRef.current) next();
+    }, intervalMs);
     return () => clearInterval(id);
   }, [next, intervalMs, reduce]);
 
@@ -42,6 +45,8 @@ export default function TestimonialCarousel({
 
   return (
     <article
+      onMouseEnter={() => { pausedRef.current = true; }}
+      onMouseLeave={() => { pausedRef.current = false; }}
       className={`relative overflow-hidden rounded-[22px] border border-black/8 bg-white p-8 shadow-[0_22px_60px_rgba(17,35,89,0.06)] ${className}`}
     >
       <div className="min-h-[260px]">
