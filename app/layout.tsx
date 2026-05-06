@@ -69,6 +69,7 @@ export const metadata: Metadata = {
 import { ContactModalProvider } from "@/context/ContactModalContext";
 import ContactModal from "@/components/ContactModal";
 import FloatingContactButton from "@/components/FloatingContactButton";
+import { Analytics } from "@vercel/analytics/next";
 
 export default function RootLayout({
   children,
@@ -197,6 +198,7 @@ export default function RootLayout({
           <FloatingContactButton />
           {children}
           <Footer />
+          <Analytics />
         </ContactModalProvider>
       </body>
     </html>
