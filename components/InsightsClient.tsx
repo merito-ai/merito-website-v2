@@ -128,10 +128,10 @@ export default function InsightsClient() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-[#2d0a0c]/80" />
           <div className="relative z-10 flex flex-col items-center gap-6 w-full h-full justify-center">
             <Eyebrow text="INSIGHTS & RESOURCES" />
-            <h1 className="font-[family-name:var(--font-poppins)] font-semibold text-[26px] sm:text-[36px] md:text-[44px] lg:text-[60px] text-white leading-tight">
-              Ideas That Shape the Future{' '}<br className="hidden md:block" />of Talent
+            <h1 className="font-[family-name:var(--font-poppins)] font-semibold text-[44px] md:text-[60px] text-white leading-tight">
+              Ideas That Shape the Future<br className="hidden md:block" />of Talent
             </h1>
-            <p className="font-medium text-[14px] md:text-[18px] lg:text-[22px] text-[#d9d9d9] leading-[165%] max-w-[700px]">
+            <p className="font-medium text-[18px] md:text-[22px] text-[#d9d9d9] leading-[165%] max-w-[700px]">
               Get all the latest on all things about Merito and the industry
             </p>
           </div>
@@ -162,7 +162,7 @@ export default function InsightsClient() {
       </section>
 
       <section className="max-w-[900px] mx-auto px-5 py-24 flex flex-col items-center gap-[25px] text-center">
-        <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[22px] md:text-[32px] text-black">Want insights delivered to you?</h2>
+        <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black">Want insights delivered to you?</h2>
         <p className="text-[16px] text-[#4b4b4d] leading-[165%]">We write about talent, AI, and the future of hiring. No spam — just signal.</p>
         <div className="flex gap-3 w-full max-w-[480px]">
           <input type="email" placeholder="Enter your email" className="flex-1 h-[50px] px-4 rounded-[8px] border border-gray-200 text-[15px] focus:outline-none focus:border-[#ed1a24] bg-white" />

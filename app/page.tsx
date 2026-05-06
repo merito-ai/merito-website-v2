@@ -314,28 +314,28 @@ function HeroSection() {
         <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(360px,0.95fr)]">
           <RevealOnScroll className="max-w-[600px]" duration={0.7} y={20}>
             <SectionPill text="AI-ENABLED FULL-FUNNEL RECRUITMENT PARTNER" />
-            <h1 className="mt-4 sm:mt-8 font-[family-name:var(--font-gabarito)] text-[1.5rem] sm:text-[3.05rem] lg:text-[4.15rem] font-semibold leading-[1.03] tracking-[-0.045em] text-black">
+            <h1 className="mt-8 font-[family-name:var(--font-gabarito)] text-[3.05rem] font-semibold leading-[1.03] tracking-[-0.045em] text-black sm:text-[4.15rem]">
               The talent partner that turns job briefs into{" "}
               <span className="text-[#ed1a24]">DREAM HIRES.</span>
             </h1>
-            <p className="mt-4 sm:mt-6 max-w-[515px] text-[12px] sm:text-[17px] font-medium leading-[1.65] text-[#4b4b4d]">
+            <p className="mt-6 max-w-[515px] text-[17px] font-medium leading-[1.65] text-[#4b4b4d]">
               We&apos;re a human-centric AI recruitment agency that blends strategic
               human insight with a proprietary Skill-based Hiring Platform. No
               resume spam. No gut-feel guesses. Just a faster way to hire top
               talent from day one.
             </p>
 
-            <div className="mt-6 sm:mt-8 flex flex-col items-start gap-3">
-              <div className="flex w-full flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 sm:gap-4">
+            <div className="mt-8 flex flex-col items-start gap-3">
+              <div className="flex flex-wrap items-center gap-4">
                 <Link
                   href="/contact"
-                  className="w-full sm:w-auto inline-flex min-h-[48px] sm:min-h-[56px] items-center justify-center rounded-[8px] sm:rounded-[12px] border border-[#ed1a24]/40 px-6 text-[15px] sm:text-[18px] font-semibold text-[#6f6f71] transition-all duration-200 hover:border-[#ed1a24] hover:text-[#ed1a24] hover:bg-[#ed1a24]/5 hover:scale-[1.02] active:scale-[0.98]"
+                  className="inline-flex min-h-[56px] items-center justify-center rounded-[12px] border border-[#ed1a24]/40 px-6 text-[18px] font-semibold text-[#6f6f71] transition-all duration-200 hover:border-[#ed1a24] hover:text-[#ed1a24] hover:bg-[#ed1a24]/5 hover:scale-[1.02] active:scale-[0.98]"
                 >
                   Start hiring smarter
                 </Link>
                 <Link
                   href="#proof"
-                  className="w-full sm:w-auto inline-flex min-h-[48px] sm:min-h-[56px] items-center justify-center gap-3 rounded-[8px] sm:rounded-[12px] bg-[#ed1a24] px-6 text-[15px] sm:text-[18px] font-semibold text-white transition-all duration-200 hover:bg-black hover:text-white hover:scale-[1.03] hover:shadow-[0_8px_24px_rgba(0,0,0,0.25)] active:scale-[0.97]"
+                  className="inline-flex min-h-[56px] items-center gap-3 rounded-[12px] bg-[#ed1a24] px-6 text-[18px] font-semibold text-white transition-all duration-200 hover:bg-black hover:text-white hover:scale-[1.03] hover:shadow-[0_8px_24px_rgba(0,0,0,0.25)] active:scale-[0.97]"
                 >
                   <span>See our Results</span>
                   <span className="inline-flex size-7 items-center justify-center rounded-full bg-black text-white">
@@ -422,7 +422,6 @@ function MisconceptionCard({ pair }: { pair: typeof misconceptionPairs[0] }) {
         className="relative h-full min-h-[220px] w-full cursor-pointer"
         onMouseEnter={() => setIsFlipped(true)}
         onMouseLeave={() => setIsFlipped(false)}
-        onClick={() => setIsFlipped((f) => !f)}
       >
         <motion.div
           className="relative h-full w-full will-change-transform"
@@ -471,11 +470,11 @@ function MisconceptionSection() {
       <Container>
         <SectionPill text="THE MISCONCEPTION" />
         <div className="mt-8 max-w-[980px]">
-          <h2 className="font-[family-name:var(--font-gabarito)] text-[1.5rem] sm:text-[2.5rem] lg:text-[3.15rem] font-semibold leading-[1.08] tracking-[-0.035em] text-black">
+          <h2 className="font-[family-name:var(--font-gabarito)] text-[2.5rem] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.15rem]">
             Your hiring isn&apos;t slow.{" "}
             <span className="text-[#ed1a24]">Your recruitment approach is.</span>
           </h2>
-          <p className="mt-5 max-w-[920px] text-[14px] sm:text-[17px] font-medium leading-[1.75] text-[#5f5f61]">
+          <p className="mt-5 max-w-[920px] text-[17px] font-medium leading-[1.75] text-[#5f5f61]">
             Most B2B SaaS teams pour budget into campaigns that look active but
             generate nothing. Here&apos;s why. Most growth companies invest heavily
             in recruiters and paid tools however fail to hire quality talent.
@@ -498,7 +497,7 @@ function SocialProofSection() {
       <Container>
         <div className="text-center">
           <SectionPill text="THE REAL PROBLEM" />
-          <h2 className="mx-auto mt-8 max-w-[620px] font-[family-name:var(--font-gabarito)] text-[1.5rem] sm:text-[2.5rem] lg:text-[3.15rem] font-semibold leading-[1.08] tracking-[-0.035em] text-black">
+          <h2 className="mx-auto mt-8 max-w-[620px] font-[family-name:var(--font-gabarito)] text-[2.5rem] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.15rem]">
             Don&apos;t take our word for it.{" "}
             <span className="text-[#ed1a24]">Take theirs.</span>
           </h2>
@@ -696,7 +695,7 @@ function FullFunnelSection() {
       <Container>
         <div className="text-center">
           <SectionPill text="THE FULL-FUNNEL SOLUTION" />
-          <h2 className="mx-auto mt-8 max-w-[860px] font-[family-name:var(--font-gabarito)] text-[1.5rem] sm:text-[2.5rem] lg:text-[3.1rem] font-semibold leading-[1.08] tracking-[-0.035em] text-black">
+          <h2 className="mx-auto mt-8 max-w-[860px] font-[family-name:var(--font-gabarito)] text-[2.5rem] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.1rem]">
             Streamline Your Executive Search by Leveraging a{" "}
             <span className="text-[#ed1a24]">Skill-based Hiring Platform</span>
           </h2>
@@ -834,7 +833,7 @@ function TechnologyCard({
     <StaggerItem
       as="article"
       y={24}
-      className="flex h-auto lg:h-[600px] flex-col rounded-[20px] border border-black/8 bg-white p-5 shadow-[0_18px_50px_rgba(17,35,89,0.05)]"
+      className="flex h-[600px] flex-col rounded-[20px] border border-black/8 bg-white p-5 shadow-[0_18px_50px_rgba(17,35,89,0.05)]"
     >
       <div className="mb-5 inline-flex size-11 shrink-0 items-center justify-center rounded-[10px] bg-[#0d1427] overflow-hidden">
         <Image
@@ -861,10 +860,10 @@ function PropTechSection() {
       <Container>
         <div className="text-center">
           <SectionPill text="PROPRIETARY TECHNOLOGY" />
-          <h2 className="mx-auto mt-8 max-w-[900px] font-[family-name:var(--font-gabarito)] text-[1.4rem] sm:text-[2.4rem] lg:text-[3.05rem] font-semibold leading-[1.08] tracking-[-0.035em] text-black">
+          <h2 className="mx-auto mt-8 max-w-[900px] font-[family-name:var(--font-gabarito)] text-[2.4rem] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.05rem]">
             The Agents That Work While Your Experts Focus
           </h2>
-          <p className="mx-auto mt-5 max-w-[760px] text-[14px] sm:text-[18px] leading-[1.7] text-[#5f6166]">
+          <p className="mx-auto mt-5 max-w-[760px] text-[18px] leading-[1.7] text-[#5f6166]">
             Merito&apos;s AI agents handle the heavy lifting so your team closes
             faster, not harder.
           </p>
@@ -1202,13 +1201,13 @@ function TalentEquationSection() {
       <Container>
         <div className="text-center">
           <SectionPill text="THE TALENT EQUATION" />
-          <h2 className="mx-auto mt-8 max-w-[790px] font-[family-name:var(--font-gabarito)] text-[1.4rem] sm:text-[2.4rem] lg:text-[3.05rem] font-semibold leading-[1.08] tracking-[-0.035em] text-black">
+          <h2 className="mx-auto mt-8 max-w-[790px] font-[family-name:var(--font-gabarito)] text-[2.4rem] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.05rem]">
             The New Math of Hiring:{" "}
             <span className="text-[#ed1a24]">
               Artificial + Acquired Intelligence.
             </span>
           </h2>
-          <p className="mx-auto mt-5 max-w-[820px] text-[14px] sm:text-[18px] leading-[1.7] text-[#5f6166]">
+          <p className="mx-auto mt-5 max-w-[820px] text-[18px] leading-[1.7] text-[#5f6166]">
             Merito combines global-scale AI with deep-rooted human insight to
             deliver the precision a standard recruitment agency can&apos;t match.
           </p>
@@ -1254,13 +1253,13 @@ function PerformanceSection() {
     <section className="bg-white py-12">
       <Container>
         <div className="text-center">
-          <h2 className="mx-auto max-w-[760px] font-[family-name:var(--font-gabarito)] text-[1.4rem] sm:text-[2.4rem] lg:text-[3.05rem] font-semibold leading-[1.08] tracking-[-0.035em] text-black">
+          <h2 className="mx-auto max-w-[760px] font-[family-name:var(--font-gabarito)] text-[2.4rem] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.05rem]">
             Your Recruiter Is Trapped in Manual Work{" "}
             <span className="text-[#ed1a24]">
               Your Founder is Stuck in Interviews.
             </span>
           </h2>
-          <p className="mx-auto mt-6 max-w-[700px] text-[14px] sm:text-[18px] leading-[1.7] text-[#5d5f65]">
+          <p className="mx-auto mt-6 max-w-[700px] text-[18px] leading-[1.7] text-[#5d5f65]">
             The efficiency gap between traditional hiring and the Merito
             AI-Driven model.
           </p>
@@ -1381,7 +1380,7 @@ function FAQSection() {
   return (
     <section className="bg-white py-12">
       <Container className="max-w-[980px]">
-        <h2 className="text-center font-[family-name:var(--font-gabarito)] text-[1.35rem] sm:text-[2.35rem] lg:text-[2.9rem] font-semibold leading-[1.06] tracking-[-0.035em] text-black">
+        <h2 className="text-center font-[family-name:var(--font-gabarito)] text-[2.35rem] font-semibold leading-[1.06] tracking-[-0.035em] text-black sm:text-[2.9rem]">
           Frequently Asked Questions
         </h2>
 
@@ -1416,12 +1415,12 @@ function CTASection() {
       <Container className="max-w-[880px]">
         <RevealOnScroll>
           <SectionPill text="READY TO GROW?" />
-          <h2 className="mt-8 font-[family-name:var(--font-gabarito)] text-[1.4rem] sm:text-[2.4rem] lg:text-[3.05rem] font-semibold leading-[1.06] tracking-[-0.035em] text-black">
+          <h2 className="mt-8 font-[family-name:var(--font-gabarito)] text-[2.4rem] font-semibold leading-[1.06] tracking-[-0.035em] text-black sm:text-[3.05rem]">
             Hire with <span className="text-[#ed1a24]">Conviction</span>
             <br />
             Not <span className="text-[#ed1a24]">Intuition</span>
           </h2>
-          <p className="mx-auto mt-6 max-w-[760px] text-[14px] sm:text-[18px] leading-[1.75] text-[#52545b]">
+          <p className="mx-auto mt-6 max-w-[760px] text-[18px] leading-[1.75] text-[#52545b]">
             Stop guessing and start scaling. Book a{" "}
             <span className="font-semibold text-black">15-minute consultation</span>{" "}
             with our senior consultants to see how our Skill-based Hiring Platform
@@ -1430,7 +1429,7 @@ function CTASection() {
           <div className="flex flex-col items-center gap-3">
             <button
               onClick={openContact}
-              className="mt-9 w-full sm:w-auto inline-flex min-h-[48px] sm:min-h-[56px] items-center justify-center rounded-[10px] bg-[#ed1a24] px-9 text-[16px] sm:text-[18px] font-semibold text-white shadow-[0_10px_30px_rgba(237,26,36,0.25)] transition-all duration-200 hover:scale-[1.03] hover:bg-black hover:text-white hover:shadow-[0_18px_40px_rgba(0,0,0,0.3)] active:scale-[0.97]"
+              className="mt-9 inline-flex min-h-[56px] items-center justify-center rounded-[10px] bg-[#ed1a24] px-9 text-[18px] font-semibold text-white shadow-[0_10px_30px_rgba(237,26,36,0.25)] transition-all duration-200 hover:scale-[1.03] hover:bg-black hover:text-white hover:shadow-[0_18px_40px_rgba(0,0,0,0.3)] active:scale-[0.97]"
             >
               Talk to an Expert
             </button>

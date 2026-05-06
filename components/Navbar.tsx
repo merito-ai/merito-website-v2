@@ -30,7 +30,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 flex justify-center bg-transparent px-4 py-4">
-      <nav className="flex h-[63px] md:h-[82px] w-full max-w-[1328px] items-center justify-between rounded-[8px] border border-black/12 bg-white px-4 shadow-[0_8px_22px_rgba(17,35,89,0.08)] sm:px-5 lg:px-6">
+      <nav className="flex h-[82px] w-full max-w-[1328px] items-center justify-between rounded-[8px] border border-black/12 bg-white px-4 shadow-[0_8px_22px_rgba(17,35,89,0.08)] sm:px-5 lg:px-6">
         {/* Logo */}
         <Link href="/" className="flex-shrink-0">
           <Image
@@ -38,7 +38,7 @@ export default function Navbar() {
             alt="Merito"
             width={121}
             height={60}
-            className="h-[37px] md:h-[60px] w-auto object-contain"
+            className="h-[60px] w-auto object-contain"
             priority
             unoptimized
           />
@@ -142,7 +142,7 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {open && (
-        <div className="absolute left-4 right-4 top-[85px] md:top-[104px] flex flex-col gap-4 rounded-[12px] border border-black/10 bg-white p-6 shadow-[0_14px_34px_rgba(17,35,89,0.12)] md:hidden">
+        <div className="absolute left-4 right-4 top-[104px] flex flex-col gap-4 rounded-[12px] border border-black/10 bg-white p-6 shadow-[0_14px_34px_rgba(17,35,89,0.12)] md:hidden">
           {navLinks.map((link) => {
             if (link.label === "Platforms & Tools") {
               return (

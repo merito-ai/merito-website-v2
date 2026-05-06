@@ -112,7 +112,7 @@ export default function OfferVaultPage() {
     <main className="bg-white">
       {/* Hero */}
       <section className="relative mx-auto max-w-[1300px] px-5 pt-8">
-        <div className="relative h-[220px] sm:h-[320px] md:h-[220px] sm:h-[320px] md:h-[422px] rounded-[11px] overflow-hidden">
+        <div className="relative h-[422px] rounded-[11px] overflow-hidden">
           <Image
             src="/offer-vault/hero-banner.png"
             alt="Offer Vault"
@@ -123,11 +123,11 @@ export default function OfferVaultPage() {
           <div className="absolute inset-0 bg-black/41" />
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center gap-5 px-8">
             <Eyebrow text="OFFER VAULT" />
-            <h1 className="font-[family-name:var(--font-poppins)] font-semibold text-[22px] sm:text-[36px] md:text-[22px] sm:text-[36px] md:text-[48px] text-white leading-normal">
+            <h1 className="font-[family-name:var(--font-poppins)] font-semibold text-[48px] text-white leading-normal">
               Ideas That Shape the{" "}
               <span className="text-[#ed1a24]">Future of Talent.</span>
             </h1>
-            <p className="font-semibold text-[12px] sm:text-[18px] md:text-[12px] sm:text-[18px] md:text-[24px] text-white leading-[165%] max-w-[800px]">
+            <p className="font-semibold text-[24px] text-white leading-[165%] max-w-[800px]">
               Get all the latest on all things about Merito and the industry
             </p>
           </div>
@@ -137,7 +137,7 @@ export default function OfferVaultPage() {
       {/* Intro CTA */}
       <section className="w-full bg-[#fafafa]">
         <div className="max-w-[1115px] mx-auto px-5 py-12 flex flex-col items-center gap-6 text-center">
-          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[22px] md:text-[22px] md:text-[32px] text-black">
+          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black">
             No more offer Backouts
           </h2>
           <p className="text-[16px] text-[#4b4b4d] leading-[165%] max-w-[700px]">
@@ -171,7 +171,7 @@ export default function OfferVaultPage() {
       <section className="w-full border-t border-[#f0f0f0]">
         <div className="max-w-[1136px] mx-auto px-5 py-12 flex flex-col gap-[60px]">
           <div className="flex flex-col items-center gap-5 text-center">
-            <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[22px] md:text-[22px] md:text-[32px] text-black">
+            <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black">
               Frequent Last-minute Backouts?
             </h2>
             <p className="text-[16px] text-[#4b4b4d] leading-[165%] max-w-[800px]">
@@ -201,7 +201,7 @@ export default function OfferVaultPage() {
       <section className="bg-[#fef7f3] py-12">
         <div className="max-w-[1282px] mx-auto px-5 flex flex-col gap-[50px]">
           <div className="flex flex-col items-center gap-5 text-center">
-            <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[22px] md:text-[22px] md:text-[32px] text-black">
+            <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black">
               How it works?
             </h2>
             <p className="text-[16px] text-[#4b4b4d] leading-[165%] max-w-[700px]">
@@ -211,7 +211,7 @@ export default function OfferVaultPage() {
 
           <div className="flex flex-col lg:flex-row gap-8 items-start">
             {/* Steps */}
-            <div className="flex gap-4 lg:gap-[56px] items-start flex-shrink-0">
+            <div className="flex gap-[56px] items-start flex-shrink-0">
               {/* Number dots + line */}
               <div className="flex flex-col gap-[14px] relative">
                 {/* single connector line behind the cells */}
@@ -219,7 +219,7 @@ export default function OfferVaultPage() {
                 {steps.map((step) => (
                   <div
                     key={step.num}
-                    className="relative min-h-[118px] flex items-center justify-center"
+                    className="relative h-[118px] flex items-center justify-center"
                   >
                     <div
                       className="size-[50px] rounded-full flex items-center justify-center font-[family-name:var(--font-poppins)] font-medium text-[18px] flex-shrink-0 relative"
@@ -231,11 +231,11 @@ export default function OfferVaultPage() {
                 ))}
               </div>
               {/* Step cards */}
-              <div className="flex flex-col gap-[14px] flex-1 min-w-0">
+              <div className="flex flex-col gap-[14px] w-[492px]">
                 {steps.map((step) => (
                   <div
                     key={step.num}
-                    className="bg-white rounded-[7px] flex gap-[16px] lg:gap-[30px] min-h-[118px] items-center pl-[12px] lg:pl-[20px] pr-[12px] lg:pr-[44px] py-[12px] lg:py-[17px]"
+                    className="bg-white rounded-[7px] flex gap-[30px] h-[118px] items-center pl-[20px] pr-[44px] py-[17px]"
                   >
                     <div
                       className="size-[77px] rounded-[10px] flex items-center justify-center flex-shrink-0 overflow-hidden"
@@ -244,8 +244,8 @@ export default function OfferVaultPage() {
                       <Image src={step.icon} alt={step.title} width={44} height={44} unoptimized />
                     </div>
                     <div className="flex flex-col gap-3">
-                      <h3 className="font-[family-name:var(--font-poppins)] font-bold text-[15px] lg:text-[18px] text-black">{step.title}</h3>
-                      <p className="text-[13px] lg:text-[15px] text-[#3c3f45] leading-[155%]">{step.desc}</p>
+                      <h3 className="font-[family-name:var(--font-poppins)] font-bold text-[18px] text-black">{step.title}</h3>
+                      <p className="text-[15px] text-[#3c3f45] leading-[155%]">{step.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -277,7 +277,7 @@ export default function OfferVaultPage() {
           </div>
 
           {/* Green highlight */}
-          <div className="bg-[#eaf5e6] rounded-[10px] flex flex-col sm:flex-row gap-[40px] items-center px-5 sm:-[40px] items-center px-5 sm:px-[60px] py-[20px]">
+          <div className="bg-[#eaf5e6] rounded-[10px] flex gap-[40px] items-center px-[60px] py-[20px]">
             <Image
               src="/offervault/icon-sparkle.svg"
               alt="Sparkle"
@@ -285,7 +285,7 @@ export default function OfferVaultPage() {
               height={54}
               unoptimized
             />
-            <p className="font-[family-name:var(--font-poppins)] font-semibold text-[16px] sm:text-[20px] text-black leading-[155%] text-center sm:text-left leading-[155%] text-center sm:text-left">
+            <p className="font-[family-name:var(--font-poppins)] font-semibold text-[20px] text-black leading-[155%]">
               A transparent process. A better candidate experience. Higher offer acceptance.
             </p>
           </div>
@@ -296,7 +296,7 @@ export default function OfferVaultPage() {
       <section className="max-w-[1200px] mx-auto px-5 py-12 flex flex-col gap-[50px]">
         <div className="flex flex-col items-center gap-5 text-center">
           <Eyebrow text="IMPACT" />
-          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[22px] md:text-[22px] md:text-[32px] text-black">
+          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black">
             Introducing Reputation Index
           </h2>
           <p className="text-[16px] text-[#4b4b4d] leading-[165%] max-w-[800px]">
@@ -310,7 +310,7 @@ export default function OfferVaultPage() {
       <section className="bg-[#fef7f3] py-12">
         <div className="max-w-[1200px] mx-auto px-5 flex flex-col items-center gap-[50px]">
           <div className="flex flex-col items-center gap-5 text-center">
-            <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[22px] md:text-[22px] md:text-[32px] text-black">
+            <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black">
               How Reputation Index Works
             </h2>
             <p className="text-[16px] text-[#4b4b4d] leading-[165%] max-w-[800px]">
@@ -330,7 +330,7 @@ export default function OfferVaultPage() {
       {/* CTA */}
       <section className="max-w-[1115px] mx-auto px-5 py-12 flex flex-col items-center gap-[25px] text-center">
         <div className="flex flex-col gap-5">
-          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[22px] md:text-[22px] md:text-[32px] text-black">
+          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black">
             Get started with Merito
           </h2>
           <p className="text-[16px] text-[#4b4b4d] leading-[165%]">

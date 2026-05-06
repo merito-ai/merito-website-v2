@@ -31,7 +31,7 @@ export default function ContactPage() {
               Available for new partnerships
             </div>
             
-            <h1 className="font-[family-name:var(--font-gabarito)] text-[28px] md:text-[44px] lg:text-[60px] font-bold text-black leading-[1.05] mb-6 tracking-[-0.02em]">
+            <h1 className="font-[family-name:var(--font-gabarito)] text-[44px] md:text-[60px] font-bold text-black leading-[1.05] mb-6 tracking-[-0.02em]">
               Let&apos;s find the <br />
               <span className="text-[#ed1a24]">right talent.</span>
             </h1>
@@ -69,11 +69,11 @@ export default function ContactPage() {
             <div className="mt-14 pt-10 border-t border-gray-200">
               <p className="text-[13px] font-bold text-[#8b8d92] uppercase tracking-wider mb-4">Direct Contact</p>
               <div className="flex items-center gap-4">
-                <a href="mailto:hello@merito.ai" className="inline-flex items-center gap-2 text-[20px] font-bold text-black hover:text-[#ed1a24] transition-colors">
+                <a href="mailto:admin@merito.ai" className="inline-flex items-center gap-2 text-[20px] font-bold text-black hover:text-[#ed1a24] transition-colors">
                   <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
-                  hello@merito.ai
+                  admin@merito.ai
                 </a>
               </div>
               <p className="text-[14px] font-medium text-[#8b8d92] mt-2 ml-8">Response time: &lt; 24hr</p>
@@ -87,7 +87,7 @@ export default function ContactPage() {
             
             <div className="relative bg-white rounded-[28px] shadow-[0_20px_80px_rgba(0,0,0,0.08)] border border-gray-100 overflow-hidden">
               <div className="p-8 sm:p-10">
-                <h2 className="font-[family-name:var(--font-gabarito)] text-[22px] md:text-[32px] font-bold text-black mb-2">Request a consultation</h2>
+                <h2 className="font-[family-name:var(--font-gabarito)] text-[32px] font-bold text-black mb-2">Request a consultation</h2>
                 <p className="text-[#66686d] text-[15px] mb-8">Fill out the form below and we&apos;ll be in touch shortly.</p>
                 <ContactForm />
               </div>
