@@ -26,6 +26,11 @@ export const metadata: Metadata = {
     default: "Merito — AI-Enabled Full-Funnel Recruitment Partner",
     template: "%s | Merito",
   },
+  icons: {
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
+  },
   description: "Merito is a human-centric AI recruitment agency that blends strategic human insight with a proprietary Skill-based Hiring Platform. No resume spam. No gut-feel guesses.",
   keywords: [
     "recruitment agency",
@@ -69,7 +74,6 @@ export const metadata: Metadata = {
 import { ContactModalProvider } from "@/context/ContactModalContext";
 import ContactModal from "@/components/ContactModal";
 import FloatingContactButton from "@/components/FloatingContactButton";
-import { Analytics } from "@vercel/analytics/next";
 
 export default function RootLayout({
   children,
@@ -198,7 +202,6 @@ export default function RootLayout({
           <FloatingContactButton />
           {children}
           <Footer />
-          <Analytics />
         </ContactModalProvider>
       </body>
     </html>
