@@ -48,9 +48,9 @@ export default function ContactModal() {
             className="relative w-full max-w-[580px] bg-white rounded-[28px] shadow-[0_30px_100px_rgba(0,0,0,0.4)] overflow-hidden"
           >
             {/* Header */}
-            <div className="px-8 pt-8 pb-2 flex items-start justify-between">
+            <div className="px-5 sm:px-8 pt-6 sm:pt-8 pb-2 flex items-start justify-between">
               <div>
-                <h2 className="font-[family-name:var(--font-gabarito)] text-[32px] font-bold text-black leading-tight">
+                <h2 className="font-[family-name:var(--font-gabarito)] text-[20px] sm:text-[32px] font-bold text-black leading-tight">
                   Start Hiring <span className="text-[#ed1a24]">Smarter.</span>
                 </h2>
                 <p className="mt-2 text-[#4b4b4d] text-[15px] font-medium">
@@ -68,7 +68,7 @@ export default function ContactModal() {
             </div>
 
             {/* Form Body (Scrollable if needed) */}
-            <div className="p-8 max-h-[80vh] overflow-y-auto custom-scrollbar">
+            <div className="p-5 sm:p-8 max-h-[80vh] overflow-y-auto custom-scrollbar">
               <ContactForm />
             </div>
 

@@ -72,16 +72,16 @@ export default function Footer() {
                 unoptimized
               />
             </Link>
-            <p className="font-[family-name:var(--font-poppins)] text-[18px] font-medium leading-[1.38] text-white">
+            <p className="font-[family-name:var(--font-poppins)] text-[13px] md:text-[18px] font-medium leading-[1.38] text-white">
               Merito is an AI-enabled recruitment company that helps growth
               companies hire quality talent faster.
             </p>
           </div>
 
-          <div className="grid gap-10 sm:grid-cols-3 sm:gap-16 lg:gap-20">
-            <div className="flex flex-col gap-8">
-              <span className="text-[18px] font-semibold text-[#ed1a24]">Company</span>
-              <div className="flex flex-col gap-5 text-[15px] font-medium">
+          <div className="grid grid-cols-3 gap-2 sm:gap-16 lg:gap-20">
+            <div className="flex flex-col gap-3 md:gap-8">
+              <span className="text-[13px] md:text-[18px] font-semibold text-[#ed1a24]">Company</span>
+              <div className="flex flex-col gap-[6px] md:gap-5 text-[12px] md:text-[15px] font-medium">
                 <Link href="/about" className="transition-colors hover:text-[#ed1a24]">
                   About us
                 </Link>
@@ -97,9 +97,9 @@ export default function Footer() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-8">
-              <span className="text-[18px] font-semibold text-[#ed1a24]">Tools</span>
-              <div className="flex flex-col gap-5 text-[15px] font-medium">
+            <div className="flex flex-col gap-3 md:gap-8">
+              <span className="text-[13px] md:text-[18px] font-semibold text-[#ed1a24]">Tools</span>
+              <div className="flex flex-col gap-[6px] md:gap-5 text-[12px] md:text-[15px] font-medium">
                 <Link href="/offervault" className="transition-colors hover:text-[#ed1a24]">
                   Offer-vault
                 </Link>
@@ -109,9 +109,9 @@ export default function Footer() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-8">
-              <span className="text-[18px] font-semibold text-[#ed1a24]">Insights</span>
-              <div className="flex flex-col gap-5 text-[15px] font-medium">
+            <div className="flex flex-col gap-3 md:gap-8">
+              <span className="text-[13px] md:text-[18px] font-semibold text-[#ed1a24]">Insights</span>
+              <div className="flex flex-col gap-[6px] md:gap-5 text-[12px] md:text-[15px] font-medium">
                 <Link href="/insights" className="transition-colors hover:text-[#ed1a24]">
                   Articles
                 </Link>
