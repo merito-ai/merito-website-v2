@@ -74,7 +74,7 @@ export default function AboutPage() {
     <main className="bg-[#fdf8fb]">
       {/* Hero banner */}
       <section className="relative mx-auto max-w-[1300px] px-5 pt-8">
-        <div className="relative h-[422px] rounded-[11px] overflow-hidden">
+        <div className="relative h-[220px] sm:h-[320px] md:h-[422px] rounded-[11px] overflow-hidden">
           <Image 
             src="/about-us-audit/hero-banner.png" 
             alt="Our Approach Your Advantage" 
@@ -84,12 +84,12 @@ export default function AboutPage() {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/60" />
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center gap-5">
-            <h1 className="font-[family-name:var(--font-poppins)] font-semibold text-[48px] text-white leading-normal">
+            <h1 className="font-[family-name:var(--font-poppins)] font-semibold text-[26px] sm:text-[38px] md:text-[48px] text-white leading-normal">
               Our Approach
               <br />
               <span className="text-[#ed1a24]">Your Advantage</span>
             </h1>
-            <p className="font-semibold text-[24px] text-[#d9d9d9] leading-[165%]">
+            <p className="font-semibold text-[13px] sm:text-[18px] md:text-[24px] text-[#d9d9d9] leading-[165%]">
               Discover how Merito turns vision into measurable impact
             </p>
           </div>
@@ -166,7 +166,7 @@ export default function AboutPage() {
           ].map((card) => (
             <div
               key={card.label}
-              className="group relative bg-white border border-white/8 rounded-[20px] shadow-[0px_0px_128.7px_2px_rgba(0,0,0,0.25)] hover:shadow-[0px_0px_128.7px_2px_rgba(237,26,36,0.15)] hover:-translate-y-2 transition-all duration-300 p-[43px] flex flex-col gap-6 overflow-hidden"
+              className="group relative bg-white border border-white/8 rounded-[20px] shadow-[0px_0px_128.7px_2px_rgba(0,0,0,0.25)] hover:shadow-[0px_0px_128.7px_2px_rgba(237,26,36,0.15)] hover:-translate-y-2 transition-all duration-300 p-5 md:p-[43px] flex flex-col gap-6 overflow-hidden"
             >
               {/* Hover Left Red Bar */}
               <div className="absolute inset-y-0 left-0 w-1.5 group-hover:w-3 bg-[#ed1a24] opacity-0 group-hover:opacity-100 transition-all duration-300" />
@@ -177,7 +177,7 @@ export default function AboutPage() {
                 </div>
               </div>
               <div className="flex flex-col gap-4 relative z-10">
-                <h3 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black"
+                <h3 className="font-[family-name:var(--font-poppins)] font-semibold text-[22px] md:text-[32px] text-black"
                     dangerouslySetInnerHTML={{ __html: card.label }} />
                 <p className="font-semibold italic text-[18px] text-[#4b4b4d] leading-[146.8%]">{card.quote}</p>
               </div>

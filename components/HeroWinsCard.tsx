@@ -78,7 +78,7 @@ export default function HeroWinsCard() {
           </span>
         </div>
 
-        <div className="mt-3 flex flex-nowrap items-center gap-1.5">
+        <div className="mt-3 flex flex-nowrap items-center gap-1.5 overflow-x-auto md:overflow-x-visible [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           {TABS.map((tab, index) => {
             const isActive = index === activeIndex;
             return (
@@ -99,7 +99,7 @@ export default function HeroWinsCard() {
         </div>
 
         <div className="mt-auto">
-          <div className="font-[family-name:var(--font-gabarito)] text-[4rem] font-semibold leading-none text-black">
+          <div className="font-[family-name:var(--font-gabarito)] text-[2.5rem] sm:text-[4rem] font-semibold leading-none text-black">
             {active.value}
           </div>
           <p className="mt-3 max-w-[420px] text-[14px] font-medium leading-[1.5] text-[#4b4b4d]">

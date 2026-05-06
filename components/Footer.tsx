@@ -68,11 +68,11 @@ export default function Footer() {
                 alt="Merito"
                 width={121}
                 height={60}
-                className="h-[60px] w-auto object-contain"
+                className="h-[40px] md:h-[60px] w-auto object-contain"
                 unoptimized
               />
             </Link>
-            <p className="font-[family-name:var(--font-poppins)] text-[18px] font-medium leading-[1.38] text-white">
+            <p className="font-[family-name:var(--font-poppins)] text-[14px] md:text-[18px] font-medium leading-[1.38] text-white">
               Merito is an AI-enabled recruitment company that helps growth
               companies hire quality talent faster.
             </p>

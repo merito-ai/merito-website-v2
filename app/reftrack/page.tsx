@@ -13,12 +13,12 @@ export default function ReftrackPage() {
     <main className="bg-white flex flex-col items-center w-full overflow-hidden font-[family-name:var(--font-poppins)] pb-24">
       
       {/* Hero Section */}
-      <section className="relative w-full max-w-[1300px] h-[422px] mx-auto overflow-hidden flex flex-col items-center justify-center text-center px-5" style={{ aspectRatio: '191/62' }}>
+      <section className="relative w-full max-w-[1300px] h-[200px] sm:h-[320px] md:h-[422px] mx-auto overflow-hidden flex flex-col items-center justify-center text-center px-5" style={{ aspectRatio: '191/62' }}>
         <div className="absolute inset-0 bg-[url('/figma-exports/image-198.png')] bg-cover bg-center bg-no-repeat"></div>
         <div className="absolute inset-0 bg-black/50"></div>
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0)_0%,rgba(237,26,36,0.15)_100%)]"></div>
         <div className="relative z-10 flex flex-col items-center gap-[20px] max-w-[1115px]">
-          <h1 className="text-[48px] md:text-[64px] font-bold leading-[1.1] max-w-[900px]">
+          <h1 className="text-[26px] md:text-[48px] lg:text-[64px] font-bold leading-[1.1] max-w-[900px]">
             <span className="text-white">Driven by </span>
             <span className="text-[#ED1A24]">purpose</span>
             <span className="text-white">.</span>
@@ -27,7 +27,7 @@ export default function ReftrackPage() {
             <span className="text-[#ED1A24]">impact</span>
             <span className="text-white">.</span>
           </h1>
-          <p className="text-[18px] font-normal text-[#D9D9D9] leading-[29.7px] max-w-[800px]">
+          <p className="text-[13px] sm:text-[18px] font-normal text-[#D9D9D9] leading-[29.7px] max-w-[800px]">
             Merito&apos;s Ref-Track platform enables recruitment teams to collect 360-degree candidate feedback, resulting in better hiring decisions.
           </p>
         </div>
@@ -137,31 +137,31 @@ export default function ReftrackPage() {
 
         <div className="w-full max-w-[1176px] flex flex-wrap gap-[50px] justify-center">
           {/* Feature 1 */}
-          <div className="w-[543px] h-[199px] relative bg-white shadow-[0_0_4px_2px_rgba(0,0,0,0.25)] rounded-[9px] border-t border-[#ED1A24] overflow-hidden group">
+          <div className="w-full lg:w-[543px] h-auto lg:h-[199px] relative bg-white shadow-[0_0_4px_2px_rgba(0,0,0,0.25)] rounded-[9px] border-t border-[#ED1A24] overflow-hidden group flex items-center gap-4 p-4 lg:block lg:p-0">
             <div className="absolute top-0 left-0 w-[70px] h-[22px]">
               <svg width="70" height="22" viewBox="0 0 70 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M70 0L0 0V10.807V22L70 0Z" fill="#ED1A24"/>
               </svg>
             </div>
-            <div className="w-[98px] h-[98px] absolute left-[30px] top-[51px] bg-white rounded-full shadow-[0_0_7.6px_2px_rgba(0,0,0,0.25)] flex items-center justify-center">
+            <div className="relative lg:absolute lg:left-[30px] lg:top-[51px] flex-shrink-0 w-[80px] h-[80px] lg:w-[98px] lg:h-[98px] bg-white rounded-full shadow-[0_0_7.6px_2px_rgba(0,0,0,0.25)] flex items-center justify-center">
               <svg width="64" height="41" viewBox="0 0 64 41" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M63.0065 0.193885C62.8674 0.0618153 62.6827 -0.00562483 62.4874 0.00140017C57.9359 0.226903 52.991 0.983495 46.9284 2.38217C46.738 2.42643 46.5743 2.54726 46.4767 2.71656C46.379 2.88587 46.3573 3.08819 46.4149 3.27435L47.0036 5.17391C42.5336 3.47877 36.2462 2.503 30.8039 2.71726C28.8088 2.71726 26.5313 3.70709 24.4498 5.17601H16.22L16.8094 3.27364C16.8677 3.08678 16.8445 2.88516 16.7476 2.71586C16.6507 2.54656 16.487 2.42503 16.2966 2.38147C10.234 0.982793 5.28982 0.226201 0.737625 0.000698059C0.548652 -0.00773194 0.358275 0.0604107 0.218477 0.193183C0.07868 0.326658 0 0.510713 0 0.703198V24.8285C0 25.2169 0.31472 25.531 0.7025 25.531H9.39804C9.70574 25.531 9.97831 25.3307 10.0689 25.0364L10.4005 23.9665C17.5569 32.3066 24.8341 39.9659 30.5159 39.9659C31.6097 39.9659 32.6438 39.6772 33.6076 39.0597L33.7558 39.21C34.419 39.8816 35.3076 40.2547 36.2574 40.2603C36.2652 40.2603 36.2722 40.2603 36.2799 40.2603C37.2206 40.2603 38.1043 39.8985 38.771 39.2409C39.3569 38.6614 39.6835 37.9252 39.7798 37.1644C40.4331 37.706 41.2276 37.9933 42.032 37.9933C42.9319 37.9926 43.8332 37.6533 44.5237 36.9719C45.3028 36.2019 45.6337 35.1587 45.5466 34.1443C45.8599 34.2216 46.1767 34.2743 46.495 34.2743C47.3963 34.2743 48.2779 33.9631 48.9172 33.3315C49.5888 32.6684 49.9618 31.7797 49.9674 30.8299C49.973 29.8801 49.6112 28.988 48.993 28.3662C48.7345 28.048 48.4676 27.7424 48.2055 27.4291L52.9938 24.5144L53.1554 25.0357C53.2467 25.33 53.5186 25.5303 53.8262 25.5303H62.5225C62.911 25.5303 63.225 25.2162 63.225 24.8278V0.703198C63.225 0.510713 63.1463 0.326658 63.0065 0.193885ZM8.8803 24.126H1.405V1.44574C5.48371 1.69794 9.9207 2.38358 15.2435 3.58345L8.8803 24.126ZM47.9295 32.3312C47.1293 33.1222 45.6042 33.0372 44.7289 32.1499C44.7169 32.138 44.7015 32.1338 44.6888 32.1232C44.6418 32.0691 44.6059 32.0087 44.5547 31.9567L36.8623 24.1688C36.5883 23.8934 36.145 23.8906 35.8682 24.1625C35.5922 24.4358 35.59 24.8797 35.8619 25.1565L43.5543 32.9444C43.954 33.3484 44.1725 33.8879 44.169 34.4618C44.1655 35.0351 43.9407 35.5718 43.536 35.9708C42.6965 36.8019 41.3386 36.7913 40.5083 35.9525L38.8047 34.2279C38.8033 34.2265 38.8026 34.2251 38.8019 34.2244L31.1095 26.4372C30.8362 26.1625 30.3916 26.159 30.1162 26.4309C29.8401 26.7041 29.8373 27.1481 30.1098 27.4249L37.8015 35.2128C38.6319 36.0523 38.6234 37.4109 37.7833 38.2406C36.9431 39.0709 35.5844 39.0611 34.7555 38.2223L25.356 28.707C25.0828 28.4316 24.6381 28.4274 24.3627 28.7013C24.0866 28.9739 24.0838 29.4186 24.3564 29.6947L32.5834 38.0228C27.3603 40.8145 18.709 31.5324 10.8923 22.3795L15.7852 6.58242H22.6802C20.7547 8.2909 19.167 10.331 18.4006 12.1905C17.4199 14.5691 18.0585 15.9067 18.7666 16.6099C18.7848 16.6282 18.8045 16.6457 18.8249 16.6619C21.5246 18.8024 24.1836 19.3419 28.3248 15.0581C29.7305 15.1438 30.9276 14.9 31.9666 14.3106C37.8015 18.39 43.1623 23.4157 47.9477 29.3041C48.7781 30.1436 48.7696 31.5022 47.9295 32.3312ZM47.2909 26.3416C42.7907 21.1361 37.7882 16.6169 32.3867 12.8916C32.1471 12.7258 31.8296 12.7258 31.59 12.8909C30.6613 13.528 29.5254 13.7697 28.1169 13.632C27.8984 13.6081 27.6855 13.691 27.5359 13.8498C23.6124 18.0247 21.6742 17.1206 19.7318 15.5871C19.0321 14.8572 19.3265 13.6313 19.6995 12.7258C21.2619 8.93369 26.8039 4.12297 30.8313 4.12226C36.5721 3.90238 43.2297 5.01866 47.541 6.90908L52.5653 23.1305L47.2909 26.3416ZM61.82 24.126H54.344L47.9807 3.58345C53.3036 2.38358 57.7413 1.69794 61.8193 1.44574L61.82 24.126Z" fill="var(--Color-3, #ED1A24)"/>
               </svg>
             </div>
-            <div className="absolute left-[156px] top-[27.83px] flex flex-col gap-[12px] w-[348px]">
-              <h3 className="text-[20px] font-semibold text-black">Strong Insights, Greater Confidence</h3>
-              <p className="text-[18px] font-medium text-[#4B4B4D] leading-[34.1px]">Collect feedback from various stakeholders to make more confident hiring decisions.</p>
+            <div className="min-w-0 flex-1 flex flex-col gap-[12px] lg:absolute lg:left-[156px] lg:top-[27.83px] lg:w-[348px]">
+              <h3 className="text-[16px] lg:text-[20px] font-semibold text-black">Strong Insights, Greater Confidence</h3>
+              <p className="text-[13px] lg:text-[18px] font-medium text-[#4B4B4D] leading-[34.1px]">Collect feedback from various stakeholders to make more confident hiring decisions.</p>
             </div>
           </div>
           
           {/* Feature 2 */}
-          <div className="w-[543px] h-[199px] relative bg-white shadow-[0_0_4px_2px_rgba(0,0,0,0.25)] rounded-[9px] border-t border-[#ED1A24] overflow-hidden group">
+          <div className="w-full lg:w-[543px] h-auto lg:h-[199px] relative bg-white shadow-[0_0_4px_2px_rgba(0,0,0,0.25)] rounded-[9px] border-t border-[#ED1A24] overflow-hidden group flex items-center gap-4 p-4 lg:block lg:p-0">
             <div className="absolute top-0 right-0 w-[70px] h-[22px]">
               <svg width="70" height="22" viewBox="0 0 70 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M0 0L70 0V10.807V22L0 0Z" fill="#ED1A24"/>
               </svg>
             </div>
-            <div className="w-[98px] h-[98px] absolute left-[30px] top-[51px] bg-white rounded-full shadow-[0_0_7.6px_2px_rgba(0,0,0,0.25)] flex items-center justify-center">
+            <div className="relative lg:absolute lg:left-[30px] lg:top-[51px] flex-shrink-0 w-[80px] h-[80px] lg:w-[98px] lg:h-[98px] bg-white rounded-full shadow-[0_0_7.6px_2px_rgba(0,0,0,0.25)] flex items-center justify-center">
               <svg width="55" height="55" viewBox="0 0 55 55" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M20.6199 41.2498C15.1119 41.2498 9.93279 39.105 6.03756 35.2097C-2.0021 27.1688 -2.0021 14.0852 6.03756 6.04467C9.93279 2.14955 15.1119 0.00390625 20.6199 0.00390625C26.1288 0.00390625 31.3078 2.14955 35.203 6.04467C43.2436 14.0852 43.2436 27.1688 35.203 35.2097C31.3078 39.105 26.1288 41.2498 20.6199 41.2498ZM20.6199 0.863174C15.3409 0.863174 10.3784 2.91901 6.64514 6.65225C-1.05969 14.3579 -1.05969 26.8961 6.64514 34.6022C10.3784 38.3346 15.3411 40.3906 20.6199 40.3906C25.8997 40.3906 30.8623 38.3346 34.5956 34.6022C42.3013 26.8961 42.3013 14.3579 34.5956 6.65225C30.8623 2.91901 25.8988 0.863174 20.6199 0.863174Z" fill="var(--Color-3, #ED1A24)"/>
               <path d="M20.6213 39.5315C15.5715 39.5315 10.8246 37.5645 7.25406 33.995C-0.115938 26.6237 -0.115938 14.6309 7.25406 7.26004C10.8244 3.68955 15.5714 1.72266 20.6213 1.72266C25.6712 1.72266 30.4181 3.68955 33.9894 7.26004C37.5598 10.8304 39.5268 15.5774 39.5268 20.6273C39.5268 25.6763 37.5598 30.4236 33.9894 33.9934C30.4181 37.5645 25.6712 39.5315 20.6213 39.5315ZM20.6213 2.58192C15.8014 2.58192 11.2701 4.45901 7.86164 7.86762C0.826475 14.9036 0.826475 26.351 7.86164 33.3874C11.2701 36.7959 15.8014 38.6722 20.6213 38.6722C25.4412 38.6722 29.9735 36.7943 33.3819 33.3857C36.7904 29.9789 38.6675 25.4472 38.6675 20.6272C38.6675 15.8072 36.7904 11.276 33.3819 7.86751C29.9734 4.45901 25.4412 2.58192 20.6213 2.58192ZM40.0647 42.3224C40.0082 42.3225 39.9524 42.3114 39.9002 42.2898C39.8481 42.2682 39.8007 42.2365 39.7609 42.1965L35.1508 37.588C35.0731 37.5069 35.0303 37.3985 35.0315 37.2862C35.0328 37.1739 35.078 37.0665 35.1574 36.9871C35.2368 36.9077 35.3442 36.8625 35.4565 36.8613C35.5689 36.8601 35.6772 36.9029 35.7584 36.9806L40.3685 41.589C40.4285 41.649 40.4695 41.7256 40.486 41.8089C40.5026 41.8923 40.4941 41.9787 40.4616 42.0572C40.4291 42.1357 40.374 42.2028 40.3034 42.25C40.2327 42.2972 40.1497 42.3224 40.0647 42.3224ZM41.8873 40.4999C41.8309 40.5 41.775 40.4889 41.7229 40.4673C41.6707 40.4457 41.6234 40.414 41.5835 40.374L36.9734 35.7639C36.8957 35.6828 36.8529 35.5744 36.8541 35.4621C36.8553 35.3498 36.9005 35.2424 36.9799 35.1629C37.0593 35.0835 37.1667 35.0383 37.279 35.0371C37.3914 35.0359 37.4997 35.0787 37.5809 35.1563L42.1911 39.7664C42.2512 39.8265 42.2921 39.9031 42.3087 39.9864C42.3252 40.0698 42.3167 40.1561 42.2842 40.2346C42.2517 40.3132 42.1966 40.3803 42.126 40.4275C42.0553 40.4747 41.9723 40.4999 41.8873 40.4999Z" fill="var(--Color-3, #ED1A24)"/>
@@ -175,20 +175,20 @@ export default function ReftrackPage() {
               <path d="M4.72656 21.0564C4.48905 21.0564 4.29688 20.8643 4.29688 20.6268C4.29688 11.6247 11.6208 4.30078 20.6229 4.30078C20.8604 4.30078 21.0525 4.49296 21.0525 4.73047C21.0526 4.7869 21.0415 4.84278 21.0199 4.89492C20.9983 4.94706 20.9667 4.99443 20.9267 5.03433C20.8868 5.07423 20.8395 5.10587 20.7873 5.12744C20.7352 5.14901 20.6793 5.16009 20.6229 5.16005C12.0948 5.16005 5.15614 12.0989 5.15614 20.6268C5.1562 20.6832 5.14513 20.7391 5.12356 20.7912C5.10199 20.8434 5.07035 20.8908 5.03045 20.9307C4.99055 20.9706 4.94318 21.0022 4.89103 21.0238C4.83889 21.0454 4.783 21.0565 4.72656 21.0564Z" fill="var(--Color-3, #ED1A24)"/>
               </svg>
             </div>
-            <div className="absolute left-[156px] top-[30.83px] flex flex-col gap-[12px] w-[348px]">
-              <h3 className="text-[20px] font-semibold text-black">Data-Driven Candidate Evaluation</h3>
-              <p className="text-[18px] font-medium text-[#4B4B4D] leading-[34.1px]">Leverage quantitative metrics and structured feedback to evaluate candidates objectively.</p>
+            <div className="min-w-0 flex-1 flex flex-col gap-[12px] lg:absolute lg:left-[156px] lg:top-[30.83px] lg:w-[348px]">
+              <h3 className="text-[16px] lg:text-[20px] font-semibold text-black">Data-Driven Candidate Evaluation</h3>
+              <p className="text-[13px] lg:text-[18px] font-medium text-[#4B4B4D] leading-[34.1px]">Leverage quantitative metrics and structured feedback to evaluate candidates objectively.</p>
             </div>
           </div>
 
           {/* Feature 3 */}
-          <div className="w-[543px] h-[199px] relative bg-white shadow-[0_0_4px_2px_rgba(0,0,0,0.25)] rounded-[9px] border-b border-[#ED1A24] overflow-hidden group">
+          <div className="w-full lg:w-[543px] h-auto lg:h-[199px] relative bg-white shadow-[0_0_4px_2px_rgba(0,0,0,0.25)] rounded-[9px] border-b border-[#ED1A24] overflow-hidden group flex items-center gap-4 p-4 lg:block lg:p-0">
             <div className="absolute bottom-0 left-0 w-[70px] h-[22px]">
               <svg width="70" height="22" viewBox="0 0 70 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M70 22L0 22V11.193V0L70 22Z" fill="#ED1A24"/>
               </svg>
             </div>
-            <div className="w-[98px] h-[98px] absolute left-[30px] top-[51px] bg-white rounded-full shadow-[0_0_7.6px_2px_rgba(0,0,0,0.25)] flex items-center justify-center">
+            <div className="relative lg:absolute lg:left-[30px] lg:top-[51px] flex-shrink-0 w-[80px] h-[80px] lg:w-[98px] lg:h-[98px] bg-white rounded-full shadow-[0_0_7.6px_2px_rgba(0,0,0,0.25)] flex items-center justify-center">
               <svg width="55" height="55" viewBox="0 0 55 55" fill="none" xmlns="http://www.w3.org/2000/svg">
               <g clipPath="url(#clip0_2313_3429)">
               <path d="M2.69925 36.7581C1.92536 37.5315 1.49039 38.5815 1.49039 39.675C1.49039 40.7687 1.92536 41.819 2.69925 42.5918L3.99244 43.8855L0.375691 47.5C-0.118962 47.9968 -0.121081 48.8003 0.375691 49.2952L5.70811 54.6294C5.94539 54.8668 6.26936 54.9998 6.60538 54.9998C6.94206 54.9998 7.26603 54.8668 7.50332 54.6272L11.1178 51.0127L12.4058 52.3002C13.1791 53.0736 14.2298 53.5085 15.3227 53.5085C16.4164 53.5085 17.4667 53.0736 18.2402 52.3002L24.6821 45.8578L9.13967 30.3193L2.69925 36.7581Z" fill="var(--Color-3, #ED1A24)"/>
@@ -203,20 +203,20 @@ export default function ReftrackPage() {
               </defs>
               </svg>
             </div>
-            <div className="absolute left-[156px] top-[27.83px] flex flex-col gap-[12px] w-[348px]">
-              <h3 className="text-[20px] font-semibold text-black">Seamless & Continuous Process</h3>
-              <p className="text-[18px] font-medium text-[#4B4B4D] leading-[34.1px]">A smooth end-to-end workflow that keeps you hiring cycle moving without delays.</p>
+            <div className="min-w-0 flex-1 flex flex-col gap-[12px] lg:absolute lg:left-[156px] lg:top-[27.83px] lg:w-[348px]">
+              <h3 className="text-[16px] lg:text-[20px] font-semibold text-black">Seamless &amp; Continuous Process</h3>
+              <p className="text-[13px] lg:text-[18px] font-medium text-[#4B4B4D] leading-[34.1px]">A smooth end-to-end workflow that keeps you hiring cycle moving without delays.</p>
             </div>
           </div>
 
           {/* Feature 4 */}
-          <div className="w-[543px] h-[199px] relative bg-white shadow-[0_0_4px_2px_rgba(0,0,0,0.25)] rounded-[9px] border-b border-[#ED1A24] overflow-hidden group">
+          <div className="w-full lg:w-[543px] h-auto lg:h-[199px] relative bg-white shadow-[0_0_4px_2px_rgba(0,0,0,0.25)] rounded-[9px] border-b border-[#ED1A24] overflow-hidden group flex items-center gap-4 p-4 lg:block lg:p-0">
             <div className="absolute bottom-0 right-0 w-[70px] h-[22px]">
               <svg width="70" height="22" viewBox="0 0 70 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M0 22L70 22V11.193V0L0 22Z" fill="#ED1A24"/>
               </svg>
             </div>
-            <div className="w-[98px] h-[98px] absolute left-[30px] top-[51px] bg-white rounded-full shadow-[0_0_7.6px_2px_rgba(0,0,0,0.25)] flex items-center justify-center">
+            <div className="relative lg:absolute lg:left-[30px] lg:top-[51px] flex-shrink-0 w-[80px] h-[80px] lg:w-[98px] lg:h-[98px] bg-white rounded-full shadow-[0_0_7.6px_2px_rgba(0,0,0,0.25)] flex items-center justify-center">
               <svg width="55" height="55" viewBox="0 0 55 55" fill="none" xmlns="http://www.w3.org/2000/svg">
               <g clipPath="url(#clip0_2313_3443)">
               <path d="M27.5 2.96582C34.3433 10.0267 41.2822 11.1875 46.7344 10.2803C49.2617 9.85971 51.4022 9.00677 53 8.19336V13.75C53 22.4042 49.1845 32.3304 43.8936 40.1279C41.2592 44.0103 38.3146 47.2802 35.4004 49.5576C32.4506 51.8627 29.7295 53 27.5 53C25.2705 53 22.5494 51.8627 19.5996 49.5576C16.6854 47.2802 13.7408 44.0103 11.1064 40.1279C5.81551 32.3304 2 22.4042 2 13.75V8.19336C3.59775 9.00677 5.73831 9.85971 8.26562 10.2803C13.7178 11.1875 20.6567 10.0267 27.5 2.96582Z" stroke="var(--Color-3, #ED1A24)" strokeWidth="4"/>
@@ -228,9 +228,9 @@ export default function ReftrackPage() {
               </defs>
               </svg>
             </div>
-            <div className="absolute left-[156px] top-[30.83px] flex flex-col gap-[12px] w-[348px]">
-              <h3 className="text-[20px] font-semibold text-black">Save Time, Reduce Manual Work</h3>
-              <p className="text-[18px] font-medium text-[#4B4B4D] leading-[34.1px]">Automate follow ups, track progress and cut down on repetitive administrative tasks</p>
+            <div className="min-w-0 flex-1 flex flex-col gap-[12px] lg:absolute lg:left-[156px] lg:top-[30.83px] lg:w-[348px]">
+              <h3 className="text-[16px] lg:text-[20px] font-semibold text-black">Save Time, Reduce Manual Work</h3>
+              <p className="text-[13px] lg:text-[18px] font-medium text-[#4B4B4D] leading-[34.1px]">Automate follow ups, track progress and cut down on repetitive administrative tasks</p>
             </div>
           </div>
         </div>
@@ -242,7 +242,7 @@ export default function ReftrackPage() {
           <h2 className="text-[32px] font-semibold text-black">Get started with Merito</h2>
           <p className="text-[16px] font-normal text-[#4B4B4D] leading-[26.4px] max-w-[800px]">Help us with what you are looking for and our team will get in-touch to understand your talent requirements</p>
         </div>
-        <ContactTrigger className="relative w-[187px] h-[50px] bg-[#ED1A24] rounded-[8px] overflow-hidden group flex items-center justify-center mt-2">
+        <ContactTrigger className="relative w-full sm:w-[187px] h-[50px] bg-[#ED1A24] rounded-[8px] overflow-hidden group flex items-center justify-center mt-2">
           <span className="relative z-10 text-white font-semibold text-[16px] uppercase">CONTACT US</span>
           <div className="absolute w-[222px] h-[128px] -left-[17px] top-[52px] bg-black rounded-[40px] transition-transform duration-300 group-hover:-translate-y-[10px]" />
         </ContactTrigger>
