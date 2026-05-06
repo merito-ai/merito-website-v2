@@ -231,7 +231,7 @@ export default function AboutPage() {
               <div key={m.name} className="bg-[#f2f2f2] rounded-[7px] shadow-[0px_4px_15px_rgba(0,0,0,0.05)] overflow-hidden w-[310px]">
                 <div className="p-4 pb-0">
                   <div className="relative w-full h-[330px] rounded-[4px] overflow-hidden">
-                    <Image src={m.img} alt={m.name} fill className="object-cover object-top" unoptimized />
+                    <Image src={m.img} alt={m.name} fill className="object-cover object-top" sizes="(max-width: 768px) 50vw, 280px" />
                   </div>
                 </div>
                 <div className="py-5 text-center bg-[#f2f2f2]">
@@ -246,7 +246,7 @@ export default function AboutPage() {
             <div key={m.name} className="bg-[#f2f2f2] rounded-[7px] shadow-[0px_4px_15px_rgba(0,0,0,0.05)] overflow-hidden w-[310px]">
               <div className="p-4 pb-0">
                 <div className="relative w-full h-[330px] rounded-[4px] overflow-hidden">
-                  <Image src={m.img} alt={m.name} fill className="object-cover object-top" unoptimized />
+                  <Image src={m.img} alt={m.name} fill className="object-cover object-top" sizes="(max-width: 768px) 50vw, 280px" />
                 </div>
               </div>
               <div className="py-5 text-center bg-[#f2f2f2]">
@@ -265,7 +265,7 @@ export default function AboutPage() {
               <div key={m.name} className="bg-[#f2f2f2] rounded-[5px] shadow-[0px_4px_15px_rgba(0,0,0,0.05)] overflow-hidden w-[260px]">
                 <div className="p-4 pb-0">
                   <div className="relative w-full h-[280px] rounded-[3px] overflow-hidden">
-                    <Image src={m.img} alt={m.name} fill className="object-cover object-top" unoptimized />
+                    <Image src={m.img} alt={m.name} fill className="object-cover object-top" sizes="(max-width: 768px) 50vw, 280px" />
                   </div>
                 </div>
                 <div className="py-4 text-center bg-[#f2f2f2]">
