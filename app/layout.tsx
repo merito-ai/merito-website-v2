@@ -26,6 +26,11 @@ export const metadata: Metadata = {
     default: "Merito — AI-Enabled Full-Funnel Recruitment Partner",
     template: "%s | Merito",
   },
+  icons: {
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
+  },
   description: "Merito is a human-centric AI recruitment agency that blends strategic human insight with a proprietary Skill-based Hiring Platform. No resume spam. No gut-feel guesses.",
   keywords: [
     "recruitment agency",

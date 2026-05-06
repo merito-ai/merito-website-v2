@@ -35,6 +35,29 @@ const heroStats = [
   { value: 48, suffix: "hrs", label: "To source top 2% Talent" },
 ];
 
+const clientLogos = [
+  { src: "/companies-logos/amber_logo.webp", alt: "AmberStudent" },
+  { src: "/companies-logos/carrot_logo.webp", alt: "Carrot", darkBg: true },
+  { src: "/companies-logos/equiruswealth_logo.webp", alt: "Equirus Wealth" },
+  { src: "/companies-logos/fg_logo.webp", alt: "Future Group" },
+  { src: "/companies-logos/geojit_logo.svg", alt: "Geojit" },
+  { src: "/companies-logos/gm_logo.webp", alt: "GroupM" },
+  { src: "/companies-logos/gtt_logo.webp", alt: "Global Talent Track" },
+  { src: "/companies-logos/lh_logo.webp", alt: "Lighthouse Communities" },
+  { src: "/companies-logos/livspace_logo.webp", alt: "Livspace" },
+  { src: "/companies-logos/mit_wpu_logo.png", alt: "MIT-WPU" },
+  { src: "/companies-logos/mosaic_logo.webp", alt: "Mosaic Wellness", darkBg: true },
+  { src: "/companies-logos/redseer_logo.webp", alt: "Redseer" },
+  { src: "/companies-logos/ss_logo.webp", alt: "Shyam Steel" },
+  { src: "/companies-logos/tbd_logo.webp", alt: "The Baker's Dozen" },
+  { src: "/companies-logos/unifocus_logo.webp", alt: "UniFocus" },
+  { src: "/companies-logos/u_gro_logo.webp", alt: "U GRO Capital" },
+  { src: "/companies-logos/wadhwani_logo.webp", alt: "Wadhwani Foundation" },
+  { src: "/companies-logos/wci_logo.png", alt: "Wellington College" },
+  { src: "/companies-logos/yo_logo.webp", alt: "YOptima" },
+  { src: "/companies-logos/zouk_logo.webp", alt: "Zouk" },
+];
+
 const misconceptionPairs = [
   {
     icon: "/figma-exports/fa-solid_hands-helping.png",
@@ -324,33 +347,13 @@ function HeroSection() {
                 No-risk consultation · Confidential discussion
               </p>
             </div>
-
-            <div className="mt-8 flex flex-wrap items-center gap-4">
-              <div className="flex items-center">
-                {["R", "G", "C", "P", "H", "T"].map((letter, index) => (
-                  <span
-                    key={letter}
-                    className="-mr-2 inline-flex size-[31px] items-center justify-center rounded-full border border-white bg-black text-[11px] font-bold text-white last:mr-0"
-                    style={{ zIndex: 6 - index }}
-                  >
-                    {letter}
-                  </span>
-                ))}
-              </div>
-              <div className="text-[13px] leading-tight">
-                <div className="text-[15px] tracking-[0.12em] text-[#ffcc01]">★★★★★</div>
-                <div className="mt-1 font-semibold text-[#4b4b4d]">
-                  85% avg. 2-year retention | Trusted by 50+ companies
-                </div>
-              </div>
-            </div>
           </RevealOnScroll>
 
           <HeroWinsCard />
         </div>
 
         <StaggerGroup
-          className="mt-11 rounded-[18px] bg-black px-3 py-3 sm:px-4 lg:mt-24"
+          className="mt-11 rounded-[18px] bg-black px-3 py-3 sm:px-4 lg:mt-14"
           stagger={0.08}
         >
           <div className="grid gap-1 divide-y divide-white/8 overflow-hidden rounded-[14px] sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4 lg:divide-x">
@@ -371,6 +374,38 @@ function HeroSection() {
           </div>
         </StaggerGroup>
       </Container>
+    </section>
+  );
+}
+
+function LogoCarouselSection() {
+  return (
+    <section className="bg-white py-10 border-b border-black/[0.06]">
+      <Container>
+        <p className="text-center text-[12px] font-semibold uppercase tracking-[0.14em] text-black">
+          Trusted by India&apos;s fastest-growing companies
+        </p>
+      </Container>
+      <Marquee speed={50}>
+        {clientLogos.map((logo) => (
+          <div
+            key={logo.alt}
+            className={`group flex h-[88px] w-[192px] shrink-0 items-center justify-center rounded-xl border px-6 shadow-sm ${
+              logo.darkBg
+                ? "border-black/20 bg-[#1a1a1a]"
+                : "border-black/[0.06] bg-white"
+            }`}
+          >
+            <Image
+              src={logo.src}
+              alt={logo.alt}
+              width={140}
+              height={48}
+              className="h-11 w-auto max-w-[140px] object-contain grayscale opacity-50 transition-all duration-300 group-hover:grayscale-0 group-hover:opacity-100"
+            />
+          </div>
+        ))}
+      </Marquee>
     </section>
   );
 }
@@ -1413,6 +1448,7 @@ export default function HomePage() {
   return (
     <main className="bg-white">
       <HeroSection />
+      <LogoCarouselSection />
       <MisconceptionSection />
       <SocialProofSection />
       <FullFunnelSection />
