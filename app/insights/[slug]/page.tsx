@@ -627,7 +627,7 @@ export default async function InsightPage({
               PODCAST
             </div>
             
-            <h1 className="mt-6 font-[family-name:var(--font-poppins)] font-bold text-[42px] md:text-[56px] text-white leading-[1.1] max-w-[1000px]">
+            <h1 className="mt-6 font-[family-name:var(--font-poppins)] font-bold text-[24px] md:text-[42px] lg:text-[56px] text-white leading-[1.1] max-w-[1000px]">
               {post.titleBefore}{" "}
               <span className="text-[#ed1a24]">{post.titleRed}</span>
             </h1>
@@ -652,7 +652,7 @@ export default async function InsightPage({
                 <div className="bg-[#ed1a24] px-3 py-1 rounded-[2px] text-[10px] font-bold tracking-[2px] uppercase w-fit mb-3">
                   HOSTED BY RUSHIKESH
                 </div>
-                <h3 className="font-[family-name:var(--font-poppins)] font-bold text-[28px] leading-tight">
+                <h3 className="font-[family-name:var(--font-poppins)] font-bold text-[20px] md:text-[28px] leading-tight">
                   Rushikesh Humbe
                 </h3>
                 <p className="text-[16px] text-white/70 mt-1">Founder, Merito</p>
@@ -689,7 +689,7 @@ export default async function InsightPage({
 
             {/* Redesigned CTA */}
             <div className="mt-16 pt-16 border-t border-gray-100 flex flex-col items-center text-center">
-              <h3 className="font-[family-name:var(--font-poppins)] font-bold text-[32px] text-black uppercase tracking-tight">
+              <h3 className="font-[family-name:var(--font-poppins)] font-bold text-[20px] md:text-[32px] text-black uppercase tracking-tight">
                 GET STARTED WITH <span className="text-[#ed1a24]">MERITO</span>
               </h3>
               <p className="text-[16px] text-[#4b4b4d] mt-4 max-w-[600px] leading-relaxed">
@@ -743,12 +743,12 @@ export default async function InsightPage({
         </div>
 
         {/* Body */}
-        <div className="px-[60px] py-[50px] flex flex-col gap-[40px]">
+        <div className="px-4 md:px-[60px] py-[30px] md:py-[50px] flex flex-col gap-[40px]">
 
           {/* Title row */}
-          <div className="flex gap-[60px] items-start">
+          <div className="flex flex-col md:flex-row gap-6 md:gap-[60px] items-start">
             <div className="flex-1">
-              <h1 className="font-[family-name:var(--font-poppins)] font-bold text-[40px] text-black leading-[115%]">
+              <h1 className="font-[family-name:var(--font-poppins)] font-bold text-[24px] md:text-[40px] text-black leading-[115%]">
                 {post.titleBefore ? (
                   <>
                     {post.titleBefore}{" "}
@@ -757,7 +757,7 @@ export default async function InsightPage({
                 ) : post.title}
               </h1>
             </div>
-            <div className="w-[280px] flex-shrink-0 flex flex-col gap-4 pt-2">
+            <div className="w-full md:w-[280px] flex-shrink-0 flex flex-col gap-4 pt-2">
               <p className="text-[15px] text-[#4b4b4d] leading-[160%]">
                 {post.excerpt ?? post.content[0].slice(0, 120) + "…"}
               </p>
@@ -770,7 +770,7 @@ export default async function InsightPage({
 
           {/* Stats row (articles with stats only) */}
           {post.stats && post.stats.length >= 2 && (
-            <div className="flex gap-5">
+            <div className="flex flex-col md:flex-row gap-5">
               {/* Left dark card */}
               <div className="bg-[#111] rounded-[12px] flex-1 px-[36px] py-[28px] flex flex-col gap-3">
                 <span className="font-[family-name:var(--font-poppins)] font-bold text-[64px] text-[#ed1a24] leading-none">

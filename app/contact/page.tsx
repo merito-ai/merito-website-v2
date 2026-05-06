@@ -31,7 +31,7 @@ export default function ContactPage() {
               Available for new partnerships
             </div>
             
-            <h1 className="font-[family-name:var(--font-gabarito)] text-[44px] md:text-[60px] font-bold text-black leading-[1.05] mb-6 tracking-[-0.02em]">
+            <h1 className="font-[family-name:var(--font-gabarito)] text-[24px] md:text-[44px] lg:text-[60px] font-bold text-black leading-[1.05] mb-6 tracking-[-0.02em]">
               Let&apos;s find the <br />
               <span className="text-[#ed1a24]">right talent.</span>
             </h1>
@@ -87,7 +87,7 @@ export default function ContactPage() {
             
             <div className="relative bg-white rounded-[28px] shadow-[0_20px_80px_rgba(0,0,0,0.08)] border border-gray-100 overflow-hidden">
               <div className="p-8 sm:p-10">
-                <h2 className="font-[family-name:var(--font-gabarito)] text-[32px] font-bold text-black mb-2">Request a consultation</h2>
+                <h2 className="font-[family-name:var(--font-gabarito)] text-[20px] md:text-[32px] font-bold text-black mb-2">Request a consultation</h2>
                 <p className="text-[#66686d] text-[15px] mb-8">Fill out the form below and we&apos;ll be in touch shortly.</p>
                 <ContactForm />
               </div>
