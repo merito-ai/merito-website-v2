@@ -314,7 +314,7 @@ function HeroSection() {
         <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(360px,0.95fr)]">
           <RevealOnScroll className="max-w-[600px]" duration={0.7} y={20}>
             <SectionPill text="AI-ENABLED FULL-FUNNEL RECRUITMENT PARTNER" />
-            <h1 className="mt-8 font-[family-name:var(--font-gabarito)] text-[3.05rem] font-semibold leading-[1.03] tracking-[-0.045em] text-black sm:text-[4.15rem]">
+            <h1 className="mt-8 font-[family-name:var(--font-gabarito)] text-[24px] font-semibold leading-[1.03] tracking-[-0.045em] text-black sm:text-[4.15rem]">
               The talent partner that turns job briefs into{" "}
               <span className="text-[#ed1a24]">DREAM HIRES.</span>
             </h1>
@@ -326,16 +326,16 @@ function HeroSection() {
             </p>
 
             <div className="mt-8 flex flex-col items-start gap-3">
-              <div className="flex flex-wrap items-center gap-4">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
                 <Link
                   href="/contact"
-                  className="inline-flex min-h-[56px] items-center justify-center rounded-[12px] border border-[#ed1a24]/40 px-6 text-[18px] font-semibold text-[#6f6f71] transition-all duration-200 hover:border-[#ed1a24] hover:text-[#ed1a24] hover:bg-[#ed1a24]/5 hover:scale-[1.02] active:scale-[0.98]"
+                  className="inline-flex w-full sm:w-auto min-h-[56px] items-center justify-center rounded-[12px] border border-[#ed1a24]/40 px-6 text-[18px] font-semibold text-[#6f6f71] transition-all duration-200 hover:border-[#ed1a24] hover:text-[#ed1a24] hover:bg-[#ed1a24]/5 hover:scale-[1.02] active:scale-[0.98]"
                 >
                   Start hiring smarter
                 </Link>
                 <Link
                   href="#proof"
-                  className="inline-flex min-h-[56px] items-center gap-3 rounded-[12px] bg-[#ed1a24] px-6 text-[18px] font-semibold text-white transition-all duration-200 hover:bg-black hover:text-white hover:scale-[1.03] hover:shadow-[0_8px_24px_rgba(0,0,0,0.25)] active:scale-[0.97]"
+                  className="inline-flex w-full sm:w-auto min-h-[56px] items-center justify-center gap-3 rounded-[12px] bg-[#ed1a24] px-6 text-[18px] font-semibold text-white transition-all duration-200 hover:bg-black hover:text-white hover:scale-[1.03] hover:shadow-[0_8px_24px_rgba(0,0,0,0.25)] active:scale-[0.97]"
                 >
                   <span>See our Results</span>
                   <span className="inline-flex size-7 items-center justify-center rounded-full bg-black text-white">
@@ -356,17 +356,17 @@ function HeroSection() {
           className="mt-11 rounded-[18px] bg-black px-3 py-3 sm:px-4 lg:mt-14"
           stagger={0.08}
         >
-          <div className="grid gap-1 divide-y divide-white/8 overflow-hidden rounded-[14px] sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4 lg:divide-x">
+          <div className="grid grid-cols-2 gap-1 divide-y divide-white/8 overflow-hidden rounded-[14px] sm:divide-y-0 lg:grid-cols-4 lg:divide-x">
             {heroStats.map((stat) => (
               <StaggerItem
                 key={stat.label}
                 className="flex min-h-[104px] flex-col items-center justify-center px-5 py-6 text-center"
               >
-                <div className="font-[family-name:var(--font-gabarito)] text-[2.2rem] font-semibold text-white">
+                <div className="font-[family-name:var(--font-gabarito)] text-[1.5rem] sm:text-[2.2rem] font-semibold text-white">
                   <CountUp value={stat.value} duration={1.6} />
                   <span className="text-[#ed1a24]">{stat.suffix}</span>
                 </div>
-                <div className="mt-2 text-[15px] font-semibold text-white">
+                <div className="mt-2 text-[11px] sm:text-[15px] font-semibold text-white">
                   {stat.label}
                 </div>
               </StaggerItem>
@@ -470,7 +470,7 @@ function MisconceptionSection() {
       <Container>
         <SectionPill text="THE MISCONCEPTION" />
         <div className="mt-8 max-w-[980px]">
-          <h2 className="font-[family-name:var(--font-gabarito)] text-[2.5rem] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.15rem]">
+          <h2 className="font-[family-name:var(--font-gabarito)] text-[22px] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.15rem]">
             Your hiring isn&apos;t slow.{" "}
             <span className="text-[#ed1a24]">Your recruitment approach is.</span>
           </h2>
@@ -497,7 +497,7 @@ function SocialProofSection() {
       <Container>
         <div className="text-center">
           <SectionPill text="THE REAL PROBLEM" />
-          <h2 className="mx-auto mt-8 max-w-[620px] font-[family-name:var(--font-gabarito)] text-[2.5rem] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.15rem]">
+          <h2 className="mx-auto mt-8 max-w-[620px] font-[family-name:var(--font-gabarito)] text-[22px] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.15rem]">
             Don&apos;t take our word for it.{" "}
             <span className="text-[#ed1a24]">Take theirs.</span>
           </h2>
@@ -695,7 +695,7 @@ function FullFunnelSection() {
       <Container>
         <div className="text-center">
           <SectionPill text="THE FULL-FUNNEL SOLUTION" />
-          <h2 className="mx-auto mt-8 max-w-[860px] font-[family-name:var(--font-gabarito)] text-[2.5rem] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.1rem]">
+          <h2 className="mx-auto mt-8 max-w-[860px] font-[family-name:var(--font-gabarito)] text-[22px] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.1rem]">
             Streamline Your Executive Search by Leveraging a{" "}
             <span className="text-[#ed1a24]">Skill-based Hiring Platform</span>
           </h2>
@@ -845,7 +845,7 @@ function TechnologyCard({
           unoptimized
         />
       </div>
-      <h3 className="font-[family-name:var(--font-gabarito)] text-[1.9rem] font-semibold leading-[1] text-black">
+      <h3 className="font-[family-name:var(--font-gabarito)] text-[20px] sm:text-[1.9rem] font-semibold leading-[1] text-black">
         {title}
       </h3>
       <p className="mt-4 text-[16px] leading-[1.7] text-[#595b61]">{body}</p>
@@ -860,7 +860,7 @@ function PropTechSection() {
       <Container>
         <div className="text-center">
           <SectionPill text="PROPRIETARY TECHNOLOGY" />
-          <h2 className="mx-auto mt-8 max-w-[900px] font-[family-name:var(--font-gabarito)] text-[2.4rem] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.05rem]">
+          <h2 className="mx-auto mt-8 max-w-[900px] font-[family-name:var(--font-gabarito)] text-[22px] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.05rem]">
             The Agents That Work While Your Experts Focus
           </h2>
           <p className="mx-auto mt-5 max-w-[760px] text-[18px] leading-[1.7] text-[#5f6166]">
@@ -1201,7 +1201,7 @@ function TalentEquationSection() {
       <Container>
         <div className="text-center">
           <SectionPill text="THE TALENT EQUATION" />
-          <h2 className="mx-auto mt-8 max-w-[790px] font-[family-name:var(--font-gabarito)] text-[2.4rem] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.05rem]">
+          <h2 className="mx-auto mt-8 max-w-[790px] font-[family-name:var(--font-gabarito)] text-[22px] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.05rem]">
             The New Math of Hiring:{" "}
             <span className="text-[#ed1a24]">
               Artificial + Acquired Intelligence.
@@ -1234,7 +1234,7 @@ function TalentEquationSection() {
               <span className="inline-flex rounded-[10px] border border-[#f4c4c6] bg-[#fff6f6] px-3 py-1 text-[13px] font-medium text-[#ed1a24]">
                 {card.tag}
               </span>
-              <h3 className="mt-5 font-[family-name:var(--font-gabarito)] text-[1.9rem] font-semibold leading-[1.04] text-black">
+              <h3 className="mt-5 font-[family-name:var(--font-gabarito)] text-[20px] sm:text-[1.9rem] font-semibold leading-[1.04] text-black">
                 {card.title}
               </h3>
               <p className="mt-5 text-[18px] leading-[1.8] text-[#595b60]">
@@ -1253,7 +1253,7 @@ function PerformanceSection() {
     <section className="bg-white py-12">
       <Container>
         <div className="text-center">
-          <h2 className="mx-auto max-w-[760px] font-[family-name:var(--font-gabarito)] text-[2.4rem] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.05rem]">
+          <h2 className="mx-auto max-w-[760px] font-[family-name:var(--font-gabarito)] text-[22px] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.05rem]">
             Your Recruiter Is Trapped in Manual Work{" "}
             <span className="text-[#ed1a24]">
               Your Founder is Stuck in Interviews.
@@ -1380,7 +1380,7 @@ function FAQSection() {
   return (
     <section className="bg-white py-12">
       <Container className="max-w-[980px]">
-        <h2 className="text-center font-[family-name:var(--font-gabarito)] text-[2.35rem] font-semibold leading-[1.06] tracking-[-0.035em] text-black sm:text-[2.9rem]">
+        <h2 className="text-center font-[family-name:var(--font-gabarito)] text-[22px] font-semibold leading-[1.06] tracking-[-0.035em] text-black sm:text-[2.9rem]">
           Frequently Asked Questions
         </h2>
 
@@ -1415,7 +1415,7 @@ function CTASection() {
       <Container className="max-w-[880px]">
         <RevealOnScroll>
           <SectionPill text="READY TO GROW?" />
-          <h2 className="mt-8 font-[family-name:var(--font-gabarito)] text-[2.4rem] font-semibold leading-[1.06] tracking-[-0.035em] text-black sm:text-[3.05rem]">
+          <h2 className="mt-8 font-[family-name:var(--font-gabarito)] text-[22px] font-semibold leading-[1.06] tracking-[-0.035em] text-black sm:text-[3.05rem]">
             Hire with <span className="text-[#ed1a24]">Conviction</span>
             <br />
             Not <span className="text-[#ed1a24]">Intuition</span>
