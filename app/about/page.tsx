@@ -84,12 +84,12 @@ export default function AboutPage() {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/60" />
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center gap-5">
-            <h1 className="font-[family-name:var(--font-poppins)] font-semibold text-[48px] text-white leading-normal">
+            <h1 className="font-[family-name:var(--font-poppins)] font-semibold text-[24px] sm:text-[48px] text-white leading-normal">
               Our Approach
               <br />
               <span className="text-[#ed1a24]">Your Advantage</span>
             </h1>
-            <p className="font-semibold text-[24px] text-[#d9d9d9] leading-[165%]">
+            <p className="font-semibold text-[14px] sm:text-[24px] text-[#d9d9d9] leading-[165%]">
               Discover how Merito turns vision into measurable impact
             </p>
           </div>
@@ -100,14 +100,14 @@ export default function AboutPage() {
       <section className="max-w-[1300px] mx-auto px-5 py-12 flex flex-col gap-[50px]">
         <div className="flex flex-col items-center gap-5">
           <Eyebrow text="OUR STORY" />
-          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black text-center">
+          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[22px] sm:text-[32px] text-black text-center">
             The Merito Story
           </h2>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-[114px] items-start">
+        <div className="flex flex-col lg:flex-row gap-[32px] lg:gap-[114px] items-start">
           {/* Story text */}
-          <div className="flex flex-col gap-5 font-[family-name:var(--font-poppins)] font-medium text-[20px] text-[#4b4b4d] leading-[155%] flex-1">
+          <div className="flex flex-col gap-5 font-[family-name:var(--font-poppins)] font-medium text-[15px] sm:text-[20px] text-[#4b4b4d] leading-[155%] flex-1">
             <p>
               Merito began with Career Corner Education, built on a simple belief: people unlock
               their potential when given the right opportunities. What started as a vision to guide
@@ -144,7 +144,7 @@ export default function AboutPage() {
 
       {/* Vision & Mission */}
       <section className="max-w-[1222px] mx-auto px-5 py-12 flex flex-col gap-[50px]">
-        <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black text-center w-full">
+        <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[22px] sm:text-[32px] text-black text-center w-full">
           Our Vision and Mission
         </h2>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-[70px]">
@@ -166,7 +166,7 @@ export default function AboutPage() {
           ].map((card) => (
             <div
               key={card.label}
-              className="group relative bg-white border border-white/8 rounded-[20px] shadow-[0px_0px_128.7px_2px_rgba(0,0,0,0.25)] hover:shadow-[0px_0px_128.7px_2px_rgba(237,26,36,0.15)] hover:-translate-y-2 transition-all duration-300 p-[43px] flex flex-col gap-6 overflow-hidden"
+              className="group relative bg-white border border-white/8 rounded-[20px] shadow-[0px_0px_128.7px_2px_rgba(0,0,0,0.25)] hover:shadow-[0px_0px_128.7px_2px_rgba(237,26,36,0.15)] hover:-translate-y-2 transition-all duration-300 p-[22px] sm:p-[43px] flex flex-col gap-6 overflow-hidden"
             >
               {/* Hover Left Red Bar */}
               <div className="absolute inset-y-0 left-0 w-1.5 group-hover:w-3 bg-[#ed1a24] opacity-0 group-hover:opacity-100 transition-all duration-300" />
@@ -177,9 +177,9 @@ export default function AboutPage() {
                 </div>
               </div>
               <div className="flex flex-col gap-4 relative z-10">
-                <h3 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black"
+                <h3 className="font-[family-name:var(--font-poppins)] font-semibold text-[20px] sm:text-[32px] text-black"
                     dangerouslySetInnerHTML={{ __html: card.label }} />
-                <p className="font-semibold italic text-[18px] text-[#4b4b4d] leading-[146.8%]">{card.quote}</p>
+                <p className="font-semibold italic text-[14px] sm:text-[18px] text-[#4b4b4d] leading-[146.8%]">{card.quote}</p>
               </div>
               <p className="font-[family-name:var(--font-poppins)] text-[16px] text-[#4b4b4d] leading-[155%] relative z-10">{card.body}</p>
               <div className="h-[10px] w-[22px] rounded-full bg-[#ed1a24]/25 group-hover:bg-[#ed1a24] transition-colors relative z-10" />
@@ -192,7 +192,7 @@ export default function AboutPage() {
       <section className="max-w-[1193px] mx-auto px-5 py-12 flex flex-col gap-[50px]">
         <div className="flex flex-col items-center gap-5">
           <Eyebrow text="VALUES" />
-          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black text-center">
+          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[22px] sm:text-[32px] text-black text-center">
             Our Values <span className="text-[#ed1a24]">(5I&apos;s)</span>
           </h2>
         </div>
@@ -220,15 +220,15 @@ export default function AboutPage() {
       <section className="max-w-[1218px] mx-auto px-5 py-12 flex flex-col gap-[50px]">
         <div className="flex flex-col items-center gap-5">
           <Eyebrow text="OUR TEAM" />
-          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black text-center">Know Our Team</h2>
-          <p className="font-semibold text-[20px] text-black text-center">Founding Team</p>
+          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[22px] sm:text-[32px] text-black text-center">Know Our Team</h2>
+          <p className="font-semibold text-[16px] sm:text-[20px] text-black text-center">Founding Team</p>
         </div>
 
         <div className="flex flex-col gap-[50px] items-center w-full">
           {/* Founders row */}
           <div className="flex gap-[40px] md:gap-[60px] items-start flex-wrap justify-center">
             {foundingTeam.slice(0, 2).map((m) => (
-              <div key={m.name} className="bg-[#f2f2f2] rounded-[7px] shadow-[0px_4px_15px_rgba(0,0,0,0.05)] overflow-hidden w-[310px]">
+              <div key={m.name} className="bg-[#f2f2f2] rounded-[7px] shadow-[0px_4px_15px_rgba(0,0,0,0.05)] overflow-hidden w-full sm:w-[310px]">
                 <div className="p-4 pb-0">
                   <div className="relative w-full h-[330px] rounded-[4px] overflow-hidden">
                     <Image src={m.img} alt={m.name} fill className="object-cover object-top" sizes="(max-width: 768px) 50vw, 280px" />
@@ -243,7 +243,7 @@ export default function AboutPage() {
           </div>
           {/* Head */}
           {foundingTeam.slice(2).map((m) => (
-            <div key={m.name} className="bg-[#f2f2f2] rounded-[7px] shadow-[0px_4px_15px_rgba(0,0,0,0.05)] overflow-hidden w-[310px]">
+            <div key={m.name} className="bg-[#f2f2f2] rounded-[7px] shadow-[0px_4px_15px_rgba(0,0,0,0.05)] overflow-hidden w-full sm:w-[310px]">
               <div className="p-4 pb-0">
                 <div className="relative w-full h-[330px] rounded-[4px] overflow-hidden">
                   <Image src={m.img} alt={m.name} fill className="object-cover object-top" sizes="(max-width: 768px) 50vw, 280px" />
@@ -259,7 +259,7 @@ export default function AboutPage() {
 
         {/* Recruitment team */}
         <div className="flex flex-col gap-[70px] items-center w-full mt-8">
-          <h3 className="font-semibold text-[32px] text-black text-center">Meet our Team</h3>
+          <h3 className="font-semibold text-[22px] sm:text-[32px] text-black text-center">Meet our Team</h3>
           <div className="flex gap-[40px] md:gap-[50px] items-center flex-wrap justify-center">
             {recruitmentTeam.map((m) => (
               <div key={m.name} className="bg-[#f2f2f2] rounded-[5px] shadow-[0px_4px_15px_rgba(0,0,0,0.05)] overflow-hidden w-[260px]">
@@ -280,7 +280,7 @@ export default function AboutPage() {
       {/* CTA */}
       <section className="max-w-[1115px] mx-auto px-5 py-12 flex flex-col items-center gap-[25px] text-center">
         <div className="flex flex-col gap-5 w-full">
-          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black">Get started with Merito</h2>
+          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[22px] sm:text-[32px] text-black">Get started with Merito</h2>
           <p className="text-[16px] text-[#4b4b4d] leading-[165%]">
             Help us with what you are looking for and our team will get in-touch to understand your talent requirements
           </p>
