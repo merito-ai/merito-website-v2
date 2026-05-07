@@ -326,7 +326,7 @@ function HeroSection() {
             </p>
 
             <div className="mt-8 flex flex-col items-start gap-3">
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+              <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
                 <Link
                   href="/contact"
                   className="inline-flex w-full sm:w-auto min-h-[56px] items-center justify-center rounded-[12px] border border-[#ed1a24]/40 px-6 text-[18px] font-semibold text-[#6f6f71] transition-all duration-200 hover:border-[#ed1a24] hover:text-[#ed1a24] hover:bg-[#ed1a24]/5 hover:scale-[1.02] active:scale-[0.98]"
@@ -380,9 +380,9 @@ function HeroSection() {
 
 function LogoCarouselSection() {
   return (
-    <section className="bg-white py-10 border-b border-black/[0.06]">
+    <section className="bg-white py-6 sm:py-10 border-b border-black/[0.06]">
       <Container>
-        <p className="text-center text-[12px] font-semibold uppercase tracking-[0.14em] text-black">
+        <p className="text-center text-[11px] sm:text-[12px] font-semibold uppercase tracking-[0.14em] text-black">
           Trusted by India&apos;s fastest-growing companies
         </p>
       </Container>
@@ -390,7 +390,7 @@ function LogoCarouselSection() {
         {clientLogos.map((logo) => (
           <div
             key={logo.alt}
-            className={`group flex h-[88px] w-[192px] shrink-0 items-center justify-center rounded-xl border px-6 shadow-sm ${
+            className={`group flex h-[60px] w-[130px] sm:h-[88px] sm:w-[192px] shrink-0 items-center justify-center rounded-xl border px-4 sm:px-6 shadow-sm ${
               logo.darkBg
                 ? "border-black/20 bg-[#1a1a1a]"
                 : "border-black/[0.06] bg-white"
@@ -401,7 +401,7 @@ function LogoCarouselSection() {
               alt={logo.alt}
               width={140}
               height={48}
-              className="h-11 w-auto max-w-[140px] object-contain grayscale opacity-50 transition-all duration-300 group-hover:grayscale-0 group-hover:opacity-100"
+              className="h-7 sm:h-11 w-auto max-w-[100px] sm:max-w-[140px] object-contain grayscale opacity-50 transition-all duration-300 group-hover:grayscale-0 group-hover:opacity-100"
             />
           </div>
         ))}
