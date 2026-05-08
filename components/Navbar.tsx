@@ -30,7 +30,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 flex justify-center bg-transparent px-4 py-4">
-      <nav className="flex h-[82px] w-full max-w-[1328px] items-center justify-between rounded-[8px] border border-black/12 bg-white px-4 shadow-[0_8px_22px_rgba(17,35,89,0.08)] sm:px-5 lg:px-6">
+      <nav className="flex h-[82px] w-full max-w-[1328px] items-center justify-between rounded-[40px] border border-black/12 bg-white px-4 shadow-[0_8px_22px_rgba(17,35,89,0.08)] sm:rounded-[8px] sm:px-5 lg:px-6">
         {/* Logo */}
         <Link href="/" className="flex-shrink-0">
           <Image

@@ -47,9 +47,9 @@ export default function TestimonialCarousel({
     <article
       onMouseEnter={() => { pausedRef.current = true; }}
       onMouseLeave={() => { pausedRef.current = false; }}
-      className={`relative overflow-hidden rounded-[22px] border border-black/8 bg-white p-8 shadow-[0_22px_60px_rgba(17,35,89,0.06)] ${className}`}
+      className={`relative overflow-hidden rounded-[15px] sm:rounded-[22px] border border-black/8 bg-white p-4 sm:p-8 shadow-[0_22px_60px_rgba(17,35,89,0.06)] ${className}`}
     >
-      <div className="min-h-[260px]">
+      <div className="min-h-[120px] sm:min-h-[260px]">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={index}
@@ -58,20 +58,20 @@ export default function TestimonialCarousel({
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
           >
-            <blockquote className="max-w-[500px] text-[22px] font-medium italic leading-[1.55] text-[#444]">
+            <blockquote className="max-w-[500px] text-[13px] sm:text-[22px] font-medium italic leading-[1.55] text-[#444]">
               &ldquo;{current.quote}&rdquo;
             </blockquote>
-            <div className="mt-8 flex items-center gap-4">
+            <div className="mt-4 sm:mt-8 flex items-center gap-3 sm:gap-4">
               <span
-                className={`inline-flex size-12 items-center justify-center rounded-full text-[14px] font-semibold text-white ${current.color}`}
+                className={`inline-flex size-8 sm:size-12 items-center justify-center rounded-full text-[12px] sm:text-[14px] font-semibold text-white ${current.color}`}
               >
                 {current.initials}
               </span>
               <div>
-                <p className="text-[18px] font-semibold text-black">
+                <p className="text-[14px] sm:text-[18px] font-semibold text-black">
                   {current.name}
                 </p>
-                <p className="text-[15px] text-[#5f5f61]">{current.role}</p>
+                <p className="text-[12px] sm:text-[15px] text-[#5f5f61]">{current.role}</p>
               </div>
             </div>
           </motion.div>
@@ -79,13 +79,13 @@ export default function TestimonialCarousel({
       </div>
 
       {total > 1 && (
-        <div className="mt-8 flex items-center justify-between border-t border-black/8 pt-6">
-          <div className="flex items-center gap-2">
+        <div className="mt-4 sm:mt-8 flex items-center justify-between border-t border-black/8 pt-4 sm:pt-6">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <button
               type="button"
               onClick={prev}
               aria-label="Previous testimonial"
-              className="inline-flex size-9 items-center justify-center rounded-full border border-black/10 text-black transition-colors hover:bg-black hover:text-white"
+              className="inline-flex size-7 sm:size-9 items-center justify-center rounded-full border border-black/10 text-black transition-colors hover:bg-black hover:text-white"
             >
               &lt;
             </button>
@@ -106,7 +106,7 @@ export default function TestimonialCarousel({
               type="button"
               onClick={next}
               aria-label="Next testimonial"
-              className="inline-flex size-9 items-center justify-center rounded-full border border-black/10 text-black transition-colors hover:bg-black hover:text-white"
+              className="inline-flex size-7 sm:size-9 items-center justify-center rounded-full border border-black/10 text-black transition-colors hover:bg-black hover:text-white"
             >
               &gt;
             </button>

@@ -560,19 +560,19 @@ function SocialProofSection() {
 
         </div>
 
-        {/* Mobile: stacked single-column testimonials. Desktop: horizontal marquee */}
-        <div className="mt-8 grid gap-4 sm:hidden">
-          {smallTestimonials.slice(0, 2).map((testimonial) => (
+        {/* Mobile: horizontal snap-scroll testimonials. Desktop: horizontal marquee */}
+        <div className="-mx-4 mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:hidden [&::-webkit-scrollbar]:hidden">
+          {smallTestimonials.map((testimonial) => (
             <article
               key={testimonial.name}
-              className="flex w-full flex-col rounded-[15px] border border-black/8 bg-white px-4 py-4 shadow-[0_10px_30px_rgba(17,35,89,0.04)]"
+              className="flex w-[280px] shrink-0 snap-start flex-col rounded-[15px] border border-black/8 bg-white px-4 py-4 shadow-[0_10px_30px_rgba(17,35,89,0.04)]"
             >
-              <p className="text-[12px] leading-[1.65] text-[#55565a]">
+              <p className="text-[12px] italic leading-[1.65] text-[#55565a]">
                 &ldquo;{testimonial.quote}&rdquo;
               </p>
-              <div className="mt-4 flex items-center gap-3">
+              <div className="mt-auto pt-4 flex items-center gap-3">
                 <span
-                  className={`inline-flex size-8 items-center justify-center rounded-full text-[12px] font-semibold text-white ${testimonial.color}`}
+                  className={`inline-flex size-8 shrink-0 items-center justify-center rounded-full text-[12px] font-semibold text-white ${testimonial.color}`}
                 >
                   {testimonial.initials}
                 </span>
@@ -1332,7 +1332,7 @@ function PerformanceSection() {
         </div>
 
         <StaggerGroup
-          className="mt-8 sm:mt-14 grid items-start gap-4 sm:gap-6 lg:grid-cols-3 lg:px-12"
+          className="mt-8 sm:mt-14 grid items-start gap-4 sm:gap-6 sm:grid-cols-3 sm:px-12"
           stagger={0.15}
         >
           {/* Card 1: Metric Labels */}
