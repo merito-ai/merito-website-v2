@@ -1,15 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "motion/react";
 import Script from "next/script";
 
 declare global {
   interface Window {
     grecaptcha?: {
-      getResponse: () => string;
-      reset: () => void;
+      render: (container: HTMLElement, options: { sitekey: string }) => number;
+      getResponse: (widgetId?: number) => string;
+      reset: (widgetId?: number) => void;
+      ready: (callback: () => void) => void;
     };
+    onRecaptchaLoad?: () => void;
   }
 }
 
@@ -19,6 +22,26 @@ export default function ContactForm() {
   const [formError, setFormError] = useState<string | null>(null);
   const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "";
   const recaptchaEnabled = Boolean(recaptchaSiteKey);
+  const recaptchaContainerRef = useRef<HTMLDivElement>(null);
+  const widgetIdRef = useRef<number | null>(null);
+
+  // Explicit rendering — required for modal/conditional mounts (auto-render only fires on page load)
+  useEffect(() => {
+    if (!recaptchaEnabled) return;
+    const renderWidget = () => {
+      if (recaptchaContainerRef.current && window.grecaptcha?.render && widgetIdRef.current === null) {
+        widgetIdRef.current = window.grecaptcha.render(recaptchaContainerRef.current, {
+          sitekey: recaptchaSiteKey,
+        });
+      }
+    };
+    if (window.grecaptcha?.render) {
+      window.grecaptcha.ready(renderWidget);
+    } else {
+      window.onRecaptchaLoad = renderWidget;
+    }
+    return () => { widgetIdRef.current = null; };
+  }, [recaptchaEnabled, recaptchaSiteKey]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,7 +53,7 @@ export default function ContactForm() {
     const payload = Object.fromEntries(formData.entries()) as Record<string, FormDataEntryValue>;
 
     if (recaptchaEnabled) {
-      const recaptchaToken = window.grecaptcha?.getResponse?.() || "";
+      const recaptchaToken = window.grecaptcha?.getResponse?.(widgetIdRef.current ?? undefined) || "";
       if (!recaptchaToken) {
         setStatus("idle");
         setCaptchaError("Please verify that you are not a robot.");
@@ -47,7 +70,7 @@ export default function ContactForm() {
       });
       if (res.ok) {
         form.reset();
-        window.grecaptcha?.reset?.();
+        window.grecaptcha?.reset?.(widgetIdRef.current ?? undefined);
         setStatus("success");
       } else {
         let errMsg = "Something went wrong. Please try again.";
@@ -55,7 +78,7 @@ export default function ContactForm() {
           const data = await res.json() as { error?: string };
           if (data.error) errMsg = data.error;
         } catch { /* ignore parse error */ }
-        window.grecaptcha?.reset?.();
+        window.grecaptcha?.reset?.(widgetIdRef.current ?? undefined);
         setCaptchaError(null);
         setFormError(errMsg);
         setStatus("idle");
@@ -90,7 +113,7 @@ export default function ContactForm() {
       className="space-y-5"
     >
       {recaptchaEnabled ? (
-        <Script src="https://www.google.com/recaptcha/api.js" strategy="afterInteractive" />
+        <Script src="https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit" strategy="afterInteractive" />
       ) : null}
 
       <input type="text" name="bot-field" className="hidden" aria-hidden="true" />
@@ -203,7 +226,7 @@ export default function ContactForm() {
         <div className="space-y-2">
           {/* Scale down the fixed-300px widget on narrow phones */}
           <div className="origin-top-left scale-[0.82] sm:scale-100 w-[246px] sm:w-[304px] overflow-hidden">
-            <div className="g-recaptcha" data-sitekey={recaptchaSiteKey} />
+            <div ref={recaptchaContainerRef} />
           </div>
           {captchaError ? <p className="text-[13px] font-semibold text-[#ed1a24]">{captchaError}</p> : null}
         </div>
