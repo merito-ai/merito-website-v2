@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import ContactTrigger from "@/components/ContactTrigger";
 import PodcastPlayer from "@/components/PodcastPlayer";
 
 const articleData: Record<string, {
@@ -708,17 +707,28 @@ export default async function InsightPage({
     );
   }
 
-  // ARTICLE LAYOUT (Keep as is but ensured consistency)
+  // ARTICLE LAYOUT
   return (
-    <main className="bg-[#f5f5f5]">
-      {/* Card container */}
-      <div className="max-w-[1003px] mx-auto bg-white shadow-[0px_4px_24px_rgba(0,0,0,0.10)] rounded-b-[16px] overflow-hidden">
+    <main className="bg-[#f5f5f5] pb-10">
+
+      {/* Back link — above card on mobile */}
+      <div className="sm:hidden max-w-[1003px] mx-auto px-4 pt-4 pb-2">
+        <Link
+          href="/insights"
+          className="text-[#4b4b4d]/70 text-[11px] font-bold hover:text-black tracking-wider w-fit"
+        >
+          ← BACK TO INSIGHTS
+        </Link>
+      </div>
+
+      {/* Card container — no overflow-hidden so stats can escape on mobile */}
+      <div className="max-w-[1003px] mx-auto bg-white shadow-[0px_4px_24px_rgba(0,0,0,0.10)] rounded-b-[16px] sm:rounded-b-[16px]">
 
         {/* Red top bar */}
         <div className="h-[6px] bg-[#ed1a24]" />
 
-        {/* Hero image */}
-        <div className="relative h-[200px] sm:h-[340px] w-full">
+        {/* Hero image — overflow-hidden here for rounded top corners */}
+        <div className="relative h-[200px] sm:h-[340px] w-full overflow-hidden">
           <Image
             src={heroImage}
             alt={post.title}
@@ -727,17 +737,24 @@ export default async function InsightPage({
             priority
           />
           <div className="absolute inset-0 bg-black/50" />
-          {/* Back + category */}
-          <div className="absolute inset-0 flex flex-col justify-between p-4 sm:p-8">
+
+          {/* Mobile: category at top-left only */}
+          <div className="sm:hidden absolute top-4 left-4 flex items-center gap-0">
+            <div className="w-[3px] h-[16px] bg-[#ed1a24] mr-2 flex-shrink-0" />
+            <span className="font-bold text-[11px] text-white tracking-[2px] uppercase">{post.category}</span>
+          </div>
+
+          {/* Desktop: back link top + category bottom */}
+          <div className="hidden sm:flex absolute inset-0 flex-col justify-between p-8">
             <Link
               href="/insights"
-              className="text-white/70 text-[11px] sm:text-[13px] font-bold hover:text-white tracking-wider w-fit"
+              className="text-white/70 text-[13px] font-bold hover:text-white tracking-wider w-fit"
             >
               ← BACK TO INSIGHTS
             </Link>
             <div className="flex items-center gap-0">
-              <div className="w-[3px] sm:w-[4px] h-[16px] sm:h-[22px] bg-[#ed1a24] mr-2 sm:mr-3 flex-shrink-0" />
-              <span className="font-bold text-[11px] sm:text-[13px] text-white tracking-[2px] uppercase">{post.category}</span>
+              <div className="w-[4px] h-[22px] bg-[#ed1a24] mr-3 flex-shrink-0" />
+              <span className="font-bold text-[13px] text-white tracking-[2px] uppercase">{post.category}</span>
             </div>
           </div>
         </div>
@@ -768,56 +785,91 @@ export default async function InsightPage({
             </div>
           </div>
 
-          {/* Stats row (articles with stats only) */}
+          {/* Stats */}
           {post.stats && post.stats.length >= 2 && (
-            <div className="flex flex-col sm:flex-row gap-5">
-              {/* Left dark card */}
-              <div className="bg-[#111] rounded-[12px] flex-1 px-[36px] py-[28px] flex flex-col gap-3">
-                <span className="font-[family-name:var(--font-poppins)] font-bold text-[40px] sm:text-[64px] text-[#ed1a24] leading-none">
-                  {post.stats[0].value}
-                </span>
-                <p className="font-[family-name:var(--font-poppins)] font-bold text-[13px] sm:text-[16px] text-white">
-                  {post.stats[0].label}
-                </p>
-                <p className="text-[11px] sm:text-[13px] text-white/50 leading-[155%]">
-                  AI-powered hiring cuts cost per hire dramatically
-                </p>
-              </div>
-
-              {/* Right bordered card */}
-              <div className="relative flex-1 border-t-[3px] border-b-[3px] border-[#ed1a24] bg-white px-[28px] py-[28px] flex items-center">
-                {/* Red corner dots */}
-                <div className="absolute top-[-6px] left-[-6px] size-[10px] rounded-full bg-[#ed1a24]" />
-                <div className="absolute top-[-6px] right-[-6px] size-[10px] rounded-full bg-[#ed1a24]" />
-                <div className="absolute bottom-[-6px] left-[-6px] size-[10px] rounded-full bg-[#ed1a24]" />
-                <div className="absolute bottom-[-6px] right-[-6px] size-[10px] rounded-full bg-[#ed1a24]" />
-
-                <div className="flex items-center gap-6 w-full">
-                  {/* Left half */}
-                  <div className="flex flex-col gap-1 flex-1">
-                    <span className="font-[family-name:var(--font-poppins)] font-bold text-[32px] sm:text-[48px] text-black leading-none">
+            <>
+              {/* ── MOBILE stats: two light cards + dark card, bleed to page bg ── */}
+              <div className="sm:hidden -mx-4 px-4 pt-2 pb-5 bg-[#f5f5f5] flex flex-col gap-3">
+                <div className="flex flex-row gap-3">
+                  {/* stat[1] */}
+                  <div className="flex-1 bg-white border border-gray-200 rounded-[10px] px-4 py-4 flex flex-col gap-1">
+                    <span className="font-[family-name:var(--font-poppins)] font-bold text-[32px] text-black leading-none">
                       {post.stats[1].value}
                     </span>
-                    <span className="font-bold text-[11px] sm:text-[13px] text-[#4b4b4d] tracking-[1px] uppercase">
+                    <span className="font-bold text-[10px] text-[#4b4b4d] tracking-[1px] uppercase leading-tight">
                       {post.stats[1].label}
                     </span>
                   </div>
-                  {/* Divider */}
-                  <div className="w-px h-[60px] bg-[#ed1a24]" />
-                  {/* Right half */}
+                  {/* stat[2] */}
                   {post.stats[2] && (
-                    <div className="flex flex-col gap-1 flex-1">
-                      <span className="font-[family-name:var(--font-poppins)] font-bold text-[16px] sm:text-[20px] text-black leading-tight">
+                    <div className="flex-1 bg-white border border-gray-200 rounded-[10px] px-4 py-4 flex flex-col gap-1">
+                      <span className="font-[family-name:var(--font-poppins)] font-bold text-[20px] text-black leading-tight">
                         {post.stats[2].value}
                       </span>
-                      <span className="font-bold text-[11px] sm:text-[13px] text-[#4b4b4d] tracking-[1px] uppercase">
+                      <span className="font-bold text-[10px] text-[#4b4b4d] tracking-[1px] uppercase leading-tight">
                         {post.stats[2].label}
                       </span>
                     </div>
                   )}
                 </div>
+                {/* stat[0] dark card */}
+                <div className="bg-[#111] rounded-[10px] px-5 py-4 flex items-center gap-4">
+                  <span className="font-[family-name:var(--font-poppins)] font-bold text-[40px] text-[#ed1a24] leading-none">
+                    {post.stats[0].value}
+                  </span>
+                  <div className="flex flex-col gap-[2px]">
+                    <p className="font-[family-name:var(--font-poppins)] font-bold text-[13px] text-white uppercase tracking-wide">
+                      {post.stats[0].label}
+                    </p>
+                    <p className="text-[10px] text-white/50 leading-[155%]">
+                      with AI-Powered recruitment
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
+
+              {/* ── DESKTOP stats: original dark-left / bordered-right ── */}
+              <div className="hidden sm:flex flex-row gap-5">
+                <div className="bg-[#111] rounded-[12px] flex-1 px-[36px] py-[28px] flex flex-col gap-3">
+                  <span className="font-[family-name:var(--font-poppins)] font-bold text-[64px] text-[#ed1a24] leading-none">
+                    {post.stats[0].value}
+                  </span>
+                  <p className="font-[family-name:var(--font-poppins)] font-bold text-[16px] text-white">
+                    {post.stats[0].label}
+                  </p>
+                  <p className="text-[13px] text-white/50 leading-[155%]">
+                    AI-powered hiring cuts cost per hire dramatically
+                  </p>
+                </div>
+                <div className="relative flex-1 border-t-[3px] border-b-[3px] border-[#ed1a24] bg-white px-[28px] py-[28px] flex items-center">
+                  <div className="absolute top-[-6px] left-[-6px] size-[10px] rounded-full bg-[#ed1a24]" />
+                  <div className="absolute top-[-6px] right-[-6px] size-[10px] rounded-full bg-[#ed1a24]" />
+                  <div className="absolute bottom-[-6px] left-[-6px] size-[10px] rounded-full bg-[#ed1a24]" />
+                  <div className="absolute bottom-[-6px] right-[-6px] size-[10px] rounded-full bg-[#ed1a24]" />
+                  <div className="flex items-center gap-6 w-full">
+                    <div className="flex flex-col gap-1 flex-1">
+                      <span className="font-[family-name:var(--font-poppins)] font-bold text-[48px] text-black leading-none">
+                        {post.stats[1].value}
+                      </span>
+                      <span className="font-bold text-[13px] text-[#4b4b4d] tracking-[1px] uppercase">
+                        {post.stats[1].label}
+                      </span>
+                    </div>
+                    <div className="w-px h-[60px] bg-[#ed1a24]" />
+                    {post.stats[2] && (
+                      <div className="flex flex-col gap-1 flex-1">
+                        <span className="font-[family-name:var(--font-poppins)] font-bold text-[20px] text-black leading-tight">
+                          {post.stats[2].value}
+                        </span>
+                        <span className="font-bold text-[13px] text-[#4b4b4d] tracking-[1px] uppercase">
+                          {post.stats[2].label}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </>
           )}
 
           {/* Article content */}
