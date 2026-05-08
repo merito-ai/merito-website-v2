@@ -185,7 +185,7 @@ export default function OfferVaultPage() {
                 className={`${i === 2 ? "sm:col-span-2" : ""} bg-white border-[#ed1a24] ${p.accent === "top" ? "border-t" : "border-b"} rounded-[5px] sm:rounded-[12px] shadow-[0_0_2.4px_1.2px_rgba(0,0,0,0.25)] sm:shadow-[0px_10px_30px_rgba(0,0,0,0.08)] overflow-hidden w-full sm:max-w-[543px] h-[120px] sm:h-auto sm:min-h-[199px] relative sm:flex sm:flex-row sm:items-center sm:gap-8 sm:p-8`}
               >
                 <div className="absolute sm:relative left-[18px] sm:left-auto top-1/2 sm:top-auto -translate-y-1/2 sm:translate-y-0 size-[59px] sm:size-[98px] bg-white rounded-full shadow-[0_0_4.6px_1.2px_rgba(0,0,0,0.25)] sm:shadow-[0px_4px_20px_rgba(0,0,0,0.1)] flex items-center justify-center flex-shrink-0 overflow-hidden">
-                  <Image src={p.icon} alt={p.title} width={55} height={55} unoptimized />
+                  <Image src={p.icon} alt={p.title} width={55} height={55} unoptimized className="w-[50px] h-[50px] object-contain" />
                 </div>
                 <div className="absolute sm:relative left-[94px] sm:left-auto top-1/2 sm:top-auto -translate-y-1/2 sm:translate-y-0 w-[calc(100%-102px)] sm:w-auto flex flex-col gap-[7px] sm:gap-3 text-left">
                   <h3 className="font-[family-name:var(--font-poppins)] font-semibold text-[12px] sm:text-[20px] text-black">{p.title}</h3>
