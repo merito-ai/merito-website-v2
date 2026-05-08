@@ -68,7 +68,7 @@ export default function ContactModal() {
             </div>
 
             {/* Form Body (Scrollable if needed) */}
-            <div className="p-5 sm:p-8 max-h-[80vh] overflow-y-auto custom-scrollbar">
+            <div className="p-5 sm:p-8 max-h-[90svh] overflow-y-auto custom-scrollbar">
               <ContactForm />
             </div>
 

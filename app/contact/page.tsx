@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <main className="min-h-[calc(100vh-80px)] bg-[#f8f9fb] py-16 lg:py-24 relative overflow-hidden">
+    <main className="min-h-[calc(100vh-80px)] bg-[#f8f9fb] py-10 sm:py-16 lg:py-24 relative overflow-hidden">
       {/* Background subtle elements */}
       <div className="absolute top-0 right-0 w-1/3 h-[600px] bg-gradient-to-b from-[#ed1a24]/5 to-transparent blur-3xl pointer-events-none" />
       
@@ -31,12 +31,12 @@ export default function ContactPage() {
               Available for new partnerships
             </div>
             
-            <h1 className="font-[family-name:var(--font-gabarito)] text-[24px] md:text-[44px] lg:text-[60px] font-bold text-black leading-[1.05] mb-6 tracking-[-0.02em]">
+            <h1 className="font-[family-name:var(--font-gabarito)] text-[24px] sm:text-[44px] lg:text-[60px] font-bold text-black leading-[1.05] mb-6 tracking-[-0.02em]">
               Let&apos;s find the <br />
               <span className="text-[#ed1a24]">right talent.</span>
             </h1>
             
-            <p className="text-[18px] text-[#4b4b4d] leading-[1.7] mb-12">
+            <p className="text-[18px] text-[#4b4b4d] leading-[1.7] mb-6 sm:mb-12">
               Share your hiring requirements. Our AI sourcing engine and expert consultants will curate a shortlist of top-tier talent within 48 hours.
             </p>
 
@@ -66,7 +66,7 @@ export default function ContactPage() {
               </div>
             </div>
             
-            <div className="mt-14 pt-10 border-t border-gray-200">
+            <div className="mt-8 pt-6 sm:mt-14 sm:pt-10 border-t border-gray-200">
               <p className="text-[13px] font-bold text-[#8b8d92] uppercase tracking-wider mb-4">Direct Contact</p>
               <div className="flex items-center gap-4">
                 <a href="mailto:admin@merito.ai" className="inline-flex items-center gap-2 text-[20px] font-bold text-black hover:text-[#ed1a24] transition-colors">
@@ -86,8 +86,8 @@ export default function ContactPage() {
             <div className="absolute -inset-4 bg-gradient-to-tr from-[#ed1a24]/10 to-transparent blur-2xl rounded-full opacity-60" />
             
             <div className="relative bg-white rounded-[28px] shadow-[0_20px_80px_rgba(0,0,0,0.08)] border border-gray-100 overflow-hidden">
-              <div className="p-8 sm:p-10">
-                <h2 className="font-[family-name:var(--font-gabarito)] text-[20px] md:text-[32px] font-bold text-black mb-2">Request a consultation</h2>
+              <div className="p-5 sm:p-10">
+                <h2 className="font-[family-name:var(--font-gabarito)] text-[20px] sm:text-[28px] font-bold text-black mb-2">Request a consultation</h2>
                 <p className="text-[#66686d] text-[15px] mb-8">Fill out the form below and we&apos;ll be in touch shortly.</p>
                 <ContactForm />
               </div>
