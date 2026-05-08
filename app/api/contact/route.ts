@@ -1,5 +1,24 @@
 import { Resend } from "resend";
 
+// --- Simple in-memory rate limiter ---
+// Per-instance (sufficient for single deployments; for multi-instance Vercel, swap to KV)
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT_MAX = 5;
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000; // 10 minutes
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  if (!entry || entry.resetAt < now) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return true;
+  }
+  if (entry.count >= RATE_LIMIT_MAX) return false;
+  entry.count++;
+  return true;
+}
+// -------------------------------------
+
 type ContactPayload = {
   firstName?: string;
   lastName?: string;
@@ -50,6 +69,18 @@ async function verifyRecaptchaToken(token: string, secret: string) {
 }
 
 export async function POST(request: Request) {
+  const ip =
+    request.headers.get("x-forwarded-for")?.split(",")[0].trim() ??
+    request.headers.get("x-real-ip") ??
+    "unknown";
+
+  if (!checkRateLimit(ip)) {
+    return Response.json(
+      { error: "Too many requests. Please wait 10 minutes before trying again." },
+      { status: 429 }
+    );
+  }
+
   let payload: ContactPayload;
 
   try {

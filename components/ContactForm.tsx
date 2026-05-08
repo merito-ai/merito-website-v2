@@ -14,8 +14,9 @@ declare global {
 }
 
 export default function ContactForm() {
-  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "submitting" | "success">("idle");
   const [captchaError, setCaptchaError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
   const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "";
   const recaptchaEnabled = Boolean(recaptchaSiteKey);
 
@@ -23,6 +24,7 @@ export default function ContactForm() {
     e.preventDefault();
     setStatus("submitting");
     setCaptchaError(null);
+    setFormError(null);
     const form = e.currentTarget as HTMLFormElement;
     const formData = new FormData(form);
     const payload = Object.fromEntries(formData.entries()) as Record<string, FormDataEntryValue>;
@@ -48,10 +50,19 @@ export default function ContactForm() {
         window.grecaptcha?.reset?.();
         setStatus("success");
       } else {
-        setStatus("error");
+        let errMsg = "Something went wrong. Please try again.";
+        try {
+          const data = await res.json() as { error?: string };
+          if (data.error) errMsg = data.error;
+        } catch { /* ignore parse error */ }
+        window.grecaptcha?.reset?.();
+        setCaptchaError(null);
+        setFormError(errMsg);
+        setStatus("idle");
       }
     } catch {
-      setStatus("error");
+      setFormError("Network error. Please check your connection and try again.");
+      setStatus("idle");
     }
   };
 
@@ -70,14 +81,6 @@ export default function ContactForm() {
         <h3 className="font-[family-name:var(--font-gabarito)] text-[32px] font-bold text-black mb-4">Message Received!</h3>
         <p className="text-[#4b4b4d] text-[18px] leading-relaxed max-w-[320px] mx-auto">Our expert team will get back to you within 24 hours.</p>
       </motion.div>
-    );
-  }
-
-  if (status === "error") {
-    return (
-      <p className="text-center text-[#ed1a24] font-semibold py-6">
-        Something went wrong. Please try again or email us directly.
-      </p>
     );
   }
 
@@ -198,11 +201,20 @@ export default function ContactForm() {
 
       {recaptchaEnabled ? (
         <div className="space-y-2">
-          <div
-            className="g-recaptcha"
-            data-sitekey={recaptchaSiteKey}
-          />
+          {/* Scale down the fixed-300px widget on narrow phones */}
+          <div className="origin-top-left scale-[0.82] sm:scale-100 w-[246px] sm:w-[304px] overflow-hidden">
+            <div className="g-recaptcha" data-sitekey={recaptchaSiteKey} />
+          </div>
           {captchaError ? <p className="text-[13px] font-semibold text-[#ed1a24]">{captchaError}</p> : null}
+        </div>
+      ) : null}
+
+      {formError ? (
+        <div className="flex items-start gap-3 rounded-[10px] bg-[#fef2f2] border border-[#fecaca] px-4 py-3">
+          <svg className="size-4 text-[#ed1a24] mt-[2px] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+          </svg>
+          <p className="text-[13px] font-semibold text-[#ed1a24] leading-snug">{formError}</p>
         </div>
       ) : null}
 
