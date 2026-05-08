@@ -238,10 +238,10 @@ export default function OfferVaultPage() {
                     className="bg-white rounded-[3.5px] sm:rounded-[7px] flex gap-[15px] sm:gap-[30px] h-[59px] sm:h-[118px] items-center pl-[10px] sm:pl-[20px] pr-[22px] sm:pr-[44px] py-[8px] sm:py-[17px]"
                   >
                     <div
-                      className="size-[38px] sm:size-[77px] rounded-[5px] sm:rounded-[10px] flex items-center justify-center flex-shrink-0 overflow-hidden"
+                      className="size-[48px] sm:size-[77px] rounded-[5px] sm:rounded-[10px] flex items-center justify-center flex-shrink-0 overflow-hidden"
                       style={{ background: step.iconBg }}
                     >
-                      <Image src={step.icon} alt={step.title} width={44} height={44} unoptimized />
+                      <Image src={step.icon} alt={step.title} width={44} height={44} unoptimized className="w-[38px] h-[38px] object-contain" />
                     </div>
                     <div className="flex flex-col gap-[7px] sm:gap-3">
                       <h3 className="font-[family-name:var(--font-poppins)] font-semibold sm:font-bold text-[12px] sm:text-[18px] text-black italic sm:not-italic">{step.title}</h3>
