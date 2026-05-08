@@ -565,22 +565,23 @@ function SocialProofSection() {
           {smallTestimonials.map((testimonial) => (
             <article
               key={testimonial.name}
-              className="flex w-[245px] sm:w-[300px] shrink-0 flex-col rounded-[8px] border border-[#d9d9d9] bg-white px-[17px] py-[22px]"
+              className="flex shrink-0 flex-col justify-between rounded-[8px] border border-[#d9d9d9] bg-white px-[22px] py-[28px]"
+              style={{ width: "328.5px", height: "384.178px" }}
             >
-              <p className="text-[12px] font-semibold italic leading-[1.47] text-[#4b4b4d]">
+              <p className="text-[14px] font-semibold italic leading-[1.55] text-[#4b4b4d]">
                 &ldquo;{testimonial.quote}&rdquo;
               </p>
-              <div className="mt-auto pt-6 flex items-center gap-[10px]">
+              <div className="flex items-center gap-[12px]">
                 <span
-                  className={`inline-flex size-[34px] shrink-0 items-center justify-center rounded-full text-[13px] font-semibold text-white ${testimonial.color}`}
+                  className={`inline-flex size-[44px] shrink-0 items-center justify-center rounded-full text-[16px] font-semibold text-white ${testimonial.color}`}
                 >
                   {testimonial.initials}
                 </span>
                 <div>
-                  <p className="text-[13px] font-semibold text-[#4b4b4d] leading-tight">
+                  <p className="text-[16px] font-semibold text-[#4b4b4d] leading-tight">
                     {testimonial.name}
                   </p>
-                  <p className="text-[12px] text-[#4b4b4d] mt-[3px]">{testimonial.role}</p>
+                  <p className="text-[12px] text-[#4b4b4d] mt-[4px]">{testimonial.role}</p>
                 </div>
               </div>
             </article>
