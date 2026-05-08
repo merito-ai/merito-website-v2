@@ -67,6 +67,7 @@ const recruitmentTeam = [
   { name: "Simran Kewlani", img: "/Simran Kewlani.png" },
   { name: "Anushka Bhasin", img: "/Anushka Bhasin.jpeg" },
   { name: "Trisha Thatipamula", img: "/Trisha Thatipamula.jpeg" },
+  { name: "Diksha", img: "/Diksha.jpeg" },
 ];
 
 export default function AboutPage() {
@@ -74,7 +75,7 @@ export default function AboutPage() {
     <main className="bg-[#fdf8fb]">
       {/* Hero banner */}
       <section className="relative mx-auto max-w-[1300px] px-5 pt-8">
-        <div className="relative h-[422px] rounded-[11px] overflow-hidden">
+        <div className="relative h-[220px] sm:h-[422px] rounded-[11px] overflow-hidden">
           <Image 
             src="/about-us-audit/hero-banner.png" 
             alt="Our Approach Your Advantage" 
@@ -83,13 +84,13 @@ export default function AboutPage() {
             priority
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/60" />
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center gap-5">
-            <h1 className="font-[family-name:var(--font-poppins)] font-semibold text-[24px] sm:text-[48px] text-white leading-normal">
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center gap-3 sm:gap-5">
+            <h1 className="font-[family-name:var(--font-poppins)] font-semibold text-[22px] sm:text-[48px] text-white leading-normal">
               Our Approach
               <br />
               <span className="text-[#ed1a24]">Your Advantage</span>
             </h1>
-            <p className="font-semibold text-[14px] sm:text-[24px] text-[#d9d9d9] leading-[165%]">
+            <p className="hidden sm:block font-semibold text-[14px] sm:text-[24px] text-[#d9d9d9] leading-[165%]">
               Discover how Merito turns vision into measurable impact
             </p>
           </div>
@@ -97,17 +98,17 @@ export default function AboutPage() {
       </section>
 
       {/* Our Story */}
-      <section className="max-w-[1300px] mx-auto px-5 py-12 flex flex-col gap-[50px]">
+      <section className="max-w-[1300px] mx-auto px-5 py-8 sm:py-12 flex flex-col gap-8 sm:gap-[50px]">
         <div className="flex flex-col items-center gap-5">
-          <Eyebrow text="OUR STORY" />
+          <div className="hidden sm:block"><Eyebrow text="OUR STORY" /></div>
           <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[22px] sm:text-[32px] text-black text-center">
-            The Merito Story
+            The <span className="text-[#ed1a24]">Merito</span> Story
           </h2>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-[32px] lg:gap-[114px] items-start">
           {/* Story text */}
-          <div className="flex flex-col gap-5 font-[family-name:var(--font-poppins)] font-medium text-[15px] sm:text-[20px] text-[#4b4b4d] leading-[155%] flex-1">
+          <div className="flex flex-col gap-5 font-[family-name:var(--font-poppins)] font-medium text-[13px] sm:text-[20px] text-[#4b4b4d] leading-[155%] flex-1">
             <p>
               Merito began with Career Corner Education, built on a simple belief: people unlock
               their potential when given the right opportunities. What started as a vision to guide
@@ -143,7 +144,7 @@ export default function AboutPage() {
       </section>
 
       {/* Vision & Mission */}
-      <section className="max-w-[1222px] mx-auto px-5 py-12 flex flex-col gap-[50px]">
+      <section className="max-w-[1222px] mx-auto px-5 py-8 sm:py-12 flex flex-col gap-8 sm:gap-[50px]">
         <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[22px] sm:text-[32px] text-black text-center w-full">
           Our Vision and Mission
         </h2>
@@ -171,17 +172,17 @@ export default function AboutPage() {
               {/* Hover Left Red Bar */}
               <div className="absolute inset-y-0 left-0 w-1.5 group-hover:w-3 bg-[#ed1a24] opacity-0 group-hover:opacity-100 transition-all duration-300" />
               
-              <div className={`size-[69px] rounded-[6px] ${card.iconBg} group-hover:bg-[#ed1a24] transition-colors flex items-center justify-center`}>
+              <div className={`size-[48px] sm:size-[69px] rounded-[6px] ${card.iconBg} group-hover:bg-[#ed1a24] transition-colors flex items-center justify-center`}>
                 <div className="relative size-full">
                   <Image src={card.iconSrc} alt={card.label} fill className="object-contain" unoptimized />
                 </div>
               </div>
               <div className="flex flex-col gap-4 relative z-10">
-                <h3 className="font-[family-name:var(--font-poppins)] font-semibold text-[20px] sm:text-[32px] text-black"
+                <h3 className="font-[family-name:var(--font-poppins)] font-semibold text-[16px] sm:text-[32px] text-black"
                     dangerouslySetInnerHTML={{ __html: card.label }} />
-                <p className="font-semibold italic text-[14px] sm:text-[18px] text-[#4b4b4d] leading-[146.8%]">{card.quote}</p>
+                <p className="font-semibold italic text-[12px] sm:text-[18px] text-[#4b4b4d] leading-[146.8%]">{card.quote}</p>
               </div>
-              <p className="font-[family-name:var(--font-poppins)] text-[16px] text-[#4b4b4d] leading-[155%] relative z-10">{card.body}</p>
+              <p className="font-[family-name:var(--font-poppins)] text-[10px] sm:text-[16px] text-[#4b4b4d] leading-[155%] relative z-10">{card.body}</p>
               <div className="h-[10px] w-[22px] rounded-full bg-[#ed1a24]/25 group-hover:bg-[#ed1a24] transition-colors relative z-10" />
             </div>
           ))}
@@ -189,7 +190,7 @@ export default function AboutPage() {
       </section>
 
       {/* Values — 5I's */}
-      <section className="max-w-[1193px] mx-auto px-5 py-12 flex flex-col gap-[50px]">
+      <section className="max-w-[1193px] mx-auto px-5 py-8 sm:py-12 flex flex-col gap-8 sm:gap-[50px]">
         <div className="flex flex-col items-center gap-5">
           <Eyebrow text="VALUES" />
           <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[22px] sm:text-[32px] text-black text-center">
@@ -198,18 +199,20 @@ export default function AboutPage() {
         </div>
         <div className="flex flex-wrap justify-center gap-[30px]">
           {values.map((v) => (
-            <div key={v.title} className="group bg-white rounded-[7px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-[31px] flex flex-col gap-4 relative overflow-hidden w-full md:w-[calc(50%-15px)] lg:w-[calc(33.333%-20px)]">
-              {/* Red corner triangle */}
-              <div className="absolute top-0 right-0 w-0 h-0 border-t-[48px] border-t-[#ed1a24] border-l-[48px] border-l-transparent" />
+            <div key={v.title} className="group bg-white border-t border-[#ed1a24] sm:border-t-0 rounded-[7px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-4 sm:p-[31px] flex flex-col gap-4 relative overflow-hidden w-full md:w-[calc(50%-15px)] lg:w-[calc(33.333%-20px)]">
+              {/* Red corner triangle — desktop only */}
+              <div className="hidden sm:block absolute top-0 right-0 w-0 h-0 border-t-[48px] border-t-[#ed1a24] border-l-[48px] border-l-transparent" />
+              {/* Bottom-left decoration — mobile only */}
+              <div className="sm:hidden absolute bottom-0 left-0 w-0 h-0 border-b-[22px] border-b-[#ed1a24] border-r-[70px] border-r-transparent" />
               <div className="size-[49px] bg-[#ed1a24] rounded-[6px] flex items-center justify-center shadow-[0_4px_12px_rgba(237,26,36,0.35)]">
                 <div className="relative size-full">
                   <Image src={v.iconSrc} alt={v.title} fill className="object-contain" unoptimized />
                 </div>
               </div>
               <h3 className="font-[family-name:var(--font-poppins)] font-bold text-[18px] text-black relative z-10">{v.title}</h3>
-              <p className="text-[13px] text-[#4b4b4d] leading-[155%] relative z-10">{v.desc}</p>
-              <div className="mt-auto pt-2 relative z-10">
-                <div className="h-[9px] w-[25px] rounded-full bg-[#ed1a24]/20 group-hover:bg-[#ed1a24] transition-colors" />
+              <p className="font-semibold text-[14px] text-[#4b4b4d] leading-[155%] relative z-10">{v.desc}</p>
+              <div className="mt-auto pt-2 relative z-10 hidden sm:block">
+                <div className="h-[9px] w-[25px] rounded-full bg-[#ed1a24]/20 sm:group-hover:bg-[#ed1a24] transition-colors" />
               </div>
             </div>
           ))}
@@ -217,10 +220,10 @@ export default function AboutPage() {
       </section>
 
       {/* Founding Team */}
-      <section className="max-w-[1218px] mx-auto px-5 py-12 flex flex-col gap-[50px]">
+      <section className="max-w-[1218px] mx-auto px-5 py-8 sm:py-12 flex flex-col gap-8 sm:gap-[50px]">
         <div className="flex flex-col items-center gap-5">
           <Eyebrow text="OUR TEAM" />
-          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[22px] sm:text-[32px] text-black text-center">Know Our Team</h2>
+          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[22px] sm:text-[32px] text-black text-center">Know our <span className="text-[#ed1a24]">Team</span></h2>
           <p className="font-semibold text-[16px] sm:text-[20px] text-black text-center">Founding Team</p>
         </div>
 
@@ -230,13 +233,13 @@ export default function AboutPage() {
             {foundingTeam.slice(0, 2).map((m) => (
               <div key={m.name} className="bg-[#f2f2f2] rounded-[7px] shadow-[0px_4px_15px_rgba(0,0,0,0.05)] overflow-hidden w-full sm:w-[310px]">
                 <div className="p-4 pb-0">
-                  <div className="relative w-full h-[330px] rounded-[4px] overflow-hidden">
+                  <div className="relative w-full h-[260px] sm:h-[330px] rounded-[4px] overflow-hidden">
                     <Image src={m.img} alt={m.name} fill className="object-cover object-top" sizes="(max-width: 768px) 50vw, 280px" />
                   </div>
                 </div>
-                <div className="py-5 text-center bg-[#f2f2f2]">
-                  <p className="font-semibold text-[22px] text-black">{m.name}</p>
-                  <p className="font-semibold text-[18px] text-[#ed1a24] mt-1">{m.role}</p>
+                <div className="py-4 sm:py-5 text-center bg-[#f2f2f2]">
+                  <p className="font-semibold text-[18px] sm:text-[22px] text-black">{m.name}</p>
+                  <p className="font-semibold text-[18px] sm:text-[18px] text-[#ed1a24] mt-1">{m.role}</p>
                 </div>
               </div>
             ))}
@@ -264,12 +267,12 @@ export default function AboutPage() {
             {recruitmentTeam.map((m) => (
               <div key={m.name} className="bg-[#f2f2f2] rounded-[5px] shadow-[0px_4px_15px_rgba(0,0,0,0.05)] overflow-hidden w-[260px]">
                 <div className="p-4 pb-0">
-                  <div className="relative w-full h-[280px] rounded-[3px] overflow-hidden">
-                    <Image src={m.img} alt={m.name} fill className="object-cover object-top" sizes="(max-width: 768px) 50vw, 280px" />
+                  <div className="relative w-full h-[220px] sm:h-[280px] rounded-[3px] overflow-hidden">
+                    <Image src={m.img} alt={m.name} fill className="object-cover object-[50%_20%]" sizes="(max-width: 768px) 50vw, 280px" />
                   </div>
                 </div>
                 <div className="py-4 text-center bg-[#f2f2f2]">
-                  <p className="font-semibold text-[18px] text-black">{m.name}</p>
+                  <p className="font-semibold text-[16px] sm:text-[18px] text-black">{m.name}</p>
                 </div>
               </div>
             ))}
@@ -278,10 +281,10 @@ export default function AboutPage() {
       </section>
 
       {/* CTA */}
-      <section className="max-w-[1115px] mx-auto px-5 py-12 flex flex-col items-center gap-[25px] text-center">
+      <section className="max-w-[1115px] mx-auto px-5 py-8 sm:py-12 flex flex-col items-center gap-[25px] text-center">
         <div className="flex flex-col gap-5 w-full">
           <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[22px] sm:text-[32px] text-black">Get started with Merito</h2>
-          <p className="text-[16px] text-[#4b4b4d] leading-[165%]">
+          <p className="text-[12px] sm:text-[16px] text-[#4b4b4d] leading-[165%]">
             Help us with what you are looking for and our team will get in-touch to understand your talent requirements
           </p>
         </div>
@@ -289,7 +292,7 @@ export default function AboutPage() {
           <ContactTrigger
             className="bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[50px] px-8 rounded-[8px] flex items-center justify-center transition-all duration-200 hover:bg-black hover:text-white hover:scale-[1.03] hover:shadow-[0_8px_24px_rgba(0,0,0,0.25)] active:scale-[0.97]"
           >
-            CONTACT US
+            Contact us
           </ContactTrigger>
           <p className="text-[14px] font-medium text-[#6d6f74]/70">
             No-risk consultation · 100% confidential
