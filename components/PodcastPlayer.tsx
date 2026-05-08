@@ -81,7 +81,7 @@ export default function PodcastPlayer({ audioSrc, episode, date, title, duration
         {/* Host photo with overlays */}
         <div className="relative h-[220px]">
           {hostImage && (
-            <Image src={hostImage} alt="Rushikesh Humbe" fill className="object-cover" />
+            <Image src={hostImage} alt="Rushikesh Humbe" fill sizes="(max-width: 640px) 100vw, 0vw" className="object-cover" priority />
           )}
           <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/70" />
 
