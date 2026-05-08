@@ -104,18 +104,6 @@ const pillars = [
   },
 ];
 
-const traditional = [
-  { label: "Applications", value: "500" },
-  { label: "Screened", value: "200" },
-  { label: "Interviewed", value: "50" },
-];
-
-const meritoWay = [
-  { label: "AI Curated", value: "50" },
-  { label: "Shortlisted", value: "20" },
-  { label: "Interviewed", value: "10" },
-];
-
 const processSteps = [
   {
     num: "01",
@@ -210,11 +198,14 @@ export default function MeritowaysClient() {
         </Link>
         <div className="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-[100px] mt-8">
           <div className="lg:w-[450px] w-full text-left">
-            <h1 className="font-[family-name:var(--font-poppins)] font-semibold text-[40px] lg:text-[48px] text-black leading-[1.2] tracking-tight">
+            <h1 className="font-[family-name:var(--font-poppins)] font-semibold text-[24px] md:text-[40px] lg:text-[48px] text-black leading-[1.2] tracking-tight">
               A unique <br className="hidden md:block" />
               approach to <br className="hidden md:block" />
               <span className="text-[#ed1a24]">PRECISION HIRING.</span>
             </h1>
+            <p className="mt-3 text-[14px] sm:hidden text-[#4b4b4d] font-[family-name:var(--font-poppins)] font-semibold leading-snug">
+              Discover how Merito turns vision into measurable impact
+            </p>
           </div>
           <div className="flex-1 w-full">
             <div className="w-full aspect-[16/9] lg:aspect-[1.78/1] rounded-[10px] shadow-[0px_0px_2px_rgba(0,0,0,0.25)] relative overflow-hidden flex items-center justify-center bg-[#fdf8fb]">
@@ -231,12 +222,12 @@ export default function MeritowaysClient() {
       </section>
 
       <section className="max-w-[1272px] mx-auto px-5 pt-4 pb-12">
-        <div className="bg-[#0a0a0a] rounded-[10px] py-[25px] px-[20px] flex flex-col md:flex-row items-center justify-between gap-8 md:gap-0">
+        <div className="bg-[#0a0a0a] rounded-[14px] py-[25px] px-[20px] flex flex-col md:flex-row items-center justify-between gap-8 md:gap-0">
           {stats.map((s, i) => (
-            <div key={i} className="flex flex-col items-center md:flex-1 relative w-full md:w-auto text-center justify-center gap-[6px]">
+            <div key={i} className="flex flex-col items-center md:flex-1 relative w-full md:w-auto text-center justify-center gap-[6px] py-[12px] md:py-0 border-b border-white/10 last:border-0 md:border-0">
               <div className="flex items-center gap-1">
-                <span className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-white leading-none">{s.prefix}</span>
-                <span className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-[#ed1a24] leading-none">{s.value}</span>
+              <span className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-white leading-none">{s.prefix}</span>
+              <span className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-[#ed1a24] leading-none">{s.value}</span>
               </div>
               <p className="text-[13px] text-white font-[family-name:var(--font-poppins)] text-center max-w-[200px] leading-snug">
                 {s.label}
@@ -251,10 +242,11 @@ export default function MeritowaysClient() {
 
       <section className="max-w-[1300px] mx-auto px-5 py-12 flex flex-col gap-[50px]">
         <div className="flex flex-col items-center gap-4">
-          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] md:text-[40px] text-black text-center">
+          <div className="hidden sm:block"><Eyebrow text="OUR APPROACH" /></div>
+          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[24px] md:text-[32px] lg:text-[40px] text-black text-center">
             Our 4 Pillars of <span className="text-[#ed1a24] uppercase">EXCELLENCE</span>
           </h2>
-          <p className="text-[16px] md:text-[18px] text-[#4b4b4d] text-center max-w-[800px] leading-[165%]">
+          <p className="text-[12px] md:text-[18px] text-[#4b4b4d] text-center max-w-[800px] leading-[165%]">
             Every Merito engagement rests on the same foundation - precision technology, proprietary tooling, expert judgement and proven outcomes.
           </p>
         </div>
@@ -263,17 +255,17 @@ export default function MeritowaysClient() {
           {pillars.map((p, i) => (
             <div
               key={i}
-              className={`group bg-white rounded-[24px] border-l-[3px] border-l-transparent shadow-[0px_20px_60px_rgba(0,0,0,0.08)] hover:shadow-[0px_20px_80px_rgba(237,26,36,0.12)] hover:border-l-[#ed1a24] hover:-translate-y-2 p-8 md:p-10 flex flex-col gap-6 relative transition-all duration-500 ease-out transform
+              className={`group bg-white rounded-[12px] sm:rounded-[24px] border-l-[3px] border-l-transparent shadow-[0px_0px_76px_2px_rgba(0,0,0,0.25)] sm:shadow-[0px_20px_60px_rgba(0,0,0,0.08)] sm:hover:shadow-[0px_20px_80px_rgba(237,26,36,0.12)] sm:hover:border-l-[#ed1a24] sm:hover:-translate-y-2 p-6 md:p-10 flex flex-col gap-[14px] sm:gap-6 relative transition-all duration-500 ease-out transform
                 ${pillarsVisible ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"}
               `}
               style={{ transitionDelay: `${i * 150}ms` }}
             >
-              <div className="size-[48px] rounded-[12px] bg-[#ed1a24] flex items-center justify-center shadow-lg shadow-[#ed1a24]/30">
+              <div className="size-[41px] sm:size-[48px] rounded-[4px] sm:rounded-[12px] bg-[#ed1a24] flex items-center justify-center sm:shadow-lg sm:shadow-[#ed1a24]/30">
                 <p.icon />
               </div>
-              <h3 className="font-[family-name:var(--font-poppins)] font-semibold text-[24px] text-black transition-colors group-hover:text-[#ed1a24]">{p.title}</h3>
-              <p className="text-[16px] text-[#4b4b4d] leading-[165%]">{p.desc}</p>
-              <div className="w-[30px] h-[6px] rounded-full bg-[#ed1a24]/20 group-hover:bg-[#ed1a24] group-hover:w-[60px] transition-all duration-500" />
+              <h3 className="font-[family-name:var(--font-poppins)] font-semibold text-[19px] sm:text-[24px] text-black transition-colors sm:group-hover:text-[#ed1a24]">{p.title}</h3>
+              <p className="text-[12px] sm:text-[16px] text-[#4b4b4d] leading-[165%]">{p.desc}</p>
+              <div className="w-[13px] sm:w-[30px] h-[6px] rounded-full bg-[#ed1a24]/20 sm:group-hover:bg-[#ed1a24] sm:group-hover:w-[60px] transition-all duration-500" />
             </div>
           ))}
         </div>
@@ -282,11 +274,11 @@ export default function MeritowaysClient() {
       <section className="bg-[#f5f0f3] py-12">
         <div className="max-w-[1100px] mx-auto px-5 flex flex-col gap-16">
           <div className="flex flex-col items-center gap-4 text-center">
-            <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] md:text-[44px] text-black leading-tight">
+            <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[24px] md:text-[32px] lg:text-[44px] text-black leading-tight">
               18x more precise than traditional hiring. <br/>
               <span className="text-[#ed1a24]">precision hiring.</span>
             </h2>
-            <p className="text-[16px] md:text-[18px] text-[#4b4b4d] max-w-[700px] leading-[165%]">
+            <p className="text-[12px] md:text-[18px] text-[#4b4b4d] max-w-[700px] leading-[165%]">
               The same role, two very different funnels. Where traditional recruitment drowns teams in volume, Merito delivers a curated shortlist that converts
             </p>
           </div>
@@ -315,11 +307,11 @@ export default function MeritowaysClient() {
 
       <section className="max-w-[1300px] mx-auto px-5 py-12 flex flex-col gap-16">
         <div className="flex flex-col items-center gap-4">
-          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] md:text-[40px] text-black text-center leading-tight">
+          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[24px] md:text-[32px] lg:text-[40px] text-black text-center leading-tight">
             Precision-driven <br/>
             search. How we identify the <span className="text-[#ed1a24]">top 2%</span>
           </h2>
-          <p className="text-[16px] md:text-[18px] text-[#4b4b4d] text-center max-w-[700px] leading-[165%]">
+          <p className="text-[12px] md:text-[18px] text-[#4b4b4d] text-center max-w-[700px] leading-[165%]">
             The same role, two very different funnels. Where traditional recruitment drowns teams in volume, Merito delivers a curated shortlist that converts
           </p>
         </div>
@@ -329,20 +321,20 @@ export default function MeritowaysClient() {
             <div className="absolute top-8 bottom-12 left-[23px] w-[2px] bg-[#ed1a24]/20" />
             {processSteps.map((step, i) => (
               <div key={i} className="relative flex items-start gap-8 z-10">
-                <div className="size-[48px] rounded-full bg-white border-2 border-[#ed1a24] flex items-center justify-center flex-shrink-0">
-                  <span className="font-[family-name:var(--font-poppins)] font-bold text-[16px] text-black">{step.num}</span>
+                <div className="size-[40px] sm:size-[48px] rounded-full bg-white border-2 border-[#ed1a24] flex items-center justify-center flex-shrink-0">
+                  <span className="font-[family-name:var(--font-poppins)] font-bold text-[14px] sm:text-[16px] text-black">{step.num}</span>
                 </div>
                 <div className="flex flex-col gap-2 pt-2">
-                  <h3 className="font-[family-name:var(--font-poppins)] font-semibold text-[20px] text-black">{step.title}</h3>
-                  <p className="text-[15px] text-[#4b4b4d] leading-[165%] max-w-[450px]">{step.desc}</p>
+                  <h3 className="font-[family-name:var(--font-poppins)] font-semibold text-[12px] sm:text-[20px] text-black">{step.title}</h3>
+                  <p className="text-[10px] sm:text-[15px] text-[#4b4b4d] leading-[165%] max-w-[450px]">{step.desc}</p>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="bg-white rounded-[24px] border border-black/5 shadow-[0px_12px_40px_rgba(0,0,0,0.06)] p-10 md:p-12 flex flex-col gap-8 sticky top-32">
-            <span className="text-[12px] font-bold tracking-[2px] text-[#808080] uppercase">OUTCOME</span>
-            <h3 className="font-[family-name:var(--font-poppins)] font-semibold text-[28px] md:text-[32px] text-black leading-tight">
+          <div className="bg-white rounded-[9px] sm:rounded-[24px] border border-black/5 shadow-[0px_12px_40px_rgba(0,0,0,0.06)] p-10 md:p-12 flex flex-col gap-8 sm:sticky sm:top-32">
+            <span className="text-[24px] sm:text-[12px] font-bold sm:tracking-[2px] text-black sm:text-[#808080] uppercase">OUTCOME</span>
+              <h3 className="font-[family-name:var(--font-poppins)] font-semibold text-[16px] sm:text-[20px] md:text-[28px] lg:text-[32px] text-black leading-tight">
               A short, decisive <br className="hidden md:block"/>
               interview around - <br className="hidden md:block"/>
               instead of weeks of noise.
@@ -356,7 +348,7 @@ export default function MeritowaysClient() {
               ].map((bullet, i) => (
                 <li key={i} className="flex items-start gap-4">
                   <div className="size-[6px] rounded-full bg-[#ed1a24] flex-shrink-0 mt-2" />
-                  <span className="text-[15px] text-[#4b4b4d] leading-[165%]">{bullet}</span>
+                    <span className="text-[12px] sm:text-[15px] text-[#4b4b4d] leading-[165%]">{bullet}</span>
                 </li>
               ))}
             </ul>
@@ -367,36 +359,36 @@ export default function MeritowaysClient() {
       <section className="max-w-[1300px] mx-auto px-5 py-12 flex flex-col items-center gap-16">
         <Eyebrow text="ENGAGEMENT MODELS" />
         <div className="flex flex-col items-center gap-4 text-center mt-[-20px]">
-          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] md:text-[40px] text-black">
+          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[24px] md:text-[32px] lg:text-[40px] text-black">
             Flexible partnerships built for your growth.
           </h2>
-          <p className="text-[16px] md:text-[18px] text-[#4b4b4d] max-w-[600px] leading-[165%]">
+          <p className="text-[12px] md:text-[18px] text-[#4b4b4d] max-w-[600px] leading-[165%]">
             Choose the model that best aligns with your current recruitment goals and organisational structure.
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
           {engagementModels.map((m, i) => (
-            <div key={i} className={`rounded-[24px] overflow-hidden flex flex-col ${m.dark ? "bg-gradient-to-br from-black via-[#1a1a1a] to-[#2d0a0c] text-white shadow-[0px_8px_48px_rgba(0,0,0,0.4)]" : "bg-white border border-black/5 shadow-[0px_8px_32px_rgba(0,0,0,0.04)]"}`}>
+            <div key={i} className={`rounded-[12px] sm:rounded-[24px] overflow-hidden flex flex-col ${m.dark ? "bg-gradient-to-br from-black via-[#1a1a1a] to-[#2d0a0c] text-white shadow-[0px_8px_48px_rgba(0,0,0,0.4)]" : "bg-white border border-black/5 shadow-[0px_8px_32px_rgba(0,0,0,0.04)]"}`}>
               <div className="p-10 pb-8 flex flex-col gap-6">
                 <div className="self-start">
                   <Eyebrow text={m.tag} />
                 </div>
-                <h3 className={`font-[family-name:var(--font-poppins)] font-semibold text-[28px] md:text-[32px] ${m.dark ? "text-white" : "text-black"}`}>
+                <h3 className={`font-[family-name:var(--font-poppins)] font-semibold text-[24px] md:text-[28px] lg:text-[32px] ${m.dark ? "text-white" : "text-black"}`}>
                   {m.title}
                 </h3>
                 <div className="flex flex-col gap-4">
-                  <p className={`text-[16px] leading-[165%] ${m.dark ? "text-white/70" : "text-[#4b4b4d]"}`}>{m.desc1}</p>
-                  {m.desc2 && <p className={`text-[16px] leading-[165%] ${m.dark ? "text-white/70" : "text-[#4b4b4d]"}`}>{m.desc2}</p>}
+                  <p className={`text-[12px] sm:text-[16px] leading-[165%] ${m.dark ? "text-white/70" : "text-[#4b4b4d]"}`}>{m.desc1}</p>
+                  {m.desc2 && <p className={`text-[12px] sm:text-[16px] leading-[165%] ${m.dark ? "text-white/70" : "text-[#4b4b4d]"}`}>{m.desc2}</p>}
                 </div>
               </div>
               <div className="flex-1 flex flex-col px-10 pb-10 gap-6 mt-4">
                 {m.features.map((f, idx) => (
                   <div key={idx} className="flex flex-col sm:flex-row gap-2 sm:gap-6 border-b border-white/20 pb-6 last:border-0 last:pb-0">
-                    <span className={`text-[12px] font-bold tracking-[1px] uppercase w-[100px] flex-shrink-0 ${m.dark ? "text-white/50" : "text-black/50"}`}>
+                    <span className={`text-[16px] sm:text-[12px] font-bold tracking-[1px] uppercase w-[100px] flex-shrink-0 ${m.dark ? "text-white/50" : "text-black/50"}`}>
                       {f.label}
                     </span>
-                    <span className={`text-[15px] leading-[165%] ${m.dark ? "text-white/90" : "text-black/80"}`}>
+                    <span className={`text-[12px] sm:text-[15px] leading-[165%] ${m.dark ? "text-white/90" : "text-black/80"}`}>
                       {f.text}
                     </span>
                   </div>
@@ -408,18 +400,18 @@ export default function MeritowaysClient() {
       </section>
 
       <section className="max-w-[1300px] mx-auto px-5 py-12">
-        <div className="bg-gradient-to-br from-black to-[#2d0a0c] rounded-[24px] overflow-hidden p-10 md:p-16 flex flex-col lg:flex-row items-center justify-between gap-10 shadow-2xl relative">
+        <div className="bg-gradient-to-br from-black to-[#2d0a0c] rounded-none sm:rounded-[24px] overflow-hidden p-10 md:p-16 flex flex-col lg:flex-row items-center justify-between gap-10 shadow-2xl relative">
           <div className="absolute top-0 left-0 w-1/2 h-full bg-gradient-to-r from-[#ed1a24]/20 to-transparent pointer-events-none" />
           <div className="relative z-10 flex flex-col items-start gap-6 max-w-[600px]">
             <Eyebrow text="READY WHEN YOU ARE" />
-            <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] md:text-[44px] text-white leading-[1.2]">
+            <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[24px] md:text-[32px] lg:text-[44px] text-white leading-[1.2]">
               Let&apos;s find the 2% who will move your business forward.
             </h2>
           </div>
           <div className="relative z-10 flex flex-col items-center gap-3 w-full md:w-auto">
             <Link
               href="/contact"
-              className="bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[56px] px-8 rounded-[8px] flex items-center justify-center gap-3 transition-all duration-200 hover:bg-black hover:text-white hover:scale-[1.03] hover:shadow-[0_8px_24px_rgba(0,0,0,0.25)] active:scale-[0.97] w-full md:w-auto"
+              className="bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[48px] sm:h-[56px] px-8 rounded-[5px] sm:rounded-[8px] flex items-center justify-center gap-3 transition-all duration-200 hover:bg-black hover:text-white hover:scale-[1.03] hover:shadow-[0_8px_24px_rgba(0,0,0,0.25)] active:scale-[0.97] w-full md:w-auto"
             >
               Book a call with us
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -435,18 +427,18 @@ export default function MeritowaysClient() {
 
       <section className="bg-[#fdf8fb] py-12 pb-32">
         <div className="max-w-[800px] mx-auto px-5 flex flex-col items-center text-center gap-8">
-          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[36px] md:text-[48px] text-black">
+          <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[24px] md:text-[36px] lg:text-[48px] text-black">
             Get started with Merito
           </h2>
-          <p className="text-[16px] md:text-[18px] text-[#4b4b4d] leading-[165%] max-w-[600px]">
+          <p className="text-[12px] md:text-[18px] text-[#4b4b4d] leading-[165%] max-w-[600px]">
             Help us with what you are looking for and our team will get in-touch understand your talent requirements
           </p>
           <div className="flex flex-col items-center gap-3">
             <Link
               href="/contact"
-              className="mt-4 bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[50px] px-10 rounded-[8px] flex items-center justify-center transition-all duration-200 hover:bg-black hover:text-white hover:scale-[1.03] hover:shadow-[0_8px_24px_rgba(0,0,0,0.25)] active:scale-[0.97]"
+              className="mt-4 bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[48px] sm:h-[50px] px-10 rounded-[5px] sm:rounded-[8px] flex items-center justify-center transition-all duration-200 hover:bg-black hover:text-white hover:scale-[1.03] hover:shadow-[0_8px_24px_rgba(0,0,0,0.25)] active:scale-[0.97]"
             >
-              CONTACT US
+              Contact us
             </Link>
             <p className="text-[14px] font-medium text-[#6d6f74]/70">
               No-risk consultation · 100% confidential

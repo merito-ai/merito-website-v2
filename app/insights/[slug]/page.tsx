@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import ContactTrigger from "@/components/ContactTrigger";
 import PodcastPlayer from "@/components/PodcastPlayer";
+
+type ContentBlock = string | { type: "h2"; text: string } | { type: "ul"; items: string[] };
 
 const articleData: Record<string, {
   title: string;
@@ -16,8 +17,8 @@ const articleData: Record<string, {
   episode?: string;
   date?: string;
   thumbnail?: string;
-  stats?: { value: string; label: string }[];
-  content: string[];
+  stats?: { value: string; label: string; subLabel?: string }[];
+  content: ContentBlock[];
 }> = {
   "invisible-burn": {
     title: "The Invisible Burn: How an AI Recruitment Agency Slashes Startup Hiring Gap by 40%",
@@ -31,14 +32,29 @@ const articleData: Record<string, {
     stats: [
       { value: "40%", label: "Lower Hiring Spend" },
       { value: "3x", label: "Faster Hiring" },
-      { value: "ICE Assessment", label: "Included" },
+      { value: "ICE", label: "Assessment" },
     ],
     content: [
-      "Startup hiring burns slow. It's rarely a single catastrophic failure — it's the accumulation of small inefficiencies, each one invisible on its own. A two-week delay in sourcing. A misaligned hiring brief. Three rounds of interviews that end in a withdrawn offer. By the time you notice the damage, you've lost months and missed the window for critical growth.",
-      "This is what we call the Invisible Burn — the compounding cost of treating recruitment as a reactive, ad-hoc function rather than a strategic capability.",
-      "AI-powered recruitment agencies are solving this with a fundamentally different approach: instead of filling requisitions, they run parallel talent pipelines, pre-screen at scale using AI models trained on industry-specific success criteria, and deliver shortlists in 48 hours instead of 3 weeks.",
-      "The result for startups is a 40% reduction in cost-per-hire and a 3x improvement in time-to-productivity — not because they hired faster, but because they hired better. Fewer missteps. Fewer re-hires. Less Invisible Burn.",
-      "The first step is recognizing that the burn is real, even when it doesn't show up on a P&L. Talent gaps compound. Every week a key role sits open is a week of missed output, team stress, and delayed roadmap. The companies that treat hiring as a strategic priority — resourcing it properly and measuring it rigorously — consistently outperform those that don't.",
+      { type: "h2", text: "The Invisible Burn: How an AI Recruitment Agency Slashes Startup Hiring Costs by 40%" },
+      "For a scaling startup, speed isn't just a metric — it's survival. Yet, most founders are still burning capital on a hiring process that looks exactly like it did a decade ago. You post a job, get 500 mismatched resumes, and spend 60+ hours of expensive leadership time manually filtering for a \"needle in a haystack\". When you factor in the cost of those hours plus the high price of a bad hire, your cost-per-hire doesn't just climb; it sky-rockets.",
+      "This is where the shift happens. Forward-thinking lean teams are ditching traditional methods for a modern AI recruitment agency like Merito. By replacing \"gut-feel\" manual screening with precision automation, an AI recruitment agency helps companies hire quality talent 60% faster. This isn't just about speed; it's about a fundamental reduction in the resources required to secure every new team member.",
+      { type: "h2", text: "The Efficiency Gap: Why Traditional Models Cost More" },
+      "Traditional recruitment agency models often rely on reactive hiring, waiting for candidates to apply or manually searching through stale databases. This leads to:",
+      { type: "ul", items: [
+        "Manual Sourcing Fatigue: Recruiters spend days on keyword searches that only scratch the surface of the talent pool.",
+        "The \"Gut-Feel\" Tax: Unstructured interviews are only about 40% accurate, whereas an AI recruitment agency uses data that is nearly double that in predictive accuracy.",
+        "High Attrition: Without data-backed vetting, candidates often fail to stick, forcing you to pay the hiring cost all over again within months.",
+      ]},
+      "By contrast, an AI recruitment agency uses experience pattern recognition and gap analysis to surface passive candidates that humans systematically miss. Merito leverages this \"Artificial Intelligence\" to automate the grind, ensuring your interviewers only ever speak to the top 2% of vetted talent.",
+      { type: "h2", text: "Leveraging a Skill-based Hiring Platform for Precision" },
+      "One of the biggest drivers of that 40% cost reduction is moving away from pedigree-based filtering. A Skill-based Hiring Platform ensures you aren't paying a premium just for a candidate's past company logo. Instead, you are hiring for verifiable, role-specific competency.",
+      "By using objective assessments, Merito's Skill-based Hiring Platform approach increases hiring accuracy to 90%. This precision eliminates the \"trial and error\" phase of hiring, ensuring that when you do make an offer, it's to someone who will actually execute and stay long-term, reflected in Merito's 85% two-year retention rate.",
+      { type: "h2", text: "Strategic Growth and Executive Search" },
+      "As you scale, the stakes get higher. While a standard recruitment agency might handle mid-level roles, your C-suite requires a different caliber of intelligence. Modern executive search now requires a blend of data and \"Acquired Intelligence\" — the human insight needed to judge character and cultural alignment.",
+      "Merito bridges this gap by using proprietary tools like Ref-Track to automate background and reputation validation for senior hires. This ensures that your executive search is not only fast but risk-free, surfacing behavioral flags before the offer stage. Because of this depth, an AI recruitment agency is often the only way to stabilize a leadership team without costly missteps.",
+      { type: "h2", text: "The Bottom Line: Hire Top Talent Without the Overhead" },
+      "To hire top talent in today's market, you cannot afford a 60-day hiring cycle. Every day a critical seat remains empty is a day of lost revenue and stalled product maps.",
+      "Partnering with an AI recruitment agency like Merito allows you to turn job briefs into dream hires within as little as 14 to 20 days. You save on the direct costs of sourcing, the indirect costs of leadership time, and the catastrophic costs of attrition. In the world of scaling startups, the efficiency provided by an AI recruitment agency isn't a luxury — it's your biggest competitive advantage.",
     ],
   },
   "human-centric-ai": {
@@ -58,10 +74,14 @@ const articleData: Record<string, {
     content: [
       "In the high-velocity world of startups, hiring often operates in survival mode — reactive, rushed, and rarely precise. Companies frequently default to casting a wide net, leveraging their networks, and hoping someone decent shows up. The result? High turnover, role mismatches, and a perpetual hiring cycle that drains resources and momentum.",
       "A Human-Centric AI recruitment agency changes this equation entirely. By combining the analytical power of artificial intelligence with the irreplaceable judgment of experienced recruiters, it delivers something neither can achieve alone: speed with precision.",
-      "Bridging the Startup Hiring Gap: The challenge isn't a shortage of candidates — it's a shortage of the right ones. AI models trained on successful hire data can identify the specific signals that predict performance: not just skills, but learning velocity, adaptability, and values alignment. This narrows the field dramatically before a human recruiter ever picks up the phone.",
-      "Validating Potential with a Skill-Based Hiring Platform: For startups, cultural fit and growth potential matter as much as current skills. A skill-based platform that includes behavioral assessments alongside technical screening surfaces candidates who will grow with the company — not just those who can do the job today.",
-      "Executive Search for the Agile Era: Even at the leadership level, AI provides an edge. Senior candidate pools are smaller and more relationship-dependent, but AI can map networks, identify hidden candidates, and prioritize outreach — giving human relationship-builders a better starting point.",
-      "The Bottom Line: Faster, Smarter, Better. Startups that partner with Human-Centric AI agencies consistently report not just faster hires, but better ones — measured in performance, retention, and cultural impact. The invisible burn of poor hiring becomes a competitive advantage.",
+      { type: "h2", text: "Bridging the Startup Hiring Gap" },
+      "The challenge isn't a shortage of candidates — it's a shortage of the right ones. AI models trained on successful hire data can identify the specific signals that predict performance: not just skills, but learning velocity, adaptability, and values alignment. This narrows the field dramatically before a human recruiter ever picks up the phone.",
+      { type: "h2", text: "Validating Potential with a Skill-Based Hiring Platform" },
+      "For startups, cultural fit and growth potential matter as much as current skills. A skill-based platform that includes behavioral assessments alongside technical screening surfaces candidates who will grow with the company — not just those who can do the job today.",
+      { type: "h2", text: "Executive Search for the Agile Era" },
+      "Even at the leadership level, AI provides an edge. Senior candidate pools are smaller and more relationship-dependent, but AI can map networks, identify hidden candidates, and prioritize outreach — giving human relationship-builders a better starting point.",
+      { type: "h2", text: "The Bottom Line: Faster, Smarter, Better" },
+      "Startups that partner with Human-Centric AI agencies consistently report not just faster hires, but better ones — measured in performance, retention, and cultural impact. The invisible burn of poor hiring becomes a competitive advantage.",
     ],
   },
   "right-path": {
@@ -73,12 +93,32 @@ const articleData: Record<string, {
     category: "Hiring Strategy",
     type: "article",
     readTime: "5 min read",
+    stats: [
+      { value: "68%", label: "OF COMPANIES PICK THE", subLabel: "wrong recruitment partner" },
+      { value: "5 KEY", label: "QUESTIONS TO ASK" },
+      { value: "ICE", label: "METHODOLOGY" },
+    ],
     content: [
-      "Not all recruitment help is created equal. The choice between a generalist recruitment agency and a specialized one is one of the most consequential hiring decisions a growing company can make — and most make it by default rather than by design.",
-      "Generalist agencies offer breadth. They can fill roles across functions, move quickly on volume hiring, and leverage large candidate databases. For companies hiring broadly across many functions, this breadth has value. The tradeoff is depth: generalists rarely understand the nuanced technical requirements of a niche role, and their candidate pipelines for specialized positions are shallow.",
-      "Specialized agencies offer depth. They know the talent market cold — who's available, what they're worth, what will make them move. For critical senior hires or technical roles where the wrong person is expensive, the precision of a specialist is worth the premium.",
-      "The right path depends on what you're building. Early-stage startups hiring generalists across the business benefit from a broad partner. Series B+ companies building out a technical leadership team need a specialist. The mistake is using one when you need the other.",
-      "At Merito, we operate as a specialized generalist — deep expertise in tech and growth company hiring, combined with AI-powered breadth. It's the combination that solves both problems at once.",
+      "In the current talent economy, the traditional \"database\" model of hiring is broken. Most companies still rely on a recruitment agency that operates like a keyword search engine, throwing high volumes of resumes at a wall and hoping one sticks. However, modern business needs have evolved. Today, the \"hiring gap\" isn't a lack of candidates; it's a lack of alignment. To hire top talent in a market where technical skills evolve every six months, you need a partner that brings more than just a software license to the table.",
+      "This shift has led to the rise of the \"Acquired Intelligence\" model. At Merito, we define this as the human insight that predicts a right hire. By introducing Merito into your workflow, you aren't just hiring a vendor; you are gaining a partner that combines 20+ years of domain expertise with a high-tech AI recruitment agency framework to solve the most complex hiring puzzles.",
+      { type: "h2", text: "1. Look for \"Acquired Intelligence\" Over Standard Databases" },
+      "The first sign of a modern recruitment agency is how they vet candidates. Traditional agencies rely on gut-feel, which research shows is only about 40% accurate. A partner like Merito leverages \"Acquired Intelligence\", deep behavioral insights and reference data, to identify talent aligned specifically to your unique culture and stage. When choosing your partner, ask: Do they understand the must-haves and success predictors for this role, or are they just reading a JD?.",
+      { type: "h2", text: "2. Demand a Skill-based Hiring Platform Approach" },
+      "In 2026, a candidate's pedigree (where they studied or worked) is no longer a guaranteed predictor of future performance. A forward-thinking recruitment agency should utilize a Skill-based Hiring Platform to provide objective, bias-free data.",
+      "At Merito, our Skill-based Hiring Platform methodology uses tools like TestGorilla and Neorecruit AI to replace subjective first impressions with verifiable competency data. This ensures that when you hire top talent, you are hiring based on \"deeds, not degrees.\"",
+      { type: "h2", text: "3. Evaluate Their Executive Search Capabilities" },
+      "If an agency cannot handle high-stakes leadership roles, they likely lack the strategic depth for your growth-stage needs. A modern executive search must be surgical. You need a partner that uses proprietary risk-assessment tools, like Merito's Ref-Track, to automate background and culture-fit validation for senior hires. This \"Acquired Intelligence\" surfaces behavioral flags before an offer is even made, ensuring 85% two-year retention rates for CXO mandates.",
+      { type: "h2", text: "4. Ensure they function as an AI Recruitment Agency" },
+      "Efficiency is the final piece of the puzzle. A standard recruitment agency might take 45–60 days to fill a role. By contrast, an AI recruitment agency like Merito uses an AI stack, including Claude for JD optimization and Comet AI for experience pattern recognition, to identify the top 2% of talent within 48 hours.",
+      { type: "h2", text: "The Final Checklist" },
+      "To ensure your chosen recruitment agency is fit for modern business, they must provide:",
+      { type: "ul", items: [
+        "Precision Sourcing: Accessing passive talent that doesn't browse job boards.",
+        "Technical Validation: Using a Skill-based Hiring Platform to prove competence.",
+        "Risk Mitigation: Integrated executive search vetting like Ref-Track.",
+        "Speed: Reducing time-to-hire from months to under 20 days.",
+      ]},
+      "Merito doesn't just replace your hiring process; we act as an expert extension of your team. By combining Artificial Intelligence with deep-rooted Acquired Intelligence, we turn the chaos of modern hiring into a predictable, data-driven engine for growth.",
     ],
   },
   "choose-right": {
@@ -90,11 +130,35 @@ const articleData: Record<string, {
     category: "Hiring Strategy",
     type: "article",
     readTime: "4 min read",
+    stats: [
+      { value: "5 KEY", label: "CRITERIA TO EVALUATE", subLabel: "before signing with any agency" },
+      { value: "AI-FIT", label: "ASSESSMENT" },
+      { value: "SCALE", label: "READY TALENT" },
+    ],
     content: [
-      "The most expensive hiring decisions aren't the ones that go obviously wrong — they're the ones that seem fine for months before the cracks appear. A candidate who interviews brilliantly but can't deliver independently. A leader who manages up effectively but burns out their team. A senior hire who's perfect for the company you are today, but not the company you need to become.",
-      "Choosing right means building a hiring process that surfaces these risks before the offer, not after the 90-day review.",
-      "Three practices separate companies that consistently choose right from those that don't. First, they write the job brief as a performance brief — not a list of requirements, but a description of what success looks like in the first 90, 180, and 365 days. Second, they evaluate candidates against that brief, not against their gut feeling in the room. Third, they do structured reference checks that ask specific behavioral questions, not 'would you recommend this person?'",
-      "The common thread is structure. Not rigidity — structure. A repeatable, evidence-based process that reduces the variance in outcomes. Companies that hire well don't have better instincts than those that don't. They have better systems.",
+      "In the current startup ecosystem, your hiring requirements are fundamentally different from a traditionally run business. Modern companies aren't just \"hiring for a role\"; they are building tech-driven engines fuelled by AI and high-velocity execution. If your recruitment agency is still using a 2010 playbook by relying on static databases and \"CV flooding\", they aren't just slow; they are a risk to your business model.",
+      "To hire top talent in 2026, you need a partner that understands the nuances of New-Age businesses. This means moving beyond the resume and into the realm of Acquired Intelligence. At Merito, we've built our framework to be an enabler for companies where technology is the core, not just an add-on.",
+      { type: "h2", text: "1. Do they understand \"New-Age\" Requirements?" },
+      "Traditional businesses hire for stability and tenure; New-Age businesses hire for agility and AI-enablement. When selecting a recruitment agency, check if they understand your specific tech stack and the \"Human-Plus\" skills required to navigate an AI-driven environment.",
+      "Merito acts as a specialized AI recruitment agency that bridges this gap. We don't just look for years of experience; we look for \"Learning Agility\" and the ability to leverage technology to drive outcomes.",
+      { type: "h2", text: "2. Is Cultural Fitment Translated into Data?" },
+      "As the memo transcription highlights, cultural fitment is critical at an early stage because your first employees decide the future shape of the workspace. Most agencies claim to \"check for culture,\" but it remains a vague feeling in the interviewer's head.",
+      "A modern partner must be able to translate your culture into measurable personality types. At Merito, we help you identify the specific personality traits using frameworks like the Big Five that are suitable for your workspace. If your culture is innovation-heavy, we filter for high \"Openness\"; if you give high freedom, we look for candidates with the specific \"Agreeableness\" scores that match a high-autonomy environment.",
+      { type: "h2", text: "3. Do they use a Skill-based Hiring Platform?" },
+      "The \"hiring gap\" is often caused by agencies sending candidates who look good on paper but can't execute in reality. New-age companies look for agencies that go beyond the CV. You should choose a partner that utilizes a Skill-based Hiring Platform to verify competence before the candidate ever reaches your inbox.",
+      "Merito combines:",
+      { type: "ul", items: [
+        "Technical Assessments: Verifying exact technological skill sets through live simulations.",
+        "Personality Assessments: Ensuring the candidate's temperament matches the role's pressure.",
+        "AI Interviews: Using conversational AI to evaluate real-world scenarios in real-time.",
+      ]},
+      { type: "h2", text: "4. Can they handle Surgical Executive Search?" },
+      "If you are scaling from a lean team to a growth-stage company, your executive search needs to be surgical. You cannot afford a leader who doesn't fit your tech-native culture.",
+      "By using our proprietary Ref-Track tool, Merito automates the reputation validation process for senior hires. We don't just rely on what a candidate says; we use \"Acquired Intelligence\" to verify their history and personality fit within 24–48 hours. This ensures that your leadership team is built on a foundation of 90% fit accuracy.",
+      { type: "h2", text: "The Verdict: Decision Making over CV Sourcing" },
+      "Ultimately, the role of a modern recruitment agency is to help you make the right decision, not just give you a list of names. If your agency isn't providing a combination of skill assessment tests and personality mapping, you are essentially gambling with your burn rate.",
+      "Choosing Merito means choosing a partner that understands the evolution of modern hiring. We combine the efficiency of an AI recruitment agency with the deep human insight of a strategic advisor.",
+      "Stop settling for traditional filters and start building your team with the precision that your business deserves.",
     ],
   },
   "ditch-internal": {
@@ -106,11 +170,36 @@ const articleData: Record<string, {
     category: "Hiring Strategy",
     type: "article",
     readTime: "5 min read",
+    stats: [
+      { value: "60%", label: "OF LEAN STARTUPS", subLabel: "overpay for in-house recruiting" },
+      { value: "40%", label: "COST SAVED" },
+      { value: "ZERO", label: "OVERHEAD BAIT" },
+    ],
     content: [
-      "If you're growing at speed, there's a point at which running recruitment internally stops being a cost-saving measure and starts being a growth constraint. The inflection point is earlier than most companies think.",
-      "Internal recruitment teams are optimized for process — posting, screening, scheduling, administering. They're rarely optimized for sourcing excellence: the ability to reach passive candidates who aren't applying, engage them with precision, and close them in a competitive market.",
-      "Specialization in hiring means choosing external partners who do one thing — find exceptional people in your specific domain — better than any internal generalist team can. It means buying the expertise, the network, and the technology that takes years to build internally.",
-      "The math is simple. A mis-hire at ₹30L annual salary costs the company 2-3x that figure in lost productivity, re-hiring, and team disruption. The cost of a specialist recruitment partner is a fraction of that risk. The companies scaling fastest know this — they invest in specialist recruitment the same way they invest in specialist legal or financial advice. Not because they can't do it themselves. Because doing it better is worth more than doing it cheap.",
+      "In the startup world, the term \"lean\" is often mistaken for \"cheap.\" In reality, being lean is about the ruthless prioritization of resources. For a founder, every rupee and every hour spent on a non-core function is a diversion from product-market fit.",
+      "This philosophy is causing a massive shift in how emerging companies scale. We are seeing a trend where lean startups are ditching internal recruiters in favour of a specialized recruitment agency. The realization is simple: building an in-house talent acquisition team that competes with recruiter salaries, expensive LinkedIn Recruiter licenses, and database costs is an enormous fixed overhead that lacks the elasticity a growing business needs.",
+      "By partnering with Merito, startups can move from a heavy, fixed-cost model to a lean, outcome-based engine. Merito doesn't just act as an external vendor; we serve as an AI-powered extension of the founding team, helping you hire top talent without the internal bloat.",
+      { type: "h2", text: "1. The Hidden \"Infrastructure\" Cost of Internal Hiring" },
+      "Founders often think hiring an internal recruiter is a one-time salary cost. However, the transcription of the modern startup journey tells a different story. To be effective, an internal recruiter needs:",
+      { type: "ul", items: [
+        "Premium Tools: Subscriptions to platforms like Naukri and LinkedIn, which cost lakhs per year.",
+        "Specialized Expertise: A generalist recruiter often struggles to vet deep-tech or niche leadership roles.",
+        "Management Overhead: Time spent by the founder managing the recruiter instead of the product.",
+      ]},
+      "A specialized recruitment agency like Merito absorbs all these costs. We provide the infrastructure, the databases, and the specialized expertise as part of our service. This allows lean startups to keep their team small and their focus sharp.",
+      { type: "h2", text: "2. The High Cost of Vacancy (CoV)" },
+      "One point often overlooked by lean founders is the \"Cost of Vacancy.\" It's not just about what you spend to hire; it's about what you lose every day a critical seat remains empty. An internal team, limited by its own bandwidth, often has a slower time-to-hire.",
+      "Because Merito operates as an AI recruitment agency, we use experience pattern recognition and a pre-vetted talent pool to close roles 60% faster than traditional in-house teams. When you reduce your time-to-hire from 60 days to under 20, you aren't just saving on recruiter fees but you are accelerating your business velocity.",
+      { type: "h2", text: "3. Precision Vetting with a Skill-based Hiring Platform" },
+      "Lean startups cannot afford the \"trial and error\" phase of hiring. A bad hire in a team of 10 is a 10% failure rate. Most internal recruiters rely on resume screening, which is notoriously inaccurate.",
+      "A specialized recruitment agency uses superior technology to de-risk the process. Merito leverages a Skill-based Hiring Platform approach, replacing boring assignments with AI-driven project simulations. This ensures that the candidates reaching the founder are already verified for technical competency and cultural fit. By using a Skill-based Hiring Platform, we maintain a 90% fit accuracy, ensuring that the \"birds of a feather\" you hire actually belong in your nest.",
+      { type: "h2", text: "4. Scalability for Executive Search" },
+      "As a company enters its growth stage, the requirements for executive search become too complex for a standard internal recruiter. Finding a VP of Engineering or a Head of Sales requires a level of \"Acquired Intelligence\" and a network that takes years to build.",
+      "Lean startups use Merito for these high-stakes mandates because we combine human expertise with proprietary tools like Ref-Track. This allows us to automate reputation validation and behavioral flagging, providing the depth of a boutique executive search firm with the speed of an AI recruitment agency.",
+      { type: "h2", text: "The Bottom Line: Focus on What Matters" },
+      "For a lean startup, the founder is the primary driver of culture and growth. Managing a team of recruiters and software licenses is a distraction. By moving to a specialized recruitment agency, you gain a single point of contact — an expert partner who understands the startup lifecycle.",
+      "Merito empowers founders to stop being headhunters and start being leaders. We provide the data, the tools, and the talent, so you can focus on building the future.",
+      "Ready to lean out your hiring? Let Merito show you how to hire top talent with surgical precision.",
     ],
   },
   "retain-top-1": {
@@ -122,12 +211,36 @@ const articleData: Record<string, {
     category: "Executive Search",
     type: "article",
     readTime: "6 min read",
+    stats: [
+      { value: "86%", label: "OF 2026 GROWTH PLANS", subLabel: "no succession plan in place" },
+      { value: "C-Suite", label: "PIPELINE READY" },
+      { value: "Beyond hire", label: "ADVISORY MODEL" },
+    ],
     content: [
-      "Finding the top 1% is hard. Retaining them is harder. Executive search is often treated as a placement transaction — the agency delivers a hire, collects a fee, and the relationship ends. The best executive search partnerships work differently.",
-      "The top 1% of professionals — the ones who will genuinely transform your leadership team — are not responding to job boards. They're employed, performing, and getting calls from headhunters weekly. What makes them move is not a better salary (though compensation matters) — it's a more compelling opportunity, delivered by someone they trust.",
-      "This is why the quality of the search firm's network is the most important variable in executive search, ahead of databases or AI sourcing capability. The relationships that enable a firm to have an honest conversation with a passive candidate about why they should consider leaving a role they're excelling in — those relationships take years to build and can't be purchased.",
-      "At the same time, data is increasingly critical even at the executive level. AI can map the talent landscape, identify who's in the right stage of their career for a move, and prioritize outreach. The combination of relationship-first search with AI-powered intelligence is what makes Merito's executive practice distinctive.",
-      "Retaining the top 1% starts at the point of hire — with a process rigorous enough to identify them accurately, and an onboarding and compensation structure compelling enough to make them stay.",
+      "In the high-stakes world of C-suite leadership, a \"bad hire\" isn't just a financial loss, it's a strategic setback that can stall a company's momentum for years. Historically, the relationship between a company and an executive search firm was transactional: find a candidate, sign the contract, and move on.",
+      "However, in 2026, the model has evolved. The best firms are no longer just headhunters; they are acting as long-term \"Succession Consultants.\" At Merito, we understand that true leadership hiring isn't about filling a vacancy today; it's about securing the company's trajectory for the next decade. By moving beyond the transaction, a modern executive search partner ensures that the \"Top 1%\" don't just join, they stay and thrive.",
+      { type: "h2", text: "The Candidate's Bridge: Why \"Two-Way Choice\" Matters" },
+      "When a senior leader considers a move, it is never just about a salary hike. It is a calculated career pivot. Candidates at this level have deep-seated questions about culture, long-term vision, and internal dynamics that they often feel uncomfortable asking the company directly.",
+      "This is where a specialized recruitment agency acts as a vital bridge. As a succession consultant, Merito facilitates these difficult conversations, helping the candidate realize if your company is the right place for their legacy. By acting as a neutral advisor, we ensure the candidate makes an informed \"two-way choice,\" which is the first step in long-term retention.",
+      { type: "h2", text: "Validating Potential with the Skill-based Hiring Platform" },
+      "Confidence in a senior hire comes from data, not just a polished interview performance. Even at the C-suite level, technical and strategic competency must be verified.",
+      "By leveraging a Skill-based Hiring Platform, Merito provides a multi-dimensional view of a leader's capabilities. We combine AI-driven simulations with deep personality mapping to ensure the candidate's temperament matches the organizational culture. When you hire top talent through a Skill-based Hiring Platform, you aren't guessing about their \"fit\", you are measuring it against the personality traits of your current high-performers.",
+      { type: "h2", text: "Ref-Track: The 360° Data Advantage" },
+      "The most critical element of acting as a succession consultant is de-risking the hire through \"Acquired Intelligence.\" Most firms do a cursory reference check; Merito goes deeper.",
+      "Through our proprietary tool, Ref-Track, we gather quantified, 360-degree data on a candidate's past work experience. We reach out to:",
+      { type: "ul", items: [
+        "Managers: To understand strategic alignment.",
+        "Team Members: To gauge leadership style and empathy.",
+        "Clients: To verify external impact and reputation.",
+      ]},
+      "This data-driven approach allows boards to make hiring decisions convincingly. When you have a 360-degree view of a leader's past behavior, you can predict their future tenure with startling accuracy.",
+      { type: "h2", text: "Beyond the Offer Letter: The AI Recruitment Agency Difference" },
+      "While traditional firms stop at the handshake, an AI recruitment agency like Merito uses data to monitor early integration. By identifying behavioral flags or cultural friction early through our onboarding intelligence, we help companies course-correct before a mismatch leads to an exit.",
+      "As a succession consultant, our goal is to achieve an 85% two-year retention rate. We aren't just looking for the top 2% of talent; we are looking for the specific 1% that will become the backbone of your company's future.",
+      { type: "h2", text: "The Bottom Line: Hiring for the Long Haul" },
+      "In an era of high churn, leadership stability is a competitive advantage. If your executive search partner is only focused on the \"placement,\" you are missing out on the \"partnership.\"",
+      "Choosing Merito means choosing a consultant who views every senior hire as a piece of your long-term succession puzzle. We combine the speed of an AI recruitment agency with the surgical depth of a 360-degree reference engine.",
+      "Stop looking for a recruiter and start looking for a steward of your company's future. Let Merito help you hire top talent that stays.",
     ],
   },
   "ai-in-hiring": {
@@ -139,9 +252,12 @@ const articleData: Record<string, {
       "The recruitment industry is undergoing a seismic shift. Artificial intelligence — once a buzzword — is now a core operational tool for the world's most competitive talent teams. From automated sourcing to predictive performance modeling, AI is changing what's possible in hiring.",
       "At Merito, we've been building AI into our hiring process since 2023. Our experience has shown that the biggest gains don't come from replacing human judgment — they come from augmenting it. AI handles the volume; humans handle the nuance.",
       "Here's what we've seen AI do best in the hiring context:",
-      "Profile matching at scale: Traditional sourcing means a recruiter manually reviewing hundreds of CVs. AI models trained on historical hire data can surface the top 10% of profiles in minutes — not days. Our own sourcing AI reduced first-pass screening time by 70%.",
-      "Bias reduction: Structured AI scoring based on explicit criteria reduces the unconscious bias that plagues unstructured interviews. When every candidate is evaluated on the same dimensions, the best talent rises — regardless of where they went to school.",
-      "Predictive performance scoring: Using data from past hires, AI can identify which profile characteristics correlate with on-the-job success in specific roles. This turns hiring from guesswork into a repeatable, evidence-based process.",
+      { type: "h2", text: "Profile Matching at Scale" },
+      "Traditional sourcing means a recruiter manually reviewing hundreds of CVs. AI models trained on historical hire data can surface the top 10% of profiles in minutes — not days. Our own sourcing AI reduced first-pass screening time by 70%.",
+      { type: "h2", text: "Bias Reduction" },
+      "Structured AI scoring based on explicit criteria reduces the unconscious bias that plagues unstructured interviews. When every candidate is evaluated on the same dimensions, the best talent rises — regardless of where they went to school.",
+      { type: "h2", text: "Predictive Performance Scoring" },
+      "Using data from past hires, AI can identify which profile characteristics correlate with on-the-job success in specific roles. This turns hiring from guesswork into a repeatable, evidence-based process.",
       "The companies winning the talent war aren't those with the biggest teams — they're the ones using AI to hire smarter. The future of recruitment is already here. The question is: is your company ready?",
     ],
   },
@@ -151,9 +267,11 @@ const articleData: Record<string, {
     type: "article",
     readTime: "5 min read",
     content: [
+      { type: "h2", text: "The Active vs Passive Talent Divide" },
       "Here's a hard truth about job posts: the best candidates in any field are almost never actively looking. They're employed, performing well, and getting calls from people who already know their reputation.",
       "Your job post on LinkedIn reaches the active market — roughly 20-30% of the total talent pool. The top 2% you're actually looking for? They're in the passive market. They're not applying. They're being approached.",
       "This is the fundamental flaw in most companies' recruitment strategy: they're fishing in the same overcrowded pond as everyone else, wondering why they're not catching the fish they want.",
+      { type: "h2", text: "Reaching the Passive Market" },
       "Reaching passive talent requires a different playbook. It means building relationships before you have a role to fill. It means having a compelling employer brand that makes people want to work for you before they even hear about the job. And it means having recruiters with deep enough networks to find people who aren't raising their hands.",
       "At Merito, our AI sourcing engine is specifically designed to identify and engage passive candidates — the ones who don't have 'open to work' turned on. We cross-reference professional activity, career trajectory, skill signals, and network data to find people who would be exceptional in a role, then reach out with a personalized pitch.",
       "The result: our candidate shortlists consistently outperform those built from active applications on every performance metric that matters.",
@@ -166,11 +284,16 @@ const articleData: Record<string, {
     readTime: "5 min read",
     content: [
       "If more than 3 in 10 candidates you extend offers to are declining them, you have a pipeline problem — not a compensation problem. Most hiring teams jump straight to salary benchmarks when offer acceptance drops. That rarely fixes it.",
-      "Reason 1: You took too long. The best candidates have options. A 3-week gap between final interview and offer letter is enough time for a competing company to close them. Speed of offer is one of the highest-leverage levers in your hiring process.",
-      "Reason 2: The offer came as a surprise. Candidates who are not pre-closed before the offer lands are candidates who might say no. The offer conversation should confirm a decision already made — not be the first time a candidate hears the number.",
-      "Reason 3: Your employer brand is working against you. If candidates Googled your company and found Glassdoor reviews talking about poor management or slow growth, your offer is fighting that narrative. What people say about working for you matters more than what you say.",
-      "Reason 4: The process itself damaged the relationship. Long, impersonal hiring processes leave candidates feeling processed, not valued. By the time the offer comes, enthusiasm has eroded. The experience of being hired is part of the offer.",
-      "Reason 5: You're not solving the candidate's actual problem. Every candidate has a primary driver — growth, compensation, stability, flexibility, mission. If your offer doesn't clearly address that driver, it gets declined for the offer that does. Know what matters to each candidate before you make the offer.",
+      { type: "h2", text: "Reason 1: You Took Too Long" },
+      "The best candidates have options. A 3-week gap between final interview and offer letter is enough time for a competing company to close them. Speed of offer is one of the highest-leverage levers in your hiring process.",
+      { type: "h2", text: "Reason 2: The Offer Came as a Surprise" },
+      "Candidates who are not pre-closed before the offer lands are candidates who might say no. The offer conversation should confirm a decision already made — not be the first time a candidate hears the number.",
+      { type: "h2", text: "Reason 3: Your Employer Brand Is Working Against You" },
+      "If candidates Googled your company and found Glassdoor reviews talking about poor management or slow growth, your offer is fighting that narrative. What people say about working for you matters more than what you say.",
+      { type: "h2", text: "Reason 4: The Process Damaged the Relationship" },
+      "Long, impersonal hiring processes leave candidates feeling processed, not valued. By the time the offer comes, enthusiasm has eroded. The experience of being hired is part of the offer.",
+      { type: "h2", text: "Reason 5: You're Not Solving the Candidate's Actual Problem" },
+      "Every candidate has a primary driver — growth, compensation, stability, flexibility, mission. If your offer doesn't clearly address that driver, it gets declined for the offer that does. Know what matters to each candidate before you make the offer.",
     ],
   },
   "structured-interviews": {
@@ -180,9 +303,13 @@ const articleData: Record<string, {
     readTime: "7 min read",
     content: [
       "Decades of industrial-organizational psychology research reach the same conclusion: structured interviews predict job performance significantly better than unstructured ones. Yet the majority of interviews conducted today are still effectively unstructured — driven by instinct, rapport, and whatever questions the interviewer happens to think of.",
+      { type: "h2", text: "What Makes an Interview Structured?" },
       "What makes an interview structured? Three things: predetermined questions asked in the same order to every candidate, a standardized scoring rubric applied consistently, and multiple interviewers whose scores are aggregated rather than dominated by a single voice.",
+      { type: "h2", text: "Why the Evidence Is Clear" },
       "The research is clear. Unstructured interviews have a validity coefficient of about 0.20 — meaning they explain roughly 4% of variance in job performance. Structured interviews have a validity coefficient of around 0.51, explaining 26% of variance. That's a 6x improvement in predictive power.",
+      { type: "h2", text: "Why Unstructured Interviews Persist" },
       "Why do unstructured interviews persist despite the evidence? Three reasons. First, they feel more natural — both to interviewers and candidates. Second, they require more upfront work to design. Third, interviewers overestimate their own ability to read people.",
+      { type: "h2", text: "ICE: The Structured Framework" },
       "At Merito, our ICE assessment framework is built on structured interview principles — consistent questions, behavioral anchors for scoring, and multi-rater calibration. The result is hiring decisions backed by evidence rather than impression. Our data shows structured ICE-assessed candidates perform 40% better in 90-day reviews than those hired through traditional unstructured processes.",
     ],
   },
@@ -195,7 +322,9 @@ const articleData: Record<string, {
       "The traditional reference check is a relic. A recruiter calls two or three numbers provided by the candidate — people the candidate chose specifically because they'll say good things — asks vague questions, gets vague positive answers, and files the call as 'check complete.' Nothing meaningful is learned.",
       "This explains why reference checks have a reputation for adding no value. They don't — when done the traditional way. But that's a process failure, not an inherent limitation of reference checking as a concept.",
       "Done correctly, reference checks are one of the highest-signal data sources in the entire hiring process. They give you access to people who have actually seen this candidate perform under pressure, handle conflict, and grow (or not grow) over time.",
+      { type: "h2", text: "The Three-Part Fix" },
       "The fix has three parts. First, ask structured, behaviorally-anchored questions — not 'would you rehire?' but 'can you describe a specific situation where this person handled a setback at work?' Second, get quantitative scores on key competencies so you can compare candidates objectively. Third, call beyond the provided references — go to LinkedIn, find mutual connections, do back-channel reference work.",
+      { type: "h2", text: "Ref-Track: Automating the Process" },
       "Merito's Ref-Track platform automates and structures the entire reference check process — automated outreach, structured questionnaires, quantitative scoring, and dashboard tracking. The result: reference checks that take hours instead of days and actually tell you something.",
     ],
   },
@@ -207,7 +336,9 @@ const articleData: Record<string, {
     content: [
       "Before a candidate ever reads your job description, they've already formed an opinion about working for you. They've seen your LinkedIn company page, read your Glassdoor reviews, noticed whether your current employees talk positively about the company online. Your employer brand is always working — the question is whether it's working for you or against you.",
       "The data is striking: companies with strong employer brands receive 50% more qualified applications, pay 43% less per hire, and see 28% lower turnover. Employer brand isn't a marketing exercise — it's a core business driver with direct impact on hiring costs and team quality.",
+      { type: "h2", text: "The Three Components of a Strong Employer Brand" },
       "The three components of a strong employer brand: authentic culture visibility (what does it actually feel like to work here, shown through real stories and real people), clear value proposition (why should a talented person choose you over your competitor), and consistent candidate experience (every touchpoint from job post to offer shapes perception).",
+      { type: "h2", text: "Employer Branding as an Ongoing Practice" },
       "Most companies treat employer branding as a one-time project — a careers page redesign, a batch of employee testimonial videos. The companies that win in talent acquisition treat it as an ongoing practice: continuously collecting and sharing authentic stories, responding to reviews, measuring Net Promoter Score with candidates, and closing the feedback loop.",
       "Your next great hire is watching how you treat every candidate — including the ones you don't hire. What are they seeing?",
     ],
@@ -218,8 +349,10 @@ const articleData: Record<string, {
     type: "article",
     readTime: "6 min read",
     content: [
+      { type: "h2", text: "The Real Cost of an Empty Seat" },
       "Most hiring teams track time-to-hire as an operational metric. Few calculate what it actually costs. The math is brutal: if a senior role generates ₹50L of value per year, every month it sits open costs the business ₹4.2L in lost productivity — before you count the distraction cost on the team covering for the gap, the recruiter hours spent on a months-long search, and the cost of a rushed bad hire at the end.",
       "The industry average time-to-hire for senior roles is 68 days. For technical roles, it's often 90+. Merito's average: 11 days from brief to shortlist, 21 days to offer.",
+      { type: "h2", text: "What Drives the Difference" },
       "What drives the difference? Three things. First, sourcing speed: AI-powered sourcing means a qualified longlist in 48 hours, not 3 weeks. Second, pipeline discipline: every candidate at every stage has a defined SLA. No candidate sits in limbo for 10 days waiting for interview scheduling. Third, pre-closing: candidates are nurtured and pre-closed throughout the process, so offer-to-accept time is days, not weeks of negotiation.",
       "The 90-day time-to-hire is not an industry inevitability. It's a process problem. Companies that treat hiring as a high-priority, well-resourced function with clear metrics and accountability consistently hire faster — and better — than those that don't.",
       "The 48-hour sourcing speed that Merito offers isn't a gimmick. It's what happens when you apply the same operational rigor to recruitment that high-performing teams apply to every other function.",
@@ -232,8 +365,11 @@ const articleData: Record<string, {
     readTime: "5 min read",
     content: [
       "The framing of 'diversity vs. standards' is a false choice — and it's one that prevents companies from building the teams they actually need. The implicit assumption is that the default candidate pool (often skewed toward certain demographics, universities, and networks) represents the standard, and that diversity is a compromise of it. That assumption is wrong.",
+      { type: "h2", text: "The Business Case for Diversity" },
       "Research consistently shows that diverse teams outperform homogeneous ones on complex problem-solving, creativity, and innovation. The business case for diversity isn't about fairness (though it is fair) — it's about building the team most likely to win.",
+      { type: "h2", text: "Why Diversity Initiatives Fail" },
       "The reason diversity initiatives fail is almost never because diverse candidates don't exist. It's because the sourcing, screening, and interview processes systematically filter them out — through network-based sourcing that replicates existing demographics, unstructured interviews that advantage confident self-presenters, and unconscious bias in evaluation.",
+      { type: "h2", text: "The Process-Level Fix" },
       "The fix is process-level, not cosmetic. Structured sourcing that actively reaches underrepresented networks. Blind screening on first-pass review. Structured interviews with standardized scoring rubrics that reduce interviewer discretion. Diverse interview panels. These changes don't lower the bar — they change who can clear it.",
       "At Merito, our AI sourcing actively surfaces candidates from a broad range of backgrounds, and our ICE assessment evaluates capability directly — not proxy signals like which company someone worked at before. The result is shortlists that are both high-quality and diverse.",
     ],
@@ -246,7 +382,9 @@ const articleData: Record<string, {
     content: [
       "72% of candidates share negative hiring experiences online. In an era where your next great hire is likely researching you before they apply, every bad experience is a recruiting liability — and every exceptional one is an asset.",
       "Candidate experience is the sum of every interaction a person has with your company during the hiring process: the job description they read, the application form they fill out, the communication (or lack thereof) they receive, the interviews they sit through, the feedback they get (or don't), and the offer process at the end.",
+      { type: "h2", text: "Where Companies Drop the Ball" },
       "Most companies invest heavily in the front end — employer brand, job posts, sourcing. And then drop the ball on the experience itself. Applications that disappear into silence. Interview processes that stretch to 6 rounds without explanation. Offer letters that arrive weeks after the final interview. Feedback that never comes.",
+      { type: "h2", text: "The Three Practices of Great Candidate Experience" },
       "The companies with the best candidate experience do three things consistently: they communicate proactively at every stage, they give every candidate a clear decision timeline and stick to it, and they treat candidates who don't get the role with the same respect as those who do.",
       "The ROI is real. Companies with top-quartile candidate experience see 70% higher offer acceptance rates and significantly higher quality of applicant — because strong candidates have the most options and choose the companies that treat them best.",
     ],
@@ -259,8 +397,11 @@ const articleData: Record<string, {
     readTime: "6 min read",
     content: [
       "The single most common cause of slow, expensive, and ultimately failed hires is misalignment between the recruiter and the hiring manager. It's not a talent market problem. It's not a compensation problem. It's a communication problem — and it's entirely preventable.",
+      { type: "h2", text: "How Misalignment Shows Up" },
       "Misalignment shows up in predictable ways: a recruiter sends 10 candidates and the hiring manager rejects 9 of them without clear explanation. Or a hiring manager keeps moving the goalposts after the search has started. Or both parties think the search is going well until a 3-month process ends with no hire.",
+      { type: "h2", text: "The Intake Process: The Solution" },
       "The solution is a rigorous intake process — not a 15-minute call, but a structured 60-90 minute session that nails down: the business problem this role solves, the specific outcomes the hire will be measured on in their first 90 days, the non-negotiable skills vs. the nice-to-haves, the profile of the best person currently in a similar role (and why they're great), and the realistic candidate profile given the compensation band.",
+      { type: "h2", text: "The Strategic Setting Session" },
       "At Merito, we run a Strategic Setting session at the start of every search. The output is a written brief that both the recruiter and hiring manager sign off on. When a candidate is reviewed, evaluation is against the brief — not against a vague and shifting mental model.",
       "Alignment at the start is what makes speed possible throughout. A well-aligned search moves 3x faster than a misaligned one.",
     ],
@@ -273,8 +414,11 @@ const articleData: Record<string, {
     content: [
       "ICE stands for In-depth Capability Evaluation — Merito's proprietary framework for assessing candidates beyond what a resume or standard interview can reveal. It's the backbone of how we consistently identify candidates who don't just look good on paper but actually perform.",
       "The premise behind ICE: traditional hiring evaluates inputs (education, past employers, years of experience) as proxies for the output we actually care about (on-the-job performance). ICE evaluates the output directly — by measuring the specific capabilities that predict success in the role.",
+      { type: "h2", text: "ICE's Three Components" },
       "ICE has three components. First, a structured capability test — role-specific assessments that measure functional knowledge and applied reasoning, not general IQ. Second, a behavioral interview — a standardized set of situation-based questions that surface real past behavior as evidence of future behavior (the best predictor of performance). Third, a culture-fit calibration — structured assessment of working style, values alignment, and team dynamics fit.",
+      { type: "h2", text: "How Scoring Works" },
       "Each component produces a scored output, and scores are weighted according to the role profile. A technical role weights the capability test more heavily; a leadership role weights behavioral interview higher. The composite ICE score is what goes to the hiring manager — along with specific evidence for each dimension.",
+      { type: "h2", text: "The Results" },
       "The data from our placements shows a consistent pattern: candidates with high ICE scores outperform those hired through traditional processes by 35% on 6-month performance reviews. ICE doesn't guarantee a great hire — but it makes one significantly more likely.",
     ],
   },
@@ -285,8 +429,11 @@ const articleData: Record<string, {
     readTime: "5 min read",
     content: [
       "Early-stage startups face a hiring paradox: they need to hire faster than anyone else (growth waits for no one), but they also need to be more selective than anyone else (a bad hire at 15 people is an existential risk in a way it's not at 1,500).",
+      { type: "h2", text: "Resolving the Paradox" },
       "Many startups resolve this paradox by prioritizing one over the other. Hire fast and fix culture problems later. Or be incredibly selective and slow down growth. Both approaches have costs. The better resolution is to build a hiring process that's simultaneously fast and rigorous.",
+      { type: "h2", text: "The Key: Preparation" },
       "The key is preparation. Startups that hire well at speed have done the work upfront: they know exactly what they need (written role brief), they have a structured 3-step interview process that can run in a week, they have compensation frameworks ready so offers go out within 24 hours of final interview, and they've built enough employer brand that strong candidates already want to talk to them.",
+      { type: "h2", text: "Culture Fit at Early Stage" },
       "Culture fit at early-stage isn't about finding people who are exactly like the founders. It's about finding people who share the values that matter for how the company operates — speed, ownership, transparency, resilience — and can adapt to the chaos inherent in the early days.",
       "Merito has placed talent in 50+ growth companies. The fastest, most successful hires share a pattern: tight brief, fast process, aggressive pre-closing, and an offer that lands before the candidate has time to second-guess.",
     ],
@@ -298,9 +445,13 @@ const articleData: Record<string, {
     readTime: "6 min read",
     content: [
       "The recruitment industry is being reshaped faster than most hiring teams realize. The trends driving change — AI-powered sourcing and screening, changing candidate expectations around experience and transparency, the rise of skills-based hiring over credential-based hiring, and the acceleration of remote and hybrid work — are not future projections. They're current reality.",
+      { type: "h2", text: "AI: The Most Visible Transformation" },
       "AI is the most visible transformation. Companies that have integrated AI into sourcing can evaluate thousands of profiles in the time it previously took to review dozens. The bottleneck has moved from 'can we find the candidates' to 'can we evaluate them accurately and quickly.' That's a fundamentally different problem — and a better one.",
+      { type: "h2", text: "Shifting Candidate Expectations" },
       "Candidate expectations have shifted irreversibly. Top candidates — especially in tech and specialized functions — expect fast communication, transparent processes, and personalized engagement. The companies that still run 6-round, 8-week interview processes with weeks of radio silence between stages are losing the best candidates to companies that offer a better experience.",
+      { type: "h2", text: "The Rise of Skills-Based Hiring" },
       "Skills-based hiring is gaining momentum. Forward-thinking companies are already deprioritizing degree requirements and traditional career paths in favor of demonstrated capability. This expands the talent pool dramatically — and requires better assessment frameworks to evaluate candidates who don't have conventional credentials.",
+      { type: "h2", text: "Merito: Built for This Moment" },
       "Merito was built for exactly this moment. Our AI sourcing, ICE assessment framework, and tools like Offer Vault and Ref-Track are designed for the recruitment landscape that exists now — not the one that existed 10 years ago. The companies adapting to this new reality will build better teams, faster. The ones that don't will keep wondering why hiring is so hard.",
     ],
   },
@@ -323,7 +474,7 @@ const articleData: Record<string, {
       "Companies can prevent attrition levels from rising by collecting data about their work experience in the environment, prioritizing work-life balance, and appreciating their contribution is essential. Any problem identified can be solved through analysis and implementation thus retaining employees.",
       "Thirdly, the organization's talent gaps can be found using acquired intelligence. Companies can determine areas where employees might require further training or growth opportunities by analyzing data from employee assessments and performance reviews. This can aid to guarantee that workers have the abilities necessary to carry out their tasks well and to promote their career advancement within the company.",
       "Fourthly, when an employee is hired, the skill gap study can begin. Usually, businesses don't make use of interview-related data points. By assessing these inputs and interview feedback, companies can use this significant data point to map present abilities, the gaps, and the plans to close such gaps with the help of training programs thus ensuring skill development.",
-      "Fifthly, it is also possible to use acquired intelligence to spot bias or discrimination within an organization. Companies can spot potential inequities in hiring, promotion, or salary by examining data from performance reviews, feedback, and other sources. This can assist businesses in creating focused plans to encourage diversity and inclusion inside the workplace.",
+      "Fifth, it is also possible to use acquired intelligence to spot bias or discrimination within an organization. Companies can spot potential inequities in hiring, promotion, or salary by examining data from performance reviews, feedback, and other sources. This can assist businesses in creating focused plans to encourage diversity and inclusion inside the workplace.",
       "Lastly, acquired intelligence can be used to improve performance management within the organization. Companies can spot areas where workers might be having trouble or where they might need more support by analyzing data from performance reviews, feedback, and other sources. This can assist managers in giving staff-focused criticism and coaching to help them perform better.",
       "In conclusion, while AI can be useful in solving people's issues, businesses should also take into account utilizing gained intelligence to develop a more thorough understanding of their staff members and their needs. Companies can create focused plans to enhance hiring, retention, engagement, and performance inside their organization by analyzing data from a variety of sources and relying on human intuition.",
     ],
@@ -332,7 +483,7 @@ const articleData: Record<string, {
     title: "Think of Recruitment as Sales",
     titleBefore: "Think of Recruitment",
     titleRed: "as Sales",
-    date: "Feb 7",
+    date: "April 23",
     heroImage: "/insights-thumbnails/insight-Hero Banner.png",
     category: "Podcast",
     type: "podcast",
@@ -345,7 +496,7 @@ const articleData: Record<string, {
       "The characteristics and conduct of a recruiter towards prospects will change if they create customer delights by treating job applicants as their potential customers. At every stage, deliberate steps will be made to guarantee candidate delight. Candidates who are more satisfied with the interview process are more likely to recommend you to others, which helps you strengthen your brand.",
       "Find the Right Recruitment Partners – Recruitment partners are essential to addressing recruiting needs. The perfect recruitment partner should complement your current recruitment team and share your philosophy and methodology for hiring. According to the categories you established throughout the hiring process, the company can divide its recruitment partners into different groups and only work with partners on those parts where hiring is urgently needed and is crucial to the operation of the business.",
       "The factor of Empathy – Recruiters want to become experts in their fields, learn about the market, and address issues related to human resources. The only way for recruiters to establish long-lasting connections with their customers and applicants is by introducing the most qualified prospects for open positions and making placements.",
-      "The product that recruiters market is distinct and emotive. A product that allows users to alter their life. No doubt, things go off track sometimes. There's no use in trying to fit square pegs into round holes. A recruiter can boost their success if they follow the appropriate procedures, but some factors will always be beyond their control.",
+      "The product that recruiters market is distinct and emotive. A product that allows users to alter their minds, switch sides, or even vanish. Fortunately, a recruiter can boost their success if they follow the appropriate procedures, but some factors will always be beyond their control.",
       "Elite recruiters are rewarded with repeat business and the client's perception of them as trustworthy advisers since they have solid career histories and have established themselves as authorities in their fields. To conclude, if you are looking to scale your recruitment just draw inspiration from your sales and marketing.",
     ],
   },
@@ -388,7 +539,7 @@ const articleData: Record<string, {
       "Instead, organizations should write job descriptions that highlight what a candidate would be expected to achieve during their first month, three months, six months, and a year into the job. The improved clarity will provide candidates with a clear understanding of what they can expect if they are hired.",
       "Follow up Often – As soon as you can, send an email of rejection or an invitation to an interview. One of the best methods to enhance candidate experience is by swiftly responding to applicants, whether you have good or negative news. This will set you apart and show that you appreciate your prospects' time.",
       "Close the loop of candidates – Don't forget to let the other candidates know the outcome after selecting a candidate. If candidates don't get a response in any way, the company's reputation may suffer. Continual communication can maintain candidate interest. However, it is equally vital to notify applicants who will not advance to the next stage of the interview process.",
-      "Using the right technology – AI-powered automated recruitment marketing will assist in identifying the most effective methods for connecting with top candidates, including social media platforms like LinkedIn. Additionally, video interviews conducted using services like Teams, Zoom, or Skype might speed up the recruitment process. According to the typical recruiter fills positions in 30 days. Online tests are two major causes for this response rate. Firstly, there are far more applications for recruiters than there are for founders. Secondly, the candidate's experience is not a factor in how well a recruiter performs.",
+      "Using the right technology – AI-powered automated recruitment marketing will assist in identifying the most effective methods for connecting with top candidates, including social media platforms like LinkedIn. Additionally, video interviews conducted using services like Teams, Zoom, or Skype might speed up the procedure. According to a poll, the typical recruiter fills positions in 30 days. Online interviews are a terrific method to move the process forward more rapidly and keep in front of top candidates before they move on to other chances.",
       "Evaluating Performance of Recruiters – Most businesses use the output, which is often the number of prospects a recruiter converts, to evaluate recruiters' performance. As a result, they become solely concerned with the results, and the candidate's experience is ignored. Despite their busy schedules, founders are seen to respond to applicants at a rate that is noticeably higher than that of recruiters. There are two major causes for this response rate. Firstly, there are far more applications for recruiters than there are for founders. Secondly, the candidate's experience is not a factor in how well a recruiter performs.",
     ],
   },
@@ -398,21 +549,31 @@ const articleData: Record<string, {
     titleRed: "Strategy",
     excerpt: "Why Your 2026 Strategy Needs a Specialist Executive Search Partner.",
     heroImage: "/insights-thumbnails/Your 2026 stratergy.jpg",
-    category: "Leadership Hiring",
+    category: "Leadership Strategy",
     type: "article",
     readTime: "6 min read",
     stats: [
-      { value: "40%", label: "Faster Hiring With AI" },
-      { value: "78%", label: "Of 2026 Growth Plans" },
-      { value: "Talent Gaps", label: "Block Progress" },
+      { value: "78%", label: "OF 2026 GROWTH PLANS", subLabel: "are blocked by talent gaps at the top" },
+      { value: "Market Intel", label: "Built in" },
+      { value: "Niche", label: "SPECIALIST ACCESS" },
     ],
     content: [
       "As we move toward 2026, the narrative around recruitment is dominated by one thing: automation. AI is no longer a futuristic concept; it is a baseline tool for support functions across every enterprise. But as the market becomes saturated with AI-driven sourcing bots and automated outreach, a critical question arises for founders and boards: If every company has access to the same AI tools, what constitutes a competitive advantage in hiring?",
-      "The answer lies in 'Acquired Intelligence.' While an AI recruitment agency can provide the speed to find a needle in a haystack, it is the specialist executive search partner who knows what to do with that needle once it's found.",
-      "Many internal HR teams are currently experimenting with AI tools to reduce their reliance on an external recruitment agency. However, these tools are not a 'set-and-forget' solution. Without the domain expertise to interpret AI data, internal teams often face a steep learning curve that impacts execution velocity. In contrast, a specialized executive search firm has already mastered these tools across dozens of clients and hundreds of mandates. We bring Acquired Intelligence — the lived experience of having handled similar senior roles before — to ensure the technology is an enabler of quality, not a source of delay.",
-      "The higher you go in an organization, the more the hiring process becomes a two-way psychological negotiation. A senior leader doesn't just 'apply' for a job; they make a choice with conviction. This is a role that AI simply cannot fulfil. An executive search partner like Merito acts as a strategic bridge. We spend years building relationships with the top 2% of talent, understanding their motivations long before they hit the market.",
-      "In 2026, 'gut-feel' is no longer a viable strategy for senior hires. Every leadership placement must be de-risked. We replace hypothetical interview questions with high-stakes simulations that evaluate a leader's ability to architect AI-driven teams and navigate market volatility. By combining this technical validation with our proprietary Ref-Track tool, we provide quantified data on a candidate's past work experience — ensuring your executive search results in a leader with 90% fit accuracy and an 85% chance of staying beyond the two-year mark.",
-      "AI is proliferating at an incredible rate, but the core of leadership hiring remains unchanged: it is a business of trust, reputation, and human insight. Merito offers the perfect hybrid — the technological edge of an AI recruitment agency and the specialized Acquired Intelligence of a premier executive search house.",
+      "The answer lies in 'Acquired Intelligence.' While an AI recruitment agency can provide the speed to find a needle in a haystack, it is the specialist executive search partner who knows what to do with that needle once it's found. For mid-to-senior level roles, the effectiveness of a tool is determined entirely by the person wielding it. Relying solely on internal teams to navigate complex AI interfaces often leads to 'search lag' delaying your time-to-hire and compromising the quality of your leadership.",
+      "At Merito, we believe that while AI is the engine, human expertise is the navigator. To hire top talent for gear-roles like those positions that drive your entire organization, you need a partner that marries the efficiency of an AI recruitment agency with the deep-rooted conviction of a veteran headhunter.",
+      { type: "h2", text: "The Tool Trap: Why Internal AI Often Fails at the Top" },
+      "Many internal HR teams are currently experimenting with AI tools to reduce their reliance on an external recruitment agency. However, these tools are not a 'set-and-forget' solution. Without the domain expertise to interpret AI data, internal teams often face a steep learning curve that impacts execution velocity.",
+      "In contrast, a specialized executive search firm has already mastered these tools across dozens of clients and hundreds of mandates. We bring 'Acquired Intelligence', the lived experience of having handled similar senior roles before, to ensure the technology is an enabler of quality, not a source of delay. When a candidate is making a life-changing career choice to join your C-suite, they don't want to talk to a bot; they want to engage with a peer who understands their legacy.",
+      { type: "h2", text: "Building Conviction: The Role AI Cannot Replace" },
+      "The higher you go in an organization, the more the hiring process becomes a two-way psychological negotiation. A senior leader doesn't just 'apply' for a job; they make a choice with conviction. This is a role that AI simply cannot fulfil.",
+      "An executive search partner like Merito acts as a strategic bridge. We spend years building relationships with the top 2% of talent, understanding their motivations long before they hit the market. While our Skill-based Hiring Platform provides the data to verify their competence, our human consultants provide the engagement necessary to ensure that when the candidate says 'yes,' they do so with a 360-degree understanding of your vision.",
+      { type: "h2", text: "Data-Backed Decisions with the Skill-based Hiring Platform" },
+      "In 2026, 'gut-feel' is no longer a viable strategy for senior hires. Every leadership placement must be de-risked. Even at the executive level, Merito utilizes a Skill-based Hiring Platform to move beyond the resume. We replace hypothetical interview questions with high-stakes simulations that evaluate a leader's ability to architect AI-driven teams and navigate market volatility.",
+      "By combining this technical validation with our proprietary Ref-Track tool, we provide quantified data on a candidate's past work experience. We gather feedback from managers, team members, and even clients to build a 360° profile. This ensures your executive search results in a leader with 90% fit accuracy and an 85% chance of staying beyond the two-year mark.",
+      { type: "h2", text: "The Bottom Line: Gear-Roles Require Gear-Partners" },
+      "AI is proliferating at an incredible rate, but the core of leadership hiring remains unchanged: it is a business of trust, reputation, and human insight. A standard recruitment agency might help you fill support functions, but for the roles that define your 2026 growth strategy, you need a specialist.",
+      "Merito offers the perfect hybrid. We provide the technological edge of an AI recruitment agency and the specialized 'Acquired Intelligence' of a premier executive search house. Don't let your growth be delayed by an internal team's AI learning curve. Choose a partner that understands that the most important part of 'Artificial Intelligence' is the human intelligence behind it.",
+      "Let Merito help you hire top talent with the conviction your strategy deserves.",
     ],
   },
   "hire-from-within": {
@@ -421,21 +582,36 @@ const articleData: Record<string, {
     titleRed: "Within",
     excerpt: "Why the best way to hire top talent is to start with your current team's culture.",
     heroImage: "/insights-thumbnails/hire from within.jpg",
-    category: "Talent & Culture",
+    category: "Talent and Culture",
     type: "article",
     readTime: "5 min read",
     stats: [
-      { value: "40%", label: "Lower Mis-hire Rate" },
-      { value: "89%", label: "Of Bad Hires" },
-      { value: "Culture Fit", label: "Root Cause" },
+      { value: "89%", label: "OF BAD HIRES", subLabel: "are caused by poor culture fit" },
+      { value: "Values", label: "FIRST SCREENING" },
+      { value: "Team DNA", label: "MAPPING" },
     ],
     content: [
-      "In the early days of a startup, culture isn't a handbook or a set of posters on the wall — it's the founder's psyche. It is the invisible set of values, quirks, and work ethics that exist in the founder's head. But as you scale, that internal compass becomes harder to share. This 'cultural riddle' is the single biggest bottleneck to scaling.",
-      "When culture remains an undefined feeling, stakeholders end up with conflicting views. To hire top talent who actually stay, you have to stop looking outward and start looking in the mirror.",
-      "Your early-stage employees define the actual culture of your workspace, not your mission statement. The best way to solve the culture gap is to run assessments on your existing team using frameworks like the Big Five (OCEAN). By translating your culture into personality traits, you create a benchmark: for innovation-led teams, you look for high 'Openness to Experience'; for high-autonomy teams, you look for candidates who score lower on 'Agreeableness.' Merito's Skill-based Hiring Platform automates this benchmarking — helping founders take the personality fingerprint of their best employees and use it as a filter.",
-      "Traditional hiring relies on gut-feel interviews, which are only about 40% accurate. A modern AI recruitment agency like Merito removes this subjectivity. We combine Artificial Intelligence with the Acquired Intelligence of your existing team's data. Our platform doesn't just look at skills — it evaluates Human-Plus elements. By integrating AI-driven psychometric scorecards into the funnel, we ensure that the candidates reaching the final round aren't just technically capable; they are psychologically aligned with the founder's vision.",
-      "When it comes to executive search, cultural misalignment isn't just a nuisance — it's a catastrophe. A VP or C-suite hire who doesn't mesh with the existing team's personality traits can dismantle years of progress in months. This is why Merito uses proprietary tools like Ref-Track during an executive search. We don't just check references; we validate behavioral patterns.",
-      "To hire top talent effectively, you must realize that culture is a measurable asset. By assessing your current team, you turn a 'feeling' into a strategy. Stop guessing about cultural fit and start measuring it — because the best way to build your future is to understand who you are today.",
+      "In the early days of a startup, culture isn't a handbook or a set of posters on the wall, it's the founder's psyche. It is the invisible set of values, quirks, and work ethics that exist in the founder's head. But as you scale, that internal compass becomes harder to share. You talk to dozens of candidates, yet you and your stakeholders can't seem to find that 'click.' You know you want to hire top talent, but you can't quite define why the person in front of you doesn't feel like a 'cultural match.'",
+      "This 'cultural riddle' is the single biggest bottleneck to scaling. When culture remains an undefined feeling, stakeholders end up with conflicting views: one sees a 'freedom-based' culture, while another sees 'chaos.' To hire top talent who actually stay, you have to stop looking outward and start looking in the mirror, especially, at the team you've already built.",
+      "At Merito, we've seen that the most successful founders don't leave culture to chance. They use an AI recruitment agency framework to translate abstract 'vibes' into hard data, ensuring that every new hire is a psychological extension of the company's core DNA.",
+      { type: "h2", text: "Defining the \"Birds of a Feather\" Effect" },
+      "There is a profound truth in the saying: birds of a feather flock together. Your early-stage employees define the actual culture of your workspace, not your mission statement. If you want to find more people who fit, you must first understand the personality traits of your current high-performers.",
+      "The best way to solve the culture gap is to run assessments on your existing team using frameworks like the Big Five (OCEAN). By translating your culture into personality traits, you create a benchmark:",
+      { type: "ul", items: [
+        "For Innovation-Led Teams: You look for high 'Openness to Experience.'",
+        "For High-Autonomy Teams: You look for candidates who might score lower on 'Agreeableness', individuals who aren't afraid to challenge the status quo.",
+      ]},
+      "By using Merito as your Skill-based Hiring Platform, you can automate this benchmarking. We help founders take the 'personality fingerprint' of their best employees and use it as a filter to hire top talent who possess the same drive and temperament.",
+      { type: "h2", text: "Precision Vetting Through an AI Recruitment Agency" },
+      "Traditional hiring relies on 'gut-feel' interviews, which are only about 40% accurate. A modern AI recruitment agency like Merito removes this subjectivity. We combine 'Artificial Intelligence' with the 'Acquired Intelligence' of your existing team's data.",
+      "Our platform doesn't just look at skills; it evaluates the 'Human-Plus' elements. By integrating AI-driven psychometric scorecards into the funnel, Merito ensures that the candidates reaching the final round aren't just technically capable, they are psychologically aligned with the founder's vision.",
+      { type: "h2", text: "Executive Search and the Cultural Mandate" },
+      "When it comes to executive search, cultural misalignment isn't just a nuisance; it's a catastrophe. A VP or C-suite hire who doesn't mesh with the existing team's personality traits can dismantle years of progress in months.",
+      "This is why Merito uses proprietary tools like Ref-Track during an executive search. We don't just check references; we validate behavioral patterns. We ensure that a leader's past performance aligns with the personality traits you've identified as essential for your specific culture. Whether you are working with a traditional recruitment agency or an advanced partner, if they aren't mapping personality to culture, they aren't really searching for your successor.",
+      { type: "h2", text: "The Bottom Line: Culture as a Data Point" },
+      "To hire top talent effectively, you must realize that culture is a measurable asset. By assessing your current team, you turn a 'feeling' into a strategy.",
+      "Choosing Merito means you aren't just getting a recruitment agency; you're getting a talent intelligence partner. We help you define your culture on paper so that your AI-powered interviews can find the perfect match every single time.",
+      "Stop guessing about cultural fit and start measuring it, because the best way to build your future is to understand who you are today.",
     ],
   },
   "slow-hiring-costs": {
@@ -448,17 +624,34 @@ const articleData: Record<string, {
     type: "article",
     readTime: "5 min read",
     stats: [
-      { value: "40%", label: "Faster Hiring" },
-      { value: "10 Days", label: "Is The Window" },
-      { value: "Before Top Talent", label: "Accepts Elsewhere" },
+      { value: "10", label: "DAYS IS THE WINDOW", subLabel: "Before top candidates accept elsewhere" },
+      { value: "57%", label: "LOSE IMMEDIATELY" },
+      { value: "4-6 ROUNDS", label: "MANY STAGES" },
     ],
     content: [
-      "In the competitive race to hire top talent, many founders and HR leaders operate under a dangerous myth: that a high number of interview rounds equates to a high quality of hire. A bloated, repetitive, and lengthy process doesn't filter for the best — it filters for the most desperate. The most elite candidates are passive 'top 2%' who aren't actively looking and are often being approached by five other companies simultaneously. The moment your process hits the fifth or sixth round, you aren't just measuring their skills — you are testing their patience.",
-      "At Merito, we specialize in collapsing these timelines. By using an AI recruitment agency framework, we help companies reduce their time-to-hire by 60%.",
-      "Most lengthy processes are a collection of redundant conversations. A smarter approach, used by elite B-schools and top-tier tech firms, is to consolidate. Instead of five separate rounds, consider a 'Panel of Experts' model where multiple interviewers join a single round, each evaluating a different capability.",
-      "One reason processes become lengthy is a lack of confidence. Stakeholders keep adding rounds because they aren't sure if the candidate truly has the skills. This is where a Skill-based Hiring Platform changes the game. Instead of adding more conversation, add more evidence.",
-      "For a passive candidate, the interview process is their first window into your company's operational efficiency. A lengthy process signals bureaucracy and indecision. An AI recruitment agency like Merito ensures that engagement remains high through rapid feedback loops, contextual accuracy, and transparent timelines — giving candidates a clear impact roadmap instead of a vague series of chats.",
-      "The stakes are even higher during an executive search. A C-suite candidate's time is their most valuable asset. Merito de-risks this by using Ref-Track, our proprietary reputation validation tool. By partnering with Merito, you gain access to an AI recruitment agency that prioritizes velocity and candidate experience. Stop letting your process be the reason you miss out on the best.",
+      "In the competitive race to hire top talent, many founders and HR leaders operate under a dangerous myth: that a high number of interview rounds equates to a high quality of hire. There is a tendency to believe that the more hurdles a candidate jumps over, the more 'vetted' they are. However, in 2026, the reality is the exact opposite. A bloated, repetitive, and lengthy process doesn't filter for the best; it filters for the most desperate.",
+      "The most elite candidates which are the passive 'top 2%' who aren't actively looking and are often being approached by five other companies simultaneously. The moment your process hits the fifth or sixth round, you aren't just measuring their skills; you are testing their patience. If you want to hire top talent, your process needs to be a streamlined engine of engagement, not an obstacle course of redundancy.",
+      "At Merito, we specialize in collapsing these timelines. By using an AI recruitment agency framework, we help companies reduce their time-to-hire by 60%, ensuring that your dream hire signs with you before they even finish Round 2 with your competitor.",
+      { type: "h2", text: "The Redundancy Riddle: Why More Rounds Don't Mean Better Hires" },
+      "Most lengthy processes are a collection of redundant conversations. If three different stakeholders ask the same set of questions about 'past leadership experience,' you haven't gained more data, you've just wasted everyone's time.",
+      "A smarter approach, often used by elite B-schools and top-tier tech firms, is to consolidate. Instead of five separate rounds, consider a 'Panel of Experts' model where multiple interviewers join a single round, each evaluating a different capability. This maximizes data collection while minimizing candidate fatigue. To hire top talent consistently, you must transition from a 'quantity of rounds' mindset to a 'quality of assessment' mindset.",
+      { type: "h2", text: "Leveraging Technology to Build Confidence" },
+      "One reason processes become lengthy is a lack of confidence. Stakeholders keep adding rounds because they aren't sure if the candidate truly has the skills. This is where a Skill-based Hiring Platform changes the game.",
+      "By integrating Merito's Skill-based Hiring Platform into the early stages of your funnel, you replace subjective 'tell me about a time' questions with objective, real-world simulations. When you have verifiable data on a candidate's technical or strategic proficiency from an AI-driven simulation, you no longer need three extra rounds to 'double-check' their ability.",
+      { type: "h2", text: "Engagement is the New Currency" },
+      "For a passive candidate, the interview process is their first window into your company's operational efficiency. A lengthy process signals bureaucracy and indecision. An AI recruitment agency like Merito ensures that engagement remains high by:",
+      { type: "ul", items: [
+        "Rapid Feedback Loops: Using AI to summarize interview notes and move candidates to the next stage in 24 hours.",
+        "Contextual Accuracy: Ensuring every interviewer knows what has already been covered, preventing repetitive questioning.",
+        "Transparent Timelines: Providing candidates with a clear 'Impact Roadmap' instead of a vague series of chats.",
+      ]},
+      { type: "h2", text: "Surgical Precision in Executive Search" },
+      "The stakes are even higher during an executive search. A C-suite candidate's time is their most valuable asset. If your executive search involves eight rounds of interviews, you will lose the best leaders to more agile firms.",
+      "Merito de-risks this by using Ref-Track, our proprietary reputation validation tool. By automating background checks and behavioral mapping, we give boards the confidence they need to make a decision after three surgical rounds rather than six exhausting ones. Whether you are working with an external recruitment agency or your internal team, the goal should be 'Minimum Friction, Maximum Intelligence.'",
+      { type: "h2", text: "The Bottom Line: Speed is a Feature, Not a Bug" },
+      "If your goal is to hire top talent, you must respect the candidate's time as much as your own. Every extra round of interviews increases the chance of a candidate dropping out or accepting a competing offer.",
+      "By partnering with Merito, you gain access to an AI recruitment agency that prioritizes velocity and candidate experience. We help you define exactly what needs to be measured, automate the validation through our Skill-based Hiring Platform, and ensure your team is built for speed.",
+      "Stop letting your process be the reason you miss out on the best, it's time to hire at the speed of growth.",
     ],
   },
   "modern-playbook": {
@@ -471,39 +664,78 @@ const articleData: Record<string, {
     type: "article",
     readTime: "6 min read",
     stats: [
-      { value: "85%", label: "Two-Year Retention Rate" },
-      { value: "3 in 5", label: "Top Performers" },
-      { value: "Open To Leaving", label: "Within 12 Months" },
+      { value: "3 in 5", label: "TOP PERFORMERS", subLabel: "Are open to leaving within 12 months" },
+      { value: "Warm Outreach", label: "NOT COLD ADS" },
+      { value: "EVP First", label: "BRANDING" },
     ],
     content: [
-      "In today's volatile job market, the 'Great Resignation' has evolved into the 'Constant Churn.' Average retention periods have plummeted, driven by a Gen Z workforce that values alignment over traditional loyalty. For founders and HR leaders, the challenge has shifted: it's no longer just about filling a seat — it's about finding the 'Stickiness Factor.' By moving away from gut-feel and toward data-driven intelligence, Merito helps companies achieve an 85% two-year retention rate.",
-      "The first mistake companies make in a high-churn market is having a vague definition of 'quality.' At Merito, our Skill-based Hiring Platform ensures that quality is defined by deeds, not degrees.",
-      "High churn is often a symptom of 'cultural friction.' A modern AI recruitment agency like Merito solves this by translating abstract culture into objective personality attributes. Using frameworks like the Big Five (OCEAN), we create a measurable benchmark for cultural fit that goes beyond gut feeling.",
-      "In a high-churn market, the 'Candidate Experience' is your best marketing tool. Merito functions as a high-touch AI recruitment agency, ensuring that even passive candidates are engaged through transparent feedback, AI-powered velocity, and moving from first contact to offer in under 20 days.",
-      "In a churning market, losing a senior leader is catastrophic. Merito de-risks leadership hiring by combining Artificial Intelligence with Acquired Intelligence. We use our proprietary Ref-Track tool to automate reputation validation for executive search, ensuring cultural alignment at the top.",
-      "Partnering with Merito allows you to leverage a Skill-based Hiring Platform that maps both competency and character. Stop fighting the churn and start outsmarting it.",
+      "In today's volatile job market, the 'Great Resignation' has evolved into the 'Constant Churn.' Average retention periods have plummeted, driven by a Gen Z workforce that values alignment over traditional loyalty and a digital economy that keeps every professional just one LinkedIn DM away from a new offer. For founders and HR leaders, the challenge has shifted: it's no longer just about filling a seat; it's about finding the 'Stickiness Factor.'",
+      "To hire top talent in a high-churn environment, you can't rely on old-school tactics. You need a playbook that treats hiring as a science of psychological and technical alignment. This is where Merito changes the game. By moving away from gut-feel and toward data-driven intelligence, Merito helps companies achieve an 85% two-year retention rate, even in industries where churn is the norm.",
+      { type: "h2", text: "1. Define Quality Beyond the Job Description" },
+      "The first mistake companies make in a high-churn market is having a vague definition of 'quality.' To hire top talent, you must deconstruct a role into specific, measurable competencies.",
+      "Using an assessment-driven framework is no longer optional. At Merito, our Skill-based Hiring Platform ensures that quality is defined by 'deeds, not degrees.' By using real-world project simulations instead of static interviews, we verify that a candidate doesn't just have the skills on paper, but the ability to execute under pressure. When a candidate's skills perfectly match the role's demands, their job satisfaction and therefore their retention increases naturally.",
+      { type: "h2", text: "2. Translate \"Culture\" into Personality Traits" },
+      "High churn is often a symptom of 'cultural friction'. As our leadership notes, whether you are hiring Gen Z or Gen Alpha, every individual has a specific personality 'fingerprint.' If that fingerprint doesn't match your workspace, they will leave within six months.",
+      "A modern AI recruitment agency like Merito solves this by translating abstract culture into objective personality attributes. Using frameworks like the Big Five (OCEAN), we help you identify the traits that thrive in your specific environment.",
+      { type: "ul", items: [
+        "Need high autonomy? We filter for high conscientiousness and low agreeableness.",
+        "Need rapid innovation? We look for high openness to experience.",
+      ]},
+      "By matching the personality to the job's daily reality, you ensure the candidate isn't just a 'fit' for the interview, but a fit for the long haul.",
+      { type: "h2", text: "3. The Engagement Edge: Your Process is Your Product" },
+      "In a high-churn market, the 'Candidate Experience' is your best marketing tool. Top-tier professionals are being pursued by multiple firms; they will choose the one that respects their time and provides the most clarity.",
+      "A specialized recruitment agency acts as your brand ambassador. Merito functions as a high-touch AI recruitment agency, ensuring that even passive candidates are engaged through:",
+      { type: "ul", items: [
+        "Transparent Feedback: Reducing the 'black hole' effect of traditional hiring.",
+        "AI-Powered Velocity: Moving from first contact to offer in under 20 days.",
+        "Outcome Based Discussions: Focusing on the 'Impact Roadmap' rather than boring administrative questions.",
+      ]},
+      "Even if you don't hire a specific candidate, a top-notch experience ensures they refer other high-performers to you, turning your recruitment funnel into a self-sustaining ecosystem.",
+      { type: "h2", text: "4. Surgical Precision in Executive Search" },
+      "In a churning market, losing a senior leader is catastrophic. It creates a vacuum that can trigger a mass of the team below them. This is why executive search must be more rigorous than ever.",
+      "Merito de-risks leadership hiring by combining 'Artificial Intelligence' with 'Acquired Intelligence.' We use our proprietary Ref-Track tool to automate reputation validation, ensuring that a leader's past behaviour aligns with your future needs. We don't just find a CV; we find a stabilizer who will lower the churn rate of your entire organization.",
+      { type: "h2", text: "The Bottom Line: Data Over Disruption" },
+      "The secret to stable growth in a high-churn market is precision. If you continue to hire based on resumes and vibes, you will continue to see high turnover.",
+      "Partnering with Merito allows you to leverage a Skill-based Hiring Platform that maps both competency and character. We provide the tools to help you hire top talent with the confidence that they will stay, grow, and lead.",
+      "Stop fighting the churn and start outsmarting it with Merito.",
     ],
   },
   "rest-to-reality": {
     title: "How a Skill-Based Hiring Platform Turns Assessments into Real-World Simulations",
-    titleBefore: "From Test To",
+    titleBefore: "From Rest To",
     titleRed: "Reality",
     excerpt: "How a Skill-Based Hiring Platform Turns Assessments into Real-World Simulations.",
     heroImage: "/insights-thumbnails/From rest to reality.jpg",
-    category: "AI Recruitment",
+    category: "Skill Based Hiring",
     type: "article",
     readTime: "5 min read",
     stats: [
-      { value: "4x", label: "More Predictive Accuracy" },
-      { value: "92%", label: "Hire Confidence" },
-      { value: "ICE Framework", label: "Included" },
+      { value: "4x", label: "MORE PREDICTIVE ACCURACY", subLabel: "VS. Traditional interviews" },
+      { value: "ICE", label: "FRAME WORK" },
+      { value: "92%", label: "HIRE CONFIDENCE" },
     ],
     content: [
-      "In the traditional hiring landscape, the gap between 'passing an interview' and 'performing on the job' has always been a costly risk for startups. For years, the standard solution was the take-home assignment — a process that often led to candidate dropout because top-tier talent simply doesn't have 10 hours to spend on a hypothetical context they haven't been briefed on. The industry is now witnessing a massive shift. A modern Skill-based Hiring Platform like Merito is doing away with boring, static assessments and replacing them with real-world project simulations.",
-      "A Skill-based Hiring Platform solves the assessment problem by integrating evaluations directly into the interview process through AI simulations. Instead of a sales candidate preparing a 20-slide strategy deck over a weekend, an AI-powered interview can now simulate a high-pressure sales scenario in real-time.",
-      "Efficiency is the hallmark of a top-tier AI recruitment agency. At Merito, we leverage an AI stack that includes tools like TestGorilla and Neorecruit AI to provide objective, bias-free data. For technical roles, the platform can observe how a developer navigates a codebase or solves a logic gap in a live simulation.",
-      "When a company engages in executive search, the stakes for vetting are even higher. You cannot ask a potential CTO or VP to take a 'basic test.' Our proprietary tool, Ref-Track, validates simulations by cross-referencing behavioral flags with professional history within 24–48 hours. This level of vetting is why an AI recruitment agency like ours can boast a 90% hiring success rate.",
-      "Choosing a Skill-based Hiring Platform means higher completion rates (candidates are more likely to finish a 30-minute simulation than a 5-hour assignment), predictive accuracy (behavioral and skill assessments are 70% more accurate than gut-feel interviews), and reduced bias through data-backed confidence. With Merito, you stop guessing and start seeing your future team in action before the offer is even made.",
+      "In the traditional hiring landscape, the gap between 'passing an interview' and 'performing on the job' has always been a costly risk for startups. For years, the standard solution was the take-home assignment which is a process that often led to candidate dropout because top-tier talent simply doesn't have 10 hours to spend on a hypothetical context they haven't been briefed on.",
+      "The industry is now witnessing a massive shift. A modern Skill-based Hiring Platform like Merito is doing away with these boring, static assessments and replacing them with real-world project simulations. By introducing Merito's AI-driven stack into your workflow, you transition from asking 'Can you do this?' to watching them actually do it in a live, conversational environment.",
+      { type: "h2", text: "The Problem with \"Boring\" Assessments" },
+      "As highlighted by current hiring trends, candidates especially those in high demand have a low tendency to engage with lengthy, isolated assignments. These traditional tests require dedicated effort and a deep understanding of context before a candidate even feels comfortable starting. This friction often results in the loss of high-potential leads.",
+      "A Skill-based Hiring Platform solves this by integrating evaluations directly into the interview process through AI simulations. Instead of a sales candidate preparing a 20-slide strategy deck over a weekend, an AI-powered interview can now simulate a high-pressure sales scenario in real-time. The candidate is asked to pivot, strategize, and respond to objections during the session, with the AI evaluating their conversational agility and strategic depth instantly.",
+      { type: "h2", text: "Why Every AI Recruitment Agency is Pivoting to Simulations" },
+      "Efficiency is the hallmark of a top-tier AI recruitment agency. At Merito, we leverage an AI stack that includes tools like TestGorilla and Neorecruit AI to provide objective, bias-free data. However, the real breakthrough is the Skill-based Hiring Platform's ability to host technical assignments within an AI interview environment.",
+      "For technical roles, this means the platform can observe how a developer navigates a codebase or solves a logic gap in a live simulation. This gives companies the ultimate confidence that the candidate has the exact technological skill set required, rather than just the ability to pass a multiple-choice test.",
+      "From Executive Search to Rapid Scaling",
+      "When a company engages in executive search, the stakes for vetting are even higher. You cannot ask a potential CTO or VP to take a 'basic test.' You need a Skill-based Hiring Platform that respects their time while rigorously testing their mental models.",
+      "By using Merito, leadership candidates undergo multi-dimensional scorecards that assess skill proficiency and cultural alignment simultaneously. Our proprietary tool, Ref-Track, further validates these simulations by cross-referencing behavioral flags with professional history within 24–48 hours. This level of vetting is why an AI recruitment agency like ours can boast a 90% hiring success rate.",
+      { type: "h2", text: "The Advantage: Hire Top Talent Without the Friction" },
+      "If your goal is to hire top talent, you must respect the candidate's experience. Replacing 'homework' with immersive AI simulations makes the assessment feel like a collaborative part of the job rather than a hurdle.",
+      "Choosing a Skill-based Hiring Platform means:",
+      { type: "ul", items: [
+        "Higher Completion Rates: Candidates are more likely to finish a 30-minute simulation than a 5-hour assignment.",
+        "Predictive Accuracy: Behavioral and skill assessments are 70% more accurate than gut-feel interviews.",
+        "Reduced Bias: Data-backed confidence replaces subjective first impressions.",
+      ]},
+      "Whether you are a startup using a standard recruitment agency or a scaling firm looking for an embedded AI recruitment agency, the move toward real-world simulations is non-negotiable.",
+      "With Merito, you stop guessing and start seeing your future team in action before the offer is even made.",
     ],
   },
   "resume-is-dead": {
@@ -516,17 +748,38 @@ const articleData: Record<string, {
     type: "article",
     readTime: "6 min read",
     stats: [
-      { value: "6 in 10", label: "Tech Hires That Fail" },
-      { value: "85%", label: "Two-Year Retention" },
-      { value: "Zero CV Bias", label: "Blind Screening" },
+      { value: "6 in 10", label: "TECH HIRES THAT FAIL", subLabel: "Looked perfect on paper" },
+      { value: "Proof of work", label: "OVER PAPER" },
+      { value: "0 CV Bias", label: "BLIND SCREENING" },
     ],
     content: [
-      "For decades, the resume has been the 'golden ticket' of the hiring world. But in 2026, the document is dying. With the explosion of Generative AI, candidates have become experts at gaming the system — rewriting their CVs in seconds to ensure a perfect keyword match for any job description. If your company is still relying on a legacy ATS to filter talent, you aren't finding the best people; you're simply finding the best keyword optimizers.",
-      "Most companies mistakenly believe their ATS is an AI recruitment agency tool. In reality, most are just basic search engines. Unqualified candidates stuff their resumes with keywords to rank high, while a brilliant candidate with the exact skills you need is rejected because they used a synonym. A Skill-based Hiring Platform bypasses this entirely. Instead of reading what a candidate says about themselves, it measures what they can do.",
-      "While an AI recruitment agency like Merito uses technology to source the top 2% of talent within 48 hours, we don't stop at the resume. Our Skill-based Hiring Platform uses live project simulations and AI-driven conversational interviews to verify skills in real-time.",
-      "The higher the stakes, the less you can trust a resume. In an executive search, relying on an ATS score is practically dangerous. Merito's representatives act as talent hunters who apply Acquired Intelligence to manually vet and verify candidates, using proprietary tools like Ref-Track.",
-      "In the Indian tech ecosystem, where the volume of applications is staggering, a Skill-based Hiring Platform is no longer a luxury — it's a necessity. AI-powered simulations are 70% more predictive of job success than resume screening. By ensuring cultural fitment through data, Merito achieves an 85% two-year retention rate.",
-      "By partnering with Merito, you gain more than just a recruitment agency — you gain a tech-native partner that understands how to separate the gamers from the performers. It's time to stop searching for keywords and start hiring for impact.",
+      "For decades, the resume has been the 'golden ticket' of the hiring world. But in 2026, the document is dying. With the explosion of Generative AI, candidates have become experts at 'gaming the system.' They can now rewrite their CVs in seconds to ensure a perfect keyword match for any job description. A marketer can look like an HR pro on paper, and a junior dev can look like a Lead Architect just by mirroring an ATS (Applicant Tracking System) requirement.",
+      "If your company is still relying on a legacy ATS to filter talent, you aren't finding the best people; you're simply finding the best 'keyword optimizers.' The result? You miss out on high-potential talent simply because they didn't play the keyword game. To truly hire top talent, the industry is moving toward a Skill-based Hiring Platform which is a system that values 'deeds over degrees' and 'proof over paper.'",
+      "At Merito, we've moved beyond the 'needle in a haystack' problem. We recognize that while AI is an enabler, it must be paired with human insight to be effective. By integrating Merito into your workflow, you transition from keyword matching to a holistic talent intelligence model.",
+      { type: "h2", text: "The ATS Trap: Why Keyword Matching is Failing" },
+      "Most companies mistakenly believe their ATS is an AI recruitment agency tool. In reality, most are just basic search engines. They look for a 1:1 match between words in a JD and words on a CV. This creates two massive risks:",
+      { type: "ul", items: [
+        "The Fraudulent Match: Unqualified candidates 'stuff' their resumes with keywords to rank high, wasting your interviewers' time.",
+        "The Hidden Gem: A brilliant candidate with the exact skills you need is rejected because they used a synonym instead of the specific keyword your ATS was told to find.",
+      ]},
+      "A Skill-based Hiring Platform bypasses this entirely. Instead of reading what a candidate says about themselves, it measures what they can do.",
+      { type: "h2", text: "Combining Artificial and Acquired Intelligence" },
+      "To make hiring foolproof, you cannot rely on algorithms alone. As our leadership emphasizes, the secret sauce is combining 'Artificial Intelligence' with 'Acquired Intelligence.'",
+      "While an AI recruitment agency like Merito uses technology to source the top 2% of talent within 48 hours, we don't stop at the resume. Our Skill-based Hiring Platform uses live project simulations and AI-driven conversational interviews to verify skills in real-time. We look beyond the technical stack to evaluate personality fitment and cultural alignment. This 'Human-Plus' approach ensures that you aren't just hiring a set of skills, but a personality that will thrive in your specific workspace.",
+      { type: "h2", text: "The Role of Executive Search in a Post-Resume World" },
+      "The higher the stakes, the less you can trust a resume. In an executive search, relying on an ATS score is practically dangerous. Leadership roles require a level of nuance that keywords can't capture things like 'Openness to Learn' or 'Low Agreeableness' for high-autonomy roles.",
+      "This is where a specialized recruitment agency provides its greatest value. Merito's representatives act as 'talent hunters' who apply Acquired Intelligence to manually vet and verify candidates. We use proprietary tools like Ref-Track to automate reputation checks, ensuring that a candidate's past performance matches their future potential.",
+      { type: "h2", text: "Why Indian Tech is Moving to Skill-Based Models" },
+      "In the Indian tech ecosystem, where the volume of applications is staggering, a Skill-based Hiring Platform is no longer a luxury; it's a necessity for survival. Companies are realizing that:",
+      { type: "ul", items: [
+        "Assessment > Assignment: AI-powered simulations are 70% more predictive of job success than resume screening.",
+        "Bias is Reduced: When you hire for skills and personality traits rather than university names, you build a more diverse, high-performance team.",
+        "Retention Skyrockets: By ensuring cultural fitment through data, Merito achieves an 85% two-year retention rate.",
+      ]},
+      { type: "h2", text: "The Bottom Line: Proof is the New Currency" },
+      "The traditional resume is becoming a relic of the past. If you want to hire top talent who will actually drive your business forward, you must look beyond the screen and into the skill.",
+      "By partnering with Merito, you gain more than just a recruitment agency; you gain a tech-native partner that understands how to separate the 'gamers' from the 'performers.'",
+      "It's time to stop searching for keywords and start hiring for impact. Let Merito show you the future of the Skill-based Hiring Platform.",
     ],
   },
   "degree-doesnt-define": {
@@ -539,17 +792,33 @@ const articleData: Record<string, {
     type: "article",
     readTime: "5 min read",
     stats: [
-      { value: "60%", label: "Of Fortune 500 Companies" },
-      { value: "85%", label: "Retention Rate" },
-      { value: "Skills Over", label: "Credentials" },
+      { value: "6%", label: "OF FORTUNE 500 COMPANIES", subLabel: "No longer required a university degree" },
+      { value: "Proof of work", label: "OVER PAPER" },
+      { value: "0 CV Bias", label: "BLIND SCREENING" },
     ],
     content: [
-      "For nearly a century, the 'Ivy League' or 'IIT' stamp was the ultimate proxy for talent. But as we enter 2026, that filter is officially broken. Recent data shows that 60% of Fortune 500 companies have fundamentally restructured their hiring policies, moving away from degree-based requirements in favour of a Skill-based Hiring Platform. The reason is simple: a degree is a measure of what someone learned years ago; a skill is a measure of what they can execute today.",
-      "Traditional university rankings were designed for a stable economy where a fixed set of knowledge lasted a career. Today, the half-life of a technical skill is less than five years. When you rely on a traditional recruitment agency that filters by college name, you are essentially paying for a proxy. A Skill-based Hiring Platform like Merito removes the proxy and gives you the truth.",
-      "The transition from pedigree to skills is a data-heavy process. You cannot manually vet the skills of 5,000 applicants. Merito leverages an AI stack including conversational AI and experience pattern recognition to source the top 2% of talent across non-traditional pools — finding the self-taught developer or the non-MBA marketing genius that a standard recruitment agency would have automatically rejected.",
-      "Even in the realm of executive search, the 'Old Boys' Network' is being dismantled. As a strategic executive search partner, Merito applies Acquired Intelligence to leadership hiring. We use proprietary tools like Ref-Track to gather 360° data from past managers and peers.",
-      "If 60% of the Fortune 500 are moving toward skills-first hiring, staying with university-based filters is a competitive disadvantage. Expanding your talent pool, reducing bias, and increasing retention — candidates hired for their specific skills are 85% more likely to stay beyond two years.",
-      "The shift toward a Skill-based Hiring Platform is the most significant change in the history of human resources. It marks the end of prestige hiring and the beginning of performance hiring. Merito is at the forefront of this revolution.",
+      "For nearly a century, the 'Ivy League' or 'IIT' stamp was the ultimate proxy for talent. In the corporate world, university rankings acted as a safe, albeit lazy, filter for intelligence and work ethic. But as we enter 2026, that filter is officially broken. Recent data shows that a staggering 60% of Fortune 500 companies have fundamentally restructured their hiring policies, moving away from degree-based requirements in favour of a Skill-based Hiring Platform.",
+      "The reason is simple: a degree is a measure of what someone learned years ago; a skill is a measure of what they can execute today. In an era of rapid digital transformation, global giants are realizing that pedigree does not guarantee performance. To hire top talent that can actually navigate AI-driven workflows, the world's most successful companies are turning to Merito to replace outdated academic filters with verifiable competency data.",
+      { type: "h2", text: "The Failure of the \"Alumni Filter\"" },
+      "Traditional university rankings were designed for a stable economy where a fixed set of knowledge lasted a career. Today, the half-life of a technical skill is less than five years. A candidate from a top-tier university might have the theoretical foundation, but they often lack the 'Day 1' execution capability that startups and scale-ups require.",
+      "When you rely on a traditional recruitment agency that filters by college name, you are essentially paying for a proxy. A Skill-based Hiring Platform like Merito removes the proxy and gives you the truth. By using AI-driven project simulations, we allow candidates to prove their worth through action. This 'deeds over degrees' approach is why 60% of the Fortune 500 have seen a massive uptick in 'Quality of Hire' metrics after making the switch.",
+      { type: "h2", text: "Bridging the Gap with an AI Recruitment Agency" },
+      "The transition from pedigree to skills is a data-heavy process. You cannot manually vet the skills of 5,000 applicants. This is where an AI recruitment agency becomes an essential growth partner.",
+      "Merito leverages an AI stack including conversational AI and experience pattern recognition to source the top 2% of talent across non-traditional pools. We find the self-taught developer or the non-MBA marketing genius that a standard recruitment agency would have automatically rejected. By using our Skill-based Hiring Platform, we provide you with objective scorecards that predict job success with 90% fit accuracy, regardless of where the candidate spent their college years.",
+      { type: "h2", text: "Executive Search in a Post-Academic World" },
+      "Even in the realm of executive search, the 'Old Boys' Network' is being dismantled. Boards are realizing that a leader's ability to drive a 2026 growth strategy isn't found in their 1998 diploma. It's found in their ability to lead hybrid teams and manage complex technological shifts.",
+      "As a strategic executive search partner, Merito applies 'Acquired Intelligence' to leadership hiring. We use proprietary tools like Ref-Track to gather 360° data from past managers and peers, validating that the leader's skills match their reputation. When you combine the technical validation of a Skill-based Hiring Platform with deep reference auditing, you eliminate the risk of a 'pedigree hire' who can't perform in the real world.",
+      { type: "h2", text: "Why Your Company Needs to Make the Switch" },
+      "If 60% of the Fortune 500 are moving toward skills-first hiring, staying with university-based filters is a competitive disadvantage. By shifting your strategy, you:",
+      { type: "ul", items: [
+        "Expand Your Talent Pool: Access high-performers who chose unconventional career paths.",
+        "Reduce Bias: Create a truly meritocratic hiring process that values actual ability.",
+        "Increase Retention: Candidates hired for their specific skills are 85% more likely to stay beyond two years.",
+      ]},
+      { type: "h2", text: "The Bottom Line: Hire for the Future, Not the Past" },
+      "The shift toward a Skill-based Hiring Platform is the most significant change in the history of human resources. It marks the end of 'prestige hiring' and the beginning of 'performance hiring.'",
+      "Merito is at the forefront of this revolution. We provide the tools, the AI, and the human insight to help you hire top talent based on what they can achieve for your company's future, not where they went to school in their past.",
+      "Ready to join the Fortune 500 in the skills-first era? Let Merito show you the way.",
     ],
   },
 };
@@ -603,122 +872,185 @@ export default async function InsightPage({
   // PODCAST LAYOUT
   if (post.type === "podcast") {
     return (
-      <main className="bg-[#fdf8fb] min-h-screen pb-20">
-        {/* Hero Section */}
-        <div className="relative w-full h-[450px] overflow-hidden">
-          <Image
-            src={heroImage}
-            alt={post.title}
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-black/70" />
-          
-          <div className="absolute inset-0 flex flex-col items-center pt-24 text-center px-4">
+      <main className="bg-[#f5f5f5] sm:bg-[#fdf8fb] min-h-screen pb-20">
+
+        {/* ── MOBILE LAYOUT (hidden on sm+) ── */}
+        <div className="sm:hidden">
+
+          {/* Circle back button */}
+          <div className="px-4 pt-4 pb-4">
             <Link
               href="/insights"
-              className="text-white/60 text-[13px] font-bold hover:text-white tracking-[2px] transition-colors"
+              aria-label="Back to Insights"
+              className="w-9 h-9 rounded-full bg-black flex items-center justify-center text-white text-[14px] hover:bg-[#ed1a24] transition-colors"
             >
-              ← BACK TO INSIGHTS
+              ←
             </Link>
-            
-            <div className="mt-6 bg-[#ed1a24] text-white text-[11px] font-bold px-3 py-1 rounded-[2px] tracking-[2px] uppercase">
-              PODCAST
-            </div>
-            
-            <h1 className="mt-6 font-[family-name:var(--font-poppins)] font-bold text-[42px] md:text-[56px] text-white leading-[1.1] max-w-[1000px]">
-              {post.titleBefore}{" "}
-              <span className="text-[#ed1a24]">{post.titleRed}</span>
-            </h1>
           </div>
-        </div>
 
-        {/* Content Area */}
-        <div className="max-w-[1100px] mx-auto -mt-24 relative z-10 px-5">
-          
-          {/* Podcast Player Card */}
-          <div className="bg-white rounded-[24px] shadow-[0px_40px_80px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col md:flex-row min-h-[400px]">
-            {/* Left: Host Image */}
-            <div className="md:w-[45%] relative h-[300px] md:h-auto overflow-hidden group bg-gray-900">
-              <Image
-                src="/podcast-host.png"
-                alt="Rushikesh Humbe"
-                fill
-                className="object-cover transition-all duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-              <div className="absolute bottom-10 left-10 text-white">
-                <div className="bg-[#ed1a24] px-3 py-1 rounded-[2px] text-[10px] font-bold tracking-[2px] uppercase w-fit mb-3">
-                  HOSTED BY RUSHIKESH
-                </div>
-                <h3 className="font-[family-name:var(--font-poppins)] font-bold text-[28px] leading-tight">
-                  Rushikesh Humbe
-                </h3>
-                <p className="text-[16px] text-white/70 mt-1">Founder, Merito</p>
-              </div>
-            </div>
-
+          {/* Spotify-style player card */}
+          <div className="mx-4">
             <PodcastPlayer
               audioSrc={audioSrc}
               episode={post.episode ?? ""}
               date={post.date}
               title={post.title}
               duration={post.duration ?? ""}
+              hostImage="/podcast-host.png"
             />
           </div>
 
-          {/* Transcript Content */}
-          <div className="bg-white mt-16 p-[50px] md:p-[80px] rounded-[24px] shadow-[0px_10px_40px_rgba(0,0,0,0.03)] border border-gray-50">
-            <div className="flex items-center gap-4 mb-12">
+          {/* Transcript card */}
+          <div className="mx-4 mt-4 bg-white rounded-[16px] shadow-[0px_4px_12px_rgba(0,0,0,0.06)] p-5">
+            <div className="flex items-center gap-4 mb-8">
               <div className="h-px bg-gray-200 flex-1" />
-              <span className="text-[12px] font-bold text-gray-400 tracking-[4px] uppercase">TRANSCRIPT</span>
+              <span className="text-[11px] font-bold text-gray-400 tracking-[4px] uppercase">TRANSCRIPT</span>
               <div className="h-px bg-gray-200 flex-1" />
             </div>
-            
-            <div className="flex flex-col gap-10">
-              {post.content.map((para, i) => (
-                <p
-                  key={i}
-                  className="font-[family-name:var(--font-poppins)] text-[18px] md:text-[20px] text-[#2d2d2e] leading-[1.8] font-light"
-                >
-                  {para}
-                </p>
-              ))}
+            <div className="flex flex-col gap-8">
+              {post.content.map((item, i) =>
+                typeof item === "string" ? (
+                  <p key={i} className="font-[family-name:var(--font-poppins)] text-[12px] text-[#2d2d2e] leading-[1.8] font-light">
+                    {item}
+                  </p>
+                ) : null
+              )}
+            </div>
+          </div>
+
+          {/* Mobile CTA */}
+          <div className="mx-4 mt-6 mb-8 flex flex-col items-center text-center">
+            <h3 className="font-[family-name:var(--font-poppins)] font-bold text-[16px] text-black uppercase tracking-tight">
+              GET STARTED WITH <span className="text-[#ed1a24]">MERITO</span>
+            </h3>
+            <Link
+              href="/contact"
+              className="mt-4 bg-[#ed1a24] text-white font-bold text-[12px] tracking-[2px] px-8 py-3 rounded-full hover:bg-black transition-all duration-200 shadow-lg"
+            >
+              LET&apos;S CONNECT
+            </Link>
+          </div>
+        </div>
+
+        {/* ── DESKTOP LAYOUT (hidden on mobile) ── */}
+        <div className="hidden sm:block">
+
+          {/* Hero Section */}
+          <div className="relative w-full sm:h-[450px] overflow-hidden">
+            <Image src={heroImage} alt={post.title} fill className="object-cover" priority />
+            <div className="absolute inset-0 bg-black/70" />
+            <div className="absolute inset-0 flex flex-col items-center pt-24 text-center px-4">
+              <Link
+                href="/insights"
+                className="text-white/60 text-[13px] font-bold hover:text-white tracking-[2px] transition-colors"
+              >
+                ← BACK TO INSIGHTS
+              </Link>
+              <div className="mt-6 bg-[#ed1a24] text-white text-[11px] font-bold px-3 py-1 rounded-[2px] tracking-[2px] uppercase">
+                PODCAST
+              </div>
+              <h1 className="mt-6 font-[family-name:var(--font-poppins)] font-bold text-[42px] text-white leading-[1.1] max-w-[1000px]">
+                {post.titleBefore}{" "}
+                <span className="text-[#ed1a24]">{post.titleRed}</span>
+              </h1>
+            </div>
+          </div>
+
+          {/* Content Area */}
+          <div className="max-w-[1100px] mx-auto -mt-24 relative z-10 px-5">
+
+            {/* Podcast Player Card */}
+            <div className="bg-white rounded-[24px] shadow-[0px_40px_80px_rgba(0,0,0,0.3)] overflow-hidden flex sm:flex-row min-h-[400px]">
+              {/* Left: Host Image */}
+              <div className="sm:w-[45%] relative overflow-hidden bg-gray-900">
+                <Image
+                  src="/podcast-host.png"
+                  alt="Rushikesh Humbe"
+                  fill
+                  className="object-cover transition-all duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                <div className="absolute bottom-10 left-10 text-white">
+                  <div className="bg-[#ed1a24] px-3 py-1 rounded-[2px] text-[10px] font-bold tracking-[2px] uppercase w-fit mb-3">
+                    HOSTED BY RUSHIKESH
+                  </div>
+                  <h3 className="font-[family-name:var(--font-poppins)] font-bold text-[28px] leading-tight">
+                    Rushikesh Humbe
+                  </h3>
+                  <p className="text-[16px] text-white/70 mt-1">Founder, Merito</p>
+                </div>
+              </div>
+
+              <PodcastPlayer
+                audioSrc={audioSrc}
+                episode={post.episode ?? ""}
+                date={post.date}
+                title={post.title}
+                duration={post.duration ?? ""}
+              />
             </div>
 
-            {/* Redesigned CTA */}
-            <div className="mt-16 pt-16 border-t border-gray-100 flex flex-col items-center text-center">
-              <h3 className="font-[family-name:var(--font-poppins)] font-bold text-[32px] text-black uppercase tracking-tight">
-                GET STARTED WITH <span className="text-[#ed1a24]">MERITO</span>
-              </h3>
-              <p className="text-[16px] text-[#4b4b4d] mt-4 max-w-[600px] leading-relaxed">
-                Experience the perfect blend of Artificial Intelligence and Acquired Intelligence in your hiring journey.
-              </p>
-              <Link
-                href="/contact"
-                className="mt-8 bg-[#ed1a24] text-white font-bold text-[14px] tracking-[2px] px-10 py-4 rounded-full hover:bg-black hover:text-white hover:scale-[1.03] hover:shadow-[0_8px_24px_rgba(0,0,0,0.25)] active:scale-[0.97] transition-all duration-200 shadow-xl"
-              >
-                LET&apos;S CONNECT
-              </Link>
+            {/* Transcript Content */}
+            <div className="bg-white mt-16 p-[50px] rounded-[24px] shadow-[0px_10px_40px_rgba(0,0,0,0.03)] border border-gray-50">
+              <div className="flex items-center gap-4 mb-12">
+                <div className="h-px bg-gray-200 flex-1" />
+                <span className="text-[12px] font-bold text-gray-400 tracking-[4px] uppercase">TRANSCRIPT</span>
+                <div className="h-px bg-gray-200 flex-1" />
+              </div>
+              <div className="flex flex-col gap-10">
+                {post.content.map((item, i) =>
+                  typeof item === "string" ? (
+                    <p key={i} className="font-[family-name:var(--font-poppins)] text-[18px] text-[#2d2d2e] leading-[1.8] font-light">
+                      {item}
+                    </p>
+                  ) : null
+                )}
+              </div>
+              {/* Desktop CTA */}
+              <div className="mt-16 pt-16 border-t border-gray-100 flex flex-col items-center text-center">
+                <h3 className="font-[family-name:var(--font-poppins)] font-bold text-[32px] text-black uppercase tracking-tight">
+                  GET STARTED WITH <span className="text-[#ed1a24]">MERITO</span>
+                </h3>
+                <p className="text-[16px] text-[#4b4b4d] mt-4 max-w-[600px] leading-relaxed">
+                  Experience the perfect blend of Artificial Intelligence and Acquired Intelligence in your hiring journey.
+                </p>
+                <Link
+                  href="/contact"
+                  className="mt-8 bg-[#ed1a24] text-white font-bold text-[14px] tracking-[2px] px-10 py-4 rounded-full hover:bg-black hover:text-white hover:scale-[1.03] hover:shadow-[0_8px_24px_rgba(0,0,0,0.25)] active:scale-[0.97] transition-all duration-200 shadow-xl"
+                >
+                  LET&apos;S CONNECT
+                </Link>
+              </div>
             </div>
           </div>
         </div>
+
       </main>
     );
   }
 
-  // ARTICLE LAYOUT (Keep as is but ensured consistency)
+  // ARTICLE LAYOUT
   return (
-    <main className="bg-[#f5f5f5]">
-      {/* Card container */}
-      <div className="max-w-[1003px] mx-auto bg-white shadow-[0px_4px_24px_rgba(0,0,0,0.10)] rounded-b-[16px] overflow-hidden">
+    <main className="bg-[#f5f5f5] pb-10">
+
+      {/* Back link — above card on mobile */}
+      <div className="sm:hidden max-w-[1003px] mx-auto px-4 pt-4 pb-2">
+        <Link
+          href="/insights"
+          className="text-[#4b4b4d]/70 text-[11px] font-bold hover:text-black tracking-wider w-fit"
+        >
+          ← BACK TO INSIGHTS
+        </Link>
+      </div>
+
+      {/* Card container — no overflow-hidden so stats can escape on mobile */}
+      <div className="max-w-[1003px] mx-auto bg-white shadow-[0px_4px_24px_rgba(0,0,0,0.10)] rounded-b-[16px] sm:rounded-b-[16px]">
 
         {/* Red top bar */}
         <div className="h-[6px] bg-[#ed1a24]" />
 
-        {/* Hero image */}
-        <div className="relative h-[340px] w-full">
+        {/* Hero image — overflow-hidden here for rounded top corners */}
+        <div className="relative h-[200px] sm:h-[340px] w-full overflow-hidden">
           <Image
             src={heroImage}
             alt={post.title}
@@ -727,8 +1059,15 @@ export default async function InsightPage({
             priority
           />
           <div className="absolute inset-0 bg-black/50" />
-          {/* Back + category */}
-          <div className="absolute inset-0 flex flex-col justify-between p-8">
+
+          {/* Mobile: category at top-left only */}
+          <div className="sm:hidden absolute top-4 left-4 flex items-center gap-0">
+            <div className="w-[3px] h-[16px] bg-[#ed1a24] mr-2 flex-shrink-0" />
+            <span className="font-bold text-[11px] text-white tracking-[2px] uppercase">{post.category}</span>
+          </div>
+
+          {/* Desktop: back link top + category bottom */}
+          <div className="hidden sm:flex absolute inset-0 flex-col justify-between p-8">
             <Link
               href="/insights"
               className="text-white/70 text-[13px] font-bold hover:text-white tracking-wider w-fit"
@@ -743,12 +1082,12 @@ export default async function InsightPage({
         </div>
 
         {/* Body */}
-        <div className="px-[60px] py-[50px] flex flex-col gap-[40px]">
+        <div className="px-4 sm:px-[60px] py-5 sm:py-[50px] flex flex-col gap-[24px] sm:gap-[40px]">
 
           {/* Title row */}
-          <div className="flex gap-[60px] items-start">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-[60px] items-start">
             <div className="flex-1">
-              <h1 className="font-[family-name:var(--font-poppins)] font-bold text-[40px] text-black leading-[115%]">
+              <h1 className="font-[family-name:var(--font-poppins)] font-bold text-[20px] sm:text-[40px] text-black leading-[115%]">
                 {post.titleBefore ? (
                   <>
                     {post.titleBefore}{" "}
@@ -757,9 +1096,9 @@ export default async function InsightPage({
                 ) : post.title}
               </h1>
             </div>
-            <div className="w-[280px] flex-shrink-0 flex flex-col gap-4 pt-2">
-              <p className="text-[15px] text-[#4b4b4d] leading-[160%]">
-                {post.excerpt ?? post.content[0].slice(0, 120) + "…"}
+            <div className="w-full sm:w-[280px] flex-shrink-0 flex flex-col gap-4 pt-2">
+              <p className="text-[12px] sm:text-[15px] text-[#4b4b4d] leading-[160%]">
+                {post.excerpt ?? (typeof post.content[0] === "string" ? post.content[0].slice(0, 120) + "…" : "")}
               </p>
               <div className="h-px bg-[#e0e0e0]" />
               <span className="font-bold text-[11px] text-[#4b4b4d] tracking-[2px] uppercase">
@@ -768,88 +1107,144 @@ export default async function InsightPage({
             </div>
           </div>
 
-          {/* Stats row (articles with stats only) */}
+          {/* Stats */}
           {post.stats && post.stats.length >= 2 && (
-            <div className="flex gap-5">
-              {/* Left dark card */}
-              <div className="bg-[#111] rounded-[12px] flex-1 px-[36px] py-[28px] flex flex-col gap-3">
-                <span className="font-[family-name:var(--font-poppins)] font-bold text-[64px] text-[#ed1a24] leading-none">
-                  {post.stats[0].value}
-                </span>
-                <p className="font-[family-name:var(--font-poppins)] font-bold text-[16px] text-white">
-                  {post.stats[0].label}
-                </p>
-                <p className="text-[13px] text-white/50 leading-[155%]">
-                  AI-powered hiring cuts cost per hire dramatically
-                </p>
-              </div>
-
-              {/* Right bordered card */}
-              <div className="relative flex-1 border-t-[3px] border-b-[3px] border-[#ed1a24] bg-white px-[28px] py-[28px] flex items-center">
-                {/* Red corner dots */}
-                <div className="absolute top-[-6px] left-[-6px] size-[10px] rounded-full bg-[#ed1a24]" />
-                <div className="absolute top-[-6px] right-[-6px] size-[10px] rounded-full bg-[#ed1a24]" />
-                <div className="absolute bottom-[-6px] left-[-6px] size-[10px] rounded-full bg-[#ed1a24]" />
-                <div className="absolute bottom-[-6px] right-[-6px] size-[10px] rounded-full bg-[#ed1a24]" />
-
-                <div className="flex items-center gap-6 w-full">
-                  {/* Left half */}
-                  <div className="flex flex-col gap-1 flex-1">
-                    <span className="font-[family-name:var(--font-poppins)] font-bold text-[48px] text-black leading-none">
-                      {post.stats[1].value}
-                    </span>
-                    <span className="font-bold text-[13px] text-[#4b4b4d] tracking-[1px] uppercase">
-                      {post.stats[1].label}
-                    </span>
-                  </div>
-                  {/* Divider */}
-                  <div className="w-px h-[60px] bg-[#ed1a24]" />
-                  {/* Right half */}
-                  {post.stats[2] && (
-                    <div className="flex flex-col gap-1 flex-1">
-                      <span className="font-[family-name:var(--font-poppins)] font-bold text-[20px] text-black leading-tight">
-                        {post.stats[2].value}
+            <>
+              {/* ── MOBILE stats: Figma design ── */}
+              <div className="sm:hidden -mx-4 px-4 pt-2 pb-5 bg-[#f5f5f5] flex flex-col gap-3">
+                {/* Single bordered card with red corner triangles */}
+                <div className="relative bg-white border-t border-b border-[#ed1a24] h-[96px] rounded-[3px] shadow-[0px_0px_6px_0px_rgba(0,0,0,0.25)] flex items-center justify-center overflow-hidden">
+                  {/* Top-left red triangle */}
+                  <div className="absolute top-0 left-0 w-[38px] h-[24px] bg-[#ed1a24]" style={{clipPath: 'polygon(0 0, 100% 0, 0 100%)'}} />
+                  {/* Bottom-right red triangle */}
+                  <div className="absolute bottom-0 right-0 w-[38px] h-[24px] bg-[#ed1a24]" style={{clipPath: 'polygon(100% 0, 100% 100%, 0 100%)'}} />
+                  <div className="flex items-center gap-[31px]">
+                    <div className="flex flex-col gap-[5px] items-center">
+                      <span className="font-[family-name:var(--font-poppins)] font-semibold text-[16px] text-black leading-none">
+                        {post.stats[1].value}
                       </span>
-                      <span className="font-bold text-[13px] text-[#4b4b4d] tracking-[1px] uppercase">
-                        {post.stats[2].label}
+                      <span className="font-[family-name:var(--font-poppins)] text-[13px] text-[#4b4b4d] uppercase leading-none tracking-wide">
+                        {post.stats[1].label}
                       </span>
                     </div>
-                  )}
+                    <div className="w-px h-[70px] bg-gray-300" />
+                    {post.stats[2] && (
+                      <div className="flex flex-col gap-[5px] items-center">
+                        <span className="font-[family-name:var(--font-poppins)] font-semibold text-[16px] text-black leading-none">
+                          {post.stats[2].value}
+                        </span>
+                        <span className="font-[family-name:var(--font-poppins)] text-[13px] text-[#4b4b4d] uppercase leading-none tracking-wide">
+                          {post.stats[2].label}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                {/* Dark card */}
+                <div className="bg-[#111] rounded-[6px] px-[47px] py-[14px] flex items-center justify-center gap-9">
+                  <span className="font-[family-name:var(--font-poppins)] font-bold text-[24px] text-[#ed1a24] leading-none">
+                    {post.stats[0].value}
+                  </span>
+                  <div className="flex flex-col gap-[6px]">
+                    <p className="font-[family-name:var(--font-poppins)] font-semibold italic text-[12px] text-white leading-[1.47]">
+                      {post.stats[0].label}
+                    </p>
+                    <p className="font-[family-name:var(--font-poppins)] text-[10px] text-white/80 leading-[1.55]">
+                      {post.stats[0].subLabel ?? "with AI-Powered recruitment"}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
+
+              {/* ── DESKTOP stats: original dark-left / bordered-right ── */}
+              <div className="hidden sm:flex flex-row gap-5">
+                <div className="bg-[#111] rounded-[12px] flex-1 px-[36px] py-[28px] flex flex-col gap-3">
+                  <span className="font-[family-name:var(--font-poppins)] font-bold text-[64px] text-[#ed1a24] leading-none">
+                    {post.stats[0].value}
+                  </span>
+                  <p className="font-[family-name:var(--font-poppins)] font-bold text-[16px] text-white">
+                    {post.stats[0].label}
+                  </p>
+                  <p className="text-[13px] text-white/50 leading-[155%]">
+                    {post.stats[0].subLabel ?? "AI-powered hiring cuts cost per hire dramatically"}
+                  </p>
+                </div>
+                <div className="relative flex-1 border-t-[3px] border-b-[3px] border-[#ed1a24] bg-white px-[28px] py-[28px] flex items-center">
+                  <div className="absolute top-[-6px] left-[-6px] size-[10px] rounded-full bg-[#ed1a24]" />
+                  <div className="absolute top-[-6px] right-[-6px] size-[10px] rounded-full bg-[#ed1a24]" />
+                  <div className="absolute bottom-[-6px] left-[-6px] size-[10px] rounded-full bg-[#ed1a24]" />
+                  <div className="absolute bottom-[-6px] right-[-6px] size-[10px] rounded-full bg-[#ed1a24]" />
+                  <div className="flex items-center gap-6 w-full">
+                    <div className="flex flex-col gap-1 flex-1">
+                      <span className="font-[family-name:var(--font-poppins)] font-bold text-[48px] text-black leading-none">
+                        {post.stats[1].value}
+                      </span>
+                      <span className="font-bold text-[13px] text-[#4b4b4d] tracking-[1px] uppercase">
+                        {post.stats[1].label}
+                      </span>
+                    </div>
+                    <div className="w-px h-[60px] bg-[#ed1a24]" />
+                    {post.stats[2] && (
+                      <div className="flex flex-col gap-1 flex-1">
+                        <span className="font-[family-name:var(--font-poppins)] font-bold text-[20px] text-black leading-tight">
+                          {post.stats[2].value}
+                        </span>
+                        <span className="font-bold text-[13px] text-[#4b4b4d] tracking-[1px] uppercase">
+                          {post.stats[2].label}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </>
           )}
 
           {/* Article content */}
-          <div className="flex flex-col gap-6">
-            {post.content.map((para, i) => (
-              <p
-                key={i}
-                className="font-[family-name:var(--font-poppins)] text-[16px] text-[#4b4b4d] leading-[175%]"
-              >
-                {para}
-              </p>
-            ))}
+          <div className="flex flex-col gap-5">
+            {post.content.map((item, i) => {
+              if (typeof item === "string") {
+                return (
+                  <p key={i} className="font-[family-name:var(--font-poppins)] font-medium text-[12px] sm:text-[16px] text-[#4b4b4d] leading-[155%] sm:leading-[175%]">
+                    {item}
+                  </p>
+                );
+              }
+              if (item.type === "h2") {
+                return (
+                  <p key={i} className="font-[family-name:var(--font-poppins)] font-semibold text-[16px] text-black leading-normal mt-1">
+                    {item.text}
+                  </p>
+                );
+              }
+              if (item.type === "ul") {
+                return (
+                  <ul key={i} className="list-disc pl-5 flex flex-col gap-2">
+                    {item.items.map((li, j) => (
+                      <li key={j} className="font-[family-name:var(--font-poppins)] font-medium text-[12px] sm:text-[16px] text-[#4b4b4d] leading-[155%]">
+                        {li}
+                      </li>
+                    ))}
+                  </ul>
+                );
+              }
+            })}
           </div>
 
           {/* CTA */}
-          <div className="bg-[#fdf8fb] border border-gray-100 rounded-[16px] p-10 flex flex-col items-center gap-5 text-center mt-4">
-            <h3 className="font-[family-name:var(--font-poppins)] font-semibold text-[24px] text-black">
-              Ready to transform your hiring?
+          <div className="flex flex-col items-start sm:items-center gap-[16px] sm:gap-[20px] py-2">
+            <h3 className="font-[family-name:var(--font-poppins)] font-bold sm:font-semibold text-[24px] sm:text-[32px] text-black">
+              Get started with Merito
             </h3>
-            <p className="text-[16px] text-[#4b4b4d] leading-[155%] max-w-[500px]">
-              Talk to a Merito expert and discover how AI-powered precision hiring can work for your team.
+            <p className="text-[10px] sm:text-[16px] text-[#4b4b4d] leading-[155%] sm:max-w-[600px] sm:text-center">
+              Help us with what you are looking for and our team will get in-touch understand your talent requirements
             </p>
-            <div className="flex flex-col items-center gap-3">
-              <ContactTrigger
-                className="bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[50px] px-8 rounded-[8px] flex items-center justify-center transition-all duration-200 hover:bg-black hover:text-white hover:scale-[1.03] hover:shadow-[0_8px_24px_rgba(0,0,0,0.25)] active:scale-[0.97]"
-              >
-                Talk to an Expert
-              </ContactTrigger>
-              <p className="text-[14px] font-medium text-[#6d6f74]/70">
-                No-risk consultation · 100% confidential
-              </p>
-            </div>
+            <Link
+              href="/contact"
+              className="w-full sm:w-auto bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[48px] sm:h-[50px] px-[20px] sm:px-8 rounded-[5px] sm:rounded-[8px] flex items-center justify-center transition-all duration-200 hover:bg-black active:scale-[0.97]"
+            >
+              Contact us
+            </Link>
           </div>
 
         </div>

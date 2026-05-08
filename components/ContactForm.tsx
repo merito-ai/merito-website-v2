@@ -2,16 +2,40 @@
 
 import { useState } from "react";
 import { motion } from "motion/react";
+import Script from "next/script";
+
+declare global {
+  interface Window {
+    grecaptcha?: {
+      getResponse: () => string;
+      reset: () => void;
+    };
+  }
+}
 
 export default function ContactForm() {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [captchaError, setCaptchaError] = useState<string | null>(null);
+  const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "";
+  const recaptchaEnabled = Boolean(recaptchaSiteKey);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("submitting");
+    setCaptchaError(null);
     const form = e.currentTarget as HTMLFormElement;
     const formData = new FormData(form);
-    const payload = Object.fromEntries(formData.entries());
+    const payload = Object.fromEntries(formData.entries()) as Record<string, FormDataEntryValue>;
+
+    if (recaptchaEnabled) {
+      const recaptchaToken = window.grecaptcha?.getResponse?.() || "";
+      if (!recaptchaToken) {
+        setStatus("idle");
+        setCaptchaError("Please verify that you are not a robot.");
+        return;
+      }
+      payload.recaptchaToken = recaptchaToken;
+    }
 
     try {
       const res = await fetch("/api/contact", {
@@ -21,6 +45,7 @@ export default function ContactForm() {
       });
       if (res.ok) {
         form.reset();
+        window.grecaptcha?.reset?.();
         setStatus("success");
       } else {
         setStatus("error");
@@ -61,10 +86,14 @@ export default function ContactForm() {
       onSubmit={handleSubmit}
       className="space-y-5"
     >
+      {recaptchaEnabled ? (
+        <Script src="https://www.google.com/recaptcha/api.js" strategy="afterInteractive" />
+      ) : null}
+
       <input type="text" name="bot-field" className="hidden" aria-hidden="true" />
 
       {/* Name Fields (Split) */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-2">
           <label htmlFor="firstName" className="flex items-center gap-2 text-[13px] font-bold text-black uppercase tracking-widest">
             <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -166,6 +195,16 @@ export default function ContactForm() {
           className="w-full p-4 rounded-[12px] border border-[#e5e7eb] bg-[#f9f9fb] focus:bg-white focus:border-[#ed1a24] focus:ring-1 focus:ring-[#ed1a24] outline-none transition-all font-medium resize-none text-[15px]"
         ></textarea>
       </div>
+
+      {recaptchaEnabled ? (
+        <div className="space-y-2">
+          <div
+            className="g-recaptcha"
+            data-sitekey={recaptchaSiteKey}
+          />
+          {captchaError ? <p className="text-[13px] font-semibold text-[#ed1a24]">{captchaError}</p> : null}
+        </div>
+      ) : null}
 
       <button
         type="submit"

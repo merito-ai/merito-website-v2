@@ -30,7 +30,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 flex justify-center bg-transparent px-4 py-4">
-      <nav className="flex h-[82px] w-full max-w-[1328px] items-center justify-between rounded-[8px] border border-black/12 bg-white px-4 shadow-[0_8px_22px_rgba(17,35,89,0.08)] sm:px-5 lg:px-6">
+      <nav className="flex h-[82px] w-full max-w-[1328px] items-center justify-between rounded-[40px] border border-black/12 bg-white px-4 shadow-[0_8px_22px_rgba(17,35,89,0.08)] sm:rounded-[8px] sm:px-5 lg:px-6">
         {/* Logo */}
         <Link href="/" className="flex-shrink-0">
           <Image
@@ -147,19 +147,13 @@ export default function Navbar() {
             if (link.label === "Platforms & Tools") {
               return (
                 <div key={link.href} className="flex flex-col gap-2">
-                  <button 
-                    onClick={() => setPlatformsOpen(!platformsOpen)}
-                    className="flex items-center justify-between font-[family-name:var(--font-gabarito)] font-medium text-[18px] text-black hover:text-[#ed1a24] transition-colors text-left"
-                  >
+                  <p className="font-[family-name:var(--font-gabarito)] font-medium text-[18px] text-black">
                     {link.label}
-                    <svg className={`w-5 h-5 transition-transform ${platformsOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                  </button>
-                  {platformsOpen && (
-                    <div className="flex flex-col gap-3 pl-4 pt-2 border-l-2 border-[#ed1a24]/20">
-                      <Link href="/reftrack" onClick={() => { setOpen(false); setPlatformsOpen(false); }} className="text-[#4B4B4D] font-medium text-[16px] hover:text-[#ed1a24]">Reftrack</Link>
-                      <Link href="/offervault" onClick={() => { setOpen(false); setPlatformsOpen(false); }} className="text-[#4B4B4D] font-medium text-[16px] hover:text-[#ed1a24]">OfferVault</Link>
-                    </div>
-                  )}
+                  </p>
+                  <div className="flex flex-col gap-3 pl-4 border-l-2 border-[#ed1a24]/20">
+                    <Link href="/reftrack" onClick={() => setOpen(false)} className="text-[#4B4B4D] font-medium text-[16px] hover:text-[#ed1a24] transition-colors">Reftrack</Link>
+                    <Link href="/offervault" onClick={() => setOpen(false)} className="text-[#4B4B4D] font-medium text-[16px] hover:text-[#ed1a24] transition-colors">OfferVault</Link>
+                  </div>
                 </div>
               );
             }

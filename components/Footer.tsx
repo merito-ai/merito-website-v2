@@ -72,16 +72,16 @@ export default function Footer() {
                 unoptimized
               />
             </Link>
-            <p className="font-[family-name:var(--font-poppins)] text-[18px] font-medium leading-[1.38] text-white">
+            <p className="font-[family-name:var(--font-poppins)] text-[13px] md:text-[18px] font-medium leading-[1.38] text-white">
               Merito is an AI-enabled recruitment company that helps growth
               companies hire quality talent faster.
             </p>
           </div>
 
-          <div className="grid gap-10 sm:grid-cols-3 sm:gap-16 lg:gap-20">
-            <div className="flex flex-col gap-8">
-              <span className="text-[18px] font-semibold text-[#ed1a24]">Company</span>
-              <div className="flex flex-col gap-5 text-[15px] font-medium">
+          <div className="grid w-full grid-cols-3 gap-4 sm:gap-16 lg:gap-20">
+            <div className="flex flex-col gap-3 md:gap-8">
+              <span className="text-[13px] md:text-[18px] font-semibold text-[#ed1a24]">Company</span>
+              <div className="flex flex-col gap-[6px] md:gap-5 text-[12px] md:text-[15px] font-medium">
                 <Link href="/about" className="transition-colors hover:text-[#ed1a24]">
                   About us
                 </Link>
@@ -97,9 +97,9 @@ export default function Footer() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-8">
-              <span className="text-[18px] font-semibold text-[#ed1a24]">Tools</span>
-              <div className="flex flex-col gap-5 text-[15px] font-medium">
+            <div className="flex flex-col gap-3 md:gap-8">
+              <span className="text-[13px] md:text-[18px] font-semibold text-[#ed1a24]">Tools</span>
+              <div className="flex flex-col gap-[6px] md:gap-5 text-[12px] md:text-[15px] font-medium">
                 <Link href="/offervault" className="transition-colors hover:text-[#ed1a24]">
                   Offer-vault
                 </Link>
@@ -109,9 +109,9 @@ export default function Footer() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-8">
-              <span className="text-[18px] font-semibold text-[#ed1a24]">Insights</span>
-              <div className="flex flex-col gap-5 text-[15px] font-medium">
+            <div className="flex flex-col gap-3 md:gap-8">
+              <span className="text-[13px] md:text-[18px] font-semibold text-[#ed1a24]">Insights</span>
+              <div className="flex flex-col gap-[6px] md:gap-5 text-[12px] md:text-[15px] font-medium">
                 <Link href="/insights" className="transition-colors hover:text-[#ed1a24]">
                   Articles
                 </Link>
@@ -123,7 +123,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 items-center sm:items-start">
           <div className="flex items-center gap-5">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-6 h-6 flex-shrink-0">
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
@@ -131,7 +131,7 @@ export default function Footer() {
             </svg>
             <a
               href="mailto:admin@merito.ai"
-              className="text-[15px] font-medium underline transition-colors hover:text-[#ed1a24]"
+              className="text-[13px] sm:text-[15px] font-medium underline transition-colors hover:text-[#ed1a24]"
             >
               admin@merito.ai
             </a>
@@ -142,18 +142,18 @@ export default function Footer() {
             </svg>
             <a
               href="tel:+919767663123"
-              className="text-[15px] font-medium underline transition-colors hover:text-[#ed1a24]"
+              className="text-[13px] sm:text-[15px] font-medium underline transition-colors hover:text-[#ed1a24]"
             >
               +91 97676-63123
             </a>
           </div>
         </div>
 
-        <div className="flex flex-col items-center justify-between gap-4 border-t border-white/20 pt-6 md:flex-row">
-          <p className="text-[15px] font-medium leading-[1.6] text-white">
-            Copyright 2023 Merito - by Career Corner Education Pvt. Ltd
+        <div className="flex flex-col items-start sm:items-center justify-between gap-4 border-t border-white/20 pt-6 md:flex-row">
+          <p className="text-[12px] sm:text-[15px] font-medium leading-[1.6] text-white">
+            © 2023 Merito - by Career Corner Education Pvt. Ltd
           </p>
-          <div className="flex items-center gap-[10px]">
+          <div className="hidden sm:flex items-center gap-[10px]">
             {socialLinks.map((social) => (
               <a
                 key={social.label}

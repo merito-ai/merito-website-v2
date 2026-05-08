@@ -13,12 +13,15 @@ export default function ReftrackPage() {
     <main className="bg-white flex flex-col items-center w-full overflow-hidden font-[family-name:var(--font-poppins)] pb-24">
       
       {/* Hero Section */}
-      <section className="relative w-full max-w-[1300px] h-[422px] mx-auto overflow-hidden flex flex-col items-center justify-center text-center px-5" style={{ aspectRatio: '191/62' }}>
+      <section className="relative w-full max-w-[1300px] h-[355px] sm:h-[422px] mx-auto overflow-hidden flex flex-col items-center justify-center text-center px-5">
         <div className="absolute inset-0 bg-[url('/figma-exports/image-198.png')] bg-cover bg-center bg-no-repeat"></div>
         <div className="absolute inset-0 bg-black/50"></div>
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0)_0%,rgba(237,26,36,0.15)_100%)]"></div>
         <div className="relative z-10 flex flex-col items-center gap-[20px] max-w-[1115px]">
-          <h1 className="text-[48px] md:text-[64px] font-bold leading-[1.1] max-w-[900px]">
+          <div className="sm:hidden inline-flex items-center bg-[#ED1A24] px-[14px] py-[4.5px] rounded-[50px]">
+            <span className="font-bold text-[10px] text-white">Reftrack</span>
+          </div>
+          <h1 className="text-[24px] sm:text-[48px] md:text-[64px] font-bold leading-[1.1] max-w-[900px]">
             <span className="text-white">Driven by </span>
             <span className="text-[#ED1A24]">purpose</span>
             <span className="text-white">.</span>
@@ -27,7 +30,7 @@ export default function ReftrackPage() {
             <span className="text-[#ED1A24]">impact</span>
             <span className="text-white">.</span>
           </h1>
-          <p className="text-[18px] font-normal text-[#D9D9D9] leading-[29.7px] max-w-[800px]">
+          <p className="text-[14px] sm:text-[18px] font-semibold sm:font-normal text-[#D9D9D9] sm:leading-[29.7px] max-w-[800px]">
             Merito&apos;s Ref-Track platform enables recruitment teams to collect 360-degree candidate feedback, resulting in better hiring decisions.
           </p>
         </div>
@@ -35,12 +38,15 @@ export default function ReftrackPage() {
 
       {/* Reduce Hiring Risks */}
       <section className="max-w-[1248px] w-full mx-auto flex flex-col items-center gap-[50px] py-12 px-5 xl:px-0">
-        <div className="max-w-[1115px] flex flex-col items-center gap-[20px] text-center">
-          <h2 className="text-[32px] font-semibold text-black leading-[1.2]">Reduce hiring bias</h2>
-          <p className="text-[16px] font-normal text-[#4B4B4D] leading-[1.65]">Get structured data and insights from candidate references in real time, making your hiring process risk-free and faster than ever.</p>
+        <div className="max-w-[1115px] w-full flex flex-col items-start sm:items-center gap-[16px] sm:gap-[20px] text-left sm:text-center">
+          <h2 className="text-[24px] sm:text-[32px] font-bold sm:font-semibold text-black leading-[1.2]"><span className="text-black">Reduce Hiring </span><span className="text-[#ED1A24]">Risk</span></h2>
+          <p className="text-[12px] sm:text-[16px] font-medium sm:font-normal text-[#4B4B4D] sm:leading-[1.65]">Get structured data and insights from candidate references in real time, making your hiring process risk-free and faster than ever.</p>
+          <Link href="/contact" className="sm:hidden w-full h-[48px] bg-[#ED1A24] rounded-[5px] flex items-center justify-center">
+            <span className="font-semibold text-[16px] text-white">Register Now</span>
+          </Link>
         </div>
         <div className="w-full flex justify-center">
-          <div className="relative h-[500px] w-full max-w-[650px] rounded-[20px] overflow-hidden">
+          <div className="relative aspect-[835/471] sm:aspect-auto sm:h-[500px] w-full sm:max-w-[650px] sm:rounded-[20px] overflow-hidden">
             <VideoThumbnail
               videoSrc="/reftrack/intro.mp4"
               thumbnailSrc="/reftrack/intro.webp"
@@ -52,18 +58,18 @@ export default function ReftrackPage() {
       </section>
 
       {/* Solutions */}
-      <section className="max-w-[1270px] w-full mx-auto flex flex-col items-center gap-[50px] py-12 px-5 xl:px-0 border-t border-[#f0f0f0]">
-        <div className="max-w-[1115px] flex flex-col items-center gap-[20px] text-center">
-          <h2 className="text-[32px] font-semibold text-black">Solutions to aid your hiring objectives</h2>
-          <p className="text-[16px] font-normal text-[#4B4B4D] leading-[26.4px]">
+      <section className="max-w-[1270px] w-full mx-auto flex flex-col items-center gap-[20px] sm:gap-[50px] py-12 px-5 xl:px-0 border-t border-[#f0f0f0]">
+        <div className="max-w-[1115px] w-full flex flex-col items-start sm:items-center gap-[16px] sm:gap-[20px] text-left sm:text-center">
+          <h2 className="text-[24px] sm:text-[32px] font-bold sm:font-semibold text-black">Solutions to aid your hiring objectives</h2>
+          <p className="text-[12px] sm:text-[16px] font-medium sm:font-normal text-[#4B4B4D] sm:leading-[26.4px]">
             RefTrack helps you make well-informed hiring decisions and increases the chances of hiring candidates with greater confidence. With our solution, get a quantitative metric of candidate feedback collected at an early stage, making your hiring faster!
           </p>
         </div>
         
-        <div className="flex gap-[50px] justify-center flex-wrap">
+        <div className="flex flex-col sm:flex-row gap-[20px] sm:gap-[50px] justify-center sm:flex-wrap w-full">
           {/* Card 1 */}
-          <div className="w-[280px] p-[24px] bg-white shadow-[0_0_12.2px_1.5px_rgba(0,0,0,0.1)] rounded-[12px] flex flex-col gap-[26px]">
-            <div className="w-[100px] h-[100px] bg-[#FDECED] rounded-full flex items-center justify-center">
+          <div className="w-full sm:w-[280px] p-[24px] bg-white shadow-[0_0_12.2px_1.5px_rgba(0,0,0,0.1)] rounded-[12px] flex flex-col gap-[6px] sm:gap-[26px]">
+            <div className="size-[64px] sm:size-[100px] bg-[#FDECED] rounded-full flex items-center justify-center overflow-hidden shrink-0">
                <svg width="46" height="46" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
               <g clipPath="url(#clip0_2313_3363)">
               <path d="M2.55859 6.46484V12.9927H33.1531V6.46484" fill="white"/>
@@ -79,22 +85,22 @@ export default function ReftrackPage() {
               </defs>
               </svg>
             </div>
-            <h3 className="text-[20px] font-bold text-black leading-[30.38px] whitespace-pre-line">{"Initiate\nRef-check Process"}</h3>
-            <p className="text-[16px] font-medium text-[#394457] leading-[24px]">Send reference requests instantly and ensure the right people respond.</p>
+            <h3 className="text-[12px] sm:text-[20px] font-semibold sm:font-bold text-black sm:leading-[30.38px] whitespace-pre-line">{"Initiate\nRef-check Process"}</h3>
+            <p className="text-[10px] sm:text-[16px] font-medium text-[#394457] sm:leading-[24px]">Send reference requests instantly and ensure the right people respond.</p>
           </div>
           {/* Card 2 */}
-          <div className="w-[280px] p-[24px] bg-white shadow-[0_0_12.2px_1.5px_rgba(0,0,0,0.1)] rounded-[12px] flex flex-col gap-[26px]">
-            <div className="w-[100px] h-[100px] bg-[#FDECED] rounded-full flex items-center justify-center">
+          <div className="w-full sm:w-[280px] p-[24px] bg-white shadow-[0_0_12.2px_1.5px_rgba(0,0,0,0.1)] rounded-[12px] flex flex-col gap-[6px] sm:gap-[26px]">
+            <div className="size-[64px] sm:size-[100px] bg-[#FDECED] rounded-full flex items-center justify-center overflow-hidden shrink-0">
                 <svg width="44" height="46" viewBox="0 0 44 46" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M35.2506 37.3223C36.567 36.0133 37.2252 34.4105 37.2252 32.5137C37.2252 30.6169 36.5637 29.0172 35.2409 27.7147C33.918 26.4121 32.3001 25.7601 30.3871 25.7585C28.4741 25.7569 26.8594 26.4121 25.5431 27.7243C24.2267 29.0365 23.5685 30.6394 23.5685 32.5329C23.5685 34.4265 24.2299 36.0262 25.5528 37.3319C26.8757 38.6377 28.4936 39.2898 30.4065 39.2882C32.3195 39.2865 33.9342 38.6313 35.2506 37.3223ZM42.8011 46C42.4542 46 42.1665 45.8876 41.9379 45.6627L36.0458 39.7796C35.2563 40.4028 34.3808 40.8782 33.4195 41.2058C32.4581 41.5335 31.4506 41.6973 30.3968 41.6973C27.8257 41.6973 25.6395 40.8051 23.8384 39.0207C22.0373 37.2364 21.1375 35.0706 21.1392 32.5233C21.1408 29.976 22.0405 27.8102 23.8384 26.0259C25.6363 24.2415 27.8224 23.3501 30.3968 23.3517C32.9712 23.3533 35.1574 24.2447 36.9552 26.0259C38.7531 27.807 39.6528 29.9728 39.6545 32.5233C39.6545 33.5673 39.4899 34.5654 39.1608 35.5179C38.8317 36.4703 38.3511 37.3376 37.7188 38.1197L43.6596 43.9571C43.8865 44.1803 44 44.4638 44 44.8075C44 45.1528 43.8873 45.4379 43.662 45.6627C43.4366 45.8876 43.1497 46 42.8011 46ZM3.9297 43.3644C2.80948 43.3644 1.87488 42.9934 1.1259 42.2514C0.37692 41.5094 0.00162116 40.5835 0 39.4737V3.89075C0 2.78255 0.375299 1.85744 1.1259 1.11543C1.8765 0.373416 2.8111 0.00160609 3.9297 0H21.4699C22.0065 0 22.5188 0.104396 23.0067 0.313188C23.4947 0.521979 23.9146 0.802242 24.2664 1.15398L32.8772 9.68472C33.229 10.0348 33.5111 10.4508 33.7234 10.9326C33.9358 11.4145 34.042 11.922 34.042 12.4552V15.9027C34.042 16.4712 33.8264 16.945 33.3952 17.3241C32.9623 17.7047 32.4435 17.8412 31.8388 17.7336L31.119 17.6469C30.8856 17.618 30.644 17.6035 30.3944 17.6035C28.0615 17.6035 25.9054 18.0789 23.9259 19.0297C21.9433 19.9806 20.2516 21.2654 18.8509 22.8844H9.72698C9.38167 22.8844 9.09311 23 8.86128 23.2313C8.62945 23.4626 8.51273 23.7492 8.51111 24.0913C8.50949 24.4334 8.62621 24.7193 8.86128 24.949C9.09635 25.1787 9.38492 25.2943 9.72698 25.2959H17.2557C16.6202 26.3993 16.1411 27.5605 15.8185 28.7795C15.4943 30.0001 15.3386 31.2481 15.3516 32.5233H9.72698C9.38167 32.5233 9.09311 32.6389 8.86128 32.8702C8.62945 33.1015 8.51273 33.3882 8.51111 33.7303C8.50949 34.0724 8.62621 34.3583 8.86128 34.5879C9.09635 34.8176 9.38492 34.9324 9.72698 34.9324H15.5316C15.7212 36.023 16.0139 37.0661 16.4094 38.0619C16.805 39.0577 17.3148 40.0021 17.939 40.895C18.32 41.4363 18.3832 41.9824 18.1287 42.5333C17.8741 43.0874 17.4413 43.3644 16.8301 43.3644H3.9297ZM21.8857 2.40913V10.1184C21.8857 10.6644 22.0721 11.1222 22.445 11.4916C22.8179 11.861 23.2799 12.0457 23.8311 12.0457H31.6127L21.8857 2.40913Z" fill="#E53935"/>
               </svg>
             </div>
-            <h3 className="text-[20px] font-bold text-black leading-[30.38px] whitespace-pre-line">{"Track\nRef- Check Progress"}</h3>
-            <p className="text-[16px] font-medium text-[#394457] leading-[24px]">Monitor responses in real time and keep your hiring process moving.</p>
+            <h3 className="text-[12px] sm:text-[20px] font-semibold sm:font-bold text-black sm:leading-[30.38px] whitespace-pre-line">{"Track\nRef- Check Progress"}</h3>
+            <p className="text-[10px] sm:text-[16px] font-medium text-[#394457] sm:leading-[24px]">Monitor responses in real time and keep your hiring process moving.</p>
           </div>
           {/* Card 3 */}
-          <div className="w-[280px] p-[24px] bg-white shadow-[0_0_12.2px_1.5px_rgba(0,0,0,0.1)] rounded-[12px] flex flex-col gap-[26px]">
-            <div className="w-[100px] h-[100px] bg-[#FDECED] rounded-full flex items-center justify-center relative">
+          <div className="w-full sm:w-[280px] p-[24px] bg-white shadow-[0_0_12.2px_1.5px_rgba(0,0,0,0.1)] rounded-[12px] flex flex-col gap-[6px] sm:gap-[26px]">
+            <div className="size-[64px] sm:size-[100px] bg-[#FDECED] rounded-full flex items-center justify-center relative overflow-hidden shrink-0">
                 <div className="absolute right-[15px] bottom-[20px]"><svg width="24" height="14" viewBox="0 0 24 14" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M19.1906 4.58648C19.4856 4.70051 19.7706 4.81002 20.0443 4.91501C20.6165 5.10835 21.0991 5.32839 21.5462 5.52851C21.9932 5.71733 22.4099 5.90286 22.7329 6.09291C23.3945 6.43932 23.7978 6.608 23.7978 6.608C23.7978 6.608 23.5888 6.22358 23.1775 5.60001C23.0736 5.44469 22.9585 5.27374 22.8344 5.08698C22.6924 4.907 22.5192 4.72927 22.3405 4.52813C21.9807 4.12584 21.5605 3.65534 21.0407 3.25757C20.7804 3.04861 20.5098 2.83062 20.2294 2.60605C19.9243 2.41497 19.6103 2.21712 19.2861 2.01371C18.6424 1.58245 17.8804 1.29748 17.108 0.947581C16.3067 0.696098 15.4742 0.388729 14.5903 0.268124C13.7165 0.0692385 12.8057 0.0546523 11.8994 0C10.9931 0.053625 10.0823 0.0669781 9.20851 0.265863C8.32339 0.383181 7.4921 0.69507 6.68957 0.94306C5.91622 1.29275 5.15519 1.57773 4.51046 2.00796C4.18645 2.21136 3.87127 2.40922 3.56719 2.6003C3.28674 2.8261 3.01636 3.04389 2.75583 3.25284C2.23171 3.65513 1.8249 4.11557 1.47068 4.51334C1.29419 4.71222 1.12202 4.88892 0.980044 5.06869C0.850399 5.25977 0.730822 5.43626 0.622545 5.59508C0.199092 6.22975 0 6.60759 0 6.60759C0 6.60759 0.413385 6.43213 1.06161 6.09682C1.37555 5.91683 1.78134 5.73911 2.23828 5.54146C2.69091 5.33805 3.18812 5.10794 3.75581 4.91891C4.02969 4.81392 4.31466 4.70441 4.60949 4.59038C4.91008 4.49978 5.22197 4.40711 5.54146 4.31219C5.60741 4.28753 5.6822 4.27521 5.74938 4.25404C5.45558 5.00171 5.28895 5.81184 5.28895 6.66224C5.28895 10.3065 8.25373 13.2713 11.898 13.2713C15.5422 13.2713 18.507 10.3065 18.507 6.66224C18.507 5.80958 18.3393 4.99719 18.0443 4.2485C18.1136 4.27089 18.1896 4.28322 18.2565 4.30767C18.5781 4.40424 18.89 4.49711 19.1906 4.58648ZM11.9 9.91919C10.1053 9.91919 8.6437 8.45858 8.6437 6.66286C8.6437 4.86714 10.1053 3.40652 11.9 3.40652C13.6947 3.40652 15.1564 4.86714 15.1564 6.66286C15.1564 8.45858 13.6947 9.91919 11.9 9.91919Z" fill="#E53935"/>
               </svg></div>
@@ -105,12 +111,12 @@ export default function ReftrackPage() {
               <path d="M8.7189 4.35945C8.7189 1.95228 6.76764 0 4.35945 0C1.95125 0 0 1.95125 0 4.35945C0 5.48372 0.438041 6.49952 1.13763 7.27287C1.3924 7.55455 1.67511 7.80583 1.99481 8.01376C2.67653 8.45632 3.48665 8.7189 4.35945 8.7189C6.76662 8.7189 8.7189 6.76662 8.7189 4.35945Z" fill="#E53935"/>
               </svg></div>
             </div>
-            <h3 className="text-[20px] font-bold text-black leading-[30.38px] whitespace-pre-line">{"Get Quantitative\nInsights on Candidates"}</h3>
-            <p className="text-[16px] font-medium text-[#394457] leading-[24px]">Turn reference feedback into clear, data-backed insights.</p>
+            <h3 className="text-[12px] sm:text-[20px] font-semibold sm:font-bold text-black sm:leading-[30.38px] whitespace-pre-line">{"Get Quantitative\nInsights on Candidates"}</h3>
+            <p className="text-[10px] sm:text-[16px] font-medium text-[#394457] sm:leading-[24px]">Turn reference feedback into clear, data-backed insights.</p>
           </div>
           {/* Card 4 */}
-          <div className="w-[280px] p-[24px] bg-white shadow-[0_0_12.2px_1.5px_rgba(0,0,0,0.1)] rounded-[12px] flex flex-col gap-[26px]">
-            <div className="w-[100px] h-[100px] bg-[#FDECED] rounded-full flex items-center justify-center relative">
+          <div className="w-full sm:w-[280px] p-[24px] bg-white shadow-[0_0_12.2px_1.5px_rgba(0,0,0,0.1)] rounded-[12px] flex flex-col gap-[6px] sm:gap-[26px]">
+            <div className="size-[64px] sm:size-[100px] bg-[#FDECED] rounded-full flex items-center justify-center relative overflow-hidden shrink-0">
                 <div className="absolute"><svg width="40" height="46" viewBox="0 0 40 46" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path fillRule="evenodd" clipRule="evenodd" d="M25.3 32.2C25.724 32.2 26.0667 32.5435 26.0667 32.9667C26.0667 33.3899 25.724 33.7333 25.3 33.7333H14.5667C14.1435 33.7333 13.8 33.3899 13.8 32.9667C13.8 32.5435 14.1435 32.2 14.5667 32.2H25.3ZM29.9 29.1333H14.5667C14.1435 29.1333 13.8 28.7899 13.8 28.3667C13.8 27.9435 14.1435 27.6 14.5667 27.6H29.9C30.324 27.6 30.6667 27.9435 30.6667 28.3667C30.6667 28.7899 30.324 29.1333 29.9 29.1333ZM31.4333 24.5333H14.5667C14.1435 24.5333 13.8 24.1899 13.8 23.7667C13.8 23.3435 14.1435 23 14.5667 23H31.4333C31.8573 23 32.2 23.3435 32.2 23.7667C32.2 24.1899 31.8573 24.5333 31.4333 24.5333ZM13.8 19.1667C13.8 18.7435 14.1435 18.4 14.5667 18.4H28.3667C28.7906 18.4 29.1333 18.7435 29.1333 19.1667C29.1333 19.5899 28.7906 19.9333 28.3667 19.9333H14.5667C14.1435 19.9333 13.8 19.5899 13.8 19.1667ZM13.8 14.5667C13.8 14.1435 14.1435 13.8 14.5667 13.8H29.9C30.324 13.8 30.6667 14.1435 30.6667 14.5667C30.6667 14.9899 30.324 15.3333 29.9 15.3333H14.5667C14.1435 15.3333 13.8 14.9899 13.8 14.5667ZM10.7333 32.9667C10.7333 33.3899 10.3899 33.7333 9.96667 33.7333H8.43333C8.01013 33.7333 7.66667 33.3899 7.66667 32.9667C7.66667 32.5435 8.01013 32.2 8.43333 32.2H9.96667C10.3899 32.2 10.7333 32.5435 10.7333 32.9667ZM10.7333 28.3667C10.7333 28.7899 10.3899 29.1333 9.96667 29.1333H8.43333C8.01013 29.1333 7.66667 28.7899 7.66667 28.3667C7.66667 27.9435 8.01013 27.6 8.43333 27.6H9.96667C10.3899 27.6 10.7333 27.9435 10.7333 28.3667ZM10.7333 23.7667C10.7333 24.1899 10.3899 24.5333 9.96667 24.5333H8.43333C8.01013 24.5333 7.66667 24.1899 7.66667 23.7667C7.66667 23.3435 8.01013 23 8.43333 23H9.96667C10.3899 23 10.7333 23.3435 10.7333 23.7667ZM10.7333 19.1667C10.7333 19.5899 10.3899 19.9333 9.96667 19.9333H8.43333C8.01013 19.9333 7.66667 19.5899 7.66667 19.1667C7.66667 18.7435 8.01013 18.4 8.43333 18.4H9.96667C10.3899 18.4 10.7333 18.7435 10.7333 19.1667ZM10.7333 14.5667C10.7333 14.9899 10.3899 15.3333 9.96667 15.3333H8.43333C8.01013 15.3333 7.66667 14.9899 7.66667 14.5667C7.66667 14.1435 8.01013 13.8 8.43333 13.8H9.96667C10.3899 13.8 10.7333 14.1435 10.7333 14.5667ZM10.7333 3.83333C10.7333 3.41013 11.0768 3.06667 11.5 3.06667H13.0333C13.4565 3.06667 13.8 3.41013 13.8 3.83333C13.8 4.25653 13.4565 4.6 13.0333 4.6H11.5C11.0768 4.6 10.7333 4.25653 10.7333 3.83333ZM18.4 3.83333C18.4 3.41013 18.7435 3.06667 19.1667 3.06667H20.7C21.124 3.06667 21.4667 3.41013 21.4667 3.83333C21.4667 4.25653 21.124 4.6 20.7 4.6H19.1667C18.7435 4.6 18.4 4.25653 18.4 3.83333ZM26.0667 3.83333C26.0667 3.41013 26.4094 3.06667 26.8333 3.06667H28.3667C28.7906 3.06667 29.1333 3.41013 29.1333 3.83333C29.1333 4.25653 28.7906 4.6 28.3667 4.6H26.8333C26.4094 4.6 26.0667 4.25653 26.0667 3.83333ZM8.43333 6.13333C8.85577 6.13333 9.2 6.47757 9.2 6.9C9.2 7.32243 8.85577 7.66667 8.43333 7.66667C8.0109 7.66667 7.66667 7.32243 7.66667 6.9C7.66667 6.47757 8.0109 6.13333 8.43333 6.13333ZM6.13333 6.9C6.13333 8.16807 7.16527 9.2 8.43333 9.2C9.7014 9.2 10.7333 8.16807 10.7333 6.9C10.7333 5.9018 10.0909 5.05923 9.2 4.74107V0.766667C9.2 0.343467 8.85653 0 8.43333 0C8.01013 0 7.66667 0.343467 7.66667 0.766667V4.74107C6.7758 5.05923 6.13333 5.9018 6.13333 6.9ZM31.4333 6.13333C31.8565 6.13333 32.2 6.47757 32.2 6.9C32.2 7.32243 31.8565 7.66667 31.4333 7.66667C31.0101 7.66667 30.6667 7.32243 30.6667 6.9C30.6667 6.47757 31.0101 6.13333 31.4333 6.13333ZM29.1333 6.9C29.1333 8.16807 30.1653 9.2 31.4333 9.2C32.7014 9.2 33.7333 8.16807 33.7333 6.9C33.7333 5.9018 33.0901 5.05923 32.2 4.74107V0.766667C32.2 0.343467 31.8573 0 31.4333 0C31.0094 0 30.6667 0.343467 30.6667 0.766667V4.74107C29.7766 5.05923 29.1333 5.9018 29.1333 6.9ZM23.7667 6.13333C24.1899 6.13333 24.5333 6.47757 24.5333 6.9C24.5333 7.32243 24.1899 7.66667 23.7667 7.66667C23.3435 7.66667 23 7.32243 23 6.9C23 6.47757 23.3435 6.13333 23.7667 6.13333ZM21.4667 6.9C21.4667 8.16807 22.4986 9.2 23.7667 9.2C25.0347 9.2 26.0667 8.16807 26.0667 6.9C26.0667 5.9018 25.4234 5.05923 24.5333 4.74107V0.766667C24.5333 0.343467 24.1906 0 23.7667 0C23.3427 0 23 0.343467 23 0.766667V4.74107C22.1099 5.05923 21.4667 5.9018 21.4667 6.9ZM16.1 6.13333C16.5224 6.13333 16.8667 6.47757 16.8667 6.9C16.8667 7.32243 16.5224 7.66667 16.1 7.66667C15.6776 7.66667 15.3333 7.32243 15.3333 6.9C15.3333 6.47757 15.6776 6.13333 16.1 6.13333ZM13.8 6.9C13.8 8.16807 14.8319 9.2 16.1 9.2C17.3681 9.2 18.4 8.16807 18.4 6.9C18.4 5.9018 17.7575 5.05923 16.8667 4.74107V0.766667C16.8667 0.343467 16.5232 0 16.1 0C15.6768 0 15.3333 0.343467 15.3333 0.766667V4.74107C14.4425 5.05923 13.8 5.9018 13.8 6.9ZM36.0333 44.4667H3.83333C2.97313 44.4667 2.08073 43.7652 1.71197 42.9333H38.1547C37.7859 43.7652 36.8935 44.4667 36.0333 44.4667ZM1.53333 41.4H38.3333V39.8667H1.53333V41.4ZM36.0333 3.06667H34.5C34.076 3.06667 33.7333 3.41013 33.7333 3.83333C33.7333 4.25653 34.076 4.6 34.5 4.6H36.0333C37.1511 4.6 38.3333 5.7822 38.3333 6.9V38.3333H1.53333V6.9C1.53333 5.7822 2.71553 4.6 3.83333 4.6H5.36667C5.78987 4.6 6.13333 4.25653 6.13333 3.83333C6.13333 3.41013 5.78987 3.06667 5.36667 3.06667H3.83333C1.863 3.06667 0 4.92967 0 6.9V42.1667C0 44.137 1.863 46 3.83333 46H36.0333C38.0037 46 39.8667 44.137 39.8667 42.1667V6.9C39.8667 4.92967 38.0037 3.06667 36.0333 3.06667Z" fill="#E53935"/>
               </svg></div>
@@ -119,49 +125,49 @@ export default function ReftrackPage() {
               <path d="M3.01848 4.85173C3.18437 4.68585 3.41354 4.58325 3.66667 4.58325H18.3333C18.5864 4.58325 18.8156 4.68585 18.9815 4.85173M3.01848 4.85173C2.8526 5.01762 2.75 5.24679 2.75 5.49992V16.4999C2.75 17.0062 3.16041 17.4166 3.66667 17.4166H18.3333C18.8396 17.4166 19.25 17.0062 19.25 16.4999V5.49992C19.25 5.24679 19.1474 5.01762 18.9815 4.85173M3.01848 4.85173L9.70365 11.5368C10.4196 12.2528 11.5804 12.2528 12.2964 11.5368L18.9815 4.85173" stroke="#E53935" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg></div>
             </div>
-            <h3 className="text-[20px] font-bold text-black leading-[30.38px] whitespace-pre-line">{"Initiate Offer\nRollout Process"}</h3>
-            <p className="text-[16px] font-medium text-[#394457] leading-[24px]">Move forward faster with seamless offer generation and communication.</p>
+            <h3 className="text-[12px] sm:text-[20px] font-semibold sm:font-bold text-black sm:leading-[30.38px] whitespace-pre-line">{"Initiate Offer\nRollout Process"}</h3>
+            <p className="text-[10px] sm:text-[16px] font-medium text-[#394457] sm:leading-[24px]">Move forward faster with seamless offer generation and communication.</p>
           </div>
         </div>
       </section>
 
       {/* Features */}
       <section className="w-full flex flex-col items-center gap-[50px] py-12 px-5 xl:px-0 bg-[#fafafa]">
-        <div className="max-w-[1115px] flex flex-col items-center gap-[20px] text-center">
+        <div className="max-w-[1115px] w-full flex flex-col items-start sm:items-center gap-[16px] sm:gap-[20px] text-left sm:text-center">
           <div className="inline-flex items-center bg-[#ED1A24] px-[14px] py-[4.5px] rounded-[50px] outline outline-[0.2px] outline-[#ED1A24] -outline-offset-[0.2px]">
-            <span className="font-bold text-[16px] text-white uppercase tracking-widest">FEATURES</span>
+            <span className="font-bold text-[10px] sm:text-[16px] text-white uppercase tracking-widest">FEATURES</span>
           </div>
-          <h2 className="text-[32px] font-semibold text-[#4B4B4D]">Why choose Ref-Track?</h2>
-          <p className="text-[16px] font-normal text-[#4B4B4D] leading-[26.4px]">Ref-Track is making your hiring faster and risk-free!</p>
+          <h2 className="text-[24px] sm:text-[32px] font-bold sm:font-semibold text-[#4B4B4D]">Why choose Ref-Track?</h2>
+          <p className="text-[12px] sm:text-[16px] font-normal text-[#4B4B4D] sm:leading-[26.4px]">Ref-Track is making your hiring faster and risk-free!</p>
         </div>
 
-        <div className="w-full max-w-[1176px] flex flex-wrap gap-[50px] justify-center">
+        <div className="w-full max-w-[1176px] flex flex-col sm:flex-row sm:flex-wrap gap-[20px] sm:gap-[50px] justify-center">
           {/* Feature 1 */}
-          <div className="w-[543px] h-[199px] relative bg-white shadow-[0_0_4px_2px_rgba(0,0,0,0.25)] rounded-[9px] border-t border-[#ED1A24] overflow-hidden group">
+          <div className="w-full sm:w-[543px] h-[120px] sm:h-[199px] relative bg-white shadow-[0_0_4px_2px_rgba(0,0,0,0.25)] rounded-[9px] border-t border-[#ED1A24] overflow-hidden group">
             <div className="absolute top-0 left-0 w-[70px] h-[22px]">
               <svg width="70" height="22" viewBox="0 0 70 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M70 0L0 0V10.807V22L70 0Z" fill="#ED1A24"/>
               </svg>
             </div>
-            <div className="w-[98px] h-[98px] absolute left-[30px] top-[51px] bg-white rounded-full shadow-[0_0_7.6px_2px_rgba(0,0,0,0.25)] flex items-center justify-center">
-              <svg width="64" height="41" viewBox="0 0 64 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <div className="size-[59px] sm:size-[98px] absolute left-[28px] sm:left-[30px] top-1/2 sm:top-[51px] -translate-y-1/2 sm:translate-y-0 overflow-hidden bg-white rounded-full shadow-[0_0_7.6px_2px_rgba(0,0,0,0.25)] flex items-center justify-center">
+              <svg width="50" height="32" viewBox="0 0 64 41" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M63.0065 0.193885C62.8674 0.0618153 62.6827 -0.00562483 62.4874 0.00140017C57.9359 0.226903 52.991 0.983495 46.9284 2.38217C46.738 2.42643 46.5743 2.54726 46.4767 2.71656C46.379 2.88587 46.3573 3.08819 46.4149 3.27435L47.0036 5.17391C42.5336 3.47877 36.2462 2.503 30.8039 2.71726C28.8088 2.71726 26.5313 3.70709 24.4498 5.17601H16.22L16.8094 3.27364C16.8677 3.08678 16.8445 2.88516 16.7476 2.71586C16.6507 2.54656 16.487 2.42503 16.2966 2.38147C10.234 0.982793 5.28982 0.226201 0.737625 0.000698059C0.548652 -0.00773194 0.358275 0.0604107 0.218477 0.193183C0.07868 0.326658 0 0.510713 0 0.703198V24.8285C0 25.2169 0.31472 25.531 0.7025 25.531H9.39804C9.70574 25.531 9.97831 25.3307 10.0689 25.0364L10.4005 23.9665C17.5569 32.3066 24.8341 39.9659 30.5159 39.9659C31.6097 39.9659 32.6438 39.6772 33.6076 39.0597L33.7558 39.21C34.419 39.8816 35.3076 40.2547 36.2574 40.2603C36.2652 40.2603 36.2722 40.2603 36.2799 40.2603C37.2206 40.2603 38.1043 39.8985 38.771 39.2409C39.3569 38.6614 39.6835 37.9252 39.7798 37.1644C40.4331 37.706 41.2276 37.9933 42.032 37.9933C42.9319 37.9926 43.8332 37.6533 44.5237 36.9719C45.3028 36.2019 45.6337 35.1587 45.5466 34.1443C45.8599 34.2216 46.1767 34.2743 46.495 34.2743C47.3963 34.2743 48.2779 33.9631 48.9172 33.3315C49.5888 32.6684 49.9618 31.7797 49.9674 30.8299C49.973 29.8801 49.6112 28.988 48.993 28.3662C48.7345 28.048 48.4676 27.7424 48.2055 27.4291L52.9938 24.5144L53.1554 25.0357C53.2467 25.33 53.5186 25.5303 53.8262 25.5303H62.5225C62.911 25.5303 63.225 25.2162 63.225 24.8278V0.703198C63.225 0.510713 63.1463 0.326658 63.0065 0.193885ZM8.8803 24.126H1.405V1.44574C5.48371 1.69794 9.9207 2.38358 15.2435 3.58345L8.8803 24.126ZM47.9295 32.3312C47.1293 33.1222 45.6042 33.0372 44.7289 32.1499C44.7169 32.138 44.7015 32.1338 44.6888 32.1232C44.6418 32.0691 44.6059 32.0087 44.5547 31.9567L36.8623 24.1688C36.5883 23.8934 36.145 23.8906 35.8682 24.1625C35.5922 24.4358 35.59 24.8797 35.8619 25.1565L43.5543 32.9444C43.954 33.3484 44.1725 33.8879 44.169 34.4618C44.1655 35.0351 43.9407 35.5718 43.536 35.9708C42.6965 36.8019 41.3386 36.7913 40.5083 35.9525L38.8047 34.2279C38.8033 34.2265 38.8026 34.2251 38.8019 34.2244L31.1095 26.4372C30.8362 26.1625 30.3916 26.159 30.1162 26.4309C29.8401 26.7041 29.8373 27.1481 30.1098 27.4249L37.8015 35.2128C38.6319 36.0523 38.6234 37.4109 37.7833 38.2406C36.9431 39.0709 35.5844 39.0611 34.7555 38.2223L25.356 28.707C25.0828 28.4316 24.6381 28.4274 24.3627 28.7013C24.0866 28.9739 24.0838 29.4186 24.3564 29.6947L32.5834 38.0228C27.3603 40.8145 18.709 31.5324 10.8923 22.3795L15.7852 6.58242H22.6802C20.7547 8.2909 19.167 10.331 18.4006 12.1905C17.4199 14.5691 18.0585 15.9067 18.7666 16.6099C18.7848 16.6282 18.8045 16.6457 18.8249 16.6619C21.5246 18.8024 24.1836 19.3419 28.3248 15.0581C29.7305 15.1438 30.9276 14.9 31.9666 14.3106C37.8015 18.39 43.1623 23.4157 47.9477 29.3041C48.7781 30.1436 48.7696 31.5022 47.9295 32.3312ZM47.2909 26.3416C42.7907 21.1361 37.7882 16.6169 32.3867 12.8916C32.1471 12.7258 31.8296 12.7258 31.59 12.8909C30.6613 13.528 29.5254 13.7697 28.1169 13.632C27.8984 13.6081 27.6855 13.691 27.5359 13.8498C23.6124 18.0247 21.6742 17.1206 19.7318 15.5871C19.0321 14.8572 19.3265 13.6313 19.6995 12.7258C21.2619 8.93369 26.8039 4.12297 30.8313 4.12226C36.5721 3.90238 43.2297 5.01866 47.541 6.90908L52.5653 23.1305L47.2909 26.3416ZM61.82 24.126H54.344L47.9807 3.58345C53.3036 2.38358 57.7413 1.69794 61.8193 1.44574L61.82 24.126Z" fill="var(--Color-3, #ED1A24)"/>
               </svg>
             </div>
-            <div className="absolute left-[156px] top-[27.83px] flex flex-col gap-[12px] w-[348px]">
-              <h3 className="text-[20px] font-semibold text-black">Strong Insights, Greater Confidence</h3>
-              <p className="text-[18px] font-medium text-[#4B4B4D] leading-[34.1px]">Collect feedback from various stakeholders to make more confident hiring decisions.</p>
+            <div className="absolute left-[104px] sm:left-[156px] top-1/2 -translate-y-1/2 sm:top-[27.83px] sm:translate-y-0 flex flex-col gap-[7px] sm:gap-[12px] w-[calc(100%-112px)] sm:w-[348px]">
+              <h3 className="text-[12px] sm:text-[20px] font-semibold text-black">Strong Insights, Greater Confidence</h3>
+              <p className="text-[10px] sm:text-[18px] font-medium text-[#4B4B4D] sm:leading-[34.1px]">Collect feedback from various stakeholders to make more confident hiring decisions.</p>
             </div>
           </div>
           
           {/* Feature 2 */}
-          <div className="w-[543px] h-[199px] relative bg-white shadow-[0_0_4px_2px_rgba(0,0,0,0.25)] rounded-[9px] border-t border-[#ED1A24] overflow-hidden group">
+          <div className="w-full sm:w-[543px] h-[120px] sm:h-[199px] relative bg-white shadow-[0_0_4px_2px_rgba(0,0,0,0.25)] rounded-[9px] border-t border-[#ED1A24] overflow-hidden group">
             <div className="absolute top-0 right-0 w-[70px] h-[22px]">
               <svg width="70" height="22" viewBox="0 0 70 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M0 0L70 0V10.807V22L0 0Z" fill="#ED1A24"/>
               </svg>
             </div>
-            <div className="w-[98px] h-[98px] absolute left-[30px] top-[51px] bg-white rounded-full shadow-[0_0_7.6px_2px_rgba(0,0,0,0.25)] flex items-center justify-center">
+            <div className="size-[59px] sm:size-[98px] absolute left-[28px] sm:left-[30px] top-1/2 sm:top-[51px] -translate-y-1/2 sm:translate-y-0 overflow-hidden bg-white rounded-full shadow-[0_0_7.6px_2px_rgba(0,0,0,0.25)] flex items-center justify-center">
               <svg width="55" height="55" viewBox="0 0 55 55" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M20.6199 41.2498C15.1119 41.2498 9.93279 39.105 6.03756 35.2097C-2.0021 27.1688 -2.0021 14.0852 6.03756 6.04467C9.93279 2.14955 15.1119 0.00390625 20.6199 0.00390625C26.1288 0.00390625 31.3078 2.14955 35.203 6.04467C43.2436 14.0852 43.2436 27.1688 35.203 35.2097C31.3078 39.105 26.1288 41.2498 20.6199 41.2498ZM20.6199 0.863174C15.3409 0.863174 10.3784 2.91901 6.64514 6.65225C-1.05969 14.3579 -1.05969 26.8961 6.64514 34.6022C10.3784 38.3346 15.3411 40.3906 20.6199 40.3906C25.8997 40.3906 30.8623 38.3346 34.5956 34.6022C42.3013 26.8961 42.3013 14.3579 34.5956 6.65225C30.8623 2.91901 25.8988 0.863174 20.6199 0.863174Z" fill="var(--Color-3, #ED1A24)"/>
               <path d="M20.6213 39.5315C15.5715 39.5315 10.8246 37.5645 7.25406 33.995C-0.115938 26.6237 -0.115938 14.6309 7.25406 7.26004C10.8244 3.68955 15.5714 1.72266 20.6213 1.72266C25.6712 1.72266 30.4181 3.68955 33.9894 7.26004C37.5598 10.8304 39.5268 15.5774 39.5268 20.6273C39.5268 25.6763 37.5598 30.4236 33.9894 33.9934C30.4181 37.5645 25.6712 39.5315 20.6213 39.5315ZM20.6213 2.58192C15.8014 2.58192 11.2701 4.45901 7.86164 7.86762C0.826475 14.9036 0.826475 26.351 7.86164 33.3874C11.2701 36.7959 15.8014 38.6722 20.6213 38.6722C25.4412 38.6722 29.9735 36.7943 33.3819 33.3857C36.7904 29.9789 38.6675 25.4472 38.6675 20.6272C38.6675 15.8072 36.7904 11.276 33.3819 7.86751C29.9734 4.45901 25.4412 2.58192 20.6213 2.58192ZM40.0647 42.3224C40.0082 42.3225 39.9524 42.3114 39.9002 42.2898C39.8481 42.2682 39.8007 42.2365 39.7609 42.1965L35.1508 37.588C35.0731 37.5069 35.0303 37.3985 35.0315 37.2862C35.0328 37.1739 35.078 37.0665 35.1574 36.9871C35.2368 36.9077 35.3442 36.8625 35.4565 36.8613C35.5689 36.8601 35.6772 36.9029 35.7584 36.9806L40.3685 41.589C40.4285 41.649 40.4695 41.7256 40.486 41.8089C40.5026 41.8923 40.4941 41.9787 40.4616 42.0572C40.4291 42.1357 40.374 42.2028 40.3034 42.25C40.2327 42.2972 40.1497 42.3224 40.0647 42.3224ZM41.8873 40.4999C41.8309 40.5 41.775 40.4889 41.7229 40.4673C41.6707 40.4457 41.6234 40.414 41.5835 40.374L36.9734 35.7639C36.8957 35.6828 36.8529 35.5744 36.8541 35.4621C36.8553 35.3498 36.9005 35.2424 36.9799 35.1629C37.0593 35.0835 37.1667 35.0383 37.279 35.0371C37.3914 35.0359 37.4997 35.0787 37.5809 35.1563L42.1911 39.7664C42.2512 39.8265 42.2921 39.9031 42.3087 39.9864C42.3252 40.0698 42.3167 40.1561 42.2842 40.2346C42.2517 40.3132 42.1966 40.3803 42.126 40.4275C42.0553 40.4747 41.9723 40.4999 41.8873 40.4999Z" fill="var(--Color-3, #ED1A24)"/>
@@ -175,20 +181,20 @@ export default function ReftrackPage() {
               <path d="M4.72656 21.0564C4.48905 21.0564 4.29688 20.8643 4.29688 20.6268C4.29688 11.6247 11.6208 4.30078 20.6229 4.30078C20.8604 4.30078 21.0525 4.49296 21.0525 4.73047C21.0526 4.7869 21.0415 4.84278 21.0199 4.89492C20.9983 4.94706 20.9667 4.99443 20.9267 5.03433C20.8868 5.07423 20.8395 5.10587 20.7873 5.12744C20.7352 5.14901 20.6793 5.16009 20.6229 5.16005C12.0948 5.16005 5.15614 12.0989 5.15614 20.6268C5.1562 20.6832 5.14513 20.7391 5.12356 20.7912C5.10199 20.8434 5.07035 20.8908 5.03045 20.9307C4.99055 20.9706 4.94318 21.0022 4.89103 21.0238C4.83889 21.0454 4.783 21.0565 4.72656 21.0564Z" fill="var(--Color-3, #ED1A24)"/>
               </svg>
             </div>
-            <div className="absolute left-[156px] top-[30.83px] flex flex-col gap-[12px] w-[348px]">
-              <h3 className="text-[20px] font-semibold text-black">Data-Driven Candidate Evaluation</h3>
-              <p className="text-[18px] font-medium text-[#4B4B4D] leading-[34.1px]">Leverage quantitative metrics and structured feedback to evaluate candidates objectively.</p>
+            <div className="absolute left-[104px] sm:left-[156px] top-1/2 -translate-y-1/2 sm:top-[30.83px] sm:translate-y-0 flex flex-col gap-[7px] sm:gap-[12px] w-[calc(100%-112px)] sm:w-[348px]">
+              <h3 className="text-[12px] sm:text-[20px] font-semibold text-black">Data-Driven Candidate Evaluation</h3>
+              <p className="text-[10px] sm:text-[18px] font-medium text-[#4B4B4D] sm:leading-[34.1px]">Leverage quantitative metrics and structured feedback to evaluate candidates objectively.</p>
             </div>
           </div>
 
           {/* Feature 3 */}
-          <div className="w-[543px] h-[199px] relative bg-white shadow-[0_0_4px_2px_rgba(0,0,0,0.25)] rounded-[9px] border-b border-[#ED1A24] overflow-hidden group">
+          <div className="w-full sm:w-[543px] h-[120px] sm:h-[199px] relative bg-white shadow-[0_0_4px_2px_rgba(0,0,0,0.25)] rounded-[9px] border-b border-[#ED1A24] overflow-hidden group">
             <div className="absolute bottom-0 left-0 w-[70px] h-[22px]">
               <svg width="70" height="22" viewBox="0 0 70 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M70 22L0 22V11.193V0L70 22Z" fill="#ED1A24"/>
               </svg>
             </div>
-            <div className="w-[98px] h-[98px] absolute left-[30px] top-[51px] bg-white rounded-full shadow-[0_0_7.6px_2px_rgba(0,0,0,0.25)] flex items-center justify-center">
+            <div className="size-[59px] sm:size-[98px] absolute left-[28px] sm:left-[30px] top-1/2 sm:top-[51px] -translate-y-1/2 sm:translate-y-0 overflow-hidden bg-white rounded-full shadow-[0_0_7.6px_2px_rgba(0,0,0,0.25)] flex items-center justify-center">
               <svg width="55" height="55" viewBox="0 0 55 55" fill="none" xmlns="http://www.w3.org/2000/svg">
               <g clipPath="url(#clip0_2313_3429)">
               <path d="M2.69925 36.7581C1.92536 37.5315 1.49039 38.5815 1.49039 39.675C1.49039 40.7687 1.92536 41.819 2.69925 42.5918L3.99244 43.8855L0.375691 47.5C-0.118962 47.9968 -0.121081 48.8003 0.375691 49.2952L5.70811 54.6294C5.94539 54.8668 6.26936 54.9998 6.60538 54.9998C6.94206 54.9998 7.26603 54.8668 7.50332 54.6272L11.1178 51.0127L12.4058 52.3002C13.1791 53.0736 14.2298 53.5085 15.3227 53.5085C16.4164 53.5085 17.4667 53.0736 18.2402 52.3002L24.6821 45.8578L9.13967 30.3193L2.69925 36.7581Z" fill="var(--Color-3, #ED1A24)"/>
@@ -203,20 +209,20 @@ export default function ReftrackPage() {
               </defs>
               </svg>
             </div>
-            <div className="absolute left-[156px] top-[27.83px] flex flex-col gap-[12px] w-[348px]">
-              <h3 className="text-[20px] font-semibold text-black">Seamless & Continuous Process</h3>
-              <p className="text-[18px] font-medium text-[#4B4B4D] leading-[34.1px]">A smooth end-to-end workflow that keeps you hiring cycle moving without delays.</p>
+            <div className="absolute left-[104px] sm:left-[156px] top-1/2 -translate-y-1/2 sm:top-[27.83px] sm:translate-y-0 flex flex-col gap-[7px] sm:gap-[12px] w-[calc(100%-112px)] sm:w-[348px]">
+              <h3 className="text-[12px] sm:text-[20px] font-semibold text-black">Seamless & Continuous Process</h3>
+              <p className="text-[10px] sm:text-[18px] font-medium text-[#4B4B4D] sm:leading-[34.1px]">A smooth end-to-end workflow that keeps you hiring cycle moving without delays.</p>
             </div>
           </div>
 
           {/* Feature 4 */}
-          <div className="w-[543px] h-[199px] relative bg-white shadow-[0_0_4px_2px_rgba(0,0,0,0.25)] rounded-[9px] border-b border-[#ED1A24] overflow-hidden group">
+          <div className="w-full sm:w-[543px] h-[120px] sm:h-[199px] relative bg-white shadow-[0_0_4px_2px_rgba(0,0,0,0.25)] rounded-[9px] border-b border-[#ED1A24] overflow-hidden group">
             <div className="absolute bottom-0 right-0 w-[70px] h-[22px]">
               <svg width="70" height="22" viewBox="0 0 70 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M0 22L70 22V11.193V0L0 22Z" fill="#ED1A24"/>
               </svg>
             </div>
-            <div className="w-[98px] h-[98px] absolute left-[30px] top-[51px] bg-white rounded-full shadow-[0_0_7.6px_2px_rgba(0,0,0,0.25)] flex items-center justify-center">
+            <div className="size-[59px] sm:size-[98px] absolute left-[28px] sm:left-[30px] top-1/2 sm:top-[51px] -translate-y-1/2 sm:translate-y-0 overflow-hidden bg-white rounded-full shadow-[0_0_7.6px_2px_rgba(0,0,0,0.25)] flex items-center justify-center">
               <svg width="55" height="55" viewBox="0 0 55 55" fill="none" xmlns="http://www.w3.org/2000/svg">
               <g clipPath="url(#clip0_2313_3443)">
               <path d="M27.5 2.96582C34.3433 10.0267 41.2822 11.1875 46.7344 10.2803C49.2617 9.85971 51.4022 9.00677 53 8.19336V13.75C53 22.4042 49.1845 32.3304 43.8936 40.1279C41.2592 44.0103 38.3146 47.2802 35.4004 49.5576C32.4506 51.8627 29.7295 53 27.5 53C25.2705 53 22.5494 51.8627 19.5996 49.5576C16.6854 47.2802 13.7408 44.0103 11.1064 40.1279C5.81551 32.3304 2 22.4042 2 13.75V8.19336C3.59775 9.00677 5.73831 9.85971 8.26562 10.2803C13.7178 11.1875 20.6567 10.0267 27.5 2.96582Z" stroke="var(--Color-3, #ED1A24)" strokeWidth="4"/>
@@ -228,23 +234,23 @@ export default function ReftrackPage() {
               </defs>
               </svg>
             </div>
-            <div className="absolute left-[156px] top-[30.83px] flex flex-col gap-[12px] w-[348px]">
-              <h3 className="text-[20px] font-semibold text-black">Save Time, Reduce Manual Work</h3>
-              <p className="text-[18px] font-medium text-[#4B4B4D] leading-[34.1px]">Automate follow ups, track progress and cut down on repetitive administrative tasks</p>
+            <div className="absolute left-[104px] sm:left-[156px] top-1/2 -translate-y-1/2 sm:top-[30.83px] sm:translate-y-0 flex flex-col gap-[7px] sm:gap-[12px] w-[calc(100%-112px)] sm:w-[348px]">
+              <h3 className="text-[12px] sm:text-[20px] font-semibold text-black">Save Time, Reduce Manual Work</h3>
+              <p className="text-[10px] sm:text-[18px] font-medium text-[#4B4B4D] sm:leading-[34.1px]">Automate follow ups, track progress and cut down on repetitive administrative tasks</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="max-w-[1115px] mx-auto flex flex-col items-center gap-[25px] py-12 px-5 xl:px-0">
-        <div className="flex flex-col items-center gap-[20px] text-center w-full">
-          <h2 className="text-[32px] font-semibold text-black">Get started with Merito</h2>
-          <p className="text-[16px] font-normal text-[#4B4B4D] leading-[26.4px] max-w-[800px]">Help us with what you are looking for and our team will get in-touch to understand your talent requirements</p>
+      <section className="max-w-[1115px] w-full mx-auto flex flex-col items-center gap-[20px] sm:gap-[25px] py-12 px-5 xl:px-0">
+        <div className="flex flex-col items-start sm:items-center gap-[16px] sm:gap-[20px] text-left sm:text-center w-full">
+          <h2 className="text-[24px] sm:text-[32px] font-semibold text-black">Get started with Merito</h2>
+          <p className="text-[12px] sm:text-[16px] font-normal text-[#4B4B4D] sm:leading-[26.4px] max-w-[800px]">Help us with what you are looking for and our team will get in-touch to understand your talent requirements</p>
         </div>
-        <ContactTrigger className="relative w-[187px] h-[50px] bg-[#ED1A24] rounded-[8px] overflow-hidden group flex items-center justify-center mt-2">
+        <ContactTrigger className="relative w-full sm:w-[187px] h-[48px] sm:h-[50px] bg-[#ED1A24] rounded-[5px] sm:rounded-[8px] overflow-hidden group flex items-center justify-center sm:mt-2">
           <span className="relative z-10 text-white font-semibold text-[16px] uppercase">CONTACT US</span>
-          <div className="absolute w-[222px] h-[128px] -left-[17px] top-[52px] bg-black rounded-[40px] transition-transform duration-300 group-hover:-translate-y-[10px]" />
+          <div className="absolute w-[222px] h-[128px] -left-[17px] top-[52px] bg-black rounded-[40px] transition-transform duration-300 sm:group-hover:-translate-y-[10px]" />
         </ContactTrigger>
       </section>
     </main>

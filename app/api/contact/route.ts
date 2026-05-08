@@ -7,6 +7,7 @@ type ContactPayload = {
   phone?: string;
   departments?: string;
   message?: string;
+  recaptchaToken?: string;
   "bot-field"?: string;
 };
 
@@ -25,6 +26,27 @@ function escapeHtml(value: string) {
     .replace(/>/g, "&gt;")
     .replace(/\"/g, "&quot;")
     .replace(/'/g, "&#39;");
+}
+
+async function verifyRecaptchaToken(token: string, secret: string) {
+  const verificationResponse = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      secret,
+      response: token,
+    }),
+    cache: "no-store",
+  });
+
+  if (!verificationResponse.ok) {
+    return false;
+  }
+
+  const verificationData = (await verificationResponse.json()) as { success?: boolean };
+  return Boolean(verificationData.success);
 }
 
 export async function POST(request: Request) {
@@ -46,6 +68,7 @@ export async function POST(request: Request) {
   const phone = normalize(payload.phone);
   const departments = normalize(payload.departments);
   const message = normalize(payload.message);
+  const recaptchaToken = normalize(payload.recaptchaToken);
   const safeFullName = escapeHtml(`${firstName} ${lastName}`);
   const safeEmail = escapeHtml(email);
   const safePhone = escapeHtml(phone || "Not provided");
@@ -58,6 +81,18 @@ export async function POST(request: Request) {
 
   if (!isValidEmail(email)) {
     return Response.json({ error: "Invalid email address." }, { status: 400 });
+  }
+
+  const recaptchaSecretKey = process.env.RECAPTCHA_SECRET_KEY;
+  const recaptchaEnabled = Boolean(recaptchaSecretKey);
+  if (recaptchaEnabled) {
+    if (!recaptchaToken) {
+      return Response.json({ error: "Captcha verification is required." }, { status: 400 });
+    }
+    const isHuman = await verifyRecaptchaToken(recaptchaToken, recaptchaSecretKey as string);
+    if (!isHuman) {
+      return Response.json({ error: "Captcha verification failed." }, { status: 400 });
+    }
   }
 
   const apiKey = process.env.RESEND_API_KEY;

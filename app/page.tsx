@@ -314,11 +314,11 @@ function HeroSection() {
         <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(360px,0.95fr)]">
           <RevealOnScroll className="max-w-[600px]" duration={0.7} y={20}>
             <SectionPill text="AI-ENABLED FULL-FUNNEL RECRUITMENT PARTNER" />
-            <h1 className="mt-8 font-[family-name:var(--font-gabarito)] text-[3.05rem] font-semibold leading-[1.03] tracking-[-0.045em] text-black sm:text-[4.15rem]">
+            <h1 className="mt-8 font-[family-name:var(--font-gabarito)] text-[24px] font-semibold leading-[1.03] tracking-[-0.045em] text-black sm:text-[4.15rem]">
               The talent partner that turns job briefs into{" "}
               <span className="text-[#ed1a24]">DREAM HIRES.</span>
             </h1>
-            <p className="mt-6 max-w-[515px] text-[17px] font-medium leading-[1.65] text-[#4b4b4d]">
+            <p className="mt-4 sm:mt-6 max-w-[515px] text-[12px] sm:text-[17px] font-medium leading-[1.55] sm:leading-[1.65] text-[#4b4b4d]">
               We&apos;re a human-centric AI recruitment agency that blends strategic
               human insight with a proprietary Skill-based Hiring Platform. No
               resume spam. No gut-feel guesses. Just a faster way to hire top
@@ -326,16 +326,16 @@ function HeroSection() {
             </p>
 
             <div className="mt-8 flex flex-col items-start gap-3">
-              <div className="flex flex-wrap items-center gap-4">
+              <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
                 <Link
                   href="/contact"
-                  className="inline-flex min-h-[56px] items-center justify-center rounded-[12px] border border-[#ed1a24]/40 px-6 text-[18px] font-semibold text-[#6f6f71] transition-all duration-200 hover:border-[#ed1a24] hover:text-[#ed1a24] hover:bg-[#ed1a24]/5 hover:scale-[1.02] active:scale-[0.98]"
+                  className="inline-flex w-full sm:w-auto h-[48px] sm:h-auto sm:min-h-[56px] items-center justify-center rounded-[12px] border border-[#ed1a24]/40 px-6 text-[16px] sm:text-[18px] font-semibold text-[#6f6f71] transition-all duration-200 hover:border-[#ed1a24] hover:text-[#ed1a24] hover:bg-[#ed1a24]/5 hover:scale-[1.02] active:scale-[0.98]"
                 >
                   Start hiring smarter
                 </Link>
                 <Link
                   href="#proof"
-                  className="inline-flex min-h-[56px] items-center gap-3 rounded-[12px] bg-[#ed1a24] px-6 text-[18px] font-semibold text-white transition-all duration-200 hover:bg-black hover:text-white hover:scale-[1.03] hover:shadow-[0_8px_24px_rgba(0,0,0,0.25)] active:scale-[0.97]"
+                  className="inline-flex w-full sm:w-auto h-[48px] sm:h-auto sm:min-h-[56px] items-center justify-center gap-3 rounded-[12px] bg-[#ed1a24] px-6 text-[16px] sm:text-[18px] font-semibold text-white transition-all duration-200 hover:bg-black hover:text-white hover:scale-[1.03] hover:shadow-[0_8px_24px_rgba(0,0,0,0.25)] active:scale-[0.97]"
                 >
                   <span>See our Results</span>
                   <span className="inline-flex size-7 items-center justify-center rounded-full bg-black text-white">
@@ -356,17 +356,17 @@ function HeroSection() {
           className="mt-11 rounded-[18px] bg-black px-3 py-3 sm:px-4 lg:mt-14"
           stagger={0.08}
         >
-          <div className="grid gap-1 divide-y divide-white/8 overflow-hidden rounded-[14px] sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4 lg:divide-x">
+          <div className="grid grid-cols-2 gap-1 divide-y divide-white/8 overflow-hidden rounded-[14px] sm:divide-y-0 lg:grid-cols-4 lg:divide-x">
             {heroStats.map((stat) => (
               <StaggerItem
                 key={stat.label}
                 className="flex min-h-[104px] flex-col items-center justify-center px-5 py-6 text-center"
               >
-                <div className="font-[family-name:var(--font-gabarito)] text-[2.2rem] font-semibold text-white">
+                <div className="font-[family-name:var(--font-gabarito)] text-[24px] sm:text-[2.2rem] font-semibold text-white">
                   <CountUp value={stat.value} duration={1.6} />
                   <span className="text-[#ed1a24]">{stat.suffix}</span>
                 </div>
-                <div className="mt-2 text-[15px] font-semibold text-white">
+                <div className="mt-2 text-[14px] sm:text-[15px] font-semibold text-white">
                   {stat.label}
                 </div>
               </StaggerItem>
@@ -380,9 +380,9 @@ function HeroSection() {
 
 function LogoCarouselSection() {
   return (
-    <section className="bg-white py-10 border-b border-black/[0.06]">
+    <section className="bg-white py-6 sm:py-10 border-b border-black/[0.06]">
       <Container>
-        <p className="text-center text-[12px] font-semibold uppercase tracking-[0.14em] text-black">
+        <p className="text-center text-[11px] sm:text-[12px] font-semibold uppercase tracking-[0.14em] text-black">
           Trusted by India&apos;s fastest-growing companies
         </p>
       </Container>
@@ -390,7 +390,7 @@ function LogoCarouselSection() {
         {clientLogos.map((logo) => (
           <div
             key={logo.alt}
-            className={`group flex h-[88px] w-[192px] shrink-0 items-center justify-center rounded-xl border px-6 shadow-sm ${
+            className={`group flex h-[60px] w-[130px] sm:h-[88px] sm:w-[192px] shrink-0 items-center justify-center rounded-xl border px-4 sm:px-6 shadow-sm ${
               logo.darkBg
                 ? "border-black/20 bg-[#1a1a1a]"
                 : "border-black/[0.06] bg-white"
@@ -401,7 +401,7 @@ function LogoCarouselSection() {
               alt={logo.alt}
               width={140}
               height={48}
-              className="h-11 w-auto max-w-[140px] object-contain grayscale opacity-50 transition-all duration-300 group-hover:grayscale-0 group-hover:opacity-100"
+              className="h-7 sm:h-11 w-auto max-w-[100px] sm:max-w-[140px] object-contain grayscale opacity-50 transition-all duration-300 group-hover:grayscale-0 group-hover:opacity-100"
             />
           </div>
         ))}
@@ -464,24 +464,58 @@ function MisconceptionCard({ pair }: { pair: typeof misconceptionPairs[0] }) {
   );
 }
 
+function MisconceptionCardMobile({ pair }: { pair: typeof misconceptionPairs[0] }) {
+  return (
+    <>
+      <StaggerItem
+        as="article"
+        className="flex w-full flex-col gap-4 rounded-[15px] border border-[#f4d8d8] bg-[#fef7f7] px-4 py-4 shadow-[0_10px_30px_rgba(17,35,89,0.04)]"
+      >
+        <div className="inline-flex size-9 items-center justify-center rounded-[8px] bg-[#131313]">
+          <Image src={pair.icon} alt="" width={22} height={22} className="size-[22px]" />
+        </div>
+        <p className="text-[12px] font-semibold leading-[1.55] text-black">
+          <span className="font-bold">Myth:</span> {pair.myth}
+        </p>
+      </StaggerItem>
+      <StaggerItem
+        as="article"
+        className="flex w-full items-center rounded-[15px] border border-[#f4d8d8] bg-white px-4 py-4 shadow-[0_10px_30px_rgba(17,35,89,0.04)]"
+      >
+        <p className="text-[12px] leading-[1.55] text-[#4b4b4d]">
+          <span className="font-bold text-[#ed1a24]">Reality:</span> {pair.reality}
+        </p>
+      </StaggerItem>
+    </>
+  );
+}
+
 function MisconceptionSection() {
   return (
     <section className="bg-white py-12">
       <Container>
         <SectionPill text="THE MISCONCEPTION" />
         <div className="mt-8 max-w-[980px]">
-          <h2 className="font-[family-name:var(--font-gabarito)] text-[2.5rem] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.15rem]">
+          <h2 className="font-[family-name:var(--font-gabarito)] text-[22px] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.15rem]">
             Your hiring isn&apos;t slow.{" "}
             <span className="text-[#ed1a24]">Your recruitment approach is.</span>
           </h2>
-          <p className="mt-5 max-w-[920px] text-[17px] font-medium leading-[1.75] text-[#5f5f61]">
+          <p className="mt-4 sm:mt-5 max-w-[920px] text-[12px] sm:text-[17px] font-medium leading-[1.55] sm:leading-[1.75] text-[#5f5f61]">
             Most B2B SaaS teams pour budget into campaigns that look active but
             generate nothing. Here&apos;s why. Most growth companies invest heavily
             in recruiters and paid tools however fail to hire quality talent.
           </p>
         </div>
 
-        <StaggerGroup className="mt-12 grid gap-5 md:grid-cols-3" stagger={0.12}>
+        {/* Mobile: 6 stacked cards (Myth + Reality, Myth + Reality, ...) */}
+        <StaggerGroup className="mt-8 grid gap-4 sm:hidden" stagger={0.08}>
+          {misconceptionPairs.map((pair) => (
+            <MisconceptionCardMobile key={pair.myth} pair={pair} />
+          ))}
+        </StaggerGroup>
+
+        {/* Desktop: 3 hover-flip cards */}
+        <StaggerGroup className="mt-12 hidden gap-5 sm:grid md:grid-cols-3" stagger={0.12}>
           {misconceptionPairs.map((pair) => (
             <MisconceptionCard key={pair.myth} pair={pair} />
           ))}
@@ -493,17 +527,17 @@ function MisconceptionSection() {
 
 function SocialProofSection() {
   return (
-    <section id="proof" className="bg-white py-12">
+    <section id="proof" className="bg-white py-8 sm:py-12">
       <Container>
-        <div className="text-center">
+        <div className="text-left sm:text-center">
           <SectionPill text="THE REAL PROBLEM" />
-          <h2 className="mx-auto mt-8 max-w-[620px] font-[family-name:var(--font-gabarito)] text-[2.5rem] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.15rem]">
+          <h2 className="mx-auto mt-4 sm:mt-8 max-w-[620px] font-[family-name:var(--font-gabarito)] text-[22px] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.15rem]">
             Don&apos;t take our word for it.{" "}
             <span className="text-[#ed1a24]">Take theirs.</span>
           </h2>
         </div>
 
-        <div className="mt-14 grid gap-6 lg:grid-cols-2">
+        <div className="mt-8 sm:mt-14 flex flex-col-reverse gap-6 lg:grid lg:grid-cols-2">
           <TestimonialCarousel
             items={[
               {
@@ -526,26 +560,28 @@ function SocialProofSection() {
 
         </div>
 
-        <Marquee speed={60}>
+        {/* Auto-animating testimonial marquee — mobile & desktop */}
+        <Marquee speed={40}>
           {smallTestimonials.map((testimonial) => (
             <article
               key={testimonial.name}
-              className="flex w-[340px] min-h-[220px] flex-col shrink-0 rounded-[18px] border border-black/8 bg-white px-5 py-6 shadow-[0_18px_50px_rgba(17,35,89,0.04)]"
+              className="flex shrink-0 flex-col justify-between rounded-[8px] border border-[#d9d9d9] bg-white px-[22px] py-[28px]"
+              style={{ width: "328.5px", height: "384.178px" }}
             >
-              <p className="text-[15px] leading-[1.85] text-[#55565a]">
+              <p className="text-[14px] font-semibold italic leading-[1.55] text-[#4b4b4d]">
                 &ldquo;{testimonial.quote}&rdquo;
               </p>
-              <div className="mt-auto pt-6 flex items-center gap-3">
+              <div className="flex items-center gap-[12px]">
                 <span
-                  className={`inline-flex size-9 items-center justify-center rounded-full text-[13px] font-semibold text-white ${testimonial.color}`}
+                  className={`inline-flex size-[44px] shrink-0 items-center justify-center rounded-full text-[16px] font-semibold text-white ${testimonial.color}`}
                 >
                   {testimonial.initials}
                 </span>
                 <div>
-                  <p className="text-[16px] font-semibold text-[#35353a] leading-tight">
+                  <p className="text-[16px] font-semibold text-[#4b4b4d] leading-tight">
                     {testimonial.name}
                   </p>
-                  <p className="text-[13px] text-[#6d6f74] mt-0.5">{testimonial.role}</p>
+                  <p className="text-[12px] text-[#4b4b4d] mt-[4px]">{testimonial.role}</p>
                 </div>
               </div>
             </article>
@@ -695,44 +731,44 @@ function FullFunnelSection() {
       <Container>
         <div className="text-center">
           <SectionPill text="THE FULL-FUNNEL SOLUTION" />
-          <h2 className="mx-auto mt-8 max-w-[860px] font-[family-name:var(--font-gabarito)] text-[2.5rem] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.1rem]">
+          <h2 className="mx-auto mt-8 max-w-[860px] font-[family-name:var(--font-gabarito)] text-[22px] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.1rem]">
             Streamline Your Executive Search by Leveraging a{" "}
             <span className="text-[#ed1a24]">Skill-based Hiring Platform</span>
           </h2>
         </div>
 
-        <div className="mt-14 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(380px,0.95fr)]">
-          <article className="rounded-[28px] border border-black/8 bg-[linear-gradient(180deg,#ffffff_0%,#f8f8fb_100%)] p-6 shadow-[0_30px_80px_rgba(17,35,89,0.08)] sm:p-7">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#b9bec6] bg-white px-4 py-2 text-[14px] font-semibold text-[#4d4f53]">
-              <span className="size-3 rounded-full bg-[#58d57b]" />
+        <div className="mt-8 sm:mt-14 grid gap-6 sm:gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(380px,0.95fr)]">
+          <article className="rounded-[18px] sm:rounded-[28px] border border-black/8 bg-[linear-gradient(180deg,#ffffff_0%,#f8f8fb_100%)] p-4 sm:p-6 shadow-[0_30px_80px_rgba(17,35,89,0.08)] sm:p-7">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#b9bec6] bg-white px-3 sm:px-4 py-1.5 sm:py-2 text-[9px] sm:text-[14px] font-semibold text-[#4d4f53]">
+              <span className="size-2.5 sm:size-3 rounded-full bg-[#58d57b]" />
               ENGINE RUNNING
             </div>
-            <div className="mt-8 flex items-center gap-3 text-[15px] font-semibold text-black">
+            <div className="mt-5 sm:mt-8 flex items-center gap-3 text-[10px] sm:text-[15px] font-semibold text-black">
               <span className="size-3 rounded-full bg-[#ed1a24]" />
               LIVE EXECUTION
             </div>
             <div className="mt-7 grid gap-4 transition-all duration-300">
               {/* CARD 1 */}
-              <div className="rounded-[18px] border border-black/8 bg-white p-5 shadow-[0_16px_34px_rgba(17,35,89,0.08)]">
-                <div className="flex items-start gap-4">
-                  <div className="inline-flex size-12 shrink-0 items-center justify-center rounded-[12px] bg-[#16244c] text-white">
+              <div className="rounded-[7px] sm:rounded-[18px] border border-black/8 bg-white p-3 sm:p-5 shadow-[0_16px_34px_rgba(17,35,89,0.08)]">
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <div className="inline-flex size-7 sm:size-12 shrink-0 items-center justify-center rounded-[7px] sm:rounded-[12px] bg-[#16244c] text-white">
                     {activePanel.card1.icon}
                   </div>
                   <div className="flex-1">
-                    <p className="text-[14px] font-medium uppercase tracking-wider text-[#525357]">
+                    <p className="text-[10px] sm:text-[14px] font-medium uppercase tracking-wider text-[#525357]">
                       {activePanel.card1.subtitle}
                     </p>
-                    <p className="mt-1 font-[family-name:var(--font-gabarito)] text-[1.9rem] font-semibold leading-none text-black">
+                    <p className="mt-1 font-[family-name:var(--font-gabarito)] text-[13px] sm:text-[1.9rem] font-semibold leading-none text-black">
                       {activePanel.card1.title}
                     </p>
-                    <div className="mt-4 h-px w-full bg-black/15" />
+                    <div className="mt-3 sm:mt-4 h-px w-full bg-black/15" />
                     {activePanel.card1.footer}
                   </div>
                   {activePanel.card1.hasChart && (
-                    <div className="hidden h-[92px] w-[145px] rounded-[14px] bg-[linear-gradient(180deg,rgba(255,221,223,0.45),rgba(255,255,255,0.5))] p-4 sm:block">
+                    <div className="block h-[60px] w-[90px] sm:h-[92px] sm:w-[145px] rounded-[10px] sm:rounded-[14px] bg-[linear-gradient(180deg,rgba(255,221,223,0.45),rgba(255,255,255,0.5))] p-2 sm:p-4">
                       <GrowBars
-                        className="flex h-full items-end gap-[6px]"
-                        barClassName="w-3 rounded-full bg-[linear-gradient(180deg,#ffdadc,#f68085)]"
+                        className="flex h-full items-end gap-[3px] sm:gap-[6px]"
+                        barClassName="w-2 sm:w-3 rounded-full bg-[linear-gradient(180deg,#ffdadc,#f68085)]"
                         heights={[40, 68, 30, 82, 56, 73, 61, 92]}
                       />
                     </div>
@@ -741,18 +777,18 @@ function FullFunnelSection() {
               </div>
 
               {/* CARD 2 */}
-              <div className="rounded-[18px] border border-black/8 bg-white p-5 shadow-[0_16px_34px_rgba(17,35,89,0.08)]">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex gap-4">
-                    <div className="inline-flex size-12 shrink-0 items-center justify-center rounded-[12px] bg-[#16244c] text-white">
+              <div className="rounded-[7px] sm:rounded-[18px] border border-black/8 bg-white p-3 sm:p-5 shadow-[0_16px_34px_rgba(17,35,89,0.08)]">
+                <div className="flex items-start justify-between gap-3 sm:gap-4">
+                  <div className="flex gap-3 sm:gap-4">
+                    <div className="inline-flex size-7 sm:size-12 shrink-0 items-center justify-center rounded-[7px] sm:rounded-[12px] bg-[#16244c] text-white">
                       {activePanel.card2.icon}
                     </div>
                     <div>
-                      <p className="font-[family-name:var(--font-gabarito)] text-[1.9rem] font-semibold leading-none text-black">
+                      <p className="font-[family-name:var(--font-gabarito)] text-[13px] sm:text-[1.9rem] font-semibold leading-none text-black">
                         {activePanel.card2.title}
                       </p>
                       {activePanel.card2.subtitle && (
-                        <p className="mt-3 text-[18px] leading-[1.5] text-[#5a5a5e]">
+                        <p className="mt-2 sm:mt-3 text-[12px] sm:text-[18px] leading-[1.5] text-[#5a5a5e]">
                           {activePanel.card2.subtitle}
                         </p>
                       )}
@@ -790,16 +826,16 @@ function FullFunnelSection() {
                 key={item.title}
                 isOpen={activeFunnelIndex === index}
                 onToggle={() => setActiveFunnelIndex(index)}
-                className="group rounded-[20px] border border-black/8 border-l-[6px] border-l-transparent bg-white shadow-[0_16px_36px_rgba(17,35,89,0.06)] data-[open=true]:border-l-[#ed1a24] data-[open=true]:border-t-black/8 data-[open=true]:border-r-black/8 data-[open=true]:border-b-black/8 transition-colors cursor-pointer"
+                className="group rounded-[5px] sm:rounded-[20px] border border-black/8 border-l-[3px] sm:border-l-[6px] border-l-transparent bg-white shadow-[0_16px_36px_rgba(17,35,89,0.06)] data-[open=true]:border-l-[#ed1a24] data-[open=true]:border-t-black/8 data-[open=true]:border-r-black/8 data-[open=true]:border-b-black/8 transition-colors cursor-pointer"
                 headerClassName="px-6 py-5"
                 contentClassName="px-6"
                 title={
-                  <p className="text-[18px] font-medium text-[#4b4b4d] group-data-[open=true]:font-bold group-data-[open=true]:text-black">
+                  <p className="text-[12px] sm:text-[18px] font-medium text-[#4b4b4d] group-data-[open=true]:font-bold group-data-[open=true]:text-black">
                     {item.title}
                   </p>
                 }
               >
-                <p className="max-w-[520px] pb-5 text-[16px] leading-[1.7] text-[#66686d]">
+                <p className="max-w-[520px] pb-5 text-[10px] sm:text-[16px] leading-[1.55] sm:leading-[1.7] text-[#66686d]">
                   {item.body}
                 </p>
               </AccordionItem>
@@ -807,8 +843,8 @@ function FullFunnelSection() {
           </div>
         </div>
 
-        <div className="mt-10 flex justify-center">
-          <div className="rounded-full border border-black/8 bg-white px-8 py-4 text-center text-[20px] font-semibold italic text-black shadow-[0_16px_36px_rgba(17,35,89,0.04)]">
+        <div className="mt-8 sm:mt-10 flex justify-center">
+          <div className="rounded-[14px] sm:rounded-full border border-black/8 bg-white px-4 sm:px-8 py-3 sm:py-4 text-center text-[12px] sm:text-[20px] font-semibold italic text-black shadow-[0_16px_36px_rgba(17,35,89,0.04)]">
             &ldquo;If momentum stalls, we know why within days -{" "}
             <span className="text-[#ed1a24]">not quarters.</span>&rdquo;
           </div>
@@ -833,9 +869,9 @@ function TechnologyCard({
     <StaggerItem
       as="article"
       y={24}
-      className="flex h-[600px] flex-col rounded-[20px] border border-black/8 bg-white p-5 shadow-[0_18px_50px_rgba(17,35,89,0.05)]"
+      className="flex h-auto sm:h-[600px] flex-col rounded-[15px] sm:rounded-[20px] border border-black/8 bg-white p-4 sm:p-5 shadow-[0_18px_50px_rgba(17,35,89,0.05)]"
     >
-      <div className="mb-5 inline-flex size-11 shrink-0 items-center justify-center rounded-[10px] bg-[#0d1427] overflow-hidden">
+      <div className="mb-4 sm:mb-5 inline-flex size-9 sm:size-11 shrink-0 items-center justify-center rounded-[8px] sm:rounded-[10px] bg-[#0d1427] overflow-hidden">
         <Image
           src={iconSrc}
           alt={title}
@@ -845,11 +881,11 @@ function TechnologyCard({
           unoptimized
         />
       </div>
-      <h3 className="font-[family-name:var(--font-gabarito)] text-[1.9rem] font-semibold leading-[1] text-black">
+      <h3 className="font-[family-name:var(--font-gabarito)] text-[14px] sm:text-[1.9rem] font-semibold leading-[1.3] sm:leading-[1] text-black">
         {title}
       </h3>
-      <p className="mt-4 text-[16px] leading-[1.7] text-[#595b61]">{body}</p>
-      <div className="mt-6 flex-1 flex flex-col justify-between">{children}</div>
+      <p className="mt-3 sm:mt-4 text-[12px] sm:text-[16px] leading-[1.55] sm:leading-[1.7] text-[#595b61]">{body}</p>
+      <div className="mt-4 sm:mt-6 flex-1 flex flex-col justify-between">{children}</div>
     </StaggerItem>
   );
 }
@@ -860,16 +896,16 @@ function PropTechSection() {
       <Container>
         <div className="text-center">
           <SectionPill text="PROPRIETARY TECHNOLOGY" />
-          <h2 className="mx-auto mt-8 max-w-[900px] font-[family-name:var(--font-gabarito)] text-[2.4rem] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.05rem]">
+          <h2 className="mx-auto mt-8 max-w-[900px] font-[family-name:var(--font-gabarito)] text-[22px] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.05rem]">
             The Agents That Work While Your Experts Focus
           </h2>
-          <p className="mx-auto mt-5 max-w-[760px] text-[18px] leading-[1.7] text-[#5f6166]">
+          <p className="mx-auto mt-4 sm:mt-5 max-w-[760px] text-[12px] sm:text-[18px] leading-[1.55] sm:leading-[1.7] text-[#5f6166]">
             Merito&apos;s AI agents handle the heavy lifting so your team closes
             faster, not harder.
           </p>
         </div>
 
-        <StaggerGroup className="mt-14 grid gap-6 lg:grid-cols-3" stagger={0.1}>
+        <StaggerGroup className="mt-8 sm:mt-14 grid gap-4 sm:gap-6 lg:grid-cols-3" stagger={0.1}>
           <TechnologyCard
             title="Multi-Channel Sourcing"
             body="Find the right candidates before your competitors do."
@@ -1201,19 +1237,19 @@ function TalentEquationSection() {
       <Container>
         <div className="text-center">
           <SectionPill text="THE TALENT EQUATION" />
-          <h2 className="mx-auto mt-8 max-w-[790px] font-[family-name:var(--font-gabarito)] text-[2.4rem] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.05rem]">
+          <h2 className="mx-auto mt-8 max-w-[790px] font-[family-name:var(--font-gabarito)] text-[22px] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.05rem]">
             The New Math of Hiring:{" "}
             <span className="text-[#ed1a24]">
               Artificial + Acquired Intelligence.
             </span>
           </h2>
-          <p className="mx-auto mt-5 max-w-[820px] text-[18px] leading-[1.7] text-[#5f6166]">
+          <p className="mx-auto mt-4 sm:mt-5 max-w-[820px] text-[12px] sm:text-[18px] leading-[1.55] sm:leading-[1.7] text-[#5f6166]">
             Merito combines global-scale AI with deep-rooted human insight to
             deliver the precision a standard recruitment agency can&apos;t match.
           </p>
         </div>
 
-        <StaggerGroup className="mt-14 grid gap-6 lg:grid-cols-2" stagger={0.15}>
+        <StaggerGroup className="mt-8 sm:mt-14 grid gap-4 sm:gap-6 lg:grid-cols-2" stagger={0.15}>
           {[
             {
               tag: "AI - Artificial Intelligence - Recruitment Efficiency",
@@ -1229,15 +1265,15 @@ function TalentEquationSection() {
             <StaggerItem
               key={card.title}
               as="article"
-              className="rounded-[24px] border border-black/8 bg-[linear-gradient(180deg,#ffffff_0%,#fafafa_100%)] px-8 py-8 shadow-[0_20px_60px_rgba(17,35,89,0.06)] transition-transform duration-300 hover:-translate-y-1"
+              className="rounded-[15px] sm:rounded-[24px] border border-black/8 bg-[linear-gradient(180deg,#ffffff_0%,#fafafa_100%)] px-4 sm:px-8 py-4 sm:py-8 shadow-[0_20px_60px_rgba(17,35,89,0.06)] transition-transform duration-300 hover:-translate-y-1"
             >
-              <span className="inline-flex rounded-[10px] border border-[#f4c4c6] bg-[#fff6f6] px-3 py-1 text-[13px] font-medium text-[#ed1a24]">
+              <span className="inline-flex rounded-[6px] sm:rounded-[10px] border border-[#f4c4c6] bg-[#fff6f6] px-2.5 sm:px-3 py-1 text-[10px] sm:text-[13px] font-medium text-[#ed1a24]">
                 {card.tag}
               </span>
-              <h3 className="mt-5 font-[family-name:var(--font-gabarito)] text-[1.9rem] font-semibold leading-[1.04] text-black">
+              <h3 className="mt-4 sm:mt-5 font-[family-name:var(--font-gabarito)] text-[14px] sm:text-[1.9rem] font-semibold leading-[1.55] sm:leading-[1.04] text-black">
                 {card.title}
               </h3>
-              <p className="mt-5 text-[18px] leading-[1.8] text-[#595b60]">
+              <p className="mt-3 sm:mt-5 text-[12px] sm:text-[18px] leading-[1.55] sm:leading-[1.8] text-[#595b60]">
                 {card.body}
               </p>
             </StaggerItem>
@@ -1253,38 +1289,38 @@ function PerformanceSection() {
     <section className="bg-white py-12">
       <Container>
         <div className="text-center">
-          <h2 className="mx-auto max-w-[760px] font-[family-name:var(--font-gabarito)] text-[2.4rem] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.05rem]">
+          <h2 className="mx-auto max-w-[760px] font-[family-name:var(--font-gabarito)] text-[22px] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.05rem]">
             Your Recruiter Is Trapped in Manual Work{" "}
             <span className="text-[#ed1a24]">
               Your Founder is Stuck in Interviews.
             </span>
           </h2>
-          <p className="mx-auto mt-6 max-w-[700px] text-[18px] leading-[1.7] text-[#5d5f65]">
+          <p className="mx-auto mt-4 sm:mt-6 max-w-[700px] text-[12px] sm:text-[18px] leading-[1.55] sm:leading-[1.7] text-[#5d5f65]">
             The efficiency gap between traditional hiring and the Merito
             AI-Driven model.
           </p>
-          <div className="mt-8">
+          <div className="mt-6 sm:mt-8">
             <SectionPill text="PERFORMANCE METRICS" />
           </div>
         </div>
 
         <StaggerGroup
-          className="mt-14 grid items-start gap-6 lg:grid-cols-3 lg:px-12"
+          className="mt-8 sm:mt-14 grid items-start gap-4 sm:gap-6 sm:grid-cols-3 sm:px-12"
           stagger={0.15}
         >
           {/* Card 1: Metric Labels */}
           <StaggerItem
             as="article"
-            className="rounded-[24px] border border-black/8 bg-white px-8 py-8 shadow-[0_20px_60px_rgba(17,35,89,0.06)]"
+            className="rounded-[15px] sm:rounded-[24px] border border-black/8 bg-white px-4 sm:px-8 py-6 sm:py-8 shadow-[0_20px_60px_rgba(17,35,89,0.06)]"
           >
-            <h3 className="flex h-12 items-center justify-center text-[22px] font-semibold text-black mb-8">Metric</h3>
-            <div className="grid gap-0">
+            <h3 className="flex h-9 sm:h-12 items-center justify-center text-[20px] sm:text-[22px] font-bold text-black mb-5 sm:mb-8">Metric</h3>
+            <div className="mx-auto grid w-fit gap-0 sm:mx-0 sm:w-auto">
               {performanceMetrics.map((metric) => (
-                <div key={metric.label} className="flex h-14 items-center gap-4">
-                  <span className="flex size-6 items-center justify-center text-[#35353a]">
+                <div key={metric.label} className="flex h-11 sm:h-14 items-center gap-4">
+                  <span className="flex size-7 sm:size-6 shrink-0 items-center justify-center text-[#35353a]">
                     {metric.icon}
                   </span>
-                  <span className="text-[16px] font-semibold text-[#35353a] whitespace-nowrap">
+                  <span className="text-[13px] sm:text-[16px] font-semibold text-[#35353a] whitespace-nowrap">
                     {metric.label}
                   </span>
                 </div>
@@ -1295,64 +1331,57 @@ function PerformanceSection() {
           {/* Card 2: Traditional Agencies */}
           <StaggerItem
             as="article"
-            className="rounded-[24px] border border-[#f3d6d8] bg-white px-8 py-8 shadow-[0_20px_60px_rgba(17,35,89,0.06)]"
+            className="relative rounded-[15px] sm:rounded-[24px] border border-[#f3d6d8] bg-white px-4 sm:px-8 py-6 sm:py-8 shadow-[0_20px_60px_rgba(17,35,89,0.06)]"
           >
-            <div className="flex h-12 items-center justify-between gap-3 mb-8">
-              <h3 className="text-[21px] font-semibold text-black leading-tight">
-                Traditional Agencies
-              </h3>
-              <span className="rounded-full bg-[#fff3f4] px-3 py-1 text-[11px] font-bold text-[#ff8087]">
-                OLD
-              </span>
-            </div>
-            <div className="grid gap-0">
+            <h3 className="flex h-9 sm:h-12 items-center justify-center text-[20px] sm:text-[21px] font-bold text-black leading-tight mb-5 sm:mb-8">
+              Traditional Agencies
+            </h3>
+            <div className="mx-auto grid w-fit gap-0 sm:mx-0 sm:w-auto">
               {performanceMetrics.map((metric) => (
-                <div key={metric.label} className="flex h-14 items-center gap-4">
-                  <span className="flex size-6 shrink-0 items-center justify-center rounded-full border border-[#f3d6d8] text-[14px] font-bold text-[#ed1a24]">
+                <div key={metric.label} className="flex h-11 sm:h-14 items-center gap-4">
+                  <span className="flex size-7 sm:size-6 shrink-0 items-center justify-center rounded-full border border-[#f3d6d8] text-[14px] font-bold text-[#ed1a24]">
                     <svg className="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4">
                       <path d="M18 6L6 18M6 6l12 12" />
                     </svg>
                   </span>
-                  <span className="text-[17px] font-bold text-[#4b4b4d]">
+                  <span className="text-[13px] sm:text-[17px] font-bold text-[#4b4b4d]">
                     {metric.traditional}
                   </span>
                 </div>
               ))}
             </div>
+            <span className="absolute bottom-4 right-4 rounded-full bg-[#fff3f4] px-3 py-1 text-[10px] font-bold text-[#ff8087]">
+              OLD
+            </span>
           </StaggerItem>
 
           {/* Card 3: Merito Way */}
           <StaggerItem
             as="article"
-            className="relative overflow-hidden rounded-[24px] border border-[#d6f7e1] bg-white px-8 py-8 shadow-[0_20px_60px_rgba(17,35,89,0.06)]"
+            className="relative overflow-hidden rounded-[15px] sm:rounded-[24px] border border-[#d6f7e1] bg-white px-4 sm:px-8 py-6 sm:py-8 shadow-[0_20px_60px_rgba(17,35,89,0.06)]"
           >
-            <div className="flex h-12 items-center justify-between gap-3 mb-8">
-              <h3 className="text-[22px] font-semibold text-black tracking-tight">
-                MERITO WAY
-              </h3>
-              <span className="rounded-full bg-[#eefdf1] px-3 py-1 text-[11px] font-bold text-[#40d36f]">
-                NEW
-              </span>
-            </div>
-            <div className="grid gap-0">
+            <h3 className="flex h-9 sm:h-12 items-center justify-center text-[20px] sm:text-[22px] font-bold text-black tracking-tight mb-5 sm:mb-8">
+              MERITO WAY
+            </h3>
+            <div className="mx-auto grid w-fit gap-0 sm:mx-0 sm:w-auto">
               {performanceMetrics.map((metric) => (
-                <div key={metric.label} className="flex h-14 items-center gap-4">
-                  <span className="flex size-6 shrink-0 items-center justify-center rounded-full border border-[#40d36f]/30 text-[#40d36f]">
+                <div key={metric.label} className="flex h-11 sm:h-14 items-center gap-4">
+                  <span className="flex size-7 sm:size-6 shrink-0 items-center justify-center rounded-full border border-[#40d36f]/30 text-[#40d36f]">
                     <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                   </span>
                   <div className="flex items-center gap-2">
-                    <span className="text-[17px] font-bold text-black">
+                    <span className="text-[13px] sm:text-[17px] font-bold text-black">
                       {metric.merito}
                     </span>
                     {metric.change && (
-                      <span className="flex items-center text-[14px] font-bold text-[#40d36f] whitespace-nowrap">
+                      <span className="flex items-center text-[12px] sm:text-[14px] font-bold text-[#40d36f] whitespace-nowrap">
                         {metric.trend === 'down' ? '↓' : '↑'}{metric.change}
                       </span>
                     )}
                     {!metric.change && (
-                      <span className="text-[14px] font-bold text-[#40d36f]">
+                      <span className="text-[12px] sm:text-[14px] font-bold text-[#40d36f]">
                         ↑
                       </span>
                     )}
@@ -1360,9 +1389,11 @@ function PerformanceSection() {
                 </div>
               ))}
             </div>
-
+            <span className="absolute bottom-4 right-4 z-10 rounded-full bg-[#eefdf1] px-3 py-1 text-[10px] font-bold text-[#40d36f]">
+              New
+            </span>
             {/* Accent corner */}
-            <div className="absolute -bottom-1 -right-1 size-24 translate-x-4 translate-y-4 rounded-full bg-[#16a34a]/10 sm:block" />
+            <div className="absolute -bottom-1 -right-1 size-24 translate-x-4 translate-y-4 rounded-full bg-[#16a34a]/10" />
             <div className="absolute bottom-0 right-0 h-16 w-16 overflow-hidden">
                <div className="absolute bottom-0 right-0 h-0 w-0 border-b-[60px] border-l-[60px] border-b-[#16a34a] border-l-transparent" />
                <div className="absolute bottom-0 right-0 h-0 w-0 border-b-[40px] border-l-[40px] border-b-[#40d36f] border-l-transparent" />
@@ -1380,7 +1411,7 @@ function FAQSection() {
   return (
     <section className="bg-white py-12">
       <Container className="max-w-[980px]">
-        <h2 className="text-center font-[family-name:var(--font-gabarito)] text-[2.35rem] font-semibold leading-[1.06] tracking-[-0.035em] text-black sm:text-[2.9rem]">
+        <h2 className="text-center font-[family-name:var(--font-gabarito)] text-[22px] font-semibold leading-[1.06] tracking-[-0.035em] text-black sm:text-[2.9rem]">
           Frequently Asked Questions
         </h2>
 
@@ -1394,10 +1425,10 @@ function FAQSection() {
               headerClassName="px-4 py-5"
               contentClassName="px-4"
               title={
-                <span className="text-[18px] font-medium text-black">{faq.q}</span>
+                <span className="text-[14px] sm:text-[18px] font-medium text-black">{faq.q}</span>
               }
             >
-              <p className="max-w-[860px] pb-6 text-[16px] leading-[1.75] text-[#64666b]">
+              <p className="max-w-[860px] pb-6 text-[12px] sm:text-[16px] leading-[1.55] sm:leading-[1.75] text-[#64666b]">
                 {faq.a}
               </p>
             </AccordionItem>
@@ -1411,29 +1442,31 @@ function FAQSection() {
 function CTASection() {
   const { openContact } = useContactModal();
   return (
-    <section className="bg-white py-12 text-center">
+    <section className="bg-white py-12 text-left sm:text-center">
       <Container className="max-w-[880px]">
         <RevealOnScroll>
-          <SectionPill text="READY TO GROW?" />
-          <h2 className="mt-8 font-[family-name:var(--font-gabarito)] text-[2.4rem] font-semibold leading-[1.06] tracking-[-0.035em] text-black sm:text-[3.05rem]">
+          <div className="flex sm:block">
+            <SectionPill text="READY TO GROW?" />
+          </div>
+          <h2 className="mt-5 sm:mt-8 font-[family-name:var(--font-gabarito)] text-[22px] font-semibold leading-[1.06] tracking-[-0.035em] text-black sm:text-[3.05rem]">
             Hire with <span className="text-[#ed1a24]">Conviction</span>
             <br />
             Not <span className="text-[#ed1a24]">Intuition</span>
           </h2>
-          <p className="mx-auto mt-6 max-w-[760px] text-[18px] leading-[1.75] text-[#52545b]">
+          <p className="mx-auto mt-4 sm:mt-6 max-w-[760px] text-[12px] sm:text-[18px] leading-[1.55] sm:leading-[1.75] text-[#52545b]">
             Stop guessing and start scaling. Book a{" "}
             <span className="font-semibold text-black">15-minute consultation</span>{" "}
             with our senior consultants to see how our Skill-based Hiring Platform
             can integrate with your team for immediate impact.
           </p>
-          <div className="flex flex-col items-center gap-3">
+          <div className="flex flex-col items-stretch sm:items-center gap-3">
             <button
               onClick={openContact}
-              className="mt-9 inline-flex min-h-[56px] items-center justify-center rounded-[10px] bg-[#ed1a24] px-9 text-[18px] font-semibold text-white shadow-[0_10px_30px_rgba(237,26,36,0.25)] transition-all duration-200 hover:scale-[1.03] hover:bg-black hover:text-white hover:shadow-[0_18px_40px_rgba(0,0,0,0.3)] active:scale-[0.97]"
+              className="mt-5 sm:mt-9 inline-flex w-full sm:w-auto min-h-[48px] sm:min-h-[56px] items-center justify-center rounded-[10px] bg-[#ed1a24] px-6 sm:px-9 text-[16px] sm:text-[18px] font-semibold text-white shadow-[0_10px_30px_rgba(237,26,36,0.25)] transition-all duration-200 hover:scale-[1.03] hover:bg-black hover:text-white hover:shadow-[0_18px_40px_rgba(0,0,0,0.3)] active:scale-[0.97]"
             >
               Talk to an Expert
             </button>
-            <p className="text-[14px] font-medium text-[#52545b]/80">
+            <p className="text-center sm:text-left text-[12px] sm:text-[14px] font-medium text-[#52545b]/80">
               No-risk consultation · Confidential discussion
             </p>
           </div>

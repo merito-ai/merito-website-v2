@@ -6,8 +6,8 @@ import { useState } from "react";
 
 function Eyebrow({ text }: { text: string }) {
   return (
-    <div className="inline-flex items-center bg-[#ed1a24] px-[12px] py-[6px] rounded-full">
-      <span className="font-[family-name:var(--font-poppins)] font-bold text-[16px] text-white leading-[165%]">
+    <div className="inline-flex items-center bg-[#ed1a24] px-[10px] sm:px-[12px] py-[4px] sm:py-[6px] rounded-full">
+      <span className="font-[family-name:var(--font-poppins)] font-bold text-[10px] sm:text-[16px] text-white leading-[165%]">
         {text}
       </span>
     </div>
@@ -35,29 +35,29 @@ interface Podcast {
 
 function ArticleCard({ slug, category, titleBefore, titleRed, excerpt, tagline, thumbnail, thumbnailContain }: Article) {
   return (
-    <Link href={`/insights/${slug}`} className="relative block bg-[#e7e7e7] rounded-[7px] overflow-hidden h-[484px] group">
-      <div className="absolute top-[22px] left-[24px] h-[6px] bg-[#ed1a24] z-20 w-[62px] group-hover:w-[calc(100%-48px)] transition-all duration-300" />
-      <div className={`absolute top-[10px] left-[10px] right-[10px] h-[201px] rounded-[5px] overflow-hidden relative${thumbnailContain ? ' bg-black' : ''}`}>
+    <Link href={`/insights/${slug}`} className="relative block bg-[#e7e7e7] rounded-[7px] overflow-hidden h-[369px] sm:h-[484px] group">
+      <div className="absolute top-[17px] sm:top-[22px] left-[18px] sm:left-[24px] h-[4.5px] sm:h-[6px] bg-[#ed1a24] z-20 w-[47px] sm:w-[62px] group-hover:w-[calc(100%-48px)] transition-all duration-300" />
+      <div className={`absolute top-[10px] left-[10px] right-[10px] h-[153px] sm:h-[201px] rounded-[5px] overflow-hidden relative${thumbnailContain ? ' bg-black' : ''}`}>
         <Image src={thumbnail} alt={titleBefore} fill sizes="(max-width: 768px) 100vw, 362px" className={thumbnailContain ? 'object-contain p-4' : 'object-cover'} unoptimized priority />
         <div className="absolute inset-0 bg-black/40" />
-        <div className="absolute top-[38px] left-[24px] flex items-center gap-[6px] z-10">
-          <div className="w-[4px] h-[14px] bg-[#ed1a24] flex-shrink-0" />
-          <span className="font-[family-name:var(--font-poppins)] font-semibold text-[13px] text-white tracking-wide">{category}</span>
+        <div className="absolute top-[29px] sm:top-[38px] left-[18px] sm:left-[24px] flex items-center gap-[6px] z-10">
+          <div className="w-[3px] sm:w-[4px] h-[11px] sm:h-[14px] bg-[#ed1a24] flex-shrink-0" />
+          <span className="font-[family-name:var(--font-poppins)] font-semibold text-[9px] sm:text-[13px] text-white tracking-wide">{category}</span>
         </div>
       </div>
-      <div className="absolute top-[219px] left-[10px] right-[10px] bottom-[10px] bg-white rounded-b-[5px] rounded-t-[3px]" />
-      <div className="absolute left-[32px] right-[18px] top-[234px] z-10">
-        <h3 className="font-[family-name:var(--font-poppins)] font-bold text-[22px] leading-[120%] text-black">
+      <div className="absolute top-[167px] sm:top-[219px] left-[10px] right-[10px] bottom-[10px] bg-white rounded-b-[5px] rounded-t-[3px]" />
+      <div className="absolute left-[32px] right-[18px] top-[179px] sm:top-[234px] z-10">
+        <h3 className="font-[family-name:var(--font-poppins)] font-bold text-[16px] sm:text-[22px] leading-[120%] text-black">
           {titleBefore} <span className="text-[#ed1a24] underline decoration-[#ed1a24]">{titleRed}</span>
         </h3>
       </div>
-      <div className="absolute left-[32px] right-[18px] top-[320px] z-10">
-        <p className="text-[12px] text-[#4b4b4d] leading-[175%] line-clamp-3">{excerpt}</p>
+      <div className="absolute left-[32px] right-[18px] top-[244px] sm:top-[320px] z-10">
+        <p className="text-[9px] sm:text-[12px] text-[#4b4b4d] leading-[175%] line-clamp-3">{excerpt}</p>
       </div>
-      <div className="absolute top-[410px] left-[10px] right-[10px] h-px bg-gray-200 z-10" />
-      <div className="absolute top-[426px] left-[32px] right-[18px] flex items-center justify-between z-10">
-        <span className="text-[9px] font-extrabold tracking-[0.5px] text-black uppercase leading-[150%] w-[55%] line-clamp-2">{tagline}</span>
-        <span className="text-[10px] font-extrabold tracking-[0.6px] text-[#ed1a24] whitespace-nowrap group-hover:underline">Read More →</span>
+      <div className="absolute top-[313px] sm:top-[410px] left-[10px] right-[10px] h-px bg-gray-200 z-10" />
+      <div className="absolute top-[325px] sm:top-[426px] left-[32px] right-[18px] flex items-center justify-between z-10">
+        <span className="text-[6px] sm:text-[9px] font-extrabold tracking-[0.5px] text-black uppercase leading-[150%] w-[55%] line-clamp-2">{tagline}</span>
+        <span className="text-[8px] sm:text-[10px] font-extrabold tracking-[0.6px] text-[#ed1a24] whitespace-nowrap group-hover:underline">Read More →</span>
       </div>
     </Link>
   );
@@ -120,25 +120,25 @@ export default function InsightsClient() {
 
   return (
     <main className="bg-[#fdf8fb]">
-      <section className="relative mx-auto max-w-[1300px] px-5 pt-8">
+      <section className="relative mx-auto max-w-[1300px] px-0 sm:px-5 pt-0 sm:pt-8">
         <div
-          className="relative min-h-[380px] md:min-h-[440px] rounded-[18px] overflow-hidden flex flex-col items-center justify-center text-center px-8"
+          className="relative min-h-[355px] sm:min-h-[380px] md:min-h-[440px] rounded-none sm:rounded-[18px] overflow-hidden flex flex-col items-center justify-center text-center px-5 sm:px-8"
           style={{ backgroundImage: "url('/insights-thumbnails/insight-Hero Banner.png')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}
         >
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-[#2d0a0c]/80" />
-          <div className="relative z-10 flex flex-col items-center gap-6 w-full h-full justify-center">
+            <div className="relative z-10 flex flex-col items-center gap-[16px] sm:gap-6 w-full h-full justify-center">
             <Eyebrow text="INSIGHTS & RESOURCES" />
-            <h1 className="font-[family-name:var(--font-poppins)] font-semibold text-[44px] md:text-[60px] text-white leading-tight">
+              <h1 className="font-[family-name:var(--font-poppins)] font-bold sm:font-semibold text-[24px] sm:text-[44px] md:text-[60px] text-white leading-tight">
               Ideas That Shape the Future<br className="hidden md:block" />of Talent
             </h1>
-            <p className="font-medium text-[18px] md:text-[22px] text-[#d9d9d9] leading-[165%] max-w-[700px]">
+              <p className="font-medium text-[14px] sm:text-[18px] md:text-[22px] text-[#d9d9d9] leading-[165%] max-w-[700px]">
               Get all the latest on all things about Merito and the industry
             </p>
           </div>
         </div>
       </section>
 
-      <section className="max-w-[1300px] mx-auto px-5 py-24 flex flex-col gap-[40px]">
+      <section className="max-w-[1300px] mx-auto px-5 py-[40px] sm:py-24 flex flex-col gap-[20px] sm:gap-[40px]">
         <div className="flex flex-col items-center gap-4"><Eyebrow text="ARTICLES" /></div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]">
           {articles.slice(0, visibleCount).map((a) => <ArticleCard key={a.slug} {...a} />)}
@@ -152,8 +152,8 @@ export default function InsightsClient() {
         )}
       </section>
 
-      <section className="bg-black py-24">
-        <div className="max-w-[1300px] mx-auto px-5 flex flex-col gap-[50px]">
+      <section className="bg-black py-[40px] sm:py-24">
+        <div className="max-w-[1300px] mx-auto px-5 flex flex-col gap-[30px] sm:gap-[50px]">
           <div className="flex flex-col items-center gap-4"><Eyebrow text="PODCAST" /></div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[24px]">
             {podcasts.map((p) => <PodcastCard key={p.slug} {...p} />)}
@@ -161,13 +161,12 @@ export default function InsightsClient() {
         </div>
       </section>
 
-      <section className="max-w-[900px] mx-auto px-5 py-24 flex flex-col items-center gap-[25px] text-center">
-        <h2 className="font-[family-name:var(--font-poppins)] font-semibold text-[32px] text-black">Want insights delivered to you?</h2>
-        <p className="text-[16px] text-[#4b4b4d] leading-[165%]">We write about talent, AI, and the future of hiring. No spam — just signal.</p>
-        <div className="flex gap-3 w-full max-w-[480px]">
-          <input type="email" placeholder="Enter your email" className="flex-1 h-[50px] px-4 rounded-[8px] border border-gray-200 text-[15px] focus:outline-none focus:border-[#ed1a24] bg-white" />
-          <button className="bg-[#ed1a24] text-white font-semibold text-[15px] h-[50px] px-6 rounded-[8px] transition-all duration-200 hover:bg-black hover:text-white active:scale-[0.97] whitespace-nowrap">Subscribe</button>
-        </div>
+      <section className="max-w-[1300px] mx-auto px-5 py-[40px] sm:py-24 flex flex-col items-start sm:items-center gap-[20px] sm:gap-[25px]">
+        <h2 className="font-[family-name:var(--font-poppins)] font-bold sm:font-semibold text-[24px] sm:text-[32px] text-black">Get started with Merito</h2>
+        <p className="text-[12px] sm:text-[16px] text-[#4b4b4d] leading-[165%]">Help us with what you are looking for and our team will get in-touch understand your talent requirements</p>
+        <Link href="/contact" className="w-full sm:w-auto bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[48px] sm:h-[50px] px-[20px] sm:px-8 rounded-[5px] sm:rounded-[8px] flex items-center justify-center transition-all duration-200 hover:bg-black active:scale-[0.97]">
+          Contact us
+        </Link>
       </section>
     </main>
   );
