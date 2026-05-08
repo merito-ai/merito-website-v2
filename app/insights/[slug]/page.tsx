@@ -605,7 +605,7 @@ export default async function InsightPage({
     return (
       <main className="bg-[#fdf8fb] min-h-screen pb-20">
         {/* Hero Section */}
-        <div className="relative w-full h-[450px] overflow-hidden">
+        <div className="relative w-full h-[340px] sm:h-[450px] overflow-hidden">
           <Image
             src={heroImage}
             alt={post.title}
@@ -615,7 +615,7 @@ export default async function InsightPage({
           />
           <div className="absolute inset-0 bg-black/70" />
           
-          <div className="absolute inset-0 flex flex-col items-center pt-24 text-center px-4">
+          <div className="absolute inset-0 flex flex-col items-center pt-12 sm:pt-24 text-center px-4">
             <Link
               href="/insights"
               className="text-white/60 text-[13px] font-bold hover:text-white tracking-[2px] transition-colors"
@@ -627,7 +627,7 @@ export default async function InsightPage({
               PODCAST
             </div>
             
-            <h1 className="mt-6 font-[family-name:var(--font-poppins)] font-bold text-[24px] md:text-[42px] lg:text-[56px] text-white leading-[1.1] max-w-[1000px]">
+            <h1 className="mt-4 sm:mt-6 font-[family-name:var(--font-poppins)] font-bold text-[22px] sm:text-[42px] text-white leading-[1.1] max-w-[1000px]">
               {post.titleBefore}{" "}
               <span className="text-[#ed1a24]">{post.titleRed}</span>
             </h1>
@@ -638,9 +638,9 @@ export default async function InsightPage({
         <div className="max-w-[1100px] mx-auto -mt-24 relative z-10 px-5">
           
           {/* Podcast Player Card */}
-          <div className="bg-white rounded-[24px] shadow-[0px_40px_80px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col md:flex-row min-h-[400px]">
+          <div className="bg-white rounded-[24px] shadow-[0px_40px_80px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col sm:flex-row min-h-[400px]">
             {/* Left: Host Image */}
-            <div className="md:w-[45%] relative h-[300px] md:h-auto overflow-hidden group bg-gray-900">
+            <div className="sm:w-[45%] relative h-[200px] sm:h-auto overflow-hidden group bg-gray-900">
               <Image
                 src="/podcast-host.png"
                 alt="Rushikesh Humbe"
@@ -652,7 +652,7 @@ export default async function InsightPage({
                 <div className="bg-[#ed1a24] px-3 py-1 rounded-[2px] text-[10px] font-bold tracking-[2px] uppercase w-fit mb-3">
                   HOSTED BY RUSHIKESH
                 </div>
-                <h3 className="font-[family-name:var(--font-poppins)] font-bold text-[20px] md:text-[28px] leading-tight">
+                <h3 className="font-[family-name:var(--font-poppins)] font-bold text-[18px] sm:text-[28px] leading-tight">
                   Rushikesh Humbe
                 </h3>
                 <p className="text-[16px] text-white/70 mt-1">Founder, Merito</p>
@@ -669,7 +669,7 @@ export default async function InsightPage({
           </div>
 
           {/* Transcript Content */}
-          <div className="bg-white mt-16 p-[50px] md:p-[80px] rounded-[24px] shadow-[0px_10px_40px_rgba(0,0,0,0.03)] border border-gray-50">
+          <div className="bg-white mt-8 sm:mt-16 p-5 sm:p-[50px] rounded-[24px] shadow-[0px_10px_40px_rgba(0,0,0,0.03)] border border-gray-50">
             <div className="flex items-center gap-4 mb-12">
               <div className="h-px bg-gray-200 flex-1" />
               <span className="text-[12px] font-bold text-gray-400 tracking-[4px] uppercase">TRANSCRIPT</span>
@@ -680,7 +680,7 @@ export default async function InsightPage({
               {post.content.map((para, i) => (
                 <p
                   key={i}
-                  className="font-[family-name:var(--font-poppins)] text-[18px] md:text-[20px] text-[#2d2d2e] leading-[1.8] font-light"
+                  className="font-[family-name:var(--font-poppins)] text-[12px] sm:text-[18px] text-[#2d2d2e] leading-[1.8] font-light"
                 >
                   {para}
                 </p>
@@ -689,10 +689,10 @@ export default async function InsightPage({
 
             {/* Redesigned CTA */}
             <div className="mt-16 pt-16 border-t border-gray-100 flex flex-col items-center text-center">
-              <h3 className="font-[family-name:var(--font-poppins)] font-bold text-[20px] md:text-[32px] text-black uppercase tracking-tight">
+              <h3 className="font-[family-name:var(--font-poppins)] font-bold text-[18px] sm:text-[32px] text-black uppercase tracking-tight">
                 GET STARTED WITH <span className="text-[#ed1a24]">MERITO</span>
               </h3>
-              <p className="text-[16px] text-[#4b4b4d] mt-4 max-w-[600px] leading-relaxed">
+              <p className="text-[12px] sm:text-[16px] text-[#4b4b4d] mt-3 sm:mt-4 max-w-[600px] leading-relaxed">
                 Experience the perfect blend of Artificial Intelligence and Acquired Intelligence in your hiring journey.
               </p>
               <Link
@@ -718,7 +718,7 @@ export default async function InsightPage({
         <div className="h-[6px] bg-[#ed1a24]" />
 
         {/* Hero image */}
-        <div className="relative h-[340px] w-full">
+        <div className="relative h-[200px] sm:h-[340px] w-full">
           <Image
             src={heroImage}
             alt={post.title}
@@ -728,27 +728,27 @@ export default async function InsightPage({
           />
           <div className="absolute inset-0 bg-black/50" />
           {/* Back + category */}
-          <div className="absolute inset-0 flex flex-col justify-between p-8">
+          <div className="absolute inset-0 flex flex-col justify-between p-4 sm:p-8">
             <Link
               href="/insights"
-              className="text-white/70 text-[13px] font-bold hover:text-white tracking-wider w-fit"
+              className="text-white/70 text-[11px] sm:text-[13px] font-bold hover:text-white tracking-wider w-fit"
             >
               ← BACK TO INSIGHTS
             </Link>
             <div className="flex items-center gap-0">
-              <div className="w-[4px] h-[22px] bg-[#ed1a24] mr-3 flex-shrink-0" />
-              <span className="font-bold text-[13px] text-white tracking-[2px] uppercase">{post.category}</span>
+              <div className="w-[3px] sm:w-[4px] h-[16px] sm:h-[22px] bg-[#ed1a24] mr-2 sm:mr-3 flex-shrink-0" />
+              <span className="font-bold text-[11px] sm:text-[13px] text-white tracking-[2px] uppercase">{post.category}</span>
             </div>
           </div>
         </div>
 
         {/* Body */}
-        <div className="px-4 md:px-[60px] py-[30px] md:py-[50px] flex flex-col gap-[40px]">
+        <div className="px-4 sm:px-[60px] py-5 sm:py-[50px] flex flex-col gap-[24px] sm:gap-[40px]">
 
           {/* Title row */}
-          <div className="flex flex-col md:flex-row gap-6 md:gap-[60px] items-start">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-[60px] items-start">
             <div className="flex-1">
-              <h1 className="font-[family-name:var(--font-poppins)] font-bold text-[24px] md:text-[40px] text-black leading-[115%]">
+              <h1 className="font-[family-name:var(--font-poppins)] font-bold text-[20px] sm:text-[40px] text-black leading-[115%]">
                 {post.titleBefore ? (
                   <>
                     {post.titleBefore}{" "}
@@ -757,8 +757,8 @@ export default async function InsightPage({
                 ) : post.title}
               </h1>
             </div>
-            <div className="w-full md:w-[280px] flex-shrink-0 flex flex-col gap-4 pt-2">
-              <p className="text-[15px] text-[#4b4b4d] leading-[160%]">
+            <div className="w-full sm:w-[280px] flex-shrink-0 flex flex-col gap-4 pt-2">
+              <p className="text-[12px] sm:text-[15px] text-[#4b4b4d] leading-[160%]">
                 {post.excerpt ?? post.content[0].slice(0, 120) + "…"}
               </p>
               <div className="h-px bg-[#e0e0e0]" />
@@ -770,16 +770,16 @@ export default async function InsightPage({
 
           {/* Stats row (articles with stats only) */}
           {post.stats && post.stats.length >= 2 && (
-            <div className="flex flex-col md:flex-row gap-5">
+            <div className="flex flex-col sm:flex-row gap-5">
               {/* Left dark card */}
               <div className="bg-[#111] rounded-[12px] flex-1 px-[36px] py-[28px] flex flex-col gap-3">
-                <span className="font-[family-name:var(--font-poppins)] font-bold text-[64px] text-[#ed1a24] leading-none">
+                <span className="font-[family-name:var(--font-poppins)] font-bold text-[40px] sm:text-[64px] text-[#ed1a24] leading-none">
                   {post.stats[0].value}
                 </span>
-                <p className="font-[family-name:var(--font-poppins)] font-bold text-[16px] text-white">
+                <p className="font-[family-name:var(--font-poppins)] font-bold text-[13px] sm:text-[16px] text-white">
                   {post.stats[0].label}
                 </p>
-                <p className="text-[13px] text-white/50 leading-[155%]">
+                <p className="text-[11px] sm:text-[13px] text-white/50 leading-[155%]">
                   AI-powered hiring cuts cost per hire dramatically
                 </p>
               </div>
@@ -795,10 +795,10 @@ export default async function InsightPage({
                 <div className="flex items-center gap-6 w-full">
                   {/* Left half */}
                   <div className="flex flex-col gap-1 flex-1">
-                    <span className="font-[family-name:var(--font-poppins)] font-bold text-[48px] text-black leading-none">
+                    <span className="font-[family-name:var(--font-poppins)] font-bold text-[32px] sm:text-[48px] text-black leading-none">
                       {post.stats[1].value}
                     </span>
-                    <span className="font-bold text-[13px] text-[#4b4b4d] tracking-[1px] uppercase">
+                    <span className="font-bold text-[11px] sm:text-[13px] text-[#4b4b4d] tracking-[1px] uppercase">
                       {post.stats[1].label}
                     </span>
                   </div>
@@ -807,10 +807,10 @@ export default async function InsightPage({
                   {/* Right half */}
                   {post.stats[2] && (
                     <div className="flex flex-col gap-1 flex-1">
-                      <span className="font-[family-name:var(--font-poppins)] font-bold text-[20px] text-black leading-tight">
+                      <span className="font-[family-name:var(--font-poppins)] font-bold text-[16px] sm:text-[20px] text-black leading-tight">
                         {post.stats[2].value}
                       </span>
-                      <span className="font-bold text-[13px] text-[#4b4b4d] tracking-[1px] uppercase">
+                      <span className="font-bold text-[11px] sm:text-[13px] text-[#4b4b4d] tracking-[1px] uppercase">
                         {post.stats[2].label}
                       </span>
                     </div>
@@ -825,7 +825,7 @@ export default async function InsightPage({
             {post.content.map((para, i) => (
               <p
                 key={i}
-                className="font-[family-name:var(--font-poppins)] text-[16px] text-[#4b4b4d] leading-[175%]"
+                className="font-[family-name:var(--font-poppins)] text-[12px] sm:text-[16px] text-[#4b4b4d] leading-[175%]"
               >
                 {para}
               </p>
@@ -833,23 +833,19 @@ export default async function InsightPage({
           </div>
 
           {/* CTA */}
-          <div className="bg-[#fdf8fb] border border-gray-100 rounded-[16px] p-10 flex flex-col items-center gap-5 text-center mt-4">
-            <h3 className="font-[family-name:var(--font-poppins)] font-semibold text-[24px] text-black">
-              Ready to transform your hiring?
+          <div className="flex flex-col items-start sm:items-center gap-[16px] sm:gap-[20px] py-2">
+            <h3 className="font-[family-name:var(--font-poppins)] font-bold sm:font-semibold text-[24px] sm:text-[32px] text-black">
+              Get started with Merito
             </h3>
-            <p className="text-[16px] text-[#4b4b4d] leading-[155%] max-w-[500px]">
-              Talk to a Merito expert and discover how AI-powered precision hiring can work for your team.
+            <p className="text-[10px] sm:text-[16px] text-[#4b4b4d] leading-[155%] sm:max-w-[600px] sm:text-center">
+              Help us with what you are looking for and our team will get in-touch understand your talent requirements
             </p>
-            <div className="flex flex-col items-center gap-3">
-              <ContactTrigger
-                className="bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[50px] px-8 rounded-[8px] flex items-center justify-center transition-all duration-200 hover:bg-black hover:text-white hover:scale-[1.03] hover:shadow-[0_8px_24px_rgba(0,0,0,0.25)] active:scale-[0.97]"
-              >
-                Talk to an Expert
-              </ContactTrigger>
-              <p className="text-[14px] font-medium text-[#6d6f74]/70">
-                No-risk consultation · 100% confidential
-              </p>
-            </div>
+            <Link
+              href="/contact"
+              className="w-full sm:w-auto bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-semibold text-[16px] h-[48px] sm:h-[50px] px-[20px] sm:px-8 rounded-[5px] sm:rounded-[8px] flex items-center justify-center transition-all duration-200 hover:bg-black active:scale-[0.97]"
+            >
+              Contact us
+            </Link>
           </div>
 
         </div>
