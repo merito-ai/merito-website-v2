@@ -225,8 +225,10 @@ export default function ContactForm() {
       {recaptchaEnabled ? (
         <div className="space-y-2">
           {/* Scale down the fixed-300px widget on narrow phones */}
-          <div className="origin-top-left scale-[0.82] sm:scale-100 w-[246px] sm:w-[304px] overflow-hidden">
-            <div ref={recaptchaContainerRef} />
+          <div className="w-[246px] sm:w-[300px] overflow-hidden">
+            <div className="origin-top-left scale-[0.82] sm:scale-100 w-[300px]">
+              <div ref={recaptchaContainerRef} />
+            </div>
           </div>
           {captchaError ? <p className="text-[13px] font-semibold text-[#ed1a24]">{captchaError}</p> : null}
         </div>
