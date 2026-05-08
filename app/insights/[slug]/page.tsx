@@ -878,7 +878,7 @@ export default async function InsightPage({
         <div className="sm:hidden">
 
           {/* Circle back button */}
-          <div className="px-4 pt-4 pb-2">
+          <div className="px-4 pt-4 pb-4">
             <Link
               href="/insights"
               aria-label="Back to Insights"
@@ -888,36 +888,15 @@ export default async function InsightPage({
             </Link>
           </div>
 
-          {/* White card */}
-          <div className="mx-4 bg-white shadow-[0px_4px_24px_rgba(0,0,0,0.10)] rounded-b-[16px] overflow-hidden">
-            {/* Red top bar */}
-            <div className="h-[6px] bg-[#ed1a24]" />
-
-            {/* Short hero image */}
-            <div className="relative h-[130px] w-full overflow-hidden">
-              <Image src={heroImage} alt={post.title} fill className="object-cover" priority />
-              <div className="absolute inset-0 bg-black/30" />
-            </div>
-
-            {/* Category + Title below hero on white */}
-            <div className="px-4 pt-4 pb-5">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-[3px] h-[16px] bg-[#ed1a24] flex-shrink-0" />
-                <span className="font-bold text-[11px] text-[#4b4b4d] tracking-[2px] uppercase">PODCAST</span>
-              </div>
-              <h1 className="font-[family-name:var(--font-poppins)] font-bold text-[20px] text-black leading-[115%]">
-                {post.titleBefore}{" "}
-                <span className="text-[#ed1a24] underline decoration-[#ed1a24]">{post.titleRed}</span>
-              </h1>
-            </div>
-
-            {/* Player — full width, no host image on mobile */}
+          {/* Spotify-style player card */}
+          <div className="mx-4">
             <PodcastPlayer
               audioSrc={audioSrc}
               episode={post.episode ?? ""}
               date={post.date}
               title={post.title}
               duration={post.duration ?? ""}
+              hostImage="/podcast-host.png"
             />
           </div>
 
