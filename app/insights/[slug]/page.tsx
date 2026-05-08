@@ -872,62 +872,46 @@ export default async function InsightPage({
   // PODCAST LAYOUT
   if (post.type === "podcast") {
     return (
-      <main className="bg-[#fdf8fb] min-h-screen pb-20">
-        {/* Hero Section */}
-        <div className="relative w-full h-[340px] sm:h-[450px] overflow-hidden">
-          <Image
-            src={heroImage}
-            alt={post.title}
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-black/70" />
-          
-          <div className="absolute inset-0 flex flex-col items-center pt-12 sm:pt-24 text-center px-4">
+      <main className="bg-[#f5f5f5] sm:bg-[#fdf8fb] min-h-screen pb-20">
+
+        {/* ── MOBILE LAYOUT (hidden on sm+) ── */}
+        <div className="sm:hidden">
+
+          {/* Circle back button */}
+          <div className="px-4 pt-4 pb-2">
             <Link
               href="/insights"
-              className="text-white/60 text-[13px] font-bold hover:text-white tracking-[2px] transition-colors"
+              aria-label="Back to Insights"
+              className="w-9 h-9 rounded-full bg-black flex items-center justify-center text-white text-[14px] hover:bg-[#ed1a24] transition-colors"
             >
-              ← BACK TO INSIGHTS
+              ←
             </Link>
-            
-            <div className="mt-6 bg-[#ed1a24] text-white text-[11px] font-bold px-3 py-1 rounded-[2px] tracking-[2px] uppercase">
-              PODCAST
-            </div>
-            
-            <h1 className="mt-4 sm:mt-6 font-[family-name:var(--font-poppins)] font-bold text-[22px] sm:text-[42px] text-white leading-[1.1] max-w-[1000px]">
-              {post.titleBefore}{" "}
-              <span className="text-[#ed1a24]">{post.titleRed}</span>
-            </h1>
           </div>
-        </div>
 
-        {/* Content Area */}
-        <div className="max-w-[1100px] mx-auto -mt-24 relative z-10 px-5">
-          
-          {/* Podcast Player Card */}
-          <div className="bg-white rounded-[24px] shadow-[0px_40px_80px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col sm:flex-row min-h-[400px]">
-            {/* Left: Host Image */}
-            <div className="sm:w-[45%] relative h-[200px] sm:h-auto overflow-hidden group bg-gray-900">
-              <Image
-                src="/podcast-host.png"
-                alt="Rushikesh Humbe"
-                fill
-                className="object-cover transition-all duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-              <div className="absolute bottom-10 left-10 text-white">
-                <div className="bg-[#ed1a24] px-3 py-1 rounded-[2px] text-[10px] font-bold tracking-[2px] uppercase w-fit mb-3">
-                  HOSTED BY RUSHIKESH
-                </div>
-                <h3 className="font-[family-name:var(--font-poppins)] font-bold text-[18px] sm:text-[28px] leading-tight">
-                  Rushikesh Humbe
-                </h3>
-                <p className="text-[16px] text-white/70 mt-1">Founder, Merito</p>
-              </div>
+          {/* White card */}
+          <div className="mx-4 bg-white shadow-[0px_4px_24px_rgba(0,0,0,0.10)] rounded-b-[16px] overflow-hidden">
+            {/* Red top bar */}
+            <div className="h-[6px] bg-[#ed1a24]" />
+
+            {/* Short hero image */}
+            <div className="relative h-[130px] w-full overflow-hidden">
+              <Image src={heroImage} alt={post.title} fill className="object-cover" priority />
+              <div className="absolute inset-0 bg-black/30" />
             </div>
 
+            {/* Category + Title below hero on white */}
+            <div className="px-4 pt-4 pb-5">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-[3px] h-[16px] bg-[#ed1a24] flex-shrink-0" />
+                <span className="font-bold text-[11px] text-[#4b4b4d] tracking-[2px] uppercase">PODCAST</span>
+              </div>
+              <h1 className="font-[family-name:var(--font-poppins)] font-bold text-[20px] text-black leading-[115%]">
+                {post.titleBefore}{" "}
+                <span className="text-[#ed1a24] underline decoration-[#ed1a24]">{post.titleRed}</span>
+              </h1>
+            </div>
+
+            {/* Player — full width, no host image on mobile */}
             <PodcastPlayer
               audioSrc={audioSrc}
               episode={post.episode ?? ""}
@@ -937,44 +921,131 @@ export default async function InsightPage({
             />
           </div>
 
-          {/* Transcript Content */}
-          <div className="bg-white mt-8 sm:mt-16 p-5 sm:p-[50px] rounded-[24px] shadow-[0px_10px_40px_rgba(0,0,0,0.03)] border border-gray-50">
-            <div className="flex items-center gap-4 mb-12">
+          {/* Transcript card */}
+          <div className="mx-4 mt-4 bg-white rounded-[16px] shadow-[0px_4px_12px_rgba(0,0,0,0.06)] p-5">
+            <div className="flex items-center gap-4 mb-8">
               <div className="h-px bg-gray-200 flex-1" />
-              <span className="text-[12px] font-bold text-gray-400 tracking-[4px] uppercase">TRANSCRIPT</span>
+              <span className="text-[11px] font-bold text-gray-400 tracking-[4px] uppercase">TRANSCRIPT</span>
               <div className="h-px bg-gray-200 flex-1" />
             </div>
-            
-            <div className="flex flex-col gap-10">
-              {post.content.map((item, i) => (
+            <div className="flex flex-col gap-8">
+              {post.content.map((item, i) =>
                 typeof item === "string" ? (
-                  <p
-                    key={i}
-                    className="font-[family-name:var(--font-poppins)] text-[12px] sm:text-[18px] text-[#2d2d2e] leading-[1.8] font-light"
-                  >
+                  <p key={i} className="font-[family-name:var(--font-poppins)] text-[12px] text-[#2d2d2e] leading-[1.8] font-light">
                     {item}
                   </p>
                 ) : null
-              ))}
+              )}
+            </div>
+          </div>
+
+          {/* Mobile CTA */}
+          <div className="mx-4 mt-6 mb-8 flex flex-col items-center text-center">
+            <h3 className="font-[family-name:var(--font-poppins)] font-bold text-[16px] text-black uppercase tracking-tight">
+              GET STARTED WITH <span className="text-[#ed1a24]">MERITO</span>
+            </h3>
+            <Link
+              href="/contact"
+              className="mt-4 bg-[#ed1a24] text-white font-bold text-[12px] tracking-[2px] px-8 py-3 rounded-full hover:bg-black transition-all duration-200 shadow-lg"
+            >
+              LET&apos;S CONNECT
+            </Link>
+          </div>
+        </div>
+
+        {/* ── DESKTOP LAYOUT (hidden on mobile) ── */}
+        <div className="hidden sm:block">
+
+          {/* Hero Section */}
+          <div className="relative w-full sm:h-[450px] overflow-hidden">
+            <Image src={heroImage} alt={post.title} fill className="object-cover" priority />
+            <div className="absolute inset-0 bg-black/70" />
+            <div className="absolute inset-0 flex flex-col items-center pt-24 text-center px-4">
+              <Link
+                href="/insights"
+                className="text-white/60 text-[13px] font-bold hover:text-white tracking-[2px] transition-colors"
+              >
+                ← BACK TO INSIGHTS
+              </Link>
+              <div className="mt-6 bg-[#ed1a24] text-white text-[11px] font-bold px-3 py-1 rounded-[2px] tracking-[2px] uppercase">
+                PODCAST
+              </div>
+              <h1 className="mt-6 font-[family-name:var(--font-poppins)] font-bold text-[42px] text-white leading-[1.1] max-w-[1000px]">
+                {post.titleBefore}{" "}
+                <span className="text-[#ed1a24]">{post.titleRed}</span>
+              </h1>
+            </div>
+          </div>
+
+          {/* Content Area */}
+          <div className="max-w-[1100px] mx-auto -mt-24 relative z-10 px-5">
+
+            {/* Podcast Player Card */}
+            <div className="bg-white rounded-[24px] shadow-[0px_40px_80px_rgba(0,0,0,0.3)] overflow-hidden flex sm:flex-row min-h-[400px]">
+              {/* Left: Host Image */}
+              <div className="sm:w-[45%] relative overflow-hidden bg-gray-900">
+                <Image
+                  src="/podcast-host.png"
+                  alt="Rushikesh Humbe"
+                  fill
+                  className="object-cover transition-all duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                <div className="absolute bottom-10 left-10 text-white">
+                  <div className="bg-[#ed1a24] px-3 py-1 rounded-[2px] text-[10px] font-bold tracking-[2px] uppercase w-fit mb-3">
+                    HOSTED BY RUSHIKESH
+                  </div>
+                  <h3 className="font-[family-name:var(--font-poppins)] font-bold text-[28px] leading-tight">
+                    Rushikesh Humbe
+                  </h3>
+                  <p className="text-[16px] text-white/70 mt-1">Founder, Merito</p>
+                </div>
+              </div>
+
+              <PodcastPlayer
+                audioSrc={audioSrc}
+                episode={post.episode ?? ""}
+                date={post.date}
+                title={post.title}
+                duration={post.duration ?? ""}
+              />
             </div>
 
-            {/* Redesigned CTA */}
-            <div className="mt-16 pt-16 border-t border-gray-100 flex flex-col items-center text-center">
-              <h3 className="font-[family-name:var(--font-poppins)] font-bold text-[18px] sm:text-[32px] text-black uppercase tracking-tight">
-                GET STARTED WITH <span className="text-[#ed1a24]">MERITO</span>
-              </h3>
-              <p className="text-[12px] sm:text-[16px] text-[#4b4b4d] mt-3 sm:mt-4 max-w-[600px] leading-relaxed">
-                Experience the perfect blend of Artificial Intelligence and Acquired Intelligence in your hiring journey.
-              </p>
-              <Link
-                href="/contact"
-                className="mt-8 bg-[#ed1a24] text-white font-bold text-[14px] tracking-[2px] px-10 py-4 rounded-full hover:bg-black hover:text-white hover:scale-[1.03] hover:shadow-[0_8px_24px_rgba(0,0,0,0.25)] active:scale-[0.97] transition-all duration-200 shadow-xl"
-              >
-                LET&apos;S CONNECT
-              </Link>
+            {/* Transcript Content */}
+            <div className="bg-white mt-16 p-[50px] rounded-[24px] shadow-[0px_10px_40px_rgba(0,0,0,0.03)] border border-gray-50">
+              <div className="flex items-center gap-4 mb-12">
+                <div className="h-px bg-gray-200 flex-1" />
+                <span className="text-[12px] font-bold text-gray-400 tracking-[4px] uppercase">TRANSCRIPT</span>
+                <div className="h-px bg-gray-200 flex-1" />
+              </div>
+              <div className="flex flex-col gap-10">
+                {post.content.map((item, i) =>
+                  typeof item === "string" ? (
+                    <p key={i} className="font-[family-name:var(--font-poppins)] text-[18px] text-[#2d2d2e] leading-[1.8] font-light">
+                      {item}
+                    </p>
+                  ) : null
+                )}
+              </div>
+              {/* Desktop CTA */}
+              <div className="mt-16 pt-16 border-t border-gray-100 flex flex-col items-center text-center">
+                <h3 className="font-[family-name:var(--font-poppins)] font-bold text-[32px] text-black uppercase tracking-tight">
+                  GET STARTED WITH <span className="text-[#ed1a24]">MERITO</span>
+                </h3>
+                <p className="text-[16px] text-[#4b4b4d] mt-4 max-w-[600px] leading-relaxed">
+                  Experience the perfect blend of Artificial Intelligence and Acquired Intelligence in your hiring journey.
+                </p>
+                <Link
+                  href="/contact"
+                  className="mt-8 bg-[#ed1a24] text-white font-bold text-[14px] tracking-[2px] px-10 py-4 rounded-full hover:bg-black hover:text-white hover:scale-[1.03] hover:shadow-[0_8px_24px_rgba(0,0,0,0.25)] active:scale-[0.97] transition-all duration-200 shadow-xl"
+                >
+                  LET&apos;S CONNECT
+                </Link>
+              </div>
             </div>
           </div>
         </div>
+
       </main>
     );
   }

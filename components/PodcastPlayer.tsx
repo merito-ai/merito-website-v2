@@ -57,7 +57,7 @@ export default function PodcastPlayer({ audioSrc, episode, date, title, duration
   const displayDuration = audioDuration ? formatTime(audioDuration) : duration;
 
   return (
-    <div className="md:w-[55%] bg-[#ed1a24] p-10 md:p-12 flex flex-col justify-between text-white relative overflow-hidden">
+    <div className="sm:w-[55%] bg-[#ed1a24] p-6 sm:p-12 flex flex-col justify-between text-white relative overflow-hidden">
       <style>{`
         @keyframes bar-pulse {
           0%, 100% { transform: scaleY(0.35); }
@@ -77,7 +77,7 @@ export default function PodcastPlayer({ audioSrc, episode, date, title, duration
           <span>{episode}</span>
           {date && <><span className="w-1 h-1 rounded-full bg-white/40" /><span>{date}</span></>}
         </div>
-        <h2 className="font-[family-name:var(--font-gabarito)] font-bold text-[30px] md:text-[36px] mt-4 leading-[1.1] tracking-tight">
+        <h2 className="font-[family-name:var(--font-gabarito)] font-bold text-[22px] sm:text-[36px] mt-3 sm:mt-4 leading-[1.1] tracking-tight">
           {title}
         </h2>
         <p className="mt-3 text-white/55 text-[14px] leading-relaxed max-w-[360px]">
