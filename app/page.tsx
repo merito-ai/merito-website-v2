@@ -1333,7 +1333,7 @@ function PerformanceSection() {
             as="article"
             className="relative rounded-[15px] sm:rounded-[24px] border border-[#f3d6d8] bg-white px-4 sm:px-8 py-6 sm:py-8 shadow-[0_20px_60px_rgba(17,35,89,0.06)]"
           >
-            <h3 className="flex h-9 sm:h-12 items-center text-[20px] sm:text-[21px] font-bold text-black leading-tight mb-5 sm:mb-8">
+            <h3 className="flex h-9 sm:h-12 items-center justify-center text-[20px] sm:text-[21px] font-bold text-black leading-tight mb-5 sm:mb-8">
               Traditional Agencies
             </h3>
             <div className="mx-auto grid w-fit gap-0 sm:mx-0 sm:w-auto">
@@ -1360,7 +1360,7 @@ function PerformanceSection() {
             as="article"
             className="relative overflow-hidden rounded-[15px] sm:rounded-[24px] border border-[#d6f7e1] bg-white px-4 sm:px-8 py-6 sm:py-8 shadow-[0_20px_60px_rgba(17,35,89,0.06)]"
           >
-            <h3 className="flex h-9 sm:h-12 items-center text-[20px] sm:text-[22px] font-bold text-black tracking-tight mb-5 sm:mb-8">
+            <h3 className="flex h-9 sm:h-12 items-center justify-center text-[20px] sm:text-[22px] font-bold text-black tracking-tight mb-5 sm:mb-8">
               MERITO WAY
             </h3>
             <div className="mx-auto grid w-fit gap-0 sm:mx-0 sm:w-auto">
