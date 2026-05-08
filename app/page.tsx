@@ -560,60 +560,32 @@ function SocialProofSection() {
 
         </div>
 
-        {/* Mobile: horizontal snap-scroll testimonials. Desktop: horizontal marquee */}
-        <div className="-mx-4 mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:hidden [&::-webkit-scrollbar]:hidden">
+        {/* Auto-animating testimonial marquee — mobile & desktop */}
+        <Marquee speed={40}>
           {smallTestimonials.map((testimonial) => (
             <article
               key={testimonial.name}
-              className="flex w-[280px] shrink-0 snap-start flex-col rounded-[15px] border border-black/8 bg-white px-4 py-4 shadow-[0_10px_30px_rgba(17,35,89,0.04)]"
+              className="flex w-[245px] sm:w-[300px] shrink-0 flex-col rounded-[8px] border border-[#d9d9d9] bg-white px-[17px] py-[22px]"
             >
-              <p className="text-[12px] italic leading-[1.65] text-[#55565a]">
+              <p className="text-[12px] font-semibold italic leading-[1.47] text-[#4b4b4d]">
                 &ldquo;{testimonial.quote}&rdquo;
               </p>
-              <div className="mt-auto pt-4 flex items-center gap-3">
+              <div className="mt-auto pt-6 flex items-center gap-[10px]">
                 <span
-                  className={`inline-flex size-8 shrink-0 items-center justify-center rounded-full text-[12px] font-semibold text-white ${testimonial.color}`}
+                  className={`inline-flex size-[34px] shrink-0 items-center justify-center rounded-full text-[13px] font-semibold text-white ${testimonial.color}`}
                 >
                   {testimonial.initials}
                 </span>
                 <div>
-                  <p className="text-[14px] font-semibold text-[#35353a] leading-tight">
+                  <p className="text-[13px] font-semibold text-[#4b4b4d] leading-tight">
                     {testimonial.name}
                   </p>
-                  <p className="text-[11px] text-[#6d6f74] mt-0.5">{testimonial.role}</p>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-
-        <div className="hidden sm:block">
-        <Marquee speed={60}>
-          {smallTestimonials.map((testimonial) => (
-            <article
-              key={testimonial.name}
-              className="flex w-[340px] min-h-[220px] flex-col shrink-0 rounded-[18px] border border-black/8 bg-white px-5 py-6 shadow-[0_18px_50px_rgba(17,35,89,0.04)]"
-            >
-              <p className="text-[15px] leading-[1.85] text-[#55565a]">
-                &ldquo;{testimonial.quote}&rdquo;
-              </p>
-              <div className="mt-auto pt-6 flex items-center gap-3">
-                <span
-                  className={`inline-flex size-9 items-center justify-center rounded-full text-[13px] font-semibold text-white ${testimonial.color}`}
-                >
-                  {testimonial.initials}
-                </span>
-                <div>
-                  <p className="text-[16px] font-semibold text-[#35353a] leading-tight">
-                    {testimonial.name}
-                  </p>
-                  <p className="text-[13px] text-[#6d6f74] mt-0.5">{testimonial.role}</p>
+                  <p className="text-[12px] text-[#4b4b4d] mt-[3px]">{testimonial.role}</p>
                 </div>
               </div>
             </article>
           ))}
         </Marquee>
-        </div>
       </Container>
     </section>
   );
@@ -1338,16 +1310,16 @@ function PerformanceSection() {
           {/* Card 1: Metric Labels */}
           <StaggerItem
             as="article"
-            className="rounded-[15px] sm:rounded-[24px] border border-black/8 bg-white px-4 sm:px-8 py-4 sm:py-8 shadow-[0_20px_60px_rgba(17,35,89,0.06)]"
+            className="rounded-[15px] sm:rounded-[24px] border border-black/8 bg-white px-4 sm:px-8 py-6 sm:py-8 shadow-[0_20px_60px_rgba(17,35,89,0.06)]"
           >
-            <h3 className="flex h-9 sm:h-12 items-center justify-center text-[14px] sm:text-[22px] font-semibold text-black mb-4 sm:mb-8">Metric</h3>
+            <h3 className="flex h-9 sm:h-12 items-center justify-center text-[20px] sm:text-[22px] font-bold text-black mb-5 sm:mb-8">Metric</h3>
             <div className="mx-auto grid w-fit gap-0 sm:mx-0 sm:w-auto">
               {performanceMetrics.map((metric) => (
-                <div key={metric.label} className="flex h-10 sm:h-14 items-center gap-3 sm:gap-4">
-                  <span className="flex size-5 sm:size-6 items-center justify-center text-[#35353a]">
+                <div key={metric.label} className="flex h-11 sm:h-14 items-center gap-4">
+                  <span className="flex size-7 sm:size-6 shrink-0 items-center justify-center text-[#35353a]">
                     {metric.icon}
                   </span>
-                  <span className="text-[12px] sm:text-[16px] font-semibold text-[#35353a] whitespace-nowrap">
+                  <span className="text-[13px] sm:text-[16px] font-semibold text-[#35353a] whitespace-nowrap">
                     {metric.label}
                   </span>
                 </div>
@@ -1358,64 +1330,57 @@ function PerformanceSection() {
           {/* Card 2: Traditional Agencies */}
           <StaggerItem
             as="article"
-            className="rounded-[15px] sm:rounded-[24px] border border-[#f3d6d8] bg-white px-4 sm:px-8 py-4 sm:py-8 shadow-[0_20px_60px_rgba(17,35,89,0.06)]"
+            className="relative rounded-[15px] sm:rounded-[24px] border border-[#f3d6d8] bg-white px-4 sm:px-8 py-6 sm:py-8 shadow-[0_20px_60px_rgba(17,35,89,0.06)]"
           >
-            <div className="flex h-9 sm:h-12 items-center justify-between gap-3 mb-4 sm:mb-8">
-              <h3 className="text-[14px] sm:text-[21px] font-semibold text-black leading-tight">
-                Traditional Agencies
-              </h3>
-              <span className="rounded-full bg-[#fff3f4] px-2 sm:px-3 py-0.5 sm:py-1 text-[9px] sm:text-[11px] font-bold text-[#ff8087]">
-                OLD
-              </span>
-            </div>
+            <h3 className="flex h-9 sm:h-12 items-center text-[20px] sm:text-[21px] font-bold text-black leading-tight mb-5 sm:mb-8">
+              Traditional Agencies
+            </h3>
             <div className="mx-auto grid w-fit gap-0 sm:mx-0 sm:w-auto">
               {performanceMetrics.map((metric) => (
-                <div key={metric.label} className="flex h-10 sm:h-14 items-center gap-3 sm:gap-4">
-                  <span className="flex size-5 sm:size-6 shrink-0 items-center justify-center rounded-full border border-[#f3d6d8] text-[14px] font-bold text-[#ed1a24]">
-                    <svg className="size-2.5 sm:size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4">
+                <div key={metric.label} className="flex h-11 sm:h-14 items-center gap-4">
+                  <span className="flex size-7 sm:size-6 shrink-0 items-center justify-center rounded-full border border-[#f3d6d8] text-[14px] font-bold text-[#ed1a24]">
+                    <svg className="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4">
                       <path d="M18 6L6 18M6 6l12 12" />
                     </svg>
                   </span>
-                  <span className="text-[12px] sm:text-[17px] font-bold text-[#4b4b4d]">
+                  <span className="text-[13px] sm:text-[17px] font-bold text-[#4b4b4d]">
                     {metric.traditional}
                   </span>
                 </div>
               ))}
             </div>
+            <span className="absolute bottom-4 right-4 rounded-full bg-[#fff3f4] px-3 py-1 text-[10px] font-bold text-[#ff8087]">
+              OLD
+            </span>
           </StaggerItem>
 
           {/* Card 3: Merito Way */}
           <StaggerItem
             as="article"
-            className="relative overflow-hidden rounded-[15px] sm:rounded-[24px] border border-[#d6f7e1] bg-white px-4 sm:px-8 py-4 sm:py-8 shadow-[0_20px_60px_rgba(17,35,89,0.06)]"
+            className="relative overflow-hidden rounded-[15px] sm:rounded-[24px] border border-[#d6f7e1] bg-white px-4 sm:px-8 py-6 sm:py-8 shadow-[0_20px_60px_rgba(17,35,89,0.06)]"
           >
-            <div className="flex h-9 sm:h-12 items-center justify-between gap-3 mb-4 sm:mb-8">
-              <h3 className="text-[14px] sm:text-[22px] font-semibold text-black tracking-tight">
-                MERITO WAY
-              </h3>
-              <span className="rounded-full bg-[#eefdf1] px-2 sm:px-3 py-0.5 sm:py-1 text-[9px] sm:text-[11px] font-bold text-[#40d36f]">
-                NEW
-              </span>
-            </div>
+            <h3 className="flex h-9 sm:h-12 items-center text-[20px] sm:text-[22px] font-bold text-black tracking-tight mb-5 sm:mb-8">
+              MERITO WAY
+            </h3>
             <div className="mx-auto grid w-fit gap-0 sm:mx-0 sm:w-auto">
               {performanceMetrics.map((metric) => (
-                <div key={metric.label} className="flex h-10 sm:h-14 items-center gap-3 sm:gap-4">
-                  <span className="flex size-5 sm:size-6 shrink-0 items-center justify-center rounded-full border border-[#40d36f]/30 text-[#40d36f]">
-                    <svg className="size-3 sm:size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4">
+                <div key={metric.label} className="flex h-11 sm:h-14 items-center gap-4">
+                  <span className="flex size-7 sm:size-6 shrink-0 items-center justify-center rounded-full border border-[#40d36f]/30 text-[#40d36f]">
+                    <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                   </span>
-                  <div className="flex items-center gap-1.5 sm:gap-2">
-                    <span className="text-[12px] sm:text-[17px] font-bold text-black">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[13px] sm:text-[17px] font-bold text-black">
                       {metric.merito}
                     </span>
                     {metric.change && (
-                      <span className="flex items-center text-[11px] sm:text-[14px] font-bold text-[#40d36f] whitespace-nowrap">
+                      <span className="flex items-center text-[12px] sm:text-[14px] font-bold text-[#40d36f] whitespace-nowrap">
                         {metric.trend === 'down' ? '↓' : '↑'}{metric.change}
                       </span>
                     )}
                     {!metric.change && (
-                      <span className="text-[11px] sm:text-[14px] font-bold text-[#40d36f]">
+                      <span className="text-[12px] sm:text-[14px] font-bold text-[#40d36f]">
                         ↑
                       </span>
                     )}
@@ -1423,9 +1388,11 @@ function PerformanceSection() {
                 </div>
               ))}
             </div>
-
+            <span className="absolute bottom-4 right-4 z-10 rounded-full bg-[#eefdf1] px-3 py-1 text-[10px] font-bold text-[#40d36f]">
+              New
+            </span>
             {/* Accent corner */}
-            <div className="absolute -bottom-1 -right-1 size-24 translate-x-4 translate-y-4 rounded-full bg-[#16a34a]/10 sm:block" />
+            <div className="absolute -bottom-1 -right-1 size-24 translate-x-4 translate-y-4 rounded-full bg-[#16a34a]/10" />
             <div className="absolute bottom-0 right-0 h-16 w-16 overflow-hidden">
                <div className="absolute bottom-0 right-0 h-0 w-0 border-b-[60px] border-l-[60px] border-b-[#16a34a] border-l-transparent" />
                <div className="absolute bottom-0 right-0 h-0 w-0 border-b-[40px] border-l-[40px] border-b-[#40d36f] border-l-transparent" />
