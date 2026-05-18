@@ -71,9 +71,6 @@ export const metadata: Metadata = {
   },
 };
 
-import { ContactModalProvider } from "@/context/ContactModalContext";
-import ContactModal from "@/components/ContactModal";
-import FloatingContactButton from "@/components/FloatingContactButton";
 
 export default function RootLayout({
   children,
@@ -195,14 +192,10 @@ export default function RootLayout({
             style={{ display: "none", visibility: "hidden" }}
           />
         </noscript>
-        <ContactModalProvider>
-          <Navbar />
+        <Navbar />
           <ClientAnalytics />
-          <ContactModal />
-          <FloatingContactButton />
           {children}
           <Footer />
-        </ContactModalProvider>
       </body>
     </html>
   );
