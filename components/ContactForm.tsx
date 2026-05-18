@@ -71,6 +71,23 @@ export default function ContactForm() {
       if (res.ok) {
         form.reset();
         window.grecaptcha?.reset?.(widgetIdRef.current ?? undefined);
+        try {
+          const w = window as any;
+          if (w.$zoho?.salesiq?.visitor) {
+            const v = w.$zoho.salesiq.visitor;
+            const fullName = `${String(formData.get("firstName") ?? "")} ${String(formData.get("lastName") ?? "")}`.trim();
+            const visitorEmail = String(formData.get("email") ?? "");
+            const phone = String(formData.get("phone") ?? "");
+            const departments = String(formData.get("departments") ?? "");
+            if (fullName) v.name(fullName);
+            if (visitorEmail) v.email(visitorEmail);
+            v.info({
+              ...(phone ? { "Phone": phone } : {}),
+              ...(departments ? { "Departments": departments } : {}),
+              "Lead Source": "Contact Form",
+            });
+          }
+        } catch { /* never block form success if SalesIQ call fails */ }
         setStatus("success");
       } else {
         let errMsg = "Something went wrong. Please try again.";
