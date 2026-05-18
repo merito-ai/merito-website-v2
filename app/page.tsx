@@ -17,7 +17,6 @@ import {
   TypingDots,
 } from "@/components/anim/MicroAnims";
 import VideoPlayer from "@/components/VideoPlayer";
-import { useContactModal } from "@/context/ContactModalContext";
 
 type Metric = {
   label: string;
@@ -1440,7 +1439,6 @@ function FAQSection() {
 }
 
 function CTASection() {
-  const { openContact } = useContactModal();
   return (
     <section className="bg-white py-12 text-left sm:text-center">
       <Container className="max-w-[880px]">
@@ -1460,12 +1458,12 @@ function CTASection() {
             can integrate with your team for immediate impact.
           </p>
           <div className="flex flex-col items-stretch sm:items-center gap-3">
-            <button
-              onClick={openContact}
+            <Link
+              href="/contact"
               className="mt-5 sm:mt-9 inline-flex w-full sm:w-auto min-h-[48px] sm:min-h-[56px] items-center justify-center rounded-[10px] bg-[#ed1a24] px-6 sm:px-9 text-[16px] sm:text-[18px] font-semibold text-white shadow-[0_10px_30px_rgba(237,26,36,0.25)] transition-all duration-200 hover:scale-[1.03] hover:bg-black hover:text-white hover:shadow-[0_18px_40px_rgba(0,0,0,0.3)] active:scale-[0.97]"
             >
               Talk to an Expert
-            </button>
+            </Link>
             <p className="text-center sm:text-left text-[12px] sm:text-[14px] font-medium text-[#52545b]/80">
               No-risk consultation · Confidential discussion
             </p>
