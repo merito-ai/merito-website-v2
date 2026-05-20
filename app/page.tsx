@@ -17,6 +17,8 @@ import {
   TypingDots,
 } from "@/components/anim/MicroAnims";
 import VideoPlayer from "@/components/VideoPlayer";
+import AgentsSection from "@/components/sections/AgentsSection";
+import TalentEquationSection from "@/components/sections/TalentEquationSection";
 
 type Metric = {
   label: string;
@@ -66,7 +68,7 @@ const misconceptionPairs = [
   },
   {
     icon: "/figma-exports/mdi_search.png",
-    myth: "High-volume manual outreach",
+    myth: "High Volume Manual Outreach Help You Hire Faster",
     reality:
       "Manual sourcing can't keep up with modern business. We use a Skill-based Hiring Platform to match specific competencies to your job brief, reaching the 1% who aren't even looking at job boards.",
   },
@@ -500,9 +502,8 @@ function MisconceptionSection() {
             <span className="text-[#ed1a24]">Your recruitment approach is.</span>
           </h2>
           <p className="mt-4 sm:mt-5 max-w-[920px] text-[12px] sm:text-[17px] font-medium leading-[1.55] sm:leading-[1.75] text-[#5f5f61]">
-            Most B2B SaaS teams pour budget into campaigns that look active but
-            generate nothing. Here&apos;s why. Most growth companies invest heavily
-            in recruiters and paid tools however fail to hire quality talent.
+            Most growth companies invest heavily in recruiters and paid tools
+            however fail to hire quality talent.
           </p>
         </div>
 
@@ -529,7 +530,7 @@ function SocialProofSection() {
     <section id="proof" className="bg-white py-8 sm:py-12">
       <Container>
         <div className="text-left sm:text-center">
-          <SectionPill text="THE REAL PROBLEM" />
+          <SectionPill text="REAL IMPACT" />
           <h2 className="mx-auto mt-4 sm:mt-8 max-w-[620px] font-[family-name:var(--font-gabarito)] text-[22px] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.15rem]">
             Don&apos;t take our word for it.{" "}
             <span className="text-[#ed1a24]">Take theirs.</span>
@@ -729,7 +730,7 @@ function FullFunnelSection() {
     <section id="tools" className="bg-white py-12">
       <Container>
         <div className="text-center">
-          <SectionPill text="THE FULL-FUNNEL SOLUTION" />
+          <SectionPill text="RAMP - End to End Platform" />
           <h2 className="mx-auto mt-8 max-w-[860px] font-[family-name:var(--font-gabarito)] text-[22px] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.1rem]">
             Streamline Your Executive Search by Leveraging a{" "}
             <span className="text-[#ed1a24]">Skill-based Hiring Platform</span>
@@ -1230,58 +1231,6 @@ function PropTechSection() {
   );
 }
 
-function TalentEquationSection() {
-  return (
-    <section className="bg-white py-12">
-      <Container>
-        <div className="text-center">
-          <SectionPill text="THE TALENT EQUATION" />
-          <h2 className="mx-auto mt-8 max-w-[790px] font-[family-name:var(--font-gabarito)] text-[22px] font-semibold leading-[1.08] tracking-[-0.035em] text-black sm:text-[3.05rem]">
-            The New Math of Hiring:{" "}
-            <span className="text-[#ed1a24]">
-              Artificial + Acquired Intelligence.
-            </span>
-          </h2>
-          <p className="mx-auto mt-4 sm:mt-5 max-w-[820px] text-[12px] sm:text-[18px] leading-[1.55] sm:leading-[1.7] text-[#5f6166]">
-            Merito combines global-scale AI with deep-rooted human insight to
-            deliver the precision a standard recruitment agency can&apos;t match.
-          </p>
-        </div>
-
-        <StaggerGroup className="mt-8 sm:mt-14 grid gap-4 sm:gap-6 lg:grid-cols-2" stagger={0.15}>
-          {[
-            {
-              tag: "AI - Artificial Intelligence - Recruitment Efficiency",
-              title: "Technology that automates the recruitment grind",
-              body: "Our AI recruitment agency engine eliminates administrative lag by optimizing JD reach and automating multi-platform sourcing across India. We use a Skill-based Hiring Platform to filter for high-intent talent, ensuring your pipeline is built on performance rather than just resume keywords.",
-            },
-            {
-              tag: "AI - Acquired Intelligence - Recruitment Effectiveness",
-              title: "Human insight that predicts the right hire",
-              body: "Our senior consultants provide the expert vetting needed to align elite candidates with your specific leadership and technical requirements. We go beyond simple CV screening to gather deep intelligence, ensuring you hire top talent with a precision that standard methods cannot match.",
-            },
-          ].map((card) => (
-            <StaggerItem
-              key={card.title}
-              as="article"
-              className="rounded-[15px] sm:rounded-[24px] border border-black/8 bg-[linear-gradient(180deg,#ffffff_0%,#fafafa_100%)] px-4 sm:px-8 py-4 sm:py-8 shadow-[0_20px_60px_rgba(17,35,89,0.06)] transition-transform duration-300 hover:-translate-y-1"
-            >
-              <span className="inline-flex rounded-[6px] sm:rounded-[10px] border border-[#f4c4c6] bg-[#fff6f6] px-2.5 sm:px-3 py-1 text-[10px] sm:text-[13px] font-medium text-[#ed1a24]">
-                {card.tag}
-              </span>
-              <h3 className="mt-4 sm:mt-5 font-[family-name:var(--font-gabarito)] text-[14px] sm:text-[1.9rem] font-semibold leading-[1.55] sm:leading-[1.04] text-black">
-                {card.title}
-              </h3>
-              <p className="mt-3 sm:mt-5 text-[12px] sm:text-[18px] leading-[1.55] sm:leading-[1.8] text-[#595b60]">
-                {card.body}
-              </p>
-            </StaggerItem>
-          ))}
-        </StaggerGroup>
-      </Container>
-    </section>
-  );
-}
 
 function PerformanceSection() {
   return (
@@ -1481,10 +1430,10 @@ export default function HomePage() {
       <HeroSection />
       <LogoCarouselSection />
       <MisconceptionSection />
-      <SocialProofSection />
-      <FullFunnelSection />
-      <PropTechSection />
       <TalentEquationSection />
+      <FullFunnelSection />
+      <AgentsSection />
+      <SocialProofSection />
       <PerformanceSection />
       <FAQSection />
       <CTASection />
