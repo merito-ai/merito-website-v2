@@ -15,6 +15,10 @@
     {
       "path": "/api/cron/candidate-purge",
       "schedule": "0 4 * * *"
+    },
+    {
+      "path": "/api/cron/razorpay-reconcile",
+      "schedule": "*/15 * * * *"
     }
   ]
 }

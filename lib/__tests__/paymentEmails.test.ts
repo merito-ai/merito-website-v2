@@ -45,4 +45,45 @@ describe("paymentEmails", () => {
       ).rejects.toThrow("Email service is not configured (RESEND_API_KEY missing).");
     });
   });
+
+  describe("sendPaymentGuardMismatchAlert", () => {
+    it("sends an ops alert to CONTACT_TO_EMAIL with the order, payment and reported amount", async () => {
+      const { sendPaymentGuardMismatchAlert } = await import("../paymentEmails");
+
+      await sendPaymentGuardMismatchAlert({ orderId: "order_1", paymentId: "pay_1", amountPaise: 100 });
+
+      expect(sendMock).toHaveBeenCalledTimes(1);
+      const sent = sendMock.mock.calls[0][0];
+      expect(sent.from).toBe("admin@merito.ai");
+      expect(sent.to).toEqual(["shikha@merito.in"]);
+      expect(sent.subject).toContain("amount mismatch");
+      expect(sent.subject).toContain("order_1");
+      expect(sent.text).toContain("pay_1");
+      expect(sent.text).toContain("₹1.00");
+    });
+
+    it("throws when RESEND_API_KEY is missing", async () => {
+      delete process.env.RESEND_API_KEY;
+      const { sendPaymentGuardMismatchAlert } = await import("../paymentEmails");
+
+      await expect(
+        sendPaymentGuardMismatchAlert({ orderId: "order_1", paymentId: "pay_1", amountPaise: 100 })
+      ).rejects.toThrow("Email service is not configured (RESEND_API_KEY missing).");
+    });
+  });
+
+  describe("sendStuckPaymentAlert", () => {
+    it("sends an ops alert with the order, rupee amount and age in hours", async () => {
+      const { sendStuckPaymentAlert } = await import("../paymentEmails");
+
+      await sendStuckPaymentAlert({ orderId: "order_1", amountPaise: 29900, ageHours: 24.4 });
+
+      expect(sendMock).toHaveBeenCalledTimes(1);
+      const sent = sendMock.mock.calls[0][0];
+      expect(sent.to).toEqual(["shikha@merito.in"]);
+      expect(sent.subject).toContain("stuck 24h+");
+      expect(sent.text).toContain("₹299.00");
+      expect(sent.text).toContain("24.4h");
+    });
+  });
 });

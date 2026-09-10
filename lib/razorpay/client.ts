@@ -72,6 +72,49 @@ export async function createRefund(paymentId: string, amountPaise: number): Prom
   return { refundId: data.id };
 }
 
+export type RazorpayPayment = {
+  id: string;
+  order_id: string | null;
+  status: string; // "created" | "authorized" | "captured" | "refunded" | "failed"
+  amount: number; // paise
+  currency: string;
+};
+
+export async function fetchPayment(paymentId: string): Promise<RazorpayPayment> {
+  const keyId = requireEnv("RAZORPAY_KEY_ID");
+  const keySecret = requireEnv("RAZORPAY_KEY_SECRET");
+  const auth = Buffer.from(`${keyId}:${keySecret}`).toString("base64");
+
+  const response = await fetch(`https://api.razorpay.com/v1/payments/${paymentId}`, {
+    headers: { Authorization: `Basic ${auth}` },
+  });
+
+  if (!response.ok) {
+    const body = await response.text().catch(() => "");
+    throw new Error(`Razorpay fetchPayment failed (${response.status}): ${body}`);
+  }
+
+  return (await response.json()) as RazorpayPayment;
+}
+
+export async function fetchOrderPayments(orderId: string): Promise<RazorpayPayment[]> {
+  const keyId = requireEnv("RAZORPAY_KEY_ID");
+  const keySecret = requireEnv("RAZORPAY_KEY_SECRET");
+  const auth = Buffer.from(`${keyId}:${keySecret}`).toString("base64");
+
+  const response = await fetch(`https://api.razorpay.com/v1/orders/${orderId}/payments`, {
+    headers: { Authorization: `Basic ${auth}` },
+  });
+
+  if (!response.ok) {
+    const body = await response.text().catch(() => "");
+    throw new Error(`Razorpay fetchOrderPayments failed (${response.status}): ${body}`);
+  }
+
+  const data = (await response.json()) as { items?: RazorpayPayment[] };
+  return data.items ?? [];
+}
+
 export type VerifyPaymentSignatureParams = {
   orderId: string;
   paymentId: string;

@@ -97,6 +97,76 @@ describe("createRefund", () => {
   });
 });
 
+describe("fetchPayment", () => {
+  it("GETs the payment with Basic auth and returns id/order_id/status/amount", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: "pay_1", order_id: "order_1", status: "captured", amount: 29900, currency: "INR" }),
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { fetchPayment } = await import("../client");
+    const result = await fetchPayment("pay_1");
+
+    expect(result).toEqual({ id: "pay_1", order_id: "order_1", status: "captured", amount: 29900, currency: "INR" });
+    expect(fetchMock).toHaveBeenCalledWith(
+      "https://api.razorpay.com/v1/payments/pay_1",
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          Authorization: `Basic ${Buffer.from("rzp_test_key:testsecret").toString("base64")}`,
+        }),
+      })
+    );
+  });
+
+  it("throws when the Razorpay API responds with a non-2xx status", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: false, status: 404, text: async () => "not found" });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { fetchPayment } = await import("../client");
+    await expect(fetchPayment("pay_x")).rejects.toThrow("Razorpay fetchPayment failed (404): not found");
+  });
+});
+
+describe("fetchOrderPayments", () => {
+  it("GETs the order's payments and returns items", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ count: 1, items: [{ id: "pay_1", order_id: "order_1", status: "captured", amount: 29900, currency: "INR" }] }),
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { fetchOrderPayments } = await import("../client");
+    const result = await fetchOrderPayments("order_1");
+
+    expect(result).toEqual([{ id: "pay_1", order_id: "order_1", status: "captured", amount: 29900, currency: "INR" }]);
+    expect(fetchMock).toHaveBeenCalledWith(
+      "https://api.razorpay.com/v1/orders/order_1/payments",
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          Authorization: `Basic ${Buffer.from("rzp_test_key:testsecret").toString("base64")}`,
+        }),
+      })
+    );
+  });
+
+  it("returns an empty array when the response has no items", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ count: 0 }) });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { fetchOrderPayments } = await import("../client");
+    expect(await fetchOrderPayments("order_1")).toEqual([]);
+  });
+
+  it("throws when the Razorpay API responds with a non-2xx status", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: false, status: 500, text: async () => "boom" });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { fetchOrderPayments } = await import("../client");
+    await expect(fetchOrderPayments("order_1")).rejects.toThrow("Razorpay fetchOrderPayments failed (500): boom");
+  });
+});
+
 describe("verifyPaymentSignature", () => {
   it("accepts a signature built with HMAC-SHA256(orderId + '|' + paymentId, key_secret)", async () => {
     const { verifyPaymentSignature } = await import("../client");

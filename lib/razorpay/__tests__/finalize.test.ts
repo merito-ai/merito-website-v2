@@ -250,6 +250,90 @@ describe("finalizeRazorpayOrder", () => {
     await expect(finalizeRazorpayOrder("order_1", "pay_1")).rejects.toThrow("Failed to record counselling request");
     expect(updateMock).not.toHaveBeenCalled();
   });
+
+  describe("payment guards", () => {
+    beforeEach(() => {
+      txnMaybeSingleMock.mockResolvedValue({
+        data: { user_id: "user-1", product: "personality", lead_id: null, status: "initiated", amount_paise: 29900 },
+        error: null,
+      });
+    });
+
+    it("proceeds when the guard matches (captured, same order, exact amount)", async () => {
+      const { finalizeRazorpayOrder } = await import("../finalize");
+      const result = await finalizeRazorpayOrder("order_1", "pay_1", {
+        amountPaise: 29900,
+        status: "captured",
+        orderId: "order_1",
+      });
+
+      expect(result).toEqual({ ok: true, product: "personality", userId: "user-1", leadId: null });
+      expect(unlockProductMock).toHaveBeenCalledWith("user-1", "personality");
+      expect(updateMock).toHaveBeenCalledWith({ status: "success", payment_id: "pay_1" });
+    });
+
+    it("rejects with guard_mismatch on an amount mismatch — no effect, row not marked success", async () => {
+      const { finalizeRazorpayOrder } = await import("../finalize");
+      const result = await finalizeRazorpayOrder("order_1", "pay_1", {
+        amountPaise: 100,
+        status: "captured",
+        orderId: "order_1",
+      });
+
+      expect(result).toEqual({ ok: false, reason: "guard_mismatch" });
+      expect(unlockProductMock).not.toHaveBeenCalled();
+      expect(updateMock).not.toHaveBeenCalled();
+    });
+
+    it("rejects when the payment is only authorized, not captured", async () => {
+      const { finalizeRazorpayOrder } = await import("../finalize");
+      const result = await finalizeRazorpayOrder("order_1", "pay_1", {
+        amountPaise: 29900,
+        status: "authorized",
+        orderId: "order_1",
+      });
+
+      expect(result).toEqual({ ok: false, reason: "guard_mismatch" });
+      expect(unlockProductMock).not.toHaveBeenCalled();
+    });
+
+    it("rejects when the guard's order id doesn't match the finalize order id", async () => {
+      const { finalizeRazorpayOrder } = await import("../finalize");
+      const result = await finalizeRazorpayOrder("order_1", "pay_1", {
+        amountPaise: 29900,
+        status: "captured",
+        orderId: "order_OTHER",
+      });
+
+      expect(result).toEqual({ ok: false, reason: "guard_mismatch" });
+      expect(unlockProductMock).not.toHaveBeenCalled();
+    });
+
+    it("is unchanged when no guards are passed (existing call sites stay valid)", async () => {
+      const { finalizeRazorpayOrder } = await import("../finalize");
+      const result = await finalizeRazorpayOrder("order_1", "pay_1");
+
+      expect(result).toEqual({ ok: true, product: "personality", userId: "user-1", leadId: null });
+      expect(unlockProductMock).toHaveBeenCalledWith("user-1", "personality");
+    });
+
+    it("does not re-check the guard for an already-success transaction (idempotent)", async () => {
+      txnMaybeSingleMock.mockResolvedValue({
+        data: { user_id: "user-1", product: "personality", lead_id: null, status: "success", amount_paise: 29900 },
+        error: null,
+      });
+      const { finalizeRazorpayOrder } = await import("../finalize");
+      const result = await finalizeRazorpayOrder("order_1", "pay_1", {
+        amountPaise: 100,
+        status: "authorized",
+        orderId: "order_OTHER",
+      });
+
+      expect(result).toEqual({ ok: true, product: "personality", userId: "user-1", leadId: null });
+      expect(unlockProductMock).not.toHaveBeenCalled();
+      expect(updateMock).not.toHaveBeenCalled();
+    });
+  });
 });
 
 describe("markRazorpayPaymentFailed", () => {

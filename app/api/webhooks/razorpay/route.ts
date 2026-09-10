@@ -1,6 +1,6 @@
 import { verifyWebhookSignature } from "@/lib/razorpay/client";
 import { finalizeRazorpayOrder, markRazorpayPaymentFailed, markRazorpayRefunded } from "@/lib/razorpay/finalize";
-import { sendPaymentFailedAlertEmail } from "@/lib/paymentEmails";
+import { sendPaymentFailedAlertEmail, sendPaymentGuardMismatchAlert } from "@/lib/paymentEmails";
 
 export const runtime = "nodejs";
 
@@ -12,6 +12,8 @@ type RazorpayWebhookPayload = {
         id?: string;
         order_id?: string;
         email?: string;
+        amount?: number;
+        status?: string;
       };
     };
   };
@@ -41,7 +43,23 @@ export async function POST(request: Request) {
 
   if (payload.event === "payment.captured") {
     if (orderId && paymentId) {
-      await finalizeRazorpayOrder(orderId, paymentId);
+      const entity = payload.payload?.payment?.entity;
+      const result = await finalizeRazorpayOrder(orderId, paymentId, {
+        amountPaise: entity?.amount ?? -1,
+        status: entity?.status ?? "unknown",
+        orderId: entity?.order_id ?? "",
+      });
+      if (!result.ok && result.reason === "guard_mismatch") {
+        // A payload that doesn't match our record must not make Razorpay retry
+        // forever — return 200 and let the alert be the recovery path.
+        await sendPaymentGuardMismatchAlert({
+          orderId,
+          paymentId,
+          amountPaise: entity?.amount ?? -1,
+        }).catch((err) => {
+          console.error("Failed to send payment guard-mismatch alert", { orderId, error: err });
+        });
+      }
     }
     return Response.json({ received: true });
   }

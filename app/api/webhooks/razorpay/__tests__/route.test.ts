@@ -15,8 +15,10 @@ vi.mock("@/lib/razorpay/finalize", () => ({
 }));
 
 const sendPaymentFailedAlertEmailMock = vi.fn();
+const sendPaymentGuardMismatchAlertMock = vi.fn();
 vi.mock("@/lib/paymentEmails", () => ({
   sendPaymentFailedAlertEmail: sendPaymentFailedAlertEmailMock,
+  sendPaymentGuardMismatchAlert: sendPaymentGuardMismatchAlertMock,
 }));
 
 async function importRoute() {
@@ -44,6 +46,8 @@ describe("POST /api/webhooks/razorpay", () => {
     markRazorpayRefundedMock.mockResolvedValue({ ok: true, alreadyProcessed: false });
     sendPaymentFailedAlertEmailMock.mockReset();
     sendPaymentFailedAlertEmailMock.mockResolvedValue(undefined);
+    sendPaymentGuardMismatchAlertMock.mockReset();
+    sendPaymentGuardMismatchAlertMock.mockResolvedValue(undefined);
   });
 
   it("returns 401 and never calls finalize when the signature doesn't verify", async () => {
@@ -65,18 +69,55 @@ describe("POST /api/webhooks/razorpay", () => {
     expect(verifyWebhookSignatureMock).toHaveBeenCalledWith(rawBody, "good-signature");
   });
 
-  it("extracts order_id and payment_id from payload.payment.entity and calls finalize", async () => {
+  it("extracts order_id and payment_id from payload.payment.entity and calls finalize with capture guards", async () => {
     verifyWebhookSignatureMock.mockReturnValue(true);
     const rawBody = JSON.stringify({
       event: "payment.captured",
-      payload: { payment: { entity: { id: "pay_1", order_id: "order_1" } } },
+      payload: { payment: { entity: { id: "pay_1", order_id: "order_1", amount: 29900, status: "captured" } } },
     });
     const { POST } = await importRoute();
     const response = await POST(buildRequest(rawBody, "good-signature"));
 
-    expect(finalizeRazorpayOrderMock).toHaveBeenCalledWith("order_1", "pay_1");
+    expect(finalizeRazorpayOrderMock).toHaveBeenCalledWith("order_1", "pay_1", {
+      amountPaise: 29900,
+      status: "captured",
+      orderId: "order_1",
+    });
+    expect(sendPaymentGuardMismatchAlertMock).not.toHaveBeenCalled();
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({ received: true });
+  });
+
+  it("alerts and still returns 200 when finalize reports a guard_mismatch (poisoned amount)", async () => {
+    verifyWebhookSignatureMock.mockReturnValue(true);
+    finalizeRazorpayOrderMock.mockResolvedValue({ ok: false, reason: "guard_mismatch" });
+    const rawBody = JSON.stringify({
+      event: "payment.captured",
+      payload: { payment: { entity: { id: "pay_1", order_id: "order_1", amount: 100, status: "captured" } } },
+    });
+    const { POST } = await importRoute();
+    const response = await POST(buildRequest(rawBody, "good-signature"));
+
+    expect(sendPaymentGuardMismatchAlertMock).toHaveBeenCalledWith({
+      orderId: "order_1",
+      paymentId: "pay_1",
+      amountPaise: 100,
+    });
+    expect(response.status).toBe(200);
+  });
+
+  it("still returns 200 when the guard-mismatch alert email itself fails", async () => {
+    verifyWebhookSignatureMock.mockReturnValue(true);
+    finalizeRazorpayOrderMock.mockResolvedValue({ ok: false, reason: "guard_mismatch" });
+    sendPaymentGuardMismatchAlertMock.mockRejectedValue(new Error("resend down"));
+    const rawBody = JSON.stringify({
+      event: "payment.captured",
+      payload: { payment: { entity: { id: "pay_1", order_id: "order_1", amount: 100, status: "captured" } } },
+    });
+    const { POST } = await importRoute();
+    const response = await POST(buildRequest(rawBody, "good-signature"));
+
+    expect(response.status).toBe(200);
   });
 
   it("still returns 200 without calling finalize when the payload has no payment entity", async () => {

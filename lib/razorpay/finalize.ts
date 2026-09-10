@@ -15,7 +15,13 @@ async function getRoleTitleForLead(
 
 export type FinalizeResult =
   | { ok: true; product: RazorpayProduct; userId: string; leadId: string | null }
-  | { ok: false; reason: "unknown_order" | "unsupported_product" };
+  | { ok: false; reason: "unknown_order" | "unsupported_product" | "guard_mismatch" };
+
+// Optional cross-check: the caller (webhook / client-verify / reconcile cron)
+// asks Razorpay itself what the payment actually is, then hands the answer here.
+// finalize refuses to grant the product unless it's a captured payment, for
+// this order, for the exact amount the transaction row was created with.
+export type PaymentGuards = { amountPaise: number; status: string; orderId: string };
 
 // Signature verification (payment or webhook) happens in the calling route,
 // not here — Razorpay's two channels carry different payloads, so each has
@@ -24,11 +30,15 @@ export type FinalizeResult =
 // idempotently: unlockReport inserts and swallows a duplicate-key error, so calling it again on a
 // webhook retry after a client-side verify already succeeded (or vice
 // versa) is safe.
-export async function finalizeRazorpayOrder(orderId: string, paymentId: string): Promise<FinalizeResult> {
+export async function finalizeRazorpayOrder(
+  orderId: string,
+  paymentId: string,
+  guards?: PaymentGuards
+): Promise<FinalizeResult> {
   const supabase = getSupabaseServerClient();
   const { data: txn, error } = await supabase
     .from("razorpay_transactions")
-    .select("user_id, product, lead_id, status")
+    .select("user_id, product, lead_id, status, amount_paise")
     .eq("order_id", orderId)
     .maybeSingle();
 
@@ -39,6 +49,21 @@ export async function finalizeRazorpayOrder(orderId: string, paymentId: string):
   const product = txn.product as RazorpayProduct;
 
   if (txn.status !== "success") {
+    if (guards) {
+      const okGuard =
+        guards.orderId === orderId &&
+        guards.status === "captured" &&
+        guards.amountPaise === txn.amount_paise;
+      if (!okGuard) {
+        console.error("finalize: payment guard mismatch", {
+          orderId,
+          guards,
+          expectedAmountPaise: txn.amount_paise,
+          txnStatus: txn.status,
+        });
+        return { ok: false, reason: "guard_mismatch" };
+      }
+    }
     // Apply the product's effect first, then mark success — if the effect
     // throws (a transient DB error), the row stays "initiated" and a retry
     // genuinely re-attempts it instead of silently skipping it next time.

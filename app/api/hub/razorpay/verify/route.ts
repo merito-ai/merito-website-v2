@@ -1,6 +1,7 @@
 import { createSupabaseServerClient } from "@/lib/supabaseAuthServer";
-import { verifyPaymentSignature } from "@/lib/razorpay/client";
+import { verifyPaymentSignature, fetchPayment } from "@/lib/razorpay/client";
 import { finalizeRazorpayOrder } from "@/lib/razorpay/finalize";
+import { sendPaymentGuardMismatchAlert } from "@/lib/paymentEmails";
 import { completeReportUnlock } from "@/lib/completeReportUnlock";
 import { getSupabaseServerClient } from "@/lib/supabase";
 
@@ -32,9 +33,27 @@ export async function POST(request: Request) {
     return Response.json({ error: "Invalid payment signature." }, { status: 400 });
   }
 
-  const result = await finalizeRazorpayOrder(orderId, paymentId);
+  // Ask Razorpay what this payment actually is, then let finalize refuse
+  // anything that isn't a captured payment for this order at the exact amount.
+  // A thrown fetch (Razorpay unreachable) is not fatal here — the webhook and
+  // the reconcile cron are the durable finalize paths; this route is best-effort UX.
+  let guards: { amountPaise: number; status: string; orderId: string } | undefined;
+  try {
+    const payment = await fetchPayment(paymentId);
+    guards = { amountPaise: payment.amount, status: payment.status, orderId: payment.order_id ?? "" };
+  } catch (err) {
+    console.error("verify: fetchPayment failed", { orderId, paymentId, error: err });
+    return Response.json({ error: "Payment could not be verified." }, { status: 400 });
+  }
+
+  const result = await finalizeRazorpayOrder(orderId, paymentId, guards);
 
   if (!result.ok) {
+    if (result.reason === "guard_mismatch") {
+      await sendPaymentGuardMismatchAlert({ orderId, paymentId, amountPaise: guards.amountPaise }).catch((err) => {
+        console.error("Failed to send payment guard-mismatch alert", { orderId, error: err });
+      });
+    }
     return Response.json({ error: "Payment could not be verified." }, { status: 400 });
   }
 

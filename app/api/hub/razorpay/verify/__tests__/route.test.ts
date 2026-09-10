@@ -6,13 +6,20 @@ vi.mock("@/lib/supabaseAuthServer", () => ({
 }));
 
 const verifyPaymentSignatureMock = vi.fn();
+const fetchPaymentMock = vi.fn();
 vi.mock("@/lib/razorpay/client", () => ({
   verifyPaymentSignature: verifyPaymentSignatureMock,
+  fetchPayment: fetchPaymentMock,
 }));
 
 const finalizeRazorpayOrderMock = vi.fn();
 vi.mock("@/lib/razorpay/finalize", () => ({
   finalizeRazorpayOrder: finalizeRazorpayOrderMock,
+}));
+
+const sendPaymentGuardMismatchAlertMock = vi.fn();
+vi.mock("@/lib/paymentEmails", () => ({
+  sendPaymentGuardMismatchAlert: sendPaymentGuardMismatchAlertMock,
 }));
 
 const completeReportUnlockMock = vi.fn();
@@ -43,7 +50,11 @@ describe("POST /api/hub/razorpay/verify", () => {
   beforeEach(() => {
     getUserMock.mockReset();
     verifyPaymentSignatureMock.mockReset();
+    fetchPaymentMock.mockReset();
+    fetchPaymentMock.mockResolvedValue({ id: "pay_1", order_id: "order_1", status: "captured", amount: 29900, currency: "INR" });
     finalizeRazorpayOrderMock.mockReset();
+    sendPaymentGuardMismatchAlertMock.mockReset();
+    sendPaymentGuardMismatchAlertMock.mockResolvedValue(undefined);
     completeReportUnlockMock.mockReset();
     leadMaybeSingleMock.mockReset();
   });
@@ -79,6 +90,45 @@ describe("POST /api/hub/razorpay/verify", () => {
     const { POST } = await importRoute();
     const response = await POST(buildRequest({ orderId: "order_1", paymentId: "pay_1", signature: "sig" }));
     expect(response.status).toBe(400);
+    expect(sendPaymentGuardMismatchAlertMock).not.toHaveBeenCalled();
+  });
+
+  it("fetches the payment from Razorpay and passes capture guards to finalize", async () => {
+    getUserMock.mockResolvedValue({ data: { user: { id: "user-1" } } });
+    verifyPaymentSignatureMock.mockReturnValue(true);
+    fetchPaymentMock.mockResolvedValue({ id: "pay_1", order_id: "order_1", status: "captured", amount: 29900, currency: "INR" });
+    finalizeRazorpayOrderMock.mockResolvedValue({ ok: true, product: "personality", userId: "user-1", leadId: null });
+    const { POST } = await importRoute();
+    await POST(buildRequest({ orderId: "order_1", paymentId: "pay_1", signature: "sig" }));
+
+    expect(finalizeRazorpayOrderMock).toHaveBeenCalledWith("order_1", "pay_1", {
+      amountPaise: 29900,
+      status: "captured",
+      orderId: "order_1",
+    });
+  });
+
+  it("returns 400 and fires the ops alert on a guard_mismatch", async () => {
+    getUserMock.mockResolvedValue({ data: { user: { id: "user-1" } } });
+    verifyPaymentSignatureMock.mockReturnValue(true);
+    fetchPaymentMock.mockResolvedValue({ id: "pay_1", order_id: "order_1", status: "captured", amount: 100, currency: "INR" });
+    finalizeRazorpayOrderMock.mockResolvedValue({ ok: false, reason: "guard_mismatch" });
+    const { POST } = await importRoute();
+    const response = await POST(buildRequest({ orderId: "order_1", paymentId: "pay_1", signature: "sig" }));
+
+    expect(response.status).toBe(400);
+    expect(sendPaymentGuardMismatchAlertMock).toHaveBeenCalledWith({ orderId: "order_1", paymentId: "pay_1", amountPaise: 100 });
+  });
+
+  it("returns 400 without calling finalize when Razorpay's fetchPayment throws", async () => {
+    getUserMock.mockResolvedValue({ data: { user: { id: "user-1" } } });
+    verifyPaymentSignatureMock.mockReturnValue(true);
+    fetchPaymentMock.mockRejectedValue(new Error("razorpay unreachable"));
+    const { POST } = await importRoute();
+    const response = await POST(buildRequest({ orderId: "order_1", paymentId: "pay_1", signature: "sig" }));
+
+    expect(response.status).toBe(400);
+    expect(finalizeRazorpayOrderMock).not.toHaveBeenCalled();
   });
 
   it("does not leak report content when the finalized order belongs to a different user", async () => {
