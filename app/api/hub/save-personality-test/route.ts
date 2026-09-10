@@ -2,12 +2,9 @@ import { createSupabaseServerClient } from "@/lib/supabaseAuthServer";
 import { getSupabaseServerClient } from "@/lib/supabase";
 import { isProductUnlocked } from "@/lib/productUnlocks";
 import { isCompleteAnswerSet, scoreAllTraits, computeValidity, type Answers } from "@/lib/personality";
+import { arePaymentsBypassed } from "@/lib/paymentsBypass";
 
 export const runtime = "nodejs";
-
-function isRazorpayBypassed(): boolean {
-  return process.env.RAZORPAY_BYPASS !== "false";
-}
 
 export async function POST(request: Request) {
   const supabase = await createSupabaseServerClient();
@@ -19,7 +16,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "Not signed in." }, { status: 401 });
   }
 
-  if (!isRazorpayBypassed() && !(await isProductUnlocked(user.id, "personality"))) {
+  if (!arePaymentsBypassed() && !(await isProductUnlocked(user.id, "personality"))) {
     return Response.json(
       { error: "Payment required to unlock the personality test. Please pay first." },
       { status: 402 }

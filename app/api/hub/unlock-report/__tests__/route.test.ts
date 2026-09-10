@@ -93,7 +93,37 @@ describe("POST /api/hub/unlock-report", () => {
     expect(leadEq2Mock).toHaveBeenCalledWith("id", "someone-elses-lead");
   });
 
-  describe("bypass path (RAZORPAY_BYPASS unset, defaults true)", () => {
+  it("does not unlock for free when RAZORPAY_BYPASS is unset (fail closed)", async () => {
+    getUserMock.mockResolvedValue({ data: { user: { id: "user-123", email: "u@example.com" } } });
+    buildLeadChain({
+      data: { id: "lead-1", role_title: "Senior Product Manager", candidate_level: "mid", ib_applied_job_id: "APJ_1", resume_match_status: "READY", resume_match_raw: {} },
+      error: null,
+    });
+    createOrderMock.mockResolvedValue({ orderId: "order_ABC123" });
+
+    const { POST } = await importRoute();
+    const response = await POST(
+      new Request("http://localhost/api/hub/unlock-report", {
+        method: "POST",
+        body: JSON.stringify({ leadId: "lead-1" }),
+      })
+    );
+    const body = await response.json();
+
+    expect(body.status).toBe("checkout");
+    expect(createOrderMock).toHaveBeenCalled();
+    expect(completeReportUnlockMock).not.toHaveBeenCalled();
+  });
+
+  describe("bypass path (RAZORPAY_BYPASS=true)", () => {
+    beforeEach(() => {
+      process.env.RAZORPAY_BYPASS = "true";
+    });
+
+    afterEach(() => {
+      delete process.env.RAZORPAY_BYPASS;
+    });
+
     it("delegates to completeReportUnlock and returns its unlocked result", async () => {
       getUserMock.mockResolvedValue({ data: { user: { id: "user-123" } } });
       const storedRaw = { overallScore: 78, rank: 1, categories: [], summary: "Good fit.", strongPoints: [], weakPoints: [] };

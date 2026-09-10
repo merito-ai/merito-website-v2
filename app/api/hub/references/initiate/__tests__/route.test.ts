@@ -49,6 +49,15 @@ describe("POST /api/hub/references/initiate", () => {
     expect(response.status).toBe(201);
   });
 
+  it("returns 402 when RAZORPAY_BYPASS is unset (fail closed)", async () => {
+    getUserMock.mockResolvedValue({ data: { user: { id: "user-1" } } });
+    isProductUnlockedMock.mockResolvedValue(false);
+    const { POST } = await importRoute();
+    const response = await POST(new Request("http://localhost/api/hub/references/initiate", { method: "POST" }));
+    expect(response.status).toBe(402);
+    expect(initiateReferenceCheckMock).not.toHaveBeenCalled();
+  });
+
   it("returns 401 when there is no session", async () => {
     getUserMock.mockResolvedValue({ data: { user: null } });
     const { POST } = await importRoute();
@@ -57,6 +66,7 @@ describe("POST /api/hub/references/initiate", () => {
   });
 
   it("returns 201 with the new check id", async () => {
+    vi.stubEnv("RAZORPAY_BYPASS", "true");
     getUserMock.mockResolvedValue({ data: { user: { id: "user-1" } } });
     initiateReferenceCheckMock.mockResolvedValue({ id: "check-1" });
     const { POST } = await importRoute();
@@ -67,6 +77,7 @@ describe("POST /api/hub/references/initiate", () => {
   });
 
   it("returns 409 when a check is already active", async () => {
+    vi.stubEnv("RAZORPAY_BYPASS", "true");
     getUserMock.mockResolvedValue({ data: { user: { id: "user-1" } } });
     initiateReferenceCheckMock.mockRejectedValue(new Error("ALREADY_ACTIVE"));
     const { POST } = await importRoute();

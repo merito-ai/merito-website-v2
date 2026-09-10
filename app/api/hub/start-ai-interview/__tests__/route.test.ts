@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 const getUserMock = vi.fn();
 vi.mock("@/lib/supabaseAuthServer", () => ({
@@ -91,8 +91,16 @@ describe("POST /api/hub/start-ai-interview", () => {
     creditMaybeSingleMock.mockResolvedValue({ data: { order_id: "order_credit_1" }, error: null });
     consumeUpdateEqMock.mockClear();
     consumeUpdateEqMock.mockResolvedValue({ error: null });
+    consumeUpdateMock.mockClear();
     recordPipelineFailureMock.mockReset();
     recordPipelineFailureMock.mockResolvedValue(undefined);
+    // The happy-path tests in this file are not about the payment gate; default
+    // to bypassed (mirrors the pre-fail-closed "unset" default). Payment-aware
+    // tests set RAZORPAY_BYPASS="false" explicitly.
+    process.env.RAZORPAY_BYPASS = "true";
+  });
+
+  afterEach(() => {
     delete process.env.RAZORPAY_BYPASS;
   });
 

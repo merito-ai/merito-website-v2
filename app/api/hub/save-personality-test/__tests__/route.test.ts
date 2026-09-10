@@ -74,7 +74,8 @@ describe("POST /api/hub/save-personality-test — payment gate", () => {
     );
   });
 
-  it("proceeds without checking unlock status when bypass is on (default)", async () => {
+  it("proceeds without checking unlock status when bypass is on", async () => {
+    vi.stubEnv("RAZORPAY_BYPASS", "true");
     const { POST } = await importRoute();
 
     const request = new Request("http://localhost/api/hub/save-personality-test", {
@@ -85,5 +86,19 @@ describe("POST /api/hub/save-personality-test — payment gate", () => {
 
     expect(response.status).toBe(200);
     expect(isProductUnlockedMock).not.toHaveBeenCalled();
+  });
+
+  it("returns 402 when RAZORPAY_BYPASS is unset (fail closed)", async () => {
+    isProductUnlockedMock.mockResolvedValue(false);
+    const { POST } = await importRoute();
+
+    const request = new Request("http://localhost/api/hub/save-personality-test", {
+      method: "POST",
+      body: JSON.stringify({ roleTitle: "Backend Engineer", answers: completeAnswers() }),
+    });
+    const response = await POST(request);
+
+    expect(response.status).toBe(402);
+    expect(upsertMock).not.toHaveBeenCalled();
   });
 });

@@ -3,12 +3,9 @@ import { completeReportUnlock } from "@/lib/completeReportUnlock";
 import { getSupabaseServerClient } from "@/lib/supabase";
 import { createOrder } from "@/lib/razorpay/client";
 import { PRODUCT_PRICING, DEFAULT_LEVEL, type CandidateLevel } from "@/lib/razorpay/pricing";
+import { arePaymentsBypassed } from "@/lib/paymentsBypass";
 
 export const runtime = "nodejs";
-
-function isRazorpayBypassed(): boolean {
-  return process.env.RAZORPAY_BYPASS !== "false";
-}
 
 export async function POST(request: Request) {
   const supabase = await createSupabaseServerClient();
@@ -45,7 +42,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "No fitment check found for this lead." }, { status: 400 });
   }
 
-  if (!isRazorpayBypassed()) {
+  if (!arePaymentsBypassed()) {
     const level = (lead.candidate_level as CandidateLevel | null) ?? DEFAULT_LEVEL;
     const amountPaise = PRODUCT_PRICING[product][level];
 

@@ -4,12 +4,9 @@ import { getApplicant } from "@/lib/intervuebox/applicants";
 import { createInterviewAgent, type CandidateLevel } from "@/lib/intervuebox/agents";
 import { sendInterviewInvitation } from "@/lib/intervuebox/invitations";
 import { recordPipelineFailure } from "@/lib/pipelineFailures";
+import { arePaymentsBypassed } from "@/lib/paymentsBypass";
 
 export const runtime = "nodejs";
-
-function isRazorpayBypassed(): boolean {
-  return process.env.RAZORPAY_BYPASS !== "false";
-}
 
 export async function POST(request: Request) {
   const supabase = await createSupabaseServerClient();
@@ -98,7 +95,7 @@ export async function POST(request: Request) {
   }
 
   let consumedOrderId: string | null = null;
-  if (!isRazorpayBypassed()) {
+  if (!arePaymentsBypassed()) {
     const { data: credit } = await admin
       .from("razorpay_transactions")
       .select("order_id")
