@@ -18,6 +18,17 @@ export default function LoginPage({
     if (!email.trim() || status === "sending") return;
 
     setStatus("sending");
+
+    // TEMPORARY: one sandbox email skips the magic-link email entirely and is
+    // logged straight in by /api/hub/review-login (for the Razorpay activation
+    // review). Server re-checks the address against REVIEW_LOGIN_EMAIL; unset
+    // either env var to disable. Remove after activation.
+    const reviewEmail = process.env.NEXT_PUBLIC_REVIEW_LOGIN_EMAIL?.trim().toLowerCase();
+    if (reviewEmail && email.trim().toLowerCase() === reviewEmail) {
+      window.location.href = `/api/hub/review-login?email=${encodeURIComponent(email.trim())}`;
+      return;
+    }
+
     const supabase = createSupabaseBrowserClient();
     // `next` is re-validated against an allowlist server-side in
     // /hub/auth/callback — this is just passing the candidate value through.
