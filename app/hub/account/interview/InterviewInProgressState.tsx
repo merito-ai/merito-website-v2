@@ -14,9 +14,12 @@ const CHECKLIST = [
 // not "APPEARED" -- payment already happened and a magic-link invite was
 // already sent. The button below launches that link directly instead of
 // relying on the candidate finding IntervueBox's email.
-export default function InterviewInProgressState({ roleTitle, leadId }: { roleTitle: string; leadId: string }) {
+export default function InterviewInProgressState({ roleTitle, leadId, deadline }: { roleTitle: string; leadId: string; deadline?: string | null }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const deadlineLabel = deadline
+    ? new Date(deadline).toLocaleDateString("en-IN", { year: "numeric", month: "long", day: "numeric" })
+    : null;
 
   async function handleStart() {
     setLoading(true);
@@ -53,6 +56,14 @@ export default function InterviewInProgressState({ roleTitle, leadId }: { roleTi
       <p className="font-[family-name:var(--font-poppins)] text-white/60" style={{ fontSize: 13, lineHeight: 1.65, margin: "0 0 16px" }}>
         Your AI interview for {roleTitle} is ready whenever you are. This page updates automatically once your scored report is ready.
       </p>
+      {deadlineLabel && (
+        <div className="flex items-center bg-[#ed1a24]/10" style={{ gap: 8, borderRadius: 10, padding: "10px 12px", marginBottom: 16 }}>
+          <Clock size={14} strokeWidth={2} className="text-[#ed1a24] shrink-0" />
+          <span className="font-[family-name:var(--font-poppins)] font-semibold text-[#ed1a24]" style={{ fontSize: 12.5 }}>
+            Complete this interview by {deadlineLabel}
+          </span>
+        </div>
+      )}
       <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
         {CHECKLIST.map(({ icon: Icon, text }) => (
           <div key={text} className="flex items-center bg-white/[0.04]" style={{ gap: 10, borderRadius: 10, padding: "10px 12px" }}>

@@ -259,8 +259,11 @@ export default function FitmentChecker() {
         onChange={(e) => setEmail(e.target.value)}
         placeholder="you@example.com"
         className="w-full box-border bg-white font-[family-name:var(--font-poppins)] text-black outline-none border border-[#dcdcdc] focus:border-[#ed1a24] transition-colors"
-        style={{ padding: "13px 14px", borderRadius: 8, fontSize: 14, marginBottom: 12 }}
+        style={{ padding: "13px 14px", borderRadius: 8, fontSize: 14, marginBottom: 4 }}
       />
+      <p className="text-[#9c9c9c]" style={{ fontSize: 11, lineHeight: 1.4, margin: "0 0 12px" }}>
+        Use the same email address as on your CV — mismatched emails can break your account setup later.
+      </p>
 
       <label className="block font-[family-name:var(--font-poppins)] font-semibold text-black" style={{ fontSize: 12, marginBottom: 6 }}>
         Phone number

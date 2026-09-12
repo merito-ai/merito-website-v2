@@ -69,7 +69,7 @@ export default async function InterviewReportPage({
   // Query interviews for the active lead
   const { data: interview } = await supabase
     .from("fitment_interviews")
-    .select("role_title, status, report_raw, updated_at, ib_interview_status, stuck_at, invited_at, lead_id")
+    .select("role_title, status, report_raw, updated_at, ib_interview_status, stuck_at, invited_at, lead_id, magic_link_expires_at")
     .eq("user_id", userId)
     .eq("lead_id", activeLead.id)
     .order("updated_at", { ascending: false })
@@ -108,7 +108,7 @@ export default async function InterviewReportPage({
     return (
       <main>
         <div className="mx-auto" style={{ maxWidth: 820, padding: "28px 24px 40px", display: "flex", flexDirection: "column", gap: 20 }}>
-          <InterviewInProgressState roleTitle={interview.role_title} leadId={activeLead.id} />
+          <InterviewInProgressState roleTitle={interview.role_title} leadId={activeLead.id} deadline={interview.magic_link_expires_at} />
           <InterviewStatusPoller leadId={activeLead.id} currentStatus="invited" />
         </div>
       </main>
