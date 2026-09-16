@@ -125,11 +125,11 @@ export default function TopBar({
   return (
     <header
       className="print:hidden sticky top-0 flex items-center justify-between backdrop-blur-md"
-      style={{ height: 150, padding: "0 28px", zIndex: 30, gap: 16, background: "rgba(20,18,22,0.85)", borderBottom: "1px solid rgb(49,47,55)" }}
+      style={{ height: 96, padding: "0 28px", zIndex: 30, gap: 16, background: "rgba(20,18,22,0.85)", borderBottom: "1px solid rgb(49,47,55)" }}
     >
       <div className="flex items-center shrink-0" style={{ gap: 8 }}>
         <Link href={leadHref("/hub/account")} className="flex items-center" style={{ gap: 8 }}>
-          <Image src="/logo-white.png" alt="Merito" width={128} height={36} style={{ height: 126, width: "auto" }} />
+          <Image src="/logo-white.png" alt="Merito" width={128} height={36} style={{ height: 64, width: "auto" }} />
           <span
             className="bg-[#ed1a24] text-white font-[family-name:var(--font-poppins)] font-bold"
             style={{ fontSize: 10, letterSpacing: "0.06em", borderRadius: 50, padding: "2px 8px" }}

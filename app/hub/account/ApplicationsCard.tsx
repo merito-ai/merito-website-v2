@@ -14,7 +14,7 @@ export default function ApplicationsCard({ applications, currentLeadId }: { appl
   if (applications.length === 0) return null;
 
   return (
-    <section id="applications" style={{ scrollMarginTop: 168 }} data-testid="applications-card">
+    <section id="applications" style={{ scrollMarginTop: 114 }} data-testid="applications-card">
       <div className="flex items-center justify-between" style={{ margin: "0 0 10px" }}>
         <p className="font-[family-name:var(--font-poppins)] font-bold uppercase text-white/40" style={{ fontSize: 11, letterSpacing: "0.08em", margin: 0 }}>
           Your applications
