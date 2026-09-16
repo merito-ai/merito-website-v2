@@ -13,10 +13,10 @@ Considered a split-screen branded-panel redesign; rejected as overkill for a sin
 
 ## Changes
 
-1. **Card header** — add Merito mark + red "HUB" pill badge above the heading (same visual language as `TopBar.tsx`'s logo lockup), so the card is self-evidently branded without relying on the nav above it.
+1. ~~Card header — add Merito mark + red "HUB" pill badge above the heading~~ — **dropped**: the nav above the card already carries the logo, decided not needed inside the card too.
 2. **Background** — replace flat `#fdf8fb` with a subtle red-tinted radial glow behind the card (very light, decorative only — no interaction change).
 3. **Button copy** — "Send magic link" → **"Send link"**. The explainer paragraph above the form already says "we'll send you a link to sign in — no password needed," so the button doesn't need to repeat "magic" jargon. Loading label stays "Sending…".
-4. **Trust line** — add a small gray line under the button: "1000+ professionals placed · 100+ companies trust us" (existing site stats, no new data source).
+4. **Tagline** — add a small gray line under the button: "Improve your candidature with Merito HUB" (swapped in for a trust-stats line, which read as noise here).
 5. **Sent state** — currently one plain sentence. Add a small icon (mail/checkmark) above "Check your inbox" as its own line, with the existing explanatory sentence below it, so success reads as a distinct confirmed state rather than swapped-in text.
 6. **Error state** — unchanged.
 

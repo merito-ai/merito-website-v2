@@ -154,7 +154,7 @@ export default function DashboardClient({
 
         {recruiterActivity}
 
-        <section id="guidance" style={{ scrollMarginTop: 82 }}>
+        <section id="guidance" style={{ scrollMarginTop: 168 }}>
           <p className="font-[family-name:var(--font-poppins)] font-bold uppercase text-white/40" style={{ fontSize: 11, letterSpacing: "0.08em", margin: "0 0 10px" }}>
             Guidance
           </p>

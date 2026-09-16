@@ -49,7 +49,15 @@ export default function LoginPage({
   };
 
   return (
-    <main className="bg-[#fdf8fb]" style={{ minHeight: "60vh", padding: "64px 20px" }}>
+    <main
+      className="bg-[#fdf8fb]"
+      style={{
+        minHeight: "60vh",
+        padding: "64px 20px",
+        background:
+          "radial-gradient(560px circle at 50% 30%, rgba(237,26,36,0.06), transparent 70%), #fdf8fb",
+      }}
+    >
       <div className="bg-white border border-black/[0.08] mx-auto" style={{ maxWidth: 440, borderRadius: 24, padding: 32, boxShadow: "0px 18px 50px rgba(17,35,89,0.05)" }}>
         <h1 className="font-[family-name:var(--font-gabarito)] font-semibold text-black" style={{ fontSize: "1.6rem", margin: 0 }}>
           Sign in to Merito HUB
@@ -59,9 +67,25 @@ export default function LoginPage({
         </p>
 
         {status === "sent" ? (
-          <p className="font-[family-name:var(--font-poppins)] font-semibold text-black" style={{ fontSize: 14, lineHeight: 1.6 }}>
-            Check your inbox — we&apos;ve sent a sign-in link to {email.trim()}.
-          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <div className="flex items-center" style={{ gap: 10 }}>
+              <div
+                className="flex items-center justify-center bg-[#ed1a24]/12 text-[#ed1a24] shrink-0"
+                style={{ width: 32, height: 32, borderRadius: "50%" }}
+              >
+                <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path d="M4 4h16v16H4z" />
+                  <path d="M4 6l8 7 8-7" />
+                </svg>
+              </div>
+              <p className="font-[family-name:var(--font-poppins)] font-semibold text-black" style={{ fontSize: 15, margin: 0 }}>
+                Check your inbox
+              </p>
+            </div>
+            <p className="font-[family-name:var(--font-poppins)] text-[#4b4b4d]" style={{ fontSize: 13.5, lineHeight: 1.6, margin: 0 }}>
+              We&apos;ve sent a sign-in link to {email.trim()}.
+            </p>
+          </div>
         ) : (
           <form onSubmit={handleSubmit}>
             <input
@@ -86,13 +110,16 @@ export default function LoginPage({
                 border: "none",
               }}
             >
-              {status === "sending" ? "Sending…" : "Send magic link"}
+              {status === "sending" ? "Sending…" : "Send link"}
             </button>
             {status === "error" && (
               <p style={{ fontSize: 12.5, color: "#ed1a24", marginTop: 10, textAlign: "center" }}>
                 Something went wrong — please try again.
               </p>
             )}
+            <p className="font-[family-name:var(--font-poppins)] text-[#9c9c9c] text-center" style={{ fontSize: 11.5, marginTop: 16 }}>
+              Improve your candidature with Merito HUB
+            </p>
           </form>
         )}
       </div>
