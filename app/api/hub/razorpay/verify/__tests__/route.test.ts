@@ -131,15 +131,16 @@ describe("POST /api/hub/razorpay/verify", () => {
     expect(finalizeRazorpayOrderMock).not.toHaveBeenCalled();
   });
 
-  it("does not leak report content when the finalized order belongs to a different user", async () => {
+  it("fails instead of reporting a fake unlock when the finalized order belongs to a different user", async () => {
     getUserMock.mockResolvedValue({ data: { user: { id: "user-1" } } });
     verifyPaymentSignatureMock.mockReturnValue(true);
     finalizeRazorpayOrderMock.mockResolvedValue({ ok: true, product: "report", userId: "someone-else", leadId: "lead-1" });
     const { POST } = await importRoute();
     const response = await POST(buildRequest({ orderId: "order_1", paymentId: "pay_1", signature: "sig" }));
     const body = await response.json();
-    expect(response.status).toBe(200);
-    expect(body).toEqual({ status: "unlocked" });
+    expect(response.status).toBe(409);
+    expect(body.error).toBeTruthy();
+    expect(body.status).toBeUndefined();
     expect(completeReportUnlockMock).not.toHaveBeenCalled();
   });
 

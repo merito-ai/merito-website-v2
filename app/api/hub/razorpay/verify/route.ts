@@ -59,11 +59,25 @@ export async function POST(request: Request) {
 
   // finalizeRazorpayOrder always applies the effect to the transaction's own
   // user_id, not whoever calls this route — so the effect itself is already
-  // correct even if a different signed-in user somehow posted these values.
-  // This check only stops that caller from receiving someone else's report
-  // content back in the response.
+  // correct even if a different signed-in user somehow posted these values
+  // (e.g. a session switch mid-checkout on a shared device). But telling
+  // *this* caller "unlocked" is actively wrong: every paywall modal's
+  // onUnlocked callback flips local dashboard state to unlocked for the
+  // caller's own session (report modal even stores `undefined` as the
+  // report), even though the real unlock landed on a different account.
+  // Fail this response instead so the client shows an error rather than a
+  // broken "unlocked with no data" state.
   if (result.userId !== user.id) {
-    return Response.json({ status: result.product === "counselling" ? "requested" : "unlocked" });
+    console.warn("verify: payment belongs to a different account than the caller session", {
+      orderId,
+      paymentId,
+      resultUserId: result.userId,
+      callerUserId: user.id,
+    });
+    return Response.json(
+      { error: "This payment is linked to a different account. Sign in with the account you paid with, or contact support." },
+      { status: 409 }
+    );
   }
 
   if (result.product === "counselling") {
