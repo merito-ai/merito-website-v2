@@ -1,6 +1,6 @@
 import { verifyWebhookSignature } from "@/lib/razorpay/client";
 import { finalizeRazorpayOrder, markRazorpayPaymentFailed, markRazorpayRefunded } from "@/lib/razorpay/finalize";
-import { sendPaymentFailedAlertEmail, sendPaymentGuardMismatchAlert } from "@/lib/paymentEmails";
+import { sendPaymentFailedAlertEmail, sendPaymentGuardMismatchAlert, sendRefundFailedAlert } from "@/lib/paymentEmails";
 
 export const runtime = "nodejs";
 
@@ -14,6 +14,12 @@ type RazorpayWebhookPayload = {
         email?: string;
         amount?: number;
         status?: string;
+      };
+    };
+    refund?: {
+      entity?: {
+        id?: string;
+        amount?: number;
       };
     };
   };
@@ -85,6 +91,24 @@ export async function POST(request: Request) {
   if (payload.event === "refund.processed") {
     if (orderId) {
       await markRazorpayRefunded(orderId);
+    }
+    return Response.json({ received: true });
+  }
+
+  if (payload.event === "refund.failed") {
+    // The admin's refund click already got a 200 from Razorpay's create-refund
+    // call and marked this transaction refunded + revoked entitlement
+    // synchronously -- this event means that acceptance didn't actually pan
+    // out. Alert ops rather than auto-flip state back (see sendRefundFailedAlert).
+    if (orderId) {
+      const refundEntity = payload.payload?.refund?.entity;
+      await sendRefundFailedAlert({
+        orderId,
+        refundId: refundEntity?.id ?? "unknown",
+        amountPaise: refundEntity?.amount ?? -1,
+      }).catch((err) => {
+        console.error("Failed to send refund-failed alert", { orderId, error: err });
+      });
     }
     return Response.json({ received: true });
   }

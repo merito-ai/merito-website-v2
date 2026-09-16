@@ -60,17 +60,17 @@ describe("createOrder", () => {
 });
 
 describe("createRefund", () => {
-  it("posts to the Razorpay refund API with the payment id and amount", async () => {
+  it("posts to the Razorpay refund API requesting an instant (optimum-speed) refund", async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({ id: "rfnd_1" }),
+      json: async () => ({ id: "rfnd_1", speed_requested: "optimum", speed_processed: "optimum" }),
     });
     vi.stubGlobal("fetch", fetchMock);
 
     const { createRefund } = await import("../client");
     const result = await createRefund("pay_123", 29900);
 
-    expect(result).toEqual({ refundId: "rfnd_1" });
+    expect(result).toEqual({ refundId: "rfnd_1", speedRequested: "optimum", speedProcessed: "optimum" });
     expect(fetchMock).toHaveBeenCalledWith(
       "https://api.razorpay.com/v1/payments/pay_123/refund",
       expect.objectContaining({
@@ -81,7 +81,20 @@ describe("createRefund", () => {
       })
     );
     const sentBody = JSON.parse(fetchMock.mock.calls[0][1].body as string);
-    expect(sentBody).toEqual({ amount: 29900 });
+    expect(sentBody).toEqual({ amount: 29900, speed: "optimum" });
+  });
+
+  it("falls back to normal speed without throwing when instant isn't available", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: "rfnd_1", speed_requested: "optimum", speed_processed: "normal" }),
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { createRefund } = await import("../client");
+    const result = await createRefund("pay_123", 29900);
+
+    expect(result).toEqual({ refundId: "rfnd_1", speedRequested: "optimum", speedProcessed: "normal" });
   });
 
   it("throws when the Razorpay API responds with a non-2xx status", async () => {

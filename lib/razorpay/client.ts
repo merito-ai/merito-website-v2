@@ -47,6 +47,10 @@ export async function createOrder(params: CreateOrderParams): Promise<RazorpayOr
 
 export type CreateRefundResult = {
   refundId: string;
+  // "processed" once Razorpay actually settles it; requesting speed=optimum
+  // doesn't guarantee instant -- see speedProcessed for what actually happened.
+  speedRequested: string;
+  speedProcessed: string;
 };
 
 export async function createRefund(paymentId: string, amountPaise: number): Promise<CreateRefundResult> {
@@ -60,7 +64,10 @@ export async function createRefund(paymentId: string, amountPaise: number): Prom
       "Content-Type": "application/json",
       Authorization: `Basic ${auth}`,
     },
-    body: JSON.stringify({ amount: amountPaise }),
+    // "optimum" asks Razorpay for an instant refund where eligible (funds,
+    // payment method, bank all support it) -- when it's not, Razorpay falls
+    // back to normal (5-7 day) processing on its own rather than erroring.
+    body: JSON.stringify({ amount: amountPaise, speed: "optimum" }),
   });
 
   if (!response.ok) {
@@ -68,8 +75,12 @@ export async function createRefund(paymentId: string, amountPaise: number): Prom
     throw new Error(`Razorpay refund failed (${response.status}): ${body}`);
   }
 
-  const data = (await response.json()) as { id: string };
-  return { refundId: data.id };
+  const data = (await response.json()) as { id: string; speed_requested?: string; speed_processed?: string };
+  return {
+    refundId: data.id,
+    speedRequested: data.speed_requested ?? "optimum",
+    speedProcessed: data.speed_processed ?? "normal",
+  };
 }
 
 export type RazorpayPayment = {

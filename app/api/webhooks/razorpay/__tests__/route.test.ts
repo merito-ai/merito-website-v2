@@ -16,9 +16,11 @@ vi.mock("@/lib/razorpay/finalize", () => ({
 
 const sendPaymentFailedAlertEmailMock = vi.fn();
 const sendPaymentGuardMismatchAlertMock = vi.fn();
+const sendRefundFailedAlertMock = vi.fn();
 vi.mock("@/lib/paymentEmails", () => ({
   sendPaymentFailedAlertEmail: sendPaymentFailedAlertEmailMock,
   sendPaymentGuardMismatchAlert: sendPaymentGuardMismatchAlertMock,
+  sendRefundFailedAlert: sendRefundFailedAlertMock,
 }));
 
 async function importRoute() {
@@ -48,6 +50,8 @@ describe("POST /api/webhooks/razorpay", () => {
     sendPaymentFailedAlertEmailMock.mockResolvedValue(undefined);
     sendPaymentGuardMismatchAlertMock.mockReset();
     sendPaymentGuardMismatchAlertMock.mockResolvedValue(undefined);
+    sendRefundFailedAlertMock.mockReset();
+    sendRefundFailedAlertMock.mockResolvedValue(undefined);
   });
 
   it("returns 401 and never calls finalize when the signature doesn't verify", async () => {
@@ -203,6 +207,41 @@ describe("POST /api/webhooks/razorpay", () => {
       const response = await POST(buildRequest(rawBody, "good-signature"));
 
       expect(markRazorpayRefundedMock).toHaveBeenCalledWith("order_1");
+      expect(response.status).toBe(200);
+    });
+  });
+
+  describe("refund.failed", () => {
+    it("sends the ops alert with order, refund id, and amount", async () => {
+      verifyWebhookSignatureMock.mockReturnValue(true);
+      const rawBody = JSON.stringify({
+        event: "refund.failed",
+        payload: {
+          refund: { entity: { id: "rfnd_1", amount: 29900 } },
+          payment: { entity: { id: "pay_1", order_id: "order_1" } },
+        },
+      });
+      const { POST } = await importRoute();
+      const response = await POST(buildRequest(rawBody, "good-signature"));
+
+      expect(sendRefundFailedAlertMock).toHaveBeenCalledWith({ orderId: "order_1", refundId: "rfnd_1", amountPaise: 29900 });
+      expect(markRazorpayRefundedMock).not.toHaveBeenCalled();
+      expect(response.status).toBe(200);
+    });
+
+    it("still returns 200 when the alert email fails to send", async () => {
+      verifyWebhookSignatureMock.mockReturnValue(true);
+      sendRefundFailedAlertMock.mockRejectedValue(new Error("resend down"));
+      const rawBody = JSON.stringify({
+        event: "refund.failed",
+        payload: {
+          refund: { entity: { id: "rfnd_1", amount: 29900 } },
+          payment: { entity: { id: "pay_1", order_id: "order_1" } },
+        },
+      });
+      const { POST } = await importRoute();
+      const response = await POST(buildRequest(rawBody, "good-signature"));
+
       expect(response.status).toBe(200);
     });
   });

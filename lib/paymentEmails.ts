@@ -72,6 +72,32 @@ export async function sendPaymentGuardMismatchAlert(params: PaymentGuardMismatch
   });
 }
 
+type RefundFailedParams = {
+  orderId: string;
+  refundId: string;
+  amountPaise: number;
+};
+
+// Ops-only alert: Razorpay accepted a refund request (the admin's synchronous
+// call got a 200 and we marked the transaction "refunded" + revoked
+// entitlement immediately) but later reported it actually failed -- money
+// never moved. Deliberately not auto-corrected here, same reasoning as
+// sendPaymentGuardMismatchAlert: a webhook flipping financial/entitlement
+// state back and forth is riskier than a human reconciling it once.
+export async function sendRefundFailedAlert(params: RefundFailedParams): Promise<void> {
+  const resend = getResendClient();
+  const rupees = (params.amountPaise / 100).toFixed(2);
+  const text = `A Razorpay refund we already marked "refunded" actually FAILED on Razorpay's side.\n\nOrder: ${params.orderId}\nRefund: ${params.refundId}\nAmount: ₹${rupees}\n\nOur DB still shows this transaction refunded and the candidate's entitlement already revoked, but the money never moved. Check the Razorpay dashboard and either retry the refund or restore entitlement manually.`;
+
+  await resend.emails.send({
+    from: getFromEmail(),
+    to: [getOpsEmail()],
+    subject: `⚠ Razorpay refund failed after being marked refunded — order ${params.orderId}`,
+    text,
+    html: `<p>A Razorpay refund we already marked "refunded" actually <strong>FAILED</strong> on Razorpay's side.</p><p>Order: ${params.orderId}<br/>Refund: ${params.refundId}<br/>Amount: ₹${rupees}</p><p>Our DB still shows this transaction refunded and the candidate's entitlement already revoked, but the money never moved. Check the Razorpay dashboard and either retry the refund or restore entitlement manually.</p>`,
+  });
+}
+
 type StuckPaymentParams = {
   orderId: string;
   amountPaise: number;

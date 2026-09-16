@@ -34,7 +34,7 @@ export default function PaymentActions({ orderId, status, amountPaise }: { order
         showToast("error", data?.error || "Something went wrong — try again.");
         return;
       }
-      showToast("success", "Refunded.");
+      showToast("success", data?.speedProcessed === "optimum" ? "Refunded instantly." : "Refunded (5-7 day standard processing).");
       router.refresh();
     } catch {
       showToast("error", "Something went wrong — try again.");

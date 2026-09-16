@@ -233,7 +233,7 @@ export async function recordManualReconciliation(
   });
 }
 
-export async function refundTransaction(orderId: string, reason: string, adminEmail: string): Promise<void> {
+export async function refundTransaction(orderId: string, reason: string, adminEmail: string): Promise<{ speedProcessed: string }> {
   const supabase = getSupabaseServerClient();
   const { data: txn, error } = await supabase
     .from("razorpay_transactions")
@@ -251,7 +251,7 @@ export async function refundTransaction(orderId: string, reason: string, adminEm
     throw new Error("Transaction has no associated payment to refund.");
   }
 
-  await createRefund(txn.payment_id, txn.amount_paise);
+  const refund = await createRefund(txn.payment_id, txn.amount_paise);
   await markRazorpayRefunded(orderId);
 
   await logAdminAction({
@@ -260,8 +260,10 @@ export async function refundTransaction(orderId: string, reason: string, adminEm
     targetType: "candidate",
     targetId: txn.user_id,
     priorValue: { status: "success" },
-    newValue: { status: "refunded", reason, orderId, amountPaise: txn.amount_paise },
+    newValue: { status: "refunded", reason, orderId, amountPaise: txn.amount_paise, speedProcessed: refund.speedProcessed },
   });
+
+  return { speedProcessed: refund.speedProcessed };
 }
 
 export async function voidStuckTransaction(orderId: string, adminEmail: string): Promise<void> {

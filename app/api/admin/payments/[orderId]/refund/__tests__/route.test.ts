@@ -24,7 +24,7 @@ describe("POST /api/admin/payments/[orderId]/refund", () => {
     requireAdminMock.mockReset();
     requireAdminMock.mockResolvedValue({ email: "admin@merito.in", last_sign_in_at: new Date().toISOString() });
     refundTransactionMock.mockReset();
-    refundTransactionMock.mockResolvedValue(undefined);
+    refundTransactionMock.mockResolvedValue({ speedProcessed: "optimum" });
     enforceAdminRateLimitMock.mockReset();
     enforceAdminRateLimitMock.mockResolvedValue(undefined);
   });
@@ -35,6 +35,8 @@ describe("POST /api/admin/payments/[orderId]/refund", () => {
     const response = await POST(buildRequest({ reason: "candidate requested" }), { params: Promise.resolve({ orderId: "order-1" }) });
 
     expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body).toEqual({ ok: true, speedProcessed: "optimum" });
     expect(refundTransactionMock).toHaveBeenCalledWith("order-1", "candidate requested", "admin@merito.in");
   });
 

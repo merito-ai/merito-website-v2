@@ -171,7 +171,7 @@ describe("refundTransaction", () => {
   beforeEach(() => {
     fromMock.mockReset();
     createRefundMock.mockReset();
-    createRefundMock.mockResolvedValue({ refundId: "rfnd_1" });
+    createRefundMock.mockResolvedValue({ refundId: "rfnd_1", speedRequested: "optimum", speedProcessed: "optimum" });
     markRazorpayRefundedMock.mockReset();
     markRazorpayRefundedMock.mockResolvedValue({ ok: true, alreadyProcessed: false });
     logAdminActionMock.mockReset();
@@ -189,8 +189,9 @@ describe("refundTransaction", () => {
     });
 
     const { refundTransaction } = await import("../adminPayments");
-    await refundTransaction("order-1", "candidate requested", "admin@merito.in");
+    const result = await refundTransaction("order-1", "candidate requested", "admin@merito.in");
 
+    expect(result).toEqual({ speedProcessed: "optimum" });
     expect(createRefundMock).toHaveBeenCalledWith("pay_123", 29900);
     expect(markRazorpayRefundedMock).toHaveBeenCalledWith("order-1");
     expect(logAdminActionMock).toHaveBeenCalledWith(

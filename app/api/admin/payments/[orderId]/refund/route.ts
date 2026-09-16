@@ -23,10 +23,11 @@ export async function POST(request: Request, { params }: RouteContext) {
     return Response.json({ error: "reason is required." }, { status: 400 });
   }
 
+  let result: { speedProcessed: string };
   try {
     assertRecentAuth(admin);
     await enforceAdminRateLimit(admin.email as string, "payment.refund");
-    await refundTransaction(orderId, parsed.data.reason, admin.email as string);
+    result = await refundTransaction(orderId, parsed.data.reason, admin.email as string);
   } catch (error) {
     if (error instanceof ReauthRequiredError) {
       return Response.json({ error: error.message }, { status: 401 });
@@ -38,5 +39,5 @@ export async function POST(request: Request, { params }: RouteContext) {
     return Response.json({ error: message }, { status: 409 });
   }
 
-  return Response.json({ ok: true });
+  return Response.json({ ok: true, speedProcessed: result.speedProcessed });
 }
