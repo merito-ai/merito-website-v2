@@ -72,8 +72,8 @@ export default function PriceOptionTiles({
       <p style={{ textAlign: "center", margin: "0 0 12px" }}>
         <span
           onClick={() => !submitting && onContinue("solo")}
-          className="font-[family-name:var(--font-poppins)] text-[#9c9c9c]"
-          style={{ fontSize: 12, textDecoration: "underline", cursor: submitting ? "default" : "pointer" }}
+          className="font-[family-name:var(--font-poppins)]"
+          style={{ fontSize: 12, color: "#ed1a24", textDecoration: "underline", cursor: submitting ? "default" : "pointer" }}
         >
           {soloLabel} for {formatPrice(soloPrice)} instead →
         </span>

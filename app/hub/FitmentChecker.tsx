@@ -239,7 +239,7 @@ export default function FitmentChecker() {
       </p>
 
       <label className="block font-[family-name:var(--font-poppins)] font-semibold text-black" style={{ fontSize: 12, marginBottom: 6 }}>
-        Full name
+        Full name <span style={{ color: "#ed1a24" }}>*</span>
       </label>
       <input
         type="text"
@@ -251,7 +251,7 @@ export default function FitmentChecker() {
       />
 
       <label className="block font-[family-name:var(--font-poppins)] font-semibold text-black" style={{ fontSize: 12, marginBottom: 6 }}>
-        Your email
+        Your email <span style={{ color: "#ed1a24" }}>*</span>
       </label>
       <input
         type="email"
@@ -266,7 +266,7 @@ export default function FitmentChecker() {
       </p>
 
       <label className="block font-[family-name:var(--font-poppins)] font-semibold text-black" style={{ fontSize: 12, marginBottom: 6 }}>
-        Phone number
+        Phone number <span style={{ color: "#ed1a24" }}>*</span>
       </label>
       <input
         type="tel"
@@ -278,7 +278,7 @@ export default function FitmentChecker() {
       />
 
       <label className="block font-[family-name:var(--font-poppins)] font-semibold text-black" style={{ fontSize: 12, marginBottom: 6 }}>
-        The role you want
+        The role you want <span style={{ color: "#ed1a24" }}>*</span>
       </label>
       <input
         value={role}
@@ -304,7 +304,7 @@ export default function FitmentChecker() {
 
       <div className="flex items-center" style={{ gap: 8, marginBottom: 6 }}>
         <label className="font-[family-name:var(--font-poppins)] font-semibold text-black" style={{ fontSize: 12 }}>
-          Job description
+          Job description <span style={{ color: "#ed1a24" }}>*</span>
         </label>
         <div className="flex border border-[#dcdcdc] overflow-hidden" style={{ borderRadius: 50, marginLeft: "auto" }}>
           <button

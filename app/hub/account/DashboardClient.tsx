@@ -23,7 +23,6 @@ export default function DashboardClient({
   leadId,
   roleTitle,
   level,
-  bundleEligible,
   personalityUnlocked,
   referencesUnlocked,
   userEmail,
@@ -43,7 +42,6 @@ export default function DashboardClient({
   leadId: string;
   roleTitle: string;
   level: CandidateLevel;
-  bundleEligible: boolean;
   personalityUnlocked: boolean;
   referencesUnlocked: boolean;
   userEmail: string;
@@ -68,6 +66,11 @@ export default function DashboardClient({
   const [counsellingRequested, setCounsellingRequested] = useState(initialCounsellingRequested);
   const [personalityUnlockedState, setPersonalityUnlockedState] = useState(personalityUnlocked);
   const [referencesUnlockedState, setReferencesUnlockedState] = useState(referencesUnlocked);
+
+  // bundleEligible is only what the server saw at page load; recompute from
+  // live unlock state so the bundle card/option disappears the moment any
+  // one product unlocks, without needing a full page refresh.
+  const bundleStillEligible = !reportUnlocked && !personalityUnlockedState && !referencesUnlockedState;
 
   const doneCount =
     1 +
@@ -147,7 +150,7 @@ export default function DashboardClient({
           onOpenInterviewStart={() => setModal("interview")}
         />
 
-        {bundleEligible && <BundlePromoCard level={level} onOpenPaywall={() => setModal("report")} />}
+        {bundleStillEligible && <BundlePromoCard level={level} onOpenPaywall={() => setModal("report")} />}
 
         {recruiterActivity}
 
@@ -182,7 +185,7 @@ export default function DashboardClient({
           leadId={leadId}
           roleTitle={roleTitle}
           level={level}
-          bundleEligible={bundleEligible}
+          bundleEligible={bundleStillEligible}
           onClose={() => setModal("none")}
           onUnlocked={(unlockedReport, selection) => {
             setReportUnlocked(true);
@@ -200,7 +203,7 @@ export default function DashboardClient({
           leadId={leadId}
           roleTitle={roleTitle}
           level={level}
-          bundleEligible={bundleEligible}
+          bundleEligible={bundleStillEligible}
           onClose={() => setModal("none")}
           onUnlocked={() => {
             setPersonalityUnlockedState(true);
@@ -213,7 +216,7 @@ export default function DashboardClient({
         <ReferencesPaywallModal
           leadId={leadId}
           level={level}
-          bundleEligible={bundleEligible}
+          bundleEligible={bundleStillEligible}
           onClose={() => setModal("none")}
           onUnlocked={() => {
             setReferencesUnlockedState(true);
