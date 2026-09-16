@@ -59,143 +59,156 @@ export default async function AccountPage({
   const currentIndex = leads.indexOf(current);
   const prevForSameRole = leads.find((l, i) => i > currentIndex && l.role_title === current.role_title);
 
-  const reportUnlocked = await isReportUnlocked(user.id, current.id, current.role_title);
+  // These two chains each do their own external-API self-heal call
+  // (IntervueBox) and used to run strictly sequentially, one full round-trip
+  // after the other. They touch disjoint rows (fitment_leads vs
+  // fitment_interviews) so nothing here depends on the other -- run them,
+  // and every other independent per-user lookup, concurrently instead.
+  const resolveReport = async () => {
+    const reportUnlocked = await isReportUnlocked(user.id, current.id, current.role_title);
 
-  let score = current.score;
-  let verdict = current.verdict;
-  let resumeMatchStatus = current.resume_match_status;
-  let resumeMatchRaw = current.resume_match_raw;
+    let score = current.score;
+    let verdict = current.verdict;
+    let resumeMatchStatus = current.resume_match_status;
+    let resumeMatchRaw = current.resume_match_raw;
 
-  if (resumeMatchStatus === "PENDING") {
-    try {
-      const report = await getResumeMatchReport(current.ib_applied_job_id);
-      if (report.status === "READY") {
-        const freshRaw = {
-          overallScore: report.overallScore,
-          rank: report.rank,
-          categories: report.categories,
-          summary: report.summary,
-          strongPoints: report.strongPoints,
-          weakPoints: report.weakPoints,
-        };
-        // IntervueBox can return a null summary on an otherwise-READY report
-        // (live-confirmed) -- verdict is NOT NULL, so a bare pass-through
-        // 500s this update even though the score itself is valid.
-        const freshVerdict = report.summary || "No summary available.";
-        const admin = getSupabaseServerClient();
-        await admin
-          .from("fitment_leads")
-          .update({
-            score: scoreOutOfTen(report.overallScore),
-            verdict: freshVerdict,
-            resume_match_status: "READY",
-            resume_match_score: report.overallScore,
-            resume_match_raw: freshRaw,
-          })
-          .eq("id", current.id);
+    if (resumeMatchStatus === "PENDING") {
+      try {
+        const report = await getResumeMatchReport(current.ib_applied_job_id);
+        if (report.status === "READY") {
+          const freshRaw = {
+            overallScore: report.overallScore,
+            rank: report.rank,
+            categories: report.categories,
+            summary: report.summary,
+            strongPoints: report.strongPoints,
+            weakPoints: report.weakPoints,
+          };
+          // IntervueBox can return a null summary on an otherwise-READY report
+          // (live-confirmed) -- verdict is NOT NULL, so a bare pass-through
+          // 500s this update even though the score itself is valid.
+          const freshVerdict = report.summary || "No summary available.";
+          const admin = getSupabaseServerClient();
+          await admin
+            .from("fitment_leads")
+            .update({
+              score: scoreOutOfTen(report.overallScore),
+              verdict: freshVerdict,
+              resume_match_status: "READY",
+              resume_match_score: report.overallScore,
+              resume_match_raw: freshRaw,
+            })
+            .eq("id", current.id);
 
-        score = scoreOutOfTen(report.overallScore);
-        verdict = freshVerdict;
-        resumeMatchStatus = "READY";
-        resumeMatchRaw = freshRaw;
+          score = scoreOutOfTen(report.overallScore);
+          verdict = freshVerdict;
+          resumeMatchStatus = "READY";
+          resumeMatchRaw = freshRaw;
+        }
+      } catch (err) {
+        console.error("getResumeMatchReport failed on dashboard read, falling back to stale values", err);
       }
-    } catch (err) {
-      console.error("getResumeMatchReport failed on dashboard read, falling back to stale values", err);
     }
-  }
+
+    return { reportUnlocked, score, verdict, resumeMatchStatus, resumeMatchRaw };
+  };
+
+  const resolveInterview = async () => {
+    const { data: interviewRow } = await supabase
+      .from("fitment_interviews")
+      .select("id, status, ib_agent_id, ib_candidate_id, ib_interview_status, invited_at, stuck_at")
+      .eq("user_id", user.id)
+      .or(leadIdOrRoleTitleFilter(current.id, current.role_title))
+      .order("updated_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    // A genuinely-ready row always wins over a stale stuck_at flag (mirrors
+    // resolveInterviewViewState.ts's priority -- see the Critical fix in
+    // docs/superpowers/specs/2026-08-19-interview-stuck-state-design.md), so
+    // "ready" is checked before "stuck" here too.
+    let interviewStatus: InterviewStatus = !interviewRow
+      ? "not_started"
+      : interviewRow.status === "ready"
+        ? "ready"
+        : interviewRow.stuck_at
+          ? "stuck"
+          : interviewRow.status === "terminated"
+            ? "terminated"
+            : interviewRow.ib_interview_status === "EVALUATING" || interviewRow.ib_interview_status === "EVALUATED"
+              ? "processing"
+              : "invited";
+
+    // The DB row only flips to "ready" via IntervueBox's webhook -- if that
+    // delivery is ever missed, nothing else updates it. Self-heal the same
+    // way the resume-match report above does: re-check IntervueBox directly
+    // whenever we're about to show a stale "invited" (processing) or "stuck"
+    // state -- a stuck row can still have a real report waiting at the vendor
+    // if the interview actually completed just before the failed resume call
+    // set stuck_at (see the Critical fix referenced above).
+    if (interviewRow && (interviewStatus === "invited" || interviewStatus === "processing" || interviewStatus === "stuck")) {
+      try {
+        const interviewReport = await getInterviewReport(interviewRow.ib_agent_id, interviewRow.ib_candidate_id);
+        if (interviewReport.status === "READY") {
+          const admin = getSupabaseServerClient();
+          await admin
+            .from("fitment_interviews")
+            .update({
+              status: "ready",
+              // A row that self-resolves here may have had stuck_at set by a
+              // doomed resume/launch call racing the report's real arrival --
+              // clear it so the admin "Interview stuck" count doesn't keep
+              // counting a row that no longer needs help.
+              stuck_at: null,
+              report_raw: buildReportRaw(interviewReport),
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", interviewRow.id);
+          interviewStatus = "ready";
+        }
+      } catch (err) {
+        console.error("Interview self-heal check failed, leaving status as-is", err);
+      }
+    }
+
+    return { interviewStatus };
+  };
+
+  const [
+    { reportUnlocked, score, verdict, resumeMatchStatus, resumeMatchRaw },
+    { interviewStatus },
+    referenceCheck,
+    { data: personalityRow },
+    { data: counsellingRequest },
+    recruiterViewCount,
+    [personalityUnlocked, referencesUnlocked],
+  ] = await Promise.all([
+    resolveReport(),
+    resolveInterview(),
+    getReferenceCheckStatus(user.id),
+    supabase.from("personality_tests").select("role_title").eq("user_id", user.id).maybeSingle(),
+    supabase.from("counselling_requests").select("id").eq("user_id", user.id).maybeSingle(),
+    getRecruiterViewCount(user.id),
+    Promise.all([isProductUnlocked(user.id, "personality"), isProductUnlocked(user.id, "references")]),
+  ]);
 
   const report: ResumeMatchReportReady | null =
     reportUnlocked && resumeMatchStatus === "READY" && resumeMatchRaw
       ? (resumeMatchRaw as ResumeMatchReportReady)
       : null;
 
-  const { data: interviewRow } = await supabase
-    .from("fitment_interviews")
-    .select("id, status, ib_agent_id, ib_candidate_id, ib_interview_status, invited_at, stuck_at")
-    .eq("user_id", user.id)
-    .or(leadIdOrRoleTitleFilter(current.id, current.role_title))
-    .order("updated_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  // A genuinely-ready row always wins over a stale stuck_at flag (mirrors
-  // resolveInterviewViewState.ts's priority -- see the Critical fix in
-  // docs/superpowers/specs/2026-08-19-interview-stuck-state-design.md), so
-  // "ready" is checked before "stuck" here too.
-  let interviewStatus: InterviewStatus = !interviewRow
-    ? "not_started"
-    : interviewRow.status === "ready"
-      ? "ready"
-      : interviewRow.stuck_at
-        ? "stuck"
-        : interviewRow.status === "terminated"
-          ? "terminated"
-          : interviewRow.ib_interview_status === "EVALUATING" || interviewRow.ib_interview_status === "EVALUATED"
-            ? "processing"
-            : "invited";
-
-  // The DB row only flips to "ready" via IntervueBox's webhook -- if that
-  // delivery is ever missed, nothing else updates it. Self-heal the same
-  // way the resume-match report above does: re-check IntervueBox directly
-  // whenever we're about to show a stale "invited" (processing) or "stuck"
-  // state -- a stuck row can still have a real report waiting at the vendor
-  // if the interview actually completed just before the failed resume call
-  // set stuck_at (see the Critical fix referenced above).
-  if (interviewRow && (interviewStatus === "invited" || interviewStatus === "processing" || interviewStatus === "stuck")) {
-    try {
-      const interviewReport = await getInterviewReport(interviewRow.ib_agent_id, interviewRow.ib_candidate_id);
-      if (interviewReport.status === "READY") {
-        const admin = getSupabaseServerClient();
-        await admin
-          .from("fitment_interviews")
-          .update({
-            status: "ready",
-            // A row that self-resolves here may have had stuck_at set by a
-            // doomed resume/launch call racing the report's real arrival --
-            // clear it so the admin "Interview stuck" count doesn't keep
-            // counting a row that no longer needs help.
-            stuck_at: null,
-            report_raw: buildReportRaw(interviewReport),
-            updated_at: new Date().toISOString(),
-          })
-          .eq("id", interviewRow.id);
-        interviewStatus = "ready";
-      }
-    } catch (err) {
-      console.error("Interview self-heal check failed, leaving status as-is", err);
-    }
-  }
-
-  const referenceCheck = await getReferenceCheckStatus(user.id);
   const referenceCheckStatus: "none" | "in_progress" | "completed" =
     !referenceCheck ? "none" : referenceCheck.status === "completed" ? "completed" : "in_progress";
-
-  const { data: personalityRow } = await supabase
-    .from("personality_tests")
-    .select("role_title")
-    .eq("user_id", user.id)
-    .maybeSingle();
 
   const personalityStatus: PersonalityStatus = personalityRow ? "ready" : "not_started";
 
   const level = (current.candidate_level as CandidateLevel | null) ?? DEFAULT_LEVEL;
   const counsellingPriceLabel = formatPrice(PRODUCT_PRICING.counselling[level]);
 
-  const [personalityUnlocked, referencesUnlocked] = await Promise.all([
-    isProductUnlocked(user.id, "personality"),
-    isProductUnlocked(user.id, "references"),
-  ]);
   // All three have to still be unowned -- if report was already bought solo,
   // the bundle isn't a valid purchase anymore (same fix as the pricing page).
   const bundleEligible = !reportUnlocked && !personalityUnlocked && !referencesUnlocked;
 
-  const { data: counsellingRequest } = await supabase
-    .from("counselling_requests")
-    .select("id")
-    .eq("user_id", user.id)
-    .maybeSingle();
-
-  const recruiterViewCount = await getRecruiterViewCount(user.id);
   const userName = current.name || user.email?.split("@")[0] || "there";
 
   return (

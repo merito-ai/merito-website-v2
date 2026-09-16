@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import CounsellingPaywallModal from "../CounsellingPaywallModal";
-
-const CALENDLY_URL = "https://calendly.com/rhumbe-merito/30min";
+import { CALENDLY_URL } from "@/lib/hub/calendlyUrl";
 
 // Shared button + paywall-modal trigger for the expert-guidance page's two
 // booking CTAs (the card under the bio, and the closing gradient CTA card).

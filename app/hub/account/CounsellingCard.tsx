@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { UserRound } from "lucide-react";
-
-const CALENDLY_URL = "https://calendly.com/rhumbe-merito/30min";
+import { CALENDLY_URL } from "@/lib/hub/calendlyUrl";
 
 export default function CounsellingCard({
   priceLabel,
