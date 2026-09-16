@@ -4,6 +4,7 @@ import { useState } from "react";
 import PriceOptionTiles from "./PriceOptionTiles";
 import type { CandidateLevel } from "@/lib/razorpay/pricing";
 import { trackPurchase } from "@/lib/analytics";
+import { fetchWithTimeout, networkErrorMessage } from "@/lib/hub/fetchWithTimeout";
 
 type RazorpayHandlerResponse = {
   razorpay_order_id: string;
@@ -66,7 +67,7 @@ export default function ReferencesPaywallModal({
     setPaying(true);
     setError(null);
     try {
-      const res = await fetch(initiateUrl, {
+      const res = await fetchWithTimeout(initiateUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(initiateBody),
@@ -104,7 +105,7 @@ export default function ReferencesPaywallModal({
         prefill: data.prefill,
         handler: async (response) => {
           try {
-            const verifyRes = await fetch("/api/hub/razorpay/verify", {
+            const verifyRes = await fetchWithTimeout("/api/hub/razorpay/verify", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
@@ -121,17 +122,17 @@ export default function ReferencesPaywallModal({
             }
             trackPurchase((initiateBody as { product?: string }).product ?? "references");
             await onPaid();
-          } catch {
+          } catch (err) {
             setPaying(false);
-            setError("Payment succeeded, but verification failed. Please refresh.");
+            setError(networkErrorMessage(err, "Payment succeeded, but verification failed. Please refresh."));
           }
         },
         modal: { ondismiss: () => setPaying(false) },
       });
       rzp.open();
-    } catch {
+    } catch (err) {
       setPaying(false);
-      setError("Something went wrong. Please try again.");
+      setError(networkErrorMessage(err, "Something went wrong. Please try again."));
     }
   };
 

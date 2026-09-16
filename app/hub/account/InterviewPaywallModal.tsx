@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { InterviewStatus } from "./ProgressRail";
 import { PRODUCT_PRICING, formatPrice, type CandidateLevel } from "@/lib/razorpay/pricing";
 import { trackPurchase } from "@/lib/analytics";
+import { fetchWithTimeout, networkErrorMessage } from "@/lib/hub/fetchWithTimeout";
 
 type RazorpayHandlerResponse = {
   razorpay_order_id: string;
@@ -70,18 +71,23 @@ export default function InterviewPaywallModal({
   const [invitedStatus, setInvitedStatus] = useState<InterviewStatus | null>(null);
 
   const startInterview = async () => {
-    const res = await fetch("/api/hub/start-ai-interview", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ leadId }),
-    });
-    const data = await res.json();
-    setPaying(false);
-    if (!res.ok) {
-      setError(data.error || "Payment succeeded, but starting the interview failed. Please contact support.");
-      return;
+    try {
+      const res = await fetchWithTimeout("/api/hub/start-ai-interview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ leadId }),
+      });
+      const data = await res.json();
+      setPaying(false);
+      if (!res.ok) {
+        setError(data.error || "Payment succeeded, but starting the interview failed. Please contact support.");
+        return;
+      }
+      setInvitedStatus(data.status as InterviewStatus);
+    } catch (err) {
+      setPaying(false);
+      setError(networkErrorMessage(err, "Payment succeeded, but starting the interview failed. Please contact support."));
     }
-    setInvitedStatus(data.status as InterviewStatus);
   };
 
   // Once the invite is sent, dismissing the modal (✕ or backdrop click)
@@ -99,7 +105,7 @@ export default function InterviewPaywallModal({
     setPaying(true);
     setError(null);
     try {
-      const res = await fetch("/api/hub/razorpay/initiate", {
+      const res = await fetchWithTimeout("/api/hub/razorpay/initiate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ product: "interview" }),
@@ -134,7 +140,7 @@ export default function InterviewPaywallModal({
         prefill: data.prefill,
         handler: async (response) => {
           try {
-            const verifyRes = await fetch("/api/hub/razorpay/verify", {
+            const verifyRes = await fetchWithTimeout("/api/hub/razorpay/verify", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
@@ -151,9 +157,9 @@ export default function InterviewPaywallModal({
             }
             trackPurchase("interview");
             await startInterview();
-          } catch {
+          } catch (err) {
             setPaying(false);
-            setError("Payment succeeded, but verification failed. Please refresh.");
+            setError(networkErrorMessage(err, "Payment succeeded, but verification failed. Please refresh."));
           }
         },
         modal: {
@@ -161,9 +167,9 @@ export default function InterviewPaywallModal({
         },
       });
       rzp.open();
-    } catch {
+    } catch (err) {
       setPaying(false);
-      setError("Something went wrong. Please try again.");
+      setError(networkErrorMessage(err, "Something went wrong. Please try again."));
     }
   };
 

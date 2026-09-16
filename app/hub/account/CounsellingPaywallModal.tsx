@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { trackPurchase } from "@/lib/analytics";
+import { fetchWithTimeout, networkErrorMessage } from "@/lib/hub/fetchWithTimeout";
 
 type RazorpayHandlerResponse = {
   razorpay_order_id: string;
@@ -60,7 +61,7 @@ export default function CounsellingPaywallModal({
     setPaying(true);
     setError(null);
     try {
-      const res = await fetch("/api/hub/razorpay/initiate", {
+      const res = await fetchWithTimeout("/api/hub/razorpay/initiate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ product: "counselling" }),
@@ -95,7 +96,7 @@ export default function CounsellingPaywallModal({
         prefill: data.prefill,
         handler: async (response) => {
           try {
-            const verifyRes = await fetch("/api/hub/razorpay/verify", {
+            const verifyRes = await fetchWithTimeout("/api/hub/razorpay/verify", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
@@ -112,9 +113,9 @@ export default function CounsellingPaywallModal({
             }
             trackPurchase("counselling");
             onRequested();
-          } catch {
+          } catch (err) {
             setPaying(false);
-            setError("Payment succeeded, but verification failed. Please refresh.");
+            setError(networkErrorMessage(err, "Payment succeeded, but verification failed. Please refresh."));
           }
         },
         modal: {
@@ -122,9 +123,9 @@ export default function CounsellingPaywallModal({
         },
       });
       rzp.open();
-    } catch {
+    } catch (err) {
       setPaying(false);
-      setError("Something went wrong. Please try again.");
+      setError(networkErrorMessage(err, "Something went wrong. Please try again."));
     }
   };
 

@@ -5,6 +5,7 @@ import type { ResumeMatchReportReady } from "@/lib/intervuebox/reports";
 import PriceOptionTiles from "./PriceOptionTiles";
 import type { CandidateLevel } from "@/lib/razorpay/pricing";
 import { trackPurchase } from "@/lib/analytics";
+import { fetchWithTimeout, networkErrorMessage } from "@/lib/hub/fetchWithTimeout";
 
 type RazorpayHandlerResponse = {
   razorpay_order_id: string;
@@ -70,7 +71,7 @@ export default function ReportPaywallModal({
     setPaying(true);
     setError(null);
     try {
-      const res = await fetch("/api/hub/unlock-report", {
+      const res = await fetchWithTimeout("/api/hub/unlock-report", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ leadId, product: selection === "bundle" ? "bundle" : "report" }),
@@ -109,7 +110,7 @@ export default function ReportPaywallModal({
           prefill: data.prefill,
           handler: async (response) => {
             try {
-              const verifyRes = await fetch("/api/hub/razorpay/verify", {
+              const verifyRes = await fetchWithTimeout("/api/hub/razorpay/verify", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -130,9 +131,9 @@ export default function ReportPaywallModal({
                 return;
               }
               onUnlocked(verifyData.report, selection);
-            } catch {
+            } catch (err) {
               setPaying(false);
-              setError("Payment succeeded, but verification failed. Please refresh.");
+              setError(networkErrorMessage(err, "Payment succeeded, but verification failed. Please refresh."));
             }
           },
           modal: {
@@ -144,9 +145,9 @@ export default function ReportPaywallModal({
       }
       setPaying(false);
       onUnlocked(data.report, selection);
-    } catch {
+    } catch (err) {
       setPaying(false);
-      setError("Something went wrong. Please try again.");
+      setError(networkErrorMessage(err, "Something went wrong. Please try again."));
     }
   };
 
