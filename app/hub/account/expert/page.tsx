@@ -11,7 +11,6 @@ import {
   BookOpen,
   Compass,
   CheckCircle2,
-  ExternalLink,
 } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabaseAuthServer";
 import { DEFAULT_LEVEL, PRODUCT_PRICING, formatPrice, type CandidateLevel } from "@/lib/razorpay/pricing";
@@ -218,7 +217,15 @@ export default async function ExpertBioPage({
                     className="text-white/40 hover:text-[#0A66C2] transition-colors"
                     style={{ display: "inline-flex", alignItems: "center" }}
                   >
-                    <ExternalLink size={15} strokeWidth={2} />
+                    <svg width={15} height={15} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <rect x="1" y="1" width="22" height="22" rx="4" />
+                      <rect x="5" y="9.5" width="3" height="10" fill="#141416" />
+                      <circle cx="6.5" cy="5.2" r="1.9" fill="#141416" />
+                      <path
+                        d="M11 9.5h3v1.6c.7-1.1 1.9-1.9 3.6-1.9 3 0 4.4 2 4.4 5.1v5.7h-3v-5c0-1.5-.5-2.6-1.9-2.6-1.1 0-1.7.7-2 1.5-.1.3-.1.6-.1 1v5.1h-3z"
+                        fill="#141416"
+                      />
+                    </svg>
                   </a>
                 </div>
                 <p className="font-[family-name:var(--font-poppins)] text-white/55" style={{ fontSize: 13.5, margin: "2px 0 0" }}>
