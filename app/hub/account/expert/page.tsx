@@ -217,13 +217,12 @@ export default async function ExpertBioPage({
                     className="text-white/40 hover:text-[#0A66C2] transition-colors"
                     style={{ display: "inline-flex", alignItems: "center" }}
                   >
-                    <svg width={15} height={15} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                      <rect x="1.9" y="1.9" width="20.2" height="20.2" rx="4" stroke="currentColor" strokeWidth={1.9} />
-                      <circle cx="7.1" cy="7.2" r="1.35" fill="currentColor" />
-                      <rect x="5.9" y="10.2" width="2.4" height="7.9" rx="0.3" fill="currentColor" />
+                    <svg width={16} height={16} viewBox="0 0 24 24" aria-hidden="true">
                       <path
-                        d="M10.9 10.2h2.4v1.1c.6-.85 1.6-1.35 2.9-1.35 2.3 0 3.5 1.5 3.5 4v4.15h-2.4v-3.8c0-1.15-.42-1.95-1.45-1.95-.85 0-1.33.55-1.53 1.1-.07.2-.09.47-.09.73v3.92h-2.4z"
+                        fillRule="evenodd"
+                        clipRule="evenodd"
                         fill="currentColor"
+                        d="M4.6 1h14.8A3.6 3.6 0 0 1 23 4.6v14.8A3.6 3.6 0 0 1 19.4 23H4.6A3.6 3.6 0 0 1 1 19.4V4.6A3.6 3.6 0 0 1 4.6 1ZM5.7 9.7h2.9v8.6H5.7V9.7Zm1.45-4.6a1.75 1.75 0 1 0 0 3.5 1.75 1.75 0 0 0 0-3.5ZM10.6 9.7h2.8v1.2c.62-.9 1.65-1.45 3-1.45 2.35 0 3.6 1.5 3.6 4.15v4.7h-2.9v-4.25c0-1.2-.45-2-1.5-2-.9 0-1.4.6-1.62 1.2-.08.2-.1.5-.1.8v4.25h-2.9V9.7Z"
                       />
                     </svg>
                   </a>
