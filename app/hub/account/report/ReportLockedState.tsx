@@ -18,7 +18,7 @@ const IMPACT_POINTS = [
 ];
 
 const STEPS = [
-  "Your CV and the job description are already scored — the report exists",
+  "Your CV is scored against this JD as soon as both are in",
   "Unlock to read all six dimensions, each with its reasoning",
   "Work through the ranked gaps before you apply again",
 ];

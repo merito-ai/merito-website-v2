@@ -22,7 +22,6 @@ export default function DashboardClient({
   level,
   personalityUnlocked,
   referencesUnlocked,
-  userEmail,
   userName,
   score,
   verdict,
@@ -41,7 +40,6 @@ export default function DashboardClient({
   level: CandidateLevel;
   personalityUnlocked: boolean;
   referencesUnlocked: boolean;
-  userEmail: string;
   userName: string;
   score: number;
   prevScore: number | null;

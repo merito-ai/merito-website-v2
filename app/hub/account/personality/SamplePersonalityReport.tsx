@@ -5,18 +5,11 @@ import {
   TRAIT_NAME,
   TRAIT_MEANING,
   TRAIT_WORK_IMPLICATION,
+  TRAIT_COLOR,
   BANDS,
   traitLevel,
 } from "@/lib/personality";
 import { SAMPLE_PERSONALITY_SCORES, SAMPLE_PERSONALITY_NAME } from "@/lib/sampleReports/personality";
-
-const TRAIT_COLORS: Record<string, string> = {
-  E: "#F59E0B",
-  A: "#22C55E",
-  C: "#ed1a24",
-  ES: "#3B82F6",
-  O: "#A855F7",
-};
 
 export default function SamplePersonalityReport() {
   const firstTrait = TRAITS[0];
@@ -35,13 +28,13 @@ export default function SamplePersonalityReport() {
                 </span>
                 <span
                   className="font-[family-name:var(--font-poppins)] font-semibold"
-                  style={{ fontSize: 12, color: TRAIT_COLORS[trait] }}
+                  style={{ fontSize: 12, color: TRAIT_COLOR[trait] }}
                 >
                   {pct}% · {BANDS[band]}
                 </span>
               </div>
               <div className="bg-white/[0.08] overflow-hidden" style={{ height: 7, borderRadius: 6 }}>
-                <div className="h-full" style={{ borderRadius: 6, width: `${pct}%`, background: TRAIT_COLORS[trait] }} />
+                <div className="h-full" style={{ borderRadius: 6, width: `${pct}%`, background: TRAIT_COLOR[trait] }} />
               </div>
             </div>
           );
@@ -55,7 +48,7 @@ export default function SamplePersonalityReport() {
           </span>
           <span
             className="font-[family-name:var(--font-poppins)] font-semibold"
-            style={{ fontSize: 13, color: TRAIT_COLORS[firstTrait] }}
+            style={{ fontSize: 13, color: TRAIT_COLOR[firstTrait] }}
           >
             {firstScore.pct}%
           </span>

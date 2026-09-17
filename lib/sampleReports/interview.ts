@@ -47,7 +47,7 @@ export const SAMPLE_INTERVIEW_REPORT: InterviewReportReady = {
         "Clear and well-paced overall. Two answers lost their thread partway and would have benefited from a closing summary line.",
     },
     "Experiment design": {
-      score: 48,
+      score: 38,
       comment:
         "Recognised when an experiment was warranted but could not commit to a sample size or a stopping rule when pressed.",
     },

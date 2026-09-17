@@ -23,11 +23,21 @@ describe("SAMPLE_INTERVIEW_REPORT", () => {
 
   it("has a skill report whose scores band cleanly for the distribution chart", () => {
     const entries = Object.values(SAMPLE_INTERVIEW_REPORT.skillReport);
-    expect(entries.length).toBeGreaterThanOrEqual(2);
+    expect(entries).toHaveLength(3);
     entries.forEach((entry) => {
       expect(getSkillDistributionTier(entry.score).label).toBeTruthy();
       expect(entry.comment.length).toBeGreaterThan(20);
     });
+  });
+
+  it("does not band every skill into the top two tiers, so the distribution chart shows a weakness", () => {
+    const tierLabels = Object.values(SAMPLE_INTERVIEW_REPORT.skillReport).map(
+      (entry) => getSkillDistributionTier(entry.score).label
+    );
+    const distinctLabels = new Set(tierLabels);
+    expect(distinctLabels.size).toBeGreaterThan(1);
+    expect(tierLabels).not.toEqual(tierLabels.map(() => "Exceptional"));
+    expect(tierLabels.every((label) => label === "Exceptional" || label === "Proficient")).toBe(false);
   });
 
   it("carries the withheld sections the locked state advertises", () => {
