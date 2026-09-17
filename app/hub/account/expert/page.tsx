@@ -217,13 +217,13 @@ export default async function ExpertBioPage({
                     className="text-white/40 hover:text-[#0A66C2] transition-colors"
                     style={{ display: "inline-flex", alignItems: "center" }}
                   >
-                    <svg width={15} height={15} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                      <rect x="1" y="1" width="22" height="22" rx="4" />
-                      <rect x="5" y="9.5" width="3" height="10" fill="#141416" />
-                      <circle cx="6.5" cy="5.2" r="1.9" fill="#141416" />
+                    <svg width={15} height={15} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <rect x="1.9" y="1.9" width="20.2" height="20.2" rx="4" stroke="currentColor" strokeWidth={1.9} />
+                      <circle cx="7.1" cy="7.2" r="1.35" fill="currentColor" />
+                      <rect x="5.9" y="10.2" width="2.4" height="7.9" rx="0.3" fill="currentColor" />
                       <path
-                        d="M11 9.5h3v1.6c.7-1.1 1.9-1.9 3.6-1.9 3 0 4.4 2 4.4 5.1v5.7h-3v-5c0-1.5-.5-2.6-1.9-2.6-1.1 0-1.7.7-2 1.5-.1.3-.1.6-.1 1v5.1h-3z"
-                        fill="#141416"
+                        d="M10.9 10.2h2.4v1.1c.6-.85 1.6-1.35 2.9-1.35 2.3 0 3.5 1.5 3.5 4v4.15h-2.4v-3.8c0-1.15-.42-1.95-1.45-1.95-.85 0-1.33.55-1.53 1.1-.07.2-.09.47-.09.73v3.92h-2.4z"
+                        fill="currentColor"
                       />
                     </svg>
                   </a>
