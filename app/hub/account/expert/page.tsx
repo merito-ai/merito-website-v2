@@ -11,6 +11,7 @@ import {
   BookOpen,
   Compass,
   CheckCircle2,
+  ExternalLink,
 } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabaseAuthServer";
 import { DEFAULT_LEVEL, PRODUCT_PRICING, formatPrice, type CandidateLevel } from "@/lib/razorpay/pricing";
@@ -33,6 +34,7 @@ const BIO =
 const TESTIMONIAL =
   "Rushikesh didn't just point out what was wrong with my resume. He explained why it mattered from a hiring manager's perspective. That reframing got me two callbacks the next week.";
 const TESTIMONIAL_ATTRIBUTION = "Priya S., hired as DevOps Engineer";
+const LINKEDIN_URL = "https://www.linkedin.com/in/humbe/";
 
 const PERSPECTIVE_CARDS = [
   {
@@ -204,9 +206,21 @@ export default async function ExpertBioPage({
                 <Image src="/about-us-audit/founder-image.png" alt={NAME} fill sizes="64px" style={{ objectFit: "cover" }} />
               </div>
               <div>
-                <p className="font-[family-name:var(--font-gabarito)] font-semibold text-white" style={{ fontSize: 17, margin: 0 }}>
-                  {NAME}
-                </p>
+                <div className="flex items-center" style={{ gap: 8 }}>
+                  <p className="font-[family-name:var(--font-gabarito)] font-semibold text-white" style={{ fontSize: 17, margin: 0 }}>
+                    {NAME}
+                  </p>
+                  <a
+                    href={LINKEDIN_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${NAME} on LinkedIn`}
+                    className="text-white/40 hover:text-[#0A66C2] transition-colors"
+                    style={{ display: "inline-flex", alignItems: "center" }}
+                  >
+                    <ExternalLink size={15} strokeWidth={2} />
+                  </a>
+                </div>
                 <p className="font-[family-name:var(--font-poppins)] text-white/55" style={{ fontSize: 13.5, margin: "2px 0 0" }}>
                   {TITLE}
                 </p>
