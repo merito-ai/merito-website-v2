@@ -100,6 +100,12 @@ The "how it works" steps and the price badge are kept from the current implement
 preview block at the bottom of each file is deleted outright — no blur survives anywhere in these
 four components.
 
+That structure is identical across all four features, so it is extracted into
+`app/hub/account/LockedFeatureLayout.tsx` rather than duplicated four times. Each locked state then
+supplies only what differs: icon, title, price label, hook, impact points, sample body, "also
+included" labels, steps, and its CTA button. The paywall modal stays owned by the individual locked
+state, since each takes different props.
+
 ### 4. `SamplePreviewFrame`
 
 New shared component: `app/hub/account/SamplePreviewFrame.tsx`.
@@ -109,6 +115,8 @@ Props:
 - `cropHeight: number` — max pixel height of the sample body before the fade.
 - `alsoIncluded: string[]` — labels of the withheld sections.
 - `cta: ReactNode` — the existing per-feature paywall button.
+- `isRealData?: boolean` — switches the header label between "Your report" and "Sample data — not
+  your results". Only fitment ever passes `true`.
 - `children: ReactNode` — the sample body.
 
 Renders:
@@ -121,8 +129,9 @@ Renders:
   with the CTA sitting inside it.
 - The `alsoIncluded` list below the fade, each line prefixed with a lock glyph.
 
-Also `aria-hidden` on the sample body: screen readers get the "also included" list and the CTA,
-not a fictional candidate's scores read aloud as if they were the user's.
+`aria-hidden` is applied to the sample body only when `isRealData` is false — a fictional candidate's
+scores should not be read aloud as if they were the user's. When fitment renders the candidate's own
+report, the body stays in the accessibility tree.
 
 ### 5. Sample fixtures
 
@@ -142,7 +151,20 @@ The reference fixture deliberately stores raw `RefereeRow[]` and runs it through
 `computeReferenceReport`, so the sample's category averages are computed by production code rather
 than hand-written.
 
-**Persona.** One fictional candidate across all four samples: **Ananya Iyer, Product Analyst**.
+**Fitment is the exception: it shows the candidate's own real report.** The fitment report is
+generated before purchase — `app/hub/account/report/page.tsx` already reads the complete
+`ResumeMatchReportReady` from `resume_match_raw` in its locked branch and passes fragments of it
+(`previewSummary`, `previewCategory`) into `ReportLockedState`. So the fitment sample shows the
+candidate's actual score, actual summary and actual top three dimensions, cropped — "this is your
+84%, unlock the rest" — which is strictly more persuasive than a fictional sample. `ReportLockedState`
+takes the whole `ResumeMatchReportReady` instead of the two preview fragments. The fitment fixture is
+still built, as the fallback for candidates whose report is still `PENDING` (`lockedReport === null`);
+when the fallback renders, the frame's label reads "Sample data — not your results", and when real
+data renders it reads "Your report".
+
+The other three products generate nothing until purchase, so their samples are always fixtures.
+
+**Persona.** One fictional candidate across the fixture samples: **Ananya Iyer, Product Analyst**.
 Referee names in the reference sample are fictional too. No data is copied from the real exported
 PDFs used as tone reference — no real candidate names, emails, employers, or verbatim narrative.
 Narrative text in the fixtures is written fresh, matching the structure and register of real output
@@ -206,6 +228,7 @@ offer; (b) shows you what your referees actually say while there is still time t
 ## Files
 
 **New**
+- `app/hub/account/LockedFeatureLayout.tsx`
 - `app/hub/account/SamplePreviewFrame.tsx`
 - `lib/sampleReports/{fitment,personality,interview,references}.ts`
 - `app/hub/account/report/SampleFitmentReport.tsx`
@@ -217,6 +240,8 @@ offer; (b) shows you what your referees actually say while there is still time t
 - `app/hub/account/ProgressRail.tsx` — hrefs always, drop onClick and the four paywall props
 - `app/hub/account/DashboardClient.tsx` — drop 3 modal branches and imports, keep report modal
 - `app/hub/account/expert/page.tsx` — LinkedIn icon link
+- `app/hub/account/report/page.tsx` — pass the whole `ResumeMatchReportReady` to the locked state
+  instead of `previewSummary` / `previewCategory`
 - `app/hub/account/report/ReportLockedState.tsx`
 - `app/hub/account/personality/PersonalityLockedState.tsx`
 - `app/hub/account/interview/InterviewLockedState.tsx`
