@@ -19,6 +19,9 @@ describe("SAMPLE_PERSONALITY_SCORES", () => {
       // raw is a 12-item trait sum on a 1-5 scale
       expect(raw).toBeGreaterThanOrEqual(12);
       expect(raw).toBeLessThanOrEqual(60);
+      // Without this, a raw bumped without recomputing pct still passes every
+      // other assertion here, which is the exact drift these tests exist for.
+      expect(pct).toBe(Math.round(((raw - 12) / 48) * 100));
     });
   });
 
