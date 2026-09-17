@@ -3,7 +3,9 @@
 import type { ReactNode } from "react";
 import { Lock } from "lucide-react";
 
-const CARD_BG = "#141416";
+// The frame sits on the card (#141416) under a 2% white wash, so the fade has
+// to resolve to the composited colour or it ends on a visible band.
+const CARD_BG = "rgb(25,25,27)";
 
 export default function SamplePreviewFrame({
   cropHeight,
@@ -32,7 +34,7 @@ export default function SamplePreviewFrame({
           : "Sample data — not your results."}
       </p>
 
-      <div style={{ position: "relative" }}>
+      <div style={{ position: "relative", overflow: "hidden" }}>
         <div
           aria-hidden={!isRealData}
           style={{ maxHeight: cropHeight, overflow: "hidden", pointerEvents: "none" }}
@@ -45,12 +47,12 @@ export default function SamplePreviewFrame({
             left: 0,
             right: 0,
             bottom: 0,
-            height: 160,
+            height: 120,
             display: "flex",
             alignItems: "flex-end",
             justifyContent: "center",
             paddingBottom: 4,
-            background: `linear-gradient(to bottom, rgba(20,20,22,0) 0%, ${CARD_BG} 62%, ${CARD_BG} 100%)`,
+            background: `linear-gradient(to bottom, rgba(25,25,27,0) 0%, ${CARD_BG} 62%, ${CARD_BG} 100%)`,
           }}
         >
           {cta}

@@ -63,7 +63,7 @@ export default function InterviewLockedState({
       impactPoints={IMPACT_POINTS}
       steps={STEPS}
       preview={
-        <SamplePreviewFrame cropHeight={440} alsoIncluded={ALSO_INCLUDED} cta={cta}>
+        <SamplePreviewFrame cropHeight={620} alsoIncluded={ALSO_INCLUDED} cta={cta}>
           <SampleInterviewReport />
         </SamplePreviewFrame>
       }

@@ -61,7 +61,7 @@ export default function ReferencesLockedState({
       impactPoints={IMPACT_POINTS}
       steps={STEPS}
       preview={
-        <SamplePreviewFrame cropHeight={420} alsoIncluded={ALSO_INCLUDED} cta={cta}>
+        <SamplePreviewFrame cropHeight={560} alsoIncluded={ALSO_INCLUDED} cta={cta}>
           <SampleReferenceReport />
         </SamplePreviewFrame>
       }

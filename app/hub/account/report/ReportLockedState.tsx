@@ -73,7 +73,7 @@ export default function ReportLockedState({
       impactPoints={IMPACT_POINTS}
       steps={STEPS}
       preview={
-        <SamplePreviewFrame cropHeight={420} alsoIncluded={ALSO_INCLUDED} cta={cta} isRealData={isRealData}>
+        <SamplePreviewFrame cropHeight={700} alsoIncluded={ALSO_INCLUDED} cta={cta} isRealData={isRealData}>
           <SampleFitmentReport report={previewReport} />
         </SamplePreviewFrame>
       }

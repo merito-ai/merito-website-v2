@@ -65,7 +65,7 @@ export default function PersonalityLockedState({
       impactPoints={IMPACT_POINTS}
       steps={STEPS}
       preview={
-        <SamplePreviewFrame cropHeight={400} alsoIncluded={ALSO_INCLUDED} cta={cta}>
+        <SamplePreviewFrame cropHeight={430} alsoIncluded={ALSO_INCLUDED} cta={cta}>
           <SamplePersonalityReport />
         </SamplePreviewFrame>
       }
