@@ -96,6 +96,18 @@ export const TRAIT_NAME: Record<TraitKey, string> = {
 
 export const BANDS = ["Very Low", "Low", "Average", "High", "Very High"] as const;
 
+/** Single shared per-trait accent color, used on both the dark-theme sample
+ * preview (SamplePersonalityReport) and the light-theme print/PDF template
+ * (personality/print/page.tsx) so a trait never renders two different
+ * colors on two surfaces. */
+export const TRAIT_COLOR: Record<TraitKey, string> = {
+  E: "#F59E0B",
+  A: "#22C55E",
+  C: "#ed1a24",
+  ES: "#3B82F6",
+  O: "#A855F7",
+};
+
 export const TRAIT_MEANING: Record<TraitKey, string> = {
   E: "Extroversion is about where a person draws their energy. High scorers are outgoing, talkative and stimulated by being around others; low scorers (introverts) are more reserved and recharge through quieter, independent time. It shapes how someone shows up in meetings, teams and client conversations.",
   A: "Agreeableness reflects how much someone prioritises cooperation and harmony over self-interest. High scorers are warm, trusting and accommodating; low scorers are more direct, competitive and willing to challenge. It shapes teamwork, conflict and negotiation.",

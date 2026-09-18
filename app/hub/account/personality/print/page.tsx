@@ -10,13 +10,13 @@ import {
   TRAIT_NAME,
   TRAIT_MEANING,
   TRAIT_WORK_IMPLICATION,
+  TRAIT_COLOR,
   BANDS,
   traitLevel,
   validityFlags,
   nameFromEmail,
   type Scores,
   type Validity,
-  type TraitKey,
 } from "@/lib/personality";
 
 const manrope = Manrope({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-manrope" });
@@ -26,18 +26,10 @@ export const metadata: Metadata = { title: "Personality test" };
 // Printable/PDF-export target for the personality report -- mirrors
 // app/hub/account/report/print/page.tsx's pattern (light theme, single
 // continuous page, screenshotted by app/api/hub/personality/export/route.tsx
-// via headless Chromium). Per-trait accent colors match the mockup's own
-// light PDF template and its locked-state preview teaser (PersonalityLockedState's
-// PREVIEW_TRAITS) verbatim -- each trait gets a distinct color rather than
-// one flat accent, since personality traits aren't a pass/fail verdict.
-
-const TRAIT_COLOR: Record<TraitKey, string> = {
-  C: "#EC1B25",
-  ES: "#3B82F6",
-  A: "#22C55E",
-  O: "#A855F7",
-  E: "#F59E0B",
-};
+// via headless Chromium). Per-trait accent colors come from lib/personality's
+// shared TRAIT_COLOR, the same map the dark-theme sample preview
+// (SamplePersonalityReport) uses -- each trait gets a distinct color rather
+// than one flat accent, since personality traits aren't a pass/fail verdict.
 
 function MeritoMark() {
   return <Image src="/logo.png" alt="Merito" width={128} height={36} style={{ height: 26, width: "auto" }} />;

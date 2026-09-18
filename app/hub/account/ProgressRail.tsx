@@ -17,8 +17,7 @@ type Pill = {
   state: PillState;
   statusText: string;
   pulse?: boolean;
-  href?: string;
-  onClick?: () => void;
+  href: string;
 };
 
 // Renders the 4 non-score steps (fitment score itself is shown on ScoreCard,
@@ -34,10 +33,6 @@ export default function ProgressRail({
   referencesUnlocked,
   roleTitle,
   leadId,
-  onOpenReportPaywall,
-  onOpenPersonalityPaywall,
-  onOpenReferencesPaywall,
-  onOpenInterviewStart,
 }: {
   reportUnlocked: boolean;
   interviewStatus: InterviewStatus;
@@ -47,10 +42,6 @@ export default function ProgressRail({
   referencesUnlocked: boolean;
   roleTitle: string;
   leadId: string;
-  onOpenReportPaywall: () => void;
-  onOpenPersonalityPaywall: () => void;
-  onOpenReferencesPaywall: () => void;
-  onOpenInterviewStart: () => void;
 }) {
   const referencesDone = referenceCheckStatus === "completed";
 
@@ -61,8 +52,7 @@ export default function ProgressRail({
       icon: FileText,
       state: reportUnlocked ? "done" : "locked",
       statusText: reportUnlocked ? "Unlocked" : "Not started",
-      href: reportUnlocked ? `/hub/account/report?lead=${encodeURIComponent(leadId)}` : undefined,
-      onClick: reportUnlocked ? undefined : onOpenReportPaywall,
+      href: `/hub/account/report?lead=${encodeURIComponent(leadId)}`,
     },
     {
       key: "personality",
@@ -70,8 +60,7 @@ export default function ProgressRail({
       icon: Brain,
       state: personalityStatus === "ready" ? "done" : personalityUnlocked ? "active" : "locked",
       statusText: personalityStatus === "ready" ? "Ready" : personalityUnlocked ? "Start test" : "Not started",
-      href: personalityUnlocked ? `/hub/account/personality?role=${encodeURIComponent(roleTitle)}` : undefined,
-      onClick: personalityUnlocked ? undefined : onOpenPersonalityPaywall,
+      href: `/hub/account/personality?role=${encodeURIComponent(roleTitle)}`,
     },
     {
       key: "references",
@@ -79,8 +68,7 @@ export default function ProgressRail({
       icon: Users,
       state: referencesDone ? "done" : referencesUnlocked ? "active" : "locked",
       statusText: referencesDone ? "Completed" : referenceCheckStatus === "in_progress" ? "In progress" : referencesUnlocked ? "Start" : "Not started",
-      href: referencesUnlocked ? "/hub/account/references" : undefined,
-      onClick: referencesUnlocked ? undefined : onOpenReferencesPaywall,
+      href: "/hub/account/references",
     },
     {
       key: "interview",
@@ -108,16 +96,7 @@ export default function ProgressRail({
       // is pending on the vendor side; the row won't self-resolve without an
       // admin, so an animated "waiting" dot would be misleading.
       pulse: interviewStatus === "invited" || interviewStatus === "processing" || interviewStatus === "terminated",
-      // Any status that has a real interview row (invited/ready/terminated/
-      // stuck) links to the interview page -- that's where the "Start
-      // Interview" button (invited), report (ready), and resume card
-      // (terminated/stuck) all live. Only "not_started" opens the paywall.
-      // Filter by lead_id: interview/page.tsx reads ?lead=, not ?role=.
-      href:
-        interviewStatus === "not_started"
-          ? undefined
-          : `/hub/account/interview?lead=${encodeURIComponent(leadId)}`,
-      onClick: interviewStatus === "not_started" ? onOpenInterviewStart : undefined,
+      href: `/hub/account/interview?lead=${encodeURIComponent(leadId)}`,
     },
   ];
 
@@ -179,11 +158,16 @@ function StatusPill({ pill }: { pill: Pill }) {
     padding: "16px 16px",
     display: "block",
     textDecoration: "none",
-    cursor: pill.href || pill.onClick ? "pointer" : "default",
+    cursor: "pointer",
   };
 
-  const content = (
-    <>
+  return (
+    <Link
+      data-tour={`pill-${pill.key}`}
+      href={pill.href}
+      className="bg-[#141416] border border-white/[0.08] hover:border-white/[0.16] transition-colors"
+      style={style}
+    >
       <div
         className="flex items-center justify-center bg-[#ed1a24]/12 text-[#ed1a24]"
         style={{ width: 32, height: 32, borderRadius: 9, marginBottom: 12 }}
@@ -194,20 +178,6 @@ function StatusPill({ pill }: { pill: Pill }) {
         {pill.label}
       </p>
       {badge}
-    </>
-  );
-
-  if (pill.href) {
-    return (
-      <Link data-tour={`pill-${pill.key}`} href={pill.href} className="bg-[#141416] border border-white/[0.08] hover:border-white/[0.16] transition-colors" style={style}>
-        {content}
-      </Link>
-    );
-  }
-
-  return (
-    <button data-tour={`pill-${pill.key}`} onClick={pill.onClick} className="w-full text-left bg-[#141416] border border-white/[0.08] hover:border-white/[0.16] transition-colors" style={style}>
-      {content}
-    </button>
+    </Link>
   );
 }

@@ -55,16 +55,6 @@ export default async function FullReportPage({
       current.resume_match_status === "READY" && current.resume_match_raw
         ? (current.resume_match_raw as ResumeMatchReportReady)
         : null;
-    const topCategory = lockedReport
-      ? [...lockedReport.categories].sort((a, b) => b.score - a.score)[0] ?? null
-      : null;
-
-    const candidateDetails = current.ib_applied_job_id
-      ? await getCandidateResumeDetails(current.ib_applied_job_id).catch((err) => {
-          console.error("getCandidateResumeDetails failed, rendering locked report without skill tags", err);
-          return null;
-        })
-      : null;
 
     return (
       <main>
@@ -82,9 +72,7 @@ export default async function FullReportPage({
             roleTitle={current.role_title}
             level={level}
             bundleEligible={bundleEligible}
-            skillTags={candidateDetails?.skills ?? []}
-            previewSummary={lockedReport?.summary ?? null}
-            previewCategory={topCategory ? { label: topCategory.label, score: topCategory.score } : null}
+            report={lockedReport}
           />
         </div>
       </main>

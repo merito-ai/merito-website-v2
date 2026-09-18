@@ -9,9 +9,6 @@ import QuickTipsCard from "./QuickTipsCard";
 import ApplicationsCard, { type Application } from "./ApplicationsCard";
 import RecentActivityCard from "./RecentActivityCard";
 import ReportPaywallModal from "./ReportPaywallModal";
-import PersonalityPaywallModal from "./PersonalityPaywallModal";
-import ReferencesPaywallModal from "./ReferencesPaywallModal";
-import InterviewPaywallModal from "./InterviewPaywallModal";
 import GenerateReportModal from "./GenerateReportModal";
 import CounsellingCard from "./CounsellingCard";
 import CounsellingPaywallModal from "./CounsellingPaywallModal";
@@ -25,7 +22,6 @@ export default function DashboardClient({
   level,
   personalityUnlocked,
   referencesUnlocked,
-  userEmail,
   userName,
   score,
   verdict,
@@ -44,7 +40,6 @@ export default function DashboardClient({
   level: CandidateLevel;
   personalityUnlocked: boolean;
   referencesUnlocked: boolean;
-  userEmail: string;
   userName: string;
   score: number;
   prevScore: number | null;
@@ -59,7 +54,7 @@ export default function DashboardClient({
   applications: Application[];
   recruiterActivity: React.ReactNode;
 }) {
-  const [modal, setModal] = useState<"none" | "report" | "personality" | "references" | "interview" | "generate" | "counselling" | "tour">("none");
+  const [modal, setModal] = useState<"none" | "report" | "generate" | "counselling" | "tour">("none");
   const [reportUnlocked, setReportUnlocked] = useState(initialReportUnlocked);
   const [, setReport] = useState<ResumeMatchReportReady | null>(initialReport);
   const [interviewStatus, setInterviewStatus] = useState<InterviewStatus>(initialInterviewStatus);
@@ -144,10 +139,6 @@ export default function DashboardClient({
           referencesUnlocked={referencesUnlockedState}
           roleTitle={roleTitle}
           leadId={leadId}
-          onOpenReportPaywall={() => setModal("report")}
-          onOpenPersonalityPaywall={() => setModal("personality")}
-          onOpenReferencesPaywall={() => setModal("references")}
-          onOpenInterviewStart={() => setModal("interview")}
         />
 
         {bundleStillEligible && <BundlePromoCard level={level} onOpenPaywall={() => setModal("report")} />}
@@ -194,46 +185,6 @@ export default function DashboardClient({
               setPersonalityUnlockedState(true);
               setReferencesUnlockedState(true);
             }
-            setModal("none");
-          }}
-        />
-      )}
-      {modal === "personality" && (
-        <PersonalityPaywallModal
-          leadId={leadId}
-          roleTitle={roleTitle}
-          level={level}
-          bundleEligible={bundleStillEligible}
-          onClose={() => setModal("none")}
-          onUnlocked={() => {
-            setPersonalityUnlockedState(true);
-            setModal("none");
-            window.location.href = `/hub/account/personality?role=${encodeURIComponent(roleTitle)}`;
-          }}
-        />
-      )}
-      {modal === "references" && (
-        <ReferencesPaywallModal
-          leadId={leadId}
-          level={level}
-          bundleEligible={bundleStillEligible}
-          onClose={() => setModal("none")}
-          onUnlocked={() => {
-            setReferencesUnlockedState(true);
-            setModal("none");
-            window.location.href = "/hub/account/references";
-          }}
-        />
-      )}
-      {modal === "interview" && (
-        <InterviewPaywallModal
-          leadId={leadId}
-          roleTitle={roleTitle}
-          level={level}
-          userEmail={userEmail}
-          onClose={() => setModal("none")}
-          onStarted={(status) => {
-            setInterviewStatus(status);
             setModal("none");
           }}
         />

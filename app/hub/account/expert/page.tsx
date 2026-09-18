@@ -33,6 +33,7 @@ const BIO =
 const TESTIMONIAL =
   "Rushikesh didn't just point out what was wrong with my resume. He explained why it mattered from a hiring manager's perspective. That reframing got me two callbacks the next week.";
 const TESTIMONIAL_ATTRIBUTION = "Priya S., hired as DevOps Engineer";
+const LINKEDIN_URL = "https://www.linkedin.com/in/humbe/";
 
 const PERSPECTIVE_CARDS = [
   {
@@ -204,9 +205,28 @@ export default async function ExpertBioPage({
                 <Image src="/about-us-audit/founder-image.png" alt={NAME} fill sizes="64px" style={{ objectFit: "cover" }} />
               </div>
               <div>
-                <p className="font-[family-name:var(--font-gabarito)] font-semibold text-white" style={{ fontSize: 17, margin: 0 }}>
-                  {NAME}
-                </p>
+                <div className="flex items-center" style={{ gap: 8 }}>
+                  <p className="font-[family-name:var(--font-gabarito)] font-semibold text-white" style={{ fontSize: 17, margin: 0 }}>
+                    {NAME}
+                  </p>
+                  <a
+                    href={LINKEDIN_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${NAME} on LinkedIn`}
+                    className="text-white/40 hover:text-[#0A66C2] transition-colors"
+                    style={{ display: "inline-flex", alignItems: "center" }}
+                  >
+                    <svg width={16} height={16} viewBox="0 0 24 24" aria-hidden="true">
+                      <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        fill="currentColor"
+                        d="M4.6 1h14.8A3.6 3.6 0 0 1 23 4.6v14.8A3.6 3.6 0 0 1 19.4 23H4.6A3.6 3.6 0 0 1 1 19.4V4.6A3.6 3.6 0 0 1 4.6 1ZM5.7 9.7h2.9v8.6H5.7V9.7Zm1.45-4.6a1.75 1.75 0 1 0 0 3.5 1.75 1.75 0 0 0 0-3.5ZM10.6 9.7h2.8v1.2c.62-.9 1.65-1.45 3-1.45 2.35 0 3.6 1.5 3.6 4.15v4.7h-2.9v-4.25c0-1.2-.45-2-1.5-2-.9 0-1.4.6-1.62 1.2-.08.2-.1.5-.1.8v4.25h-2.9V9.7Z"
+                      />
+                    </svg>
+                  </a>
+                </div>
                 <p className="font-[family-name:var(--font-poppins)] text-white/55" style={{ fontSize: 13.5, margin: "2px 0 0" }}>
                   {TITLE}
                 </p>

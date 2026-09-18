@@ -214,7 +214,6 @@ export default async function AccountPage({
       level={level}
       personalityUnlocked={personalityUnlocked}
       referencesUnlocked={referencesUnlocked}
-      userEmail={user.email ?? ""}
       userName={userName}
       score={score}
       prevScore={prevForSameRole ? prevForSameRole.score : null}
