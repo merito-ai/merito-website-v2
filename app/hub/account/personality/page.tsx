@@ -22,7 +22,7 @@ export default async function PersonalityTestPage({
 
   const { data: leads } = await supabase
     .from("fitment_leads")
-    .select("id, role_title, candidate_level")
+    .select("id, role_title, candidate_level, name")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
     .limit(1);
@@ -80,7 +80,8 @@ export default async function PersonalityTestPage({
       ? { scores: existing.scores as Scores, validity: existing.validity as Validity }
       : null;
 
-  const candidateName = nameFromEmail(user.email ?? "");
+  // Real name from the fitment form; the email local-part is only a fallback.
+  const candidateName = current.name || nameFromEmail(user.email ?? "");
 
   return (
     <main>

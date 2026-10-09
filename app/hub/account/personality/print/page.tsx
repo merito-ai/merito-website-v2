@@ -84,7 +84,15 @@ export default async function PersonalityPrintPage({
 
   const scores = existing.scores as Scores;
   const validity = existing.validity as Validity;
-  const displayName = nameFromEmail(user.email ?? "");
+  // Real name from the fitment form; the email local-part is only a fallback.
+  const { data: latestLead } = await supabase
+    .from("fitment_leads")
+    .select("name")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  const displayName = latestLead?.name || nameFromEmail(user.email ?? "");
   const firstName = displayName.split(/\s+/)[0] || displayName;
   const flags = validityFlags(validity);
   const formattedDate = new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
