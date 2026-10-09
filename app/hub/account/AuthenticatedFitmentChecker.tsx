@@ -170,8 +170,11 @@ export default function AuthenticatedFitmentChecker() {
               onChange={(e) => setRole(e.target.value)}
               placeholder="e.g. Senior Product Manager"
               className="w-full box-border bg-white/[0.04] font-[family-name:var(--font-poppins)] text-white outline-none border border-white/[0.12] focus:border-[#ed1a24] transition-colors"
-              style={{ padding: "13px 14px", borderRadius: 8, fontSize: 14, marginBottom: 12 }}
+              style={{ padding: "13px 14px", borderRadius: 8, fontSize: 14, marginBottom: 4 }}
             />
+            <p className="text-white/45" style={{ fontSize: 11, lineHeight: 1.4, margin: "0 0 12px" }}>
+              This is the role your fitment score and report will be checked against.
+            </p>
 
             <select
               value={candidateLevel}
