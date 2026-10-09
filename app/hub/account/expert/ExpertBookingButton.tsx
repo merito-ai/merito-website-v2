@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import CounsellingPaywallModal from "../CounsellingPaywallModal";
-import { CALENDLY_URL } from "@/lib/hub/calendlyUrl";
+import { buildCalendlyUrl } from "@/lib/hub/calendlyUrl";
+import { useHubUser } from "../HubUserContext";
 
 // Shared button + paywall-modal trigger for the expert-guidance page's two
 // booking CTAs (the card under the bio, and the closing gradient CTA card).
@@ -17,18 +18,24 @@ export default function ExpertBookingButton({
 }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [requested, setRequested] = useState(initialRequested);
+  const hubUser = useHubUser();
 
   if (requested) {
     return (
-      <a
-        href={CALENDLY_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="font-[family-name:var(--font-poppins)] font-semibold text-white bg-[#ed1a24] hover:bg-[#c8151e] transition-colors"
-        style={{ borderRadius: 8, padding: "12px 20px", fontSize: 13.5, cursor: "pointer", whiteSpace: "nowrap", display: "inline-block", textDecoration: "none" }}
-      >
-        Schedule your call →
-      </a>
+      <span style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+        <a
+          href={buildCalendlyUrl(hubUser)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-[family-name:var(--font-poppins)] font-semibold text-white bg-[#ed1a24] hover:bg-[#c8151e] transition-colors"
+          style={{ borderRadius: 8, padding: "12px 20px", fontSize: 13.5, cursor: "pointer", whiteSpace: "nowrap", display: "inline-block", textDecoration: "none" }}
+        >
+          Schedule your call →
+        </a>
+        <span className="font-[family-name:var(--font-poppins)]" style={{ fontSize: 11.5, color: "#9c9c9c" }}>
+          Pick a slot in the next 48 hours
+        </span>
+      </span>
     );
   }
 

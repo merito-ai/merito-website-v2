@@ -188,7 +188,7 @@ export default async function AccountPage({
     resolveInterview(),
     getReferenceCheckStatus(user.id),
     supabase.from("personality_tests").select("role_title").eq("user_id", user.id).maybeSingle(),
-    supabase.from("counselling_requests").select("id").eq("user_id", user.id).maybeSingle(),
+    supabase.from("counselling_requests").select("id").eq("user_id", user.id).neq("status", "cancelled").limit(1).maybeSingle(),
     getRecruiterViewCount(user.id),
     Promise.all([isProductUnlocked(user.id, "personality"), isProductUnlocked(user.id, "references")]),
   ]);

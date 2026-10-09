@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { UserRound } from "lucide-react";
-import { CALENDLY_URL } from "@/lib/hub/calendlyUrl";
+import { buildCalendlyUrl } from "@/lib/hub/calendlyUrl";
+import { useHubUser } from "./HubUserContext";
 
 export default function CounsellingCard({
   priceLabel,
@@ -13,6 +14,7 @@ export default function CounsellingCard({
   requested: boolean;
   onOpenPaywall: () => void;
 }) {
+  const hubUser = useHubUser();
   return (
     <div
       data-tour="guidance"
@@ -61,15 +63,20 @@ export default function CounsellingCard({
 
       <div className="shrink-0">
         {requested ? (
-          <a
-            href={CALENDLY_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-[family-name:var(--font-poppins)] font-semibold"
-            style={{ background: "#fff", color: "#0a0a0a", borderRadius: 8, padding: "12px 18px", fontSize: 13.5, cursor: "pointer", whiteSpace: "nowrap", display: "inline-block", textDecoration: "none" }}
-          >
-            Schedule your call →
-          </a>
+          <div className="flex flex-col items-center" style={{ gap: 6 }}>
+            <a
+              href={buildCalendlyUrl(hubUser)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-[family-name:var(--font-poppins)] font-semibold"
+              style={{ background: "#fff", color: "#0a0a0a", borderRadius: 8, padding: "12px 18px", fontSize: 13.5, cursor: "pointer", whiteSpace: "nowrap", display: "inline-block", textDecoration: "none" }}
+            >
+              Schedule your call →
+            </a>
+            <span className="font-[family-name:var(--font-poppins)] text-white/55" style={{ fontSize: 11.5 }}>
+              Pick a slot in the next 48 hours
+            </span>
+          </div>
         ) : (
           <button
             onClick={onOpenPaywall}

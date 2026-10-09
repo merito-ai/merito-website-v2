@@ -176,6 +176,8 @@ export default async function ExpertBioPage({
     .from("counselling_requests")
     .select("id")
     .eq("user_id", user.id)
+    .neq("status", "cancelled")
+    .limit(1)
     .maybeSingle();
 
   const firstName = NAME.split(" ")[0];

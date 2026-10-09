@@ -94,7 +94,7 @@ export default async function PricingPage({
         ? "terminated"
         : "invited";
 
-  const { data: counsellingRequest } = await supabase.from("counselling_requests").select("id").eq("user_id", user.id).maybeSingle();
+  const { data: counsellingRequest } = await supabase.from("counselling_requests").select("id").eq("user_id", user.id).neq("status", "cancelled").limit(1).maybeSingle();
 
   return (
     <PricingCardsClient
