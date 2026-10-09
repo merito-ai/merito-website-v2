@@ -60,7 +60,7 @@ export async function GET(request: Request) {
   }
 
   if (include.has("references")) {
-    const status = await getReferenceCheckStatus(user.id);
+    const status = await getReferenceCheckStatus(user.id, { completedOnly: true });
     if (status?.status === "completed") {
       anyReady = true;
     }

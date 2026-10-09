@@ -77,7 +77,7 @@ export default async function RecruiterPreviewPage({
         : null;
   }
 
-  const referenceStatus = await getReferenceCheckStatus(user.id);
+  const referenceStatus = await getReferenceCheckStatus(user.id, { completedOnly: true });
   const references = referenceStatus?.status === "completed" ? computeReferenceReport(referenceStatus.referees) : null;
 
   const previewData: LookupResponse = {

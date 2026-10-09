@@ -53,7 +53,7 @@ export default async function ReferencesPage({
               Reference checks
             </h1>
             <p className="font-[family-name:var(--font-poppins)] text-white/55" style={{ fontSize: 14, margin: 0 }}>
-              Part of your profile. Done once, applies to every application.
+              Part of your profile. Applies to every application, and you can refresh it when you change company or role.
             </p>
           </div>
           <ReferencesLockedState leadId={current.id} level={level} bundleEligible={bundleEligible} />
@@ -63,6 +63,7 @@ export default async function ReferencesPage({
   }
 
   const status = await getReferenceCheckStatus(user.id);
+  const previous = status && status.status !== "completed" ? await getReferenceCheckStatus(user.id, { completedOnly: true }) : null;
 
   return (
     <main>
@@ -76,7 +77,7 @@ export default async function ReferencesPage({
             completed references unlock this step.
           </p>
         </div>
-        <ReferencesClient initialStatus={status} />
+        <ReferencesClient initialStatus={status} hasPreviousReport={Boolean(previous)} />
       </div>
     </main>
   );

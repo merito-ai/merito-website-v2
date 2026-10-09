@@ -79,7 +79,7 @@ export default async function ReferencesPrintPage() {
 
   const current = leads?.[0];
 
-  const status = await getReferenceCheckStatus(user.id);
+  const status = await getReferenceCheckStatus(user.id, { completedOnly: true });
   if (!status || status.status !== "completed") {
     redirect("/hub/account/references");
   }
