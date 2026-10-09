@@ -4,6 +4,7 @@ import { useState } from "react";
 import TopBar from "./TopBar";
 import Sidebar from "./Sidebar";
 import ChangeRoleModal from "./ChangeRoleModal";
+import { HubUserProvider } from "./HubUserContext";
 
 type Lead = {
   id: string;
@@ -39,7 +40,10 @@ export default function AppShell({
       <TopBar leads={leads} userName={userName} userEmail={userEmail} onChangeRole={() => setShowChangeRole(true)} />
       <div className="flex items-start mx-auto" style={{ maxWidth: 1360 }}>
         <Sidebar />
-        <div className="min-w-0 flex-1">{children}</div>
+        <div className="min-w-0 flex-1">
+          {/* layout falls back to "there" when no name is known; don't prefill that */}
+          <HubUserProvider value={{ name: userName === "there" ? "" : userName, email: userEmail }}>{children}</HubUserProvider>
+        </div>
       </div>
       {showChangeRole && (
         <ChangeRoleModal

@@ -68,7 +68,7 @@ export const PERSONAS: Record<PersonaKey, PersonaContent> = {
     linkedinH2Plain: "Turn your thin LinkedIn profile into one recruiters",
     linkedinH2Accent: "actually notice.",
     linkedinBody:
-      "Your Merito HUB profile becomes a shareable link and an extra layer on your LinkedIn. Recruiters hiring through Merito use our browser extension - so when they open your profile, they see your fit for the role and your verified strengths sitting right alongside it. For a fresher with a short profile, that added layer is the difference between being skipped and being shortlisted. You choose what's shown.",
+      "Your Merito HUB profile becomes a shareable link and an extra layer on your LinkedIn. Coming soon: recruiters hiring through Merito will use our browser extension - so when they open your profile, they see your fit for the role and your verified strengths sitting right alongside it. For a fresher with a short profile, that added layer is the difference between being skipped and being shortlisted. You choose what's shown.",
     linkedinMetricLabel: "fit for this role",
     linkedinMetricValue: "8.2",
     linkedinProfileCaption: "A short profile - 6 months of internships",
@@ -114,7 +114,7 @@ export const PERSONAS: Record<PersonaKey, PersonaContent> = {
     linkedinH2Plain: "Let recruiters see the manager in you -",
     linkedinH2Accent: "right on your LinkedIn.",
     linkedinBody:
-      "Your Merito HUB profile becomes a shareable link and an extra layer on your LinkedIn. Recruiters hiring through Merito use our browser extension - so when they open your profile, they see your fit for the role and your managerial readiness score alongside it. That's proof of leadership potential, sitting exactly where hiring decisions get made. You choose what's shown.",
+      "Your Merito HUB profile becomes a shareable link and an extra layer on your LinkedIn. Coming soon: recruiters hiring through Merito will use our browser extension - so when they open your profile, they see your fit for the role and your managerial readiness score alongside it. That's proof of leadership potential, sitting exactly where hiring decisions get made. You choose what's shown.",
     linkedinMetricLabel: "managerial readiness",
     linkedinMetricValue: "7.9",
     linkedinProfileCaption: "A strong IC profile - 5 years of delivery",
@@ -160,7 +160,7 @@ export const PERSONAS: Record<PersonaKey, PersonaContent> = {
     linkedinH2Plain: "Make your leadership readiness visible -",
     linkedinH2Accent: "right where decision-makers look.",
     linkedinBody:
-      "Your Merito HUB profile becomes a shareable link and an extra layer on your LinkedIn. Recruiters and hiring boards working with Merito use our browser extension - so when they open your profile, they see your fit for the role and your leadership readiness alongside it. At this level, being able to point to a credible, verified signal of C-suite readiness is a genuine differentiator. You choose what's shown.",
+      "Your Merito HUB profile becomes a shareable link and an extra layer on your LinkedIn. Coming soon: recruiters and hiring boards working with Merito will use our browser extension - so when they open your profile, they see your fit for the role and your leadership readiness alongside it. At this level, being able to point to a credible, verified signal of C-suite readiness is a genuine differentiator. You choose what's shown.",
     linkedinMetricLabel: "leadership readiness",
     linkedinMetricValue: "8.3",
     linkedinProfileCaption: "18 years of experience - one long tenure",

@@ -103,7 +103,7 @@ export async function loadCombinedReportData({
 
   let references: CombinedReportData["references"] = null;
   if (include.has("references")) {
-    const status = await getReferenceCheckStatus(userId);
+    const status = await getReferenceCheckStatus(userId, { completedOnly: true });
     if (status?.status === "completed") {
       references = computeReferenceReport(status.referees);
     }

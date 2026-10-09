@@ -368,3 +368,67 @@ describe("updateRefereeContact", () => {
     ).rejects.toThrow("Referee not found.");
   });
 });
+
+describe("restartReferenceCheck", () => {
+  beforeEach(() => {
+    fromMock.mockReset();
+  });
+
+  function latestLookup(data: unknown) {
+    const maybeSingle = vi.fn().mockResolvedValue({ data, error: null });
+    const limit = vi.fn().mockReturnValue({ maybeSingle });
+    const order = vi.fn().mockReturnValue({ limit });
+    const eq = vi.fn().mockReturnValue({ order });
+    return { select: vi.fn().mockReturnValue({ eq }) };
+  }
+
+  function initiateCalls() {
+    const maybeSingle = vi.fn().mockResolvedValue({ data: null, error: null });
+    const inFn = vi.fn().mockReturnValue({ maybeSingle });
+    const eq = vi.fn().mockReturnValue({ in: inFn });
+    const existing = { select: vi.fn().mockReturnValue({ eq }) };
+    const insertSelect = vi.fn().mockReturnValue({ single: vi.fn().mockResolvedValue({ data: { id: "check-new" }, error: null }) });
+    const insert = vi.fn().mockReturnValue({ select: insertSelect });
+    return [existing, { insert }];
+  }
+
+  it("throws NO_CHECK when the user never started a check", async () => {
+    fromMock.mockReturnValueOnce(latestLookup(null));
+    const { restartReferenceCheck } = await import("../referenceChecks");
+    await expect(restartReferenceCheck("user-1")).rejects.toThrow("NO_CHECK");
+  });
+
+  it("leaves a completed check alone and starts a new one", async () => {
+    const [existing, insert] = initiateCalls();
+    fromMock.mockReturnValueOnce(latestLookup({ id: "check-old", status: "completed" })).mockReturnValueOnce(existing).mockReturnValueOnce(insert);
+    const { restartReferenceCheck } = await import("../referenceChecks");
+    await expect(restartReferenceCheck("user-1")).resolves.toEqual({ id: "check-new" });
+    expect(fromMock).toHaveBeenCalledTimes(3);
+  });
+
+  it("cancels an active check, expires pending invite links, then starts a new one", async () => {
+    const cancelEq = vi.fn().mockResolvedValue({ error: null });
+    const cancelUpdate = vi.fn().mockReturnValue({ eq: cancelEq });
+    const pendingEq2 = vi.fn().mockResolvedValue({ data: [{ id: "ref-1" }, { id: "ref-2" }], error: null });
+    const pendingEq1 = vi.fn().mockReturnValue({ eq: pendingEq2 });
+    const pendingSelect = vi.fn().mockReturnValue({ eq: pendingEq1 });
+    const tokensIs = vi.fn().mockResolvedValue({ error: null });
+    const tokensIn = vi.fn().mockReturnValue({ is: tokensIs });
+    const tokensUpdate = vi.fn().mockReturnValue({ in: tokensIn });
+    const [existing, insert] = initiateCalls();
+    fromMock
+      .mockReturnValueOnce(latestLookup({ id: "check-old", status: "in_progress" }))
+      .mockReturnValueOnce({ update: cancelUpdate })
+      .mockReturnValueOnce({ select: pendingSelect })
+      .mockReturnValueOnce({ update: tokensUpdate })
+      .mockReturnValueOnce(existing)
+      .mockReturnValueOnce(insert);
+
+    const { restartReferenceCheck } = await import("../referenceChecks");
+    await expect(restartReferenceCheck("user-1")).resolves.toEqual({ id: "check-new" });
+    expect(cancelUpdate).toHaveBeenCalledWith({ status: "cancelled" });
+    expect(cancelEq).toHaveBeenCalledWith("id", "check-old");
+    expect(tokensIn).toHaveBeenCalledWith("reference_id", ["ref-1", "ref-2"]);
+    expect(tokensIs).toHaveBeenCalledWith("used_at", null);
+  });
+});

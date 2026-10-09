@@ -15,7 +15,7 @@ export async function GET(request: Request) {
     return Response.json({ error: "Not signed in." }, { status: 401 });
   }
 
-  const status = await getReferenceCheckStatus(user.id);
+  const status = await getReferenceCheckStatus(user.id, { completedOnly: true });
   if (!status || status.status !== "completed") {
     return Response.json({ error: "Reference check not completed yet." }, { status: 404 });
   }

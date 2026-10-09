@@ -68,10 +68,17 @@ function StatusPill({ status }: { status: "pending" | "completed" | "rejected" }
   );
 }
 
-export default function ReferencesClient({ initialStatus }: { initialStatus: ReferenceCheckStatusResult | null }) {
+export default function ReferencesClient({
+  initialStatus,
+  hasPreviousReport = false,
+}: {
+  initialStatus: ReferenceCheckStatusResult | null;
+  hasPreviousReport?: boolean;
+}) {
   const [status, setStatus] = useState(initialStatus);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [previousReport, setPreviousReport] = useState(hasPreviousReport);
   const [form, setForm] = useState({ name: "", email: "", role: "manager" as RefereeRole, organization: "" });
   const formId = useId();
 
@@ -92,6 +99,25 @@ export default function ReferencesClient({ initialStatus }: { initialStatus: Ref
       setError(data.error || "Something went wrong.");
       return;
     }
+    await refreshStatus();
+  }
+
+  async function handleRestart() {
+    const wasDone = status?.status === "completed";
+    const message = wasDone
+      ? "Start a new reference check? Your current report stays on your profile until 3 new references complete."
+      : "Start over with new referees? Invites you've already sent will stop working.";
+    if (!window.confirm(message)) return;
+    setBusy(true);
+    setError(null);
+    const res = await fetch("/api/hub/references/restart", { method: "POST" });
+    const data = await res.json();
+    setBusy(false);
+    if (!res.ok) {
+      setError(data.error || "Something went wrong.");
+      return;
+    }
+    if (wasDone) setPreviousReport(true);
     await refreshStatus();
   }
 
@@ -340,7 +366,30 @@ export default function ReferencesClient({ initialStatus }: { initialStatus: Ref
               ))}
             </div>
           </div>
+          <div className={`${CARD} print:hidden flex items-center justify-between flex-wrap`} style={{ borderRadius: 14, padding: "16px 20px", gap: 12 }}>
+            <p className="font-[family-name:var(--font-poppins)] text-white/60" style={{ fontSize: 13, margin: 0 }}>
+              Changed company or role? Collect fresh references for your next move.
+            </p>
+            <button
+              type="button"
+              onClick={handleRestart}
+              disabled={busy}
+              className="font-[family-name:var(--font-poppins)] font-semibold text-white border border-white/[0.18] hover:bg-white/[0.06] transition-colors"
+              style={{ background: "transparent", borderRadius: 8, padding: "9px 16px", fontSize: 13, cursor: busy ? "default" : "pointer" }}
+            >
+              Start new references
+            </button>
+          </div>
         </>
+      )}
+
+      {!isDone && previousReport && (
+        <p className="font-[family-name:var(--font-poppins)] text-white/55" style={{ fontSize: 13, margin: 0 }}>
+          Your previous reference report stays on your profile until this new check completes.{" "}
+          <a href="/hub/account/references/print" className="text-[#ed1a24] hover:text-white">
+            View previous report →
+          </a>
+        </p>
       )}
 
       {!isDone && (
@@ -362,6 +411,17 @@ export default function ReferencesClient({ initialStatus }: { initialStatus: Ref
               style={{ borderRadius: 6, width: `${Math.min(100, (completedCount / status.minReferences) * 100)}%`, transition: "width 600ms ease" }}
             />
           </div>
+          {status.referees.length > 0 && (
+            <button
+              type="button"
+              onClick={handleRestart}
+              disabled={busy}
+              className="font-[family-name:var(--font-poppins)] text-white/45 hover:text-white transition-colors"
+              style={{ background: "none", border: "none", padding: 0, marginTop: 12, fontSize: 12, cursor: busy ? "default" : "pointer", textDecoration: "underline" }}
+            >
+              Start over with different referees
+            </button>
+          )}
         </div>
       )}
 

@@ -4,8 +4,6 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-type JdMode = "paste" | "link";
-
 export default function AuthenticatedFitmentChecker() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -13,9 +11,7 @@ export default function AuthenticatedFitmentChecker() {
   const [role, setRole] = useState("");
   const [phone, setPhone] = useState("");
   const [candidateLevel, setCandidateLevel] = useState<"" | "entry" | "mid" | "senior">("");
-  const [jdMode, setJdMode] = useState<JdMode>("paste");
   const [jdText, setJdText] = useState("");
-  const [jdUrl, setJdUrl] = useState("");
   const [cvFile, setCvFile] = useState<File | null>(null);
   const [checking, setChecking] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -29,7 +25,7 @@ export default function AuthenticatedFitmentChecker() {
     };
   }, []);
 
-  const canSubmit = name.trim() && role.trim() && phone.trim() && candidateLevel && (jdMode === "paste" ? jdText.trim() : jdUrl.trim()) && cvFile && !checking;
+  const canSubmit = name.trim() && role.trim() && phone.trim() && candidateLevel && jdText.trim() && cvFile && !checking;
 
   const POLL_INTERVAL_MS = 3000;
   const POLL_MAX_ATTEMPTS = 20;
@@ -71,8 +67,7 @@ export default function AuthenticatedFitmentChecker() {
     form.set("role", role.trim());
     form.set("phone", phone.trim());
     form.set("candidateLevel", candidateLevel);
-    if (jdMode === "paste") form.set("jdText", jdText.trim());
-    else form.set("jdUrl", jdUrl.trim());
+    form.set("jdText", jdText.trim());
     form.set("cv", cvFile);
 
     try {
@@ -196,42 +191,14 @@ export default function AuthenticatedFitmentChecker() {
               <label className="font-[family-name:var(--font-poppins)] font-semibold text-white/80" style={{ fontSize: 12 }}>
                 Job description
               </label>
-              <div className="flex border border-white/[0.12] overflow-hidden" style={{ borderRadius: 50, marginLeft: "auto" }}>
-                <button
-                  type="button"
-                  onClick={() => setJdMode("paste")}
-                  className="font-[family-name:var(--font-poppins)] font-semibold transition-all"
-                  style={{ border: "none", cursor: "pointer", fontSize: 11, padding: "5px 12px", background: jdMode === "paste" ? "#ed1a24" : "transparent", color: jdMode === "paste" ? "#fff" : "#9c9c9c" }}
-                >
-                  Paste JD
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setJdMode("link")}
-                  className="font-[family-name:var(--font-poppins)] font-semibold transition-all"
-                  style={{ border: "none", cursor: "pointer", fontSize: 11, padding: "5px 12px", background: jdMode === "link" ? "#ed1a24" : "transparent", color: jdMode === "link" ? "#fff" : "#9c9c9c" }}
-                >
-                  JD link
-                </button>
-              </div>
             </div>
-            {jdMode === "paste" ? (
-              <textarea
-                value={jdText}
-                onChange={(e) => setJdText(e.target.value)}
-                placeholder="Paste the full job description here..."
-                className="w-full box-border bg-white/[0.04] font-[family-name:var(--font-poppins)] text-white outline-none border border-white/[0.12] focus:border-[#ed1a24] transition-colors resize-none"
-                style={{ padding: "10px 14px", borderRadius: 8, fontSize: 13, height: 88, marginBottom: 12 }}
-              />
-            ) : (
-              <input
-                value={jdUrl}
-                onChange={(e) => setJdUrl(e.target.value)}
-                placeholder="https://company.com/careers/role"
-                className="w-full box-border bg-white/[0.04] font-[family-name:var(--font-poppins)] text-white outline-none border border-white/[0.12] focus:border-[#ed1a24] transition-colors"
-                style={{ padding: "13px 14px", borderRadius: 8, fontSize: 14, marginBottom: 12 }}
-              />
-            )}
+            <textarea
+              value={jdText}
+              onChange={(e) => setJdText(e.target.value)}
+              placeholder="Paste the full job description here..."
+              className="w-full box-border bg-white/[0.04] font-[family-name:var(--font-poppins)] text-white outline-none border border-white/[0.12] focus:border-[#ed1a24] transition-colors resize-none"
+              style={{ padding: "10px 14px", borderRadius: 8, fontSize: 13, height: 88, marginBottom: 12 }}
+            />
 
             <input
               ref={fileInputRef}

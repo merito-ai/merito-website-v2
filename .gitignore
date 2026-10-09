@@ -109,3 +109,6 @@ public/reputation-index.md
 
 # Supabase CLI local cache (project ref, pooler URL, version pins)
 supabase/.temp/
+
+# Sales collateral (screenshots, demo video project, sample PDFs) -- shared directly, not deployed
+/sales-assets/

@@ -79,7 +79,7 @@ export default async function ShareSummaryPage({
 
   let referencesDone = false;
   if (include.has("references")) {
-    const status = await getReferenceCheckStatus(user.id);
+    const status = await getReferenceCheckStatus(user.id, { completedOnly: true });
     referencesDone = status?.status === "completed";
   }
 

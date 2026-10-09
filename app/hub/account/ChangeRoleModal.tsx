@@ -3,8 +3,6 @@
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 
-type JdMode = "paste" | "link";
-
 export default function ChangeRoleModal({
   onClose,
   onRoleChanged,
@@ -15,15 +13,13 @@ export default function ChangeRoleModal({
   const router = useRouter();
   const [role, setRole] = useState("");
   const [candidateLevel, setCandidateLevel] = useState<"" | "entry" | "mid" | "senior">("");
-  const [jdMode, setJdMode] = useState<JdMode>("paste");
   const [jdText, setJdText] = useState("");
-  const [jdUrl, setJdUrl] = useState("");
   const [cvFile, setCvFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const canSubmit = role.trim() && candidateLevel && (jdMode === "paste" ? jdText.trim() : jdUrl.trim()) && cvFile && !busy;
+  const canSubmit = role.trim() && candidateLevel && jdText.trim() && cvFile && !busy;
 
   const handleSubmit = async () => {
     if (!canSubmit || !cvFile) return;
@@ -33,8 +29,7 @@ export default function ChangeRoleModal({
     const form = new FormData();
     form.set("role", role.trim());
     form.set("candidateLevel", candidateLevel);
-    if (jdMode === "paste") form.set("jdText", jdText.trim());
-    else form.set("jdUrl", jdUrl.trim());
+    form.set("jdText", jdText.trim());
     form.set("cv", cvFile);
     form.set("recaptchaToken", ""); // rescore-role runs server-side for an already-authenticated user; recaptcha applies to the anonymous path it delegates to, which is conditional and skips cleanly when unconfigured
 
@@ -94,31 +89,13 @@ export default function ChangeRoleModal({
           <option value="senior">Senior-level (10+ years)</option>
         </select>
 
-        <div className="flex" style={{ gap: 8, marginBottom: 6 }}>
-          <button type="button" onClick={() => setJdMode("paste")} style={{ fontSize: 11, padding: "5px 12px", borderRadius: 50, border: "1px solid #dcdcdc", background: jdMode === "paste" ? "#ed1a24" : "#fff", color: jdMode === "paste" ? "#fff" : "#4b4b4d", cursor: "pointer" }}>
-            Paste JD
-          </button>
-          <button type="button" onClick={() => setJdMode("link")} style={{ fontSize: 11, padding: "5px 12px", borderRadius: 50, border: "1px solid #dcdcdc", background: jdMode === "link" ? "#ed1a24" : "#fff", color: jdMode === "link" ? "#fff" : "#4b4b4d", cursor: "pointer" }}>
-            JD link
-          </button>
-        </div>
-        {jdMode === "paste" ? (
-          <textarea
-            value={jdText}
-            onChange={(e) => setJdText(e.target.value)}
-            placeholder="Paste the full job description here..."
-            className="w-full box-border bg-white font-[family-name:var(--font-poppins)] text-black outline-none border border-[#dcdcdc] focus:border-[#ed1a24] resize-none"
-            style={{ padding: "10px 14px", borderRadius: 8, fontSize: 13, height: 120, marginBottom: 12 }}
-          />
-        ) : (
-          <input
-            value={jdUrl}
-            onChange={(e) => setJdUrl(e.target.value)}
-            placeholder="https://company.com/careers/role"
-            className="w-full box-border bg-white font-[family-name:var(--font-poppins)] text-black outline-none border border-[#dcdcdc] focus:border-[#ed1a24]"
-            style={{ padding: "13px 14px", borderRadius: 8, fontSize: 14, marginBottom: 12 }}
-          />
-        )}
+        <textarea
+          value={jdText}
+          onChange={(e) => setJdText(e.target.value)}
+          placeholder="Paste the full job description here..."
+          className="w-full box-border bg-white font-[family-name:var(--font-poppins)] text-black outline-none border border-[#dcdcdc] focus:border-[#ed1a24] resize-none"
+          style={{ padding: "10px 14px", borderRadius: 8, fontSize: 13, height: 120, marginBottom: 12 }}
+        />
 
         <input
           ref={fileInputRef}

@@ -95,9 +95,10 @@ export default async function CombinedReportPage({
     roleTitleParam,
   });
 
-  if (!fitment && !personality && !interview && !references) {
-    redirect("/hub/account");
-  }
+  // No section ready yet (e.g. a fresh candidate who only ran the free
+  // fitment check) still renders: the cards below show every section as
+  // locked with links to unlock it. Redirecting to Overview here looked
+  // like a broken nav link.
 
   const fitmentBandDark = fitment ? remapBandDark(getMatchBand(fitment.report.overallScore)) : null;
 
@@ -224,12 +225,18 @@ export default async function CombinedReportPage({
           </div>
 
           <div className="flex flex-wrap items-center" style={{ gap: 8 }}>
-            <CombinedReportActions
-              roleTitle={primaryRole}
-              include={includeParam}
-              interviewSections={interviewSectionsParam}
-              exportUrl={downloadHref}
-            />
+            {includedCount > 0 ? (
+              <CombinedReportActions
+                roleTitle={primaryRole}
+                include={includeParam}
+                interviewSections={interviewSectionsParam}
+                exportUrl={downloadHref}
+              />
+            ) : (
+              <p className="font-[family-name:var(--font-poppins)] text-white/45" style={{ fontSize: 12.5, margin: 0 }}>
+                Unlock any section below to download or share your report.
+              </p>
+            )}
           </div>
         </div>
 

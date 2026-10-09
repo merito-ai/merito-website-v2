@@ -137,6 +137,55 @@ export async function initiateReferenceCheck(userId: string): Promise<{ id: stri
   return { id: data.id };
 }
 
+// Candidate changed company or domain and needs fresh referees. An active
+// check is cancelled (its unanswered invite links expire); a completed one
+// stays as history and keeps feeding reports until the new one completes.
+// Free: the references unlock in product_unlocks is per user, not per check.
+export async function restartReferenceCheck(userId: string): Promise<{ id: string }> {
+  const supabase = getSupabaseServerClient();
+
+  const { data: latest, error: latestError } = await supabase
+    .from("reference_checks")
+    .select("id, status")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (latestError) {
+    throw new Error(`Failed to load reference check: ${latestError.message}`);
+  }
+  if (!latest) {
+    throw new Error("NO_CHECK");
+  }
+
+  if (latest.status === "initiated" || latest.status === "in_progress") {
+    const { error: cancelError } = await supabase
+      .from("reference_checks")
+      .update({ status: "cancelled" })
+      .eq("id", latest.id);
+    if (cancelError) {
+      throw new Error(`Failed to cancel reference check: ${cancelError.message}`);
+    }
+
+    const { data: pending } = await supabase
+      .from("referees")
+      .select("id")
+      .eq("reference_check_id", latest.id)
+      .eq("status", "pending");
+    const pendingIds = (pending ?? []).map((r: { id: string }) => r.id);
+    if (pendingIds.length > 0) {
+      await supabase
+        .from("reference_tokens")
+        .update({ expires_at: new Date().toISOString() })
+        .in("reference_id", pendingIds)
+        .is("used_at", null);
+    }
+  }
+
+  return initiateReferenceCheck(userId);
+}
+
 export async function getActiveReferenceCheckId(userId: string): Promise<string | null> {
   const supabase = getSupabaseServerClient();
   const { data, error } = await supabase
@@ -195,13 +244,18 @@ export async function addReferee(checkId: string, input: RefereeInput): Promise<
   return { id: data.id };
 }
 
-export async function getReferenceCheckStatus(userId: string): Promise<ReferenceCheckStatusResult | null> {
+// completedOnly: report surfaces (exports, consolidated report, share
+// summary) keep showing the last finished report while a restarted check is
+// still collecting responses. The references page itself reads the latest.
+export async function getReferenceCheckStatus(
+  userId: string,
+  opts?: { completedOnly?: boolean }
+): Promise<ReferenceCheckStatusResult | null> {
   const supabase = getSupabaseServerClient();
 
-  const { data: check, error: checkError } = await supabase
-    .from("reference_checks")
-    .select("id, status, min_references")
-    .eq("user_id", userId)
+  let query = supabase.from("reference_checks").select("id, status, min_references").eq("user_id", userId);
+  if (opts?.completedOnly) query = query.eq("status", "completed");
+  const { data: check, error: checkError } = await query
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
@@ -324,7 +378,9 @@ async function maybeCompleteCheck(checkId: string): Promise<void> {
     .eq("id", checkId)
     .single();
 
-  if (checkError || !check || check.status === "completed") return;
+  // Only an active check can complete -- a late response to a cancelled
+  // (restarted) check must not resurrect it.
+  if (checkError || !check || (check.status !== "initiated" && check.status !== "in_progress")) return;
 
   const { count, error: countError } = await supabase
     .from("referees")
