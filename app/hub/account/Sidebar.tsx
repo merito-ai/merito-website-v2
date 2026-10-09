@@ -17,12 +17,14 @@ import {
   Receipt,
 } from "lucide-react";
 import type { ComponentType } from "react";
+import { RECRUITER_PREVIEW_ENABLED } from "@/lib/featureFlags";
 
 type NavItem = {
   label: string;
   href: string;
   icon: ComponentType<{ size?: number; strokeWidth?: number }>;
   tourId?: string;
+  comingSoon?: boolean;
 };
 
 const GROUPS: { title: string; items: NavItem[] }[] = [
@@ -44,7 +46,7 @@ const GROUPS: { title: string; items: NavItem[] }[] = [
     title: "Account",
     items: [
       { label: "Applications & history", href: "/hub/account/applications", icon: Briefcase },
-      { label: "Recruiter preview", href: "/hub/account/recruiter-preview", icon: Eye },
+      { label: "Recruiter preview", href: "/hub/account/recruiter-preview", icon: Eye, comingSoon: !RECRUITER_PREVIEW_ENABLED },
       { label: "Pricing", href: "/hub/account/pricing", icon: Tag },
       { label: "Order history", href: "/hub/account/orders", icon: Receipt },
     ],
@@ -77,6 +79,26 @@ export default function Sidebar() {
               // never "active" rather than falsely matching /hub/account.
               const isActive = !item.href.includes("#") && pathname === item.href;
               const Icon = item.icon;
+              if (item.comingSoon) {
+                return (
+                  <div
+                    key={item.href}
+                    aria-disabled="true"
+                    title="Coming soon"
+                    className="relative flex items-center text-white/35 cursor-not-allowed select-none"
+                    style={{ gap: 10, padding: "8px 12px 8px 16px", borderRadius: 14, fontSize: 14 }}
+                  >
+                    <Icon size={16} strokeWidth={2} />
+                    <span className="font-[family-name:var(--font-poppins)]">{item.label}</span>
+                    <span
+                      className="font-[family-name:var(--font-poppins)] font-semibold uppercase text-white/55"
+                      style={{ marginLeft: "auto", fontSize: 9, letterSpacing: "0.05em", padding: "2px 7px", borderRadius: 50, border: "1px solid rgba(255,255,255,0.15)" }}
+                    >
+                      Soon
+                    </span>
+                  </div>
+                );
+              }
               return (
                 <Link
                   key={item.href}

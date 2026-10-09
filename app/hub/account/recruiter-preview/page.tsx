@@ -6,6 +6,7 @@ import { buildLookupFitment, buildLookupPersonality, buildLookupInterview } from
 import type { LookupResponse, CandidateLevel } from "@/shared/recruiter-preview/types";
 import type { ResumeMatchReportReady } from "@/lib/intervuebox/reports";
 import type { InterviewReportReady } from "@/lib/intervuebox/interviewReports";
+import { RECRUITER_PREVIEW_ENABLED } from "@/lib/featureFlags";
 import RecruiterPreviewClient from "./RecruiterPreviewClient";
 
 export default async function RecruiterPreviewPage({
@@ -13,6 +14,7 @@ export default async function RecruiterPreviewPage({
 }: {
   searchParams: Promise<{ lead?: string }>;
 }) {
+  if (!RECRUITER_PREVIEW_ENABLED) redirect("/hub/account");
   const { lead: leadIdParam } = await searchParams;
   const supabase = await createSupabaseServerClient();
   const {

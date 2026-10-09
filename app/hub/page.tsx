@@ -61,7 +61,7 @@ const HOW_STEPS = [
   { n: "1", title: "Check your fit - free.", body: "Upload your CV, name your target job, get your score in a minute." },
   { n: "2", title: "See what to fix.", body: "Sign in for the full report - strengths, gaps, and how to improve your CV." },
   { n: "3", title: "Build your profile.", body: "Add your personality test, mock interview, and references." },
-  { n: "4", title: "Apply and get found.", body: "Send your one-page profile with every application - and let recruiters discover you on LinkedIn." },
+  { n: "4", title: "Apply and get found.", body: "Send your one-page profile with every application - and soon, let recruiters discover you on LinkedIn." },
 ];
 
 /* ─── Shared bits ─── */
@@ -391,7 +391,15 @@ export default async function HubPage({
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] items-center" style={{ gap: 52 }}>
             <RevealOnScroll>
               <div>
-                <Eyebrow>The Unfair Advantage</Eyebrow>
+                <div className="flex items-center flex-wrap" style={{ gap: 10 }}>
+                  <Eyebrow>The Unfair Advantage</Eyebrow>
+                  <span
+                    className="font-[family-name:var(--font-poppins)] font-semibold uppercase text-[#ed1a24]"
+                    style={{ fontSize: 11, letterSpacing: "0.06em", padding: "4px 10px", borderRadius: 50, border: "1px solid rgba(237,26,36,0.4)", background: "rgba(237,26,36,0.06)" }}
+                  >
+                    Coming soon
+                  </span>
+                </div>
                 <h2 className="font-[family-name:var(--font-gabarito)] font-semibold text-black" style={{ fontSize: "clamp(2rem,3.2vw,2.8rem)", lineHeight: 1.08, letterSpacing: "-0.03em", margin: "22px 0 0" }}>
                   Get discovered on LinkedIn. <span className="text-[#ed1a24]">Not filtered out of it.</span>
                 </h2>

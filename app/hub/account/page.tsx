@@ -13,6 +13,7 @@ import { PRODUCT_PRICING, DEFAULT_LEVEL, formatPrice, type CandidateLevel } from
 import { isProductUnlocked } from "@/lib/productUnlocks";
 import { getRecruiterViewCount } from "@/lib/recruiterActivity";
 import RecruiterActivityPanel from "./RecruiterActivityPanel";
+import { RECRUITER_PREVIEW_ENABLED } from "@/lib/featureFlags";
 import AuthenticatedFitmentChecker from "./AuthenticatedFitmentChecker";
 import { resolveActiveLead } from "@/lib/activeLead";
 import { leadIdOrRoleTitleFilter } from "@/lib/postgrestIdentityFilter";
@@ -226,7 +227,7 @@ export default async function AccountPage({
       counsellingPriceLabel={counsellingPriceLabel}
       initialCounsellingRequested={Boolean(counsellingRequest)}
       applications={leads.map((l) => ({ id: l.id, roleTitle: l.role_title, score: l.score, createdAt: l.created_at }))}
-      recruiterActivity={<RecruiterActivityPanel viewCount={recruiterViewCount} />}
+      recruiterActivity={RECRUITER_PREVIEW_ENABLED ? <RecruiterActivityPanel viewCount={recruiterViewCount} /> : null}
     />
   );
 }
