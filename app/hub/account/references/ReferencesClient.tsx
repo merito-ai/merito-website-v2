@@ -17,6 +17,8 @@ import {
 } from "lucide-react";
 import type { ComponentType } from "react";
 import ExportPreviewButton from "../ExportPreviewButton";
+import ReferencesPaywallModal from "../ReferencesPaywallModal";
+import { formatPrice } from "@/lib/razorpay/pricing";
 import {
   MAX_REFEREES,
   MAX_REMINDERS,
@@ -71,11 +73,17 @@ function StatusPill({ status }: { status: "pending" | "completed" | "rejected" }
 export default function ReferencesClient({
   initialStatus,
   hasPreviousReport = false,
+  refreshPricePaise = null,
+  fullPricePaise = 29900,
 }: {
   initialStatus: ReferenceCheckStatusResult | null;
   hasPreviousReport?: boolean;
+  refreshPricePaise?: number | null;
+  fullPricePaise?: number;
 }) {
   const [status, setStatus] = useState(initialStatus);
+  const [refreshPrice, setRefreshPrice] = useState<number | null>(refreshPricePaise);
+  const [showRefreshPay, setShowRefreshPay] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [previousReport, setPreviousReport] = useState(hasPreviousReport);
@@ -104,19 +112,35 @@ export default function ReferencesClient({
 
   async function handleRestart() {
     const wasDone = status?.status === "completed";
+    // A fresh check after a completed one is paid (loyalty price): the
+    // payment modal replaces the confirm, and restarts once paid.
+    if (wasDone && refreshPrice !== null) {
+      setShowRefreshPay(true);
+      return;
+    }
     const message = wasDone
       ? "Start a new reference check? Your current report stays on your profile until 3 new references complete."
       : "Start over with new referees? Invites you've already sent will stop working.";
     if (!window.confirm(message)) return;
+    await doRestart(wasDone);
+  }
+
+  async function doRestart(wasDone: boolean) {
     setBusy(true);
     setError(null);
     const res = await fetch("/api/hub/references/restart", { method: "POST" });
     const data = await res.json();
     setBusy(false);
+    if (res.status === 402 && data.pricePaise) {
+      setRefreshPrice(data.pricePaise);
+      setShowRefreshPay(true);
+      return;
+    }
     if (!res.ok) {
       setError(data.error || "Something went wrong.");
       return;
     }
+    setRefreshPrice(null);
     if (wasDone) setPreviousReport(true);
     await refreshStatus();
   }
@@ -377,9 +401,28 @@ export default function ReferencesClient({
               className="font-[family-name:var(--font-poppins)] font-semibold text-white border border-white/[0.18] hover:bg-white/[0.06] transition-colors"
               style={{ background: "transparent", borderRadius: 8, padding: "9px 16px", fontSize: 13, cursor: busy ? "default" : "pointer" }}
             >
-              Start new references
+              {refreshPrice !== null ? (
+                <>
+                  Start new references · {formatPrice(refreshPrice)}{" "}
+                  <span className="text-white/45" style={{ textDecoration: "line-through", fontWeight: 400 }}>{formatPrice(fullPricePaise)}</span>
+                </>
+              ) : (
+                "Start new references"
+              )}
             </button>
           </div>
+          {showRefreshPay && refreshPrice !== null && (
+            <ReferencesPaywallModal
+              refresh
+              refreshPricePaise={refreshPrice}
+              fullPricePaise={fullPricePaise}
+              onClose={() => setShowRefreshPay(false)}
+              onUnlocked={() => {
+                setShowRefreshPay(false);
+                void doRestart(true);
+              }}
+            />
+          )}
         </>
       )}
 

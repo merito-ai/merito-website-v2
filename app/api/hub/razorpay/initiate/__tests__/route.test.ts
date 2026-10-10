@@ -16,6 +16,15 @@ vi.mock("@/lib/supabaseAuthServer", () => ({
 }));
 
 const createOrderMock = vi.fn();
+// First-time buyer: references not yet owned, so full price applies.
+vi.mock("@/lib/productUnlocks", () => ({
+  isProductUnlocked: vi.fn().mockResolvedValue(false),
+}));
+vi.mock("@/lib/referenceCredits", () => ({
+  REFERENCE_REFRESH_PRICE_PAISE: 14900,
+  referenceRefreshNeedsPayment: vi.fn().mockResolvedValue(true),
+}));
+
 vi.mock("@/lib/razorpay/client", () => ({
   createOrder: createOrderMock,
 }));
@@ -122,6 +131,27 @@ describe("POST /api/hub/razorpay/initiate", () => {
     const { POST } = await importRoute();
     const response = await POST(buildRequest({ product: "references" }));
     expect(response.status).toBe(200);
+  });
+
+  it("charges the loyalty refresh price when references are already owned", async () => {
+    const { isProductUnlocked } = await import("@/lib/productUnlocks");
+    vi.mocked(isProductUnlocked).mockResolvedValueOnce(true);
+    getUserMock.mockResolvedValue({ data: { user: { id: "user-1", email: "rushi@example.com" } } });
+    const { POST } = await importRoute();
+    const response = await POST(buildRequest({ product: "references" }));
+    expect(response.status).toBe(200);
+    expect((await response.json()).amountPaise).toBe(14900);
+  });
+
+  it("refuses a refresh purchase while an unused reference credit remains", async () => {
+    const { isProductUnlocked } = await import("@/lib/productUnlocks");
+    const { referenceRefreshNeedsPayment } = await import("@/lib/referenceCredits");
+    vi.mocked(isProductUnlocked).mockResolvedValueOnce(true);
+    vi.mocked(referenceRefreshNeedsPayment).mockResolvedValueOnce(false);
+    getUserMock.mockResolvedValue({ data: { user: { id: "user-1", email: "rushi@example.com" } } });
+    const { POST } = await importRoute();
+    const response = await POST(buildRequest({ product: "references" }));
+    expect(response.status).toBe(409);
   });
 
   it("accepts interview as an initiatable product", async () => {

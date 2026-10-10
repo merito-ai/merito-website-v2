@@ -14,6 +14,11 @@ vi.mock("@/lib/productUnlocks", () => ({
 
 const nextCounsellingStateMock = vi.fn();
 const updateCounsellingStatusMock = vi.fn();
+// No other paid references purchase, so a references refund revokes access.
+vi.mock("@/lib/referenceCredits", () => ({
+  countReferenceCredits: vi.fn().mockResolvedValue(0),
+}));
+
 vi.mock("@/lib/adminCounselling", () => ({
   nextCounsellingState: nextCounsellingStateMock,
   updateCounsellingStatus: updateCounsellingStatusMock,

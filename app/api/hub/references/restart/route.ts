@@ -1,5 +1,6 @@
 import { createSupabaseServerClient } from "@/lib/supabaseAuthServer";
-import { restartReferenceCheck } from "@/lib/referenceChecks";
+import { restartReferenceCheck, getReferenceCheckStatus } from "@/lib/referenceChecks";
+import { REFERENCE_REFRESH_PRICE_PAISE, referenceRefreshNeedsPayment } from "@/lib/referenceCredits";
 import { isProductUnlocked } from "@/lib/productUnlocks";
 import { arePaymentsBypassed } from "@/lib/paymentsBypass";
 
@@ -16,6 +17,16 @@ export async function POST(_request: Request) {
   if (!arePaymentsBypassed() && !(await isProductUnlocked(user.id, "references"))) {
     return Response.json(
       { error: "Payment required to unlock reference checks. Please pay first." },
+      { status: 402 }
+    );
+  }
+
+  // A fresh check after a completed one is a paid loyalty refresh; starting
+  // over mid-check (wrong referees) stays free.
+  const latest = await getReferenceCheckStatus(user.id);
+  if (latest?.status === "completed" && (await referenceRefreshNeedsPayment(user.id))) {
+    return Response.json(
+      { error: "REFRESH_PAYMENT_REQUIRED", pricePaise: REFERENCE_REFRESH_PRICE_PAISE },
       { status: 402 }
     );
   }
