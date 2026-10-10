@@ -60,7 +60,13 @@ function StarRating({ value }: { value: number }) {
   );
 }
 
-export default async function ReferencesPrintPage() {
+export default async function ReferencesPrintPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ check?: string }>;
+}) {
+  // ?check=<id> opens a past report from the reference history.
+  const { check: checkId } = await searchParams;
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -79,7 +85,7 @@ export default async function ReferencesPrintPage() {
 
   const current = leads?.[0];
 
-  const status = await getReferenceCheckStatus(user.id, { completedOnly: true });
+  const status = await getReferenceCheckStatus(user.id, { completedOnly: true, checkId });
   if (!status || status.status !== "completed") {
     redirect("/hub/account/references");
   }

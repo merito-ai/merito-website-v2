@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import PriceOptionTiles from "./PriceOptionTiles";
-import type { CandidateLevel } from "@/lib/razorpay/pricing";
+import { formatPrice, type CandidateLevel } from "@/lib/razorpay/pricing";
 import { trackPurchase } from "@/lib/analytics";
 import { fetchWithTimeout, networkErrorMessage } from "@/lib/hub/fetchWithTimeout";
 
@@ -47,19 +47,15 @@ function loadRazorpayCheckoutScript(): Promise<void> {
   });
 }
 
-export default function ReferencesPaywallModal({
-  leadId,
-  level,
-  bundleEligible,
-  onClose,
-  onUnlocked,
-}: {
-  leadId: string;
-  level: CandidateLevel;
-  bundleEligible: boolean;
-  onClose: () => void;
-  onUnlocked: () => void;
-}) {
+type Props = { onClose: () => void; onUnlocked: () => void } & (
+  | { refresh?: false; leadId: string; level: CandidateLevel; bundleEligible: boolean }
+  // Returning candidate buying a fresh check after a completed one, at the
+  // loyalty price (server sets the amount; see lib/referenceCredits.ts).
+  | { refresh: true; refreshPricePaise: number; fullPricePaise: number }
+);
+
+export default function ReferencesPaywallModal(props: Props) {
+  const { onClose, onUnlocked } = props;
   const [paying, setPaying] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -137,8 +133,8 @@ export default function ReferencesPaywallModal({
   };
 
   const handlePay = (selection: "solo" | "bundle") => {
-    if (selection === "bundle") {
-      runCheckout("/api/hub/unlock-report", { leadId, product: "bundle" }, async () => onUnlocked());
+    if (selection === "bundle" && !props.refresh) {
+      runCheckout("/api/hub/unlock-report", { leadId: props.leadId, product: "bundle" }, async () => onUnlocked());
     } else {
       runCheckout("/api/hub/razorpay/initiate", { product: "references" }, async () => onUnlocked());
     }
@@ -154,19 +150,49 @@ export default function ReferencesPaywallModal({
           ✕
         </button>
         <h2 className="font-[family-name:var(--font-gabarito)] font-semibold text-black" style={{ fontSize: "1.4rem", margin: "0 0 10px" }}>
-          Unlock Reference Checks
+          {props.refresh ? "Get fresh references" : "Unlock Reference Checks"}
         </h2>
         <p className="font-[family-name:var(--font-poppins)] text-[#4b4b4d]" style={{ fontSize: 13.5, lineHeight: 1.6, margin: "0 0 16px" }}>
-          Independent ratings from people who have worked with you, across seven standard categories.
+          {props.refresh
+            ? "Changed company or role? Collect new references for your next move. Your current report stays on your profile until 3 new references complete."
+            : "Independent ratings from people who have worked with you, across seven standard categories."}
         </p>
-        <PriceOptionTiles
-          soloProduct="references"
-          soloLabel="Just the Reference Checks"
-          level={level}
-          bundleEligible={bundleEligible}
-          submitting={paying}
-          onContinue={handlePay}
-        />
+        {props.refresh ? (
+          <>
+            <div className="flex items-baseline" style={{ gap: 10, marginBottom: 4 }}>
+              <span className="font-[family-name:var(--font-gabarito)] font-semibold text-black" style={{ fontSize: "2rem" }}>
+                {formatPrice(props.refreshPricePaise)}
+              </span>
+              <span className="font-[family-name:var(--font-poppins)] text-[#9c9c9c]" style={{ fontSize: 15, textDecoration: "line-through" }}>
+                {formatPrice(props.fullPricePaise)}
+              </span>
+              <span className="font-[family-name:var(--font-poppins)] font-semibold text-[#3FCB8C]" style={{ fontSize: 12.5 }}>
+                {Math.round((1 - props.refreshPricePaise / props.fullPricePaise) * 100)}% off
+              </span>
+            </div>
+            <p className="font-[family-name:var(--font-poppins)] text-[#4b4b4d]" style={{ fontSize: 12.5, margin: "0 0 16px" }}>
+              Loyalty price for returning candidates.
+            </p>
+            <button
+              type="button"
+              onClick={() => handlePay("solo")}
+              disabled={paying}
+              className="w-full font-[family-name:var(--font-poppins)] font-semibold text-white bg-[#ed1a24] hover:bg-[#c8151e] transition-colors disabled:opacity-60"
+              style={{ border: "none", borderRadius: 10, padding: "13px 16px", fontSize: 14.5, cursor: paying ? "default" : "pointer" }}
+            >
+              {paying ? "Opening payment…" : `Pay ${formatPrice(props.refreshPricePaise)} and start`}
+            </button>
+          </>
+        ) : (
+          <PriceOptionTiles
+            soloProduct="references"
+            soloLabel="Just the Reference Checks"
+            level={props.level}
+            bundleEligible={props.bundleEligible}
+            submitting={paying}
+            onContinue={handlePay}
+          />
+        )}
         {error && <p style={{ fontSize: 12.5, color: "#ed1a24", marginTop: 10, textAlign: "center" }}>{error}</p>}
       </div>
     </div>

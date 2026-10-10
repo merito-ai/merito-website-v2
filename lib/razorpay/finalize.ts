@@ -3,6 +3,7 @@ import { unlockReport } from "@/lib/reportUnlocks";
 import { unlockProduct, revokeProduct } from "@/lib/productUnlocks";
 import { nextCounsellingState, updateCounsellingStatus, type CounsellingStatus } from "@/lib/adminCounselling";
 import type { RazorpayProduct } from "@/lib/razorpay/pricing";
+import { countReferenceCredits } from "@/lib/referenceCredits";
 
 async function getRoleTitleForLead(
   supabase: ReturnType<typeof getSupabaseServerClient>,
@@ -195,11 +196,11 @@ export async function markRazorpayRefunded(orderId: string): Promise<MarkRefunde
   } else if (txn.product === "personality") {
     await revokeProduct(txn.user_id, "personality");
   } else if (txn.product === "references") {
-    await revokeProduct(txn.user_id, "references");
+    await revokeReferencesUnlessOtherwisePaid(txn.user_id, orderId);
   } else if (txn.product === "bundle") {
     await revokeReportForLead(supabase, txn.user_id, txn.lead_id);
     await revokeProduct(txn.user_id, "personality");
-    await revokeProduct(txn.user_id, "references");
+    await revokeReferencesUnlessOtherwisePaid(txn.user_id, orderId);
   } else if (txn.product === "counselling") {
     await revokeCounsellingForOrder(supabase, orderId);
   }
@@ -208,4 +209,11 @@ export async function markRazorpayRefunded(orderId: string): Promise<MarkRefunde
 
   await supabase.from("razorpay_transactions").update({ status: "refunded" }).eq("order_id", orderId);
   return { ok: true, alreadyProcessed: false };
+}
+
+// A loyalty refresh is a second "references" payment: refunding it (or a
+// bundle) must not take away references another payment still covers.
+async function revokeReferencesUnlessOtherwisePaid(userId: string, refundedOrderId: string): Promise<void> {
+  if ((await countReferenceCredits(userId, refundedOrderId)) > 0) return;
+  await revokeProduct(userId, "references");
 }

@@ -2,6 +2,8 @@ import { createSupabaseServerClient } from "@/lib/supabaseAuthServer";
 import { getSupabaseServerClient } from "@/lib/supabase";
 import { createOrder } from "@/lib/razorpay/client";
 import { PRODUCT_PRICING, PRODUCT_LABELS, DEFAULT_LEVEL, type CandidateLevel, type RazorpayProduct } from "@/lib/razorpay/pricing";
+import { isProductUnlocked } from "@/lib/productUnlocks";
+import { REFERENCE_REFRESH_PRICE_PAISE, referenceRefreshNeedsPayment } from "@/lib/referenceCredits";
 
 export const runtime = "nodejs";
 
@@ -45,7 +47,16 @@ export async function POST(request: Request) {
     .maybeSingle();
 
   const level = (lead?.candidate_level as CandidateLevel | null) ?? DEFAULT_LEVEL;
-  const amountPaise = PRODUCT_PRICING[product][level];
+  let amountPaise = PRODUCT_PRICING[product][level];
+
+  // Already own references: this purchase is a loyalty-priced refresh for a
+  // new check, only allowed once the paid-for checks are used up.
+  if (product === "references" && (await isProductUnlocked(user.id, "references"))) {
+    if (!(await referenceRefreshNeedsPayment(user.id))) {
+      return Response.json({ error: "You already have a reference check available." }, { status: 409 });
+    }
+    amountPaise = REFERENCE_REFRESH_PRICE_PAISE;
+  }
 
   const { orderId } = await createOrder({
     amountPaise,

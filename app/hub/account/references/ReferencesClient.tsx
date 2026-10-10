@@ -17,12 +17,15 @@ import {
 } from "lucide-react";
 import type { ComponentType } from "react";
 import ExportPreviewButton from "../ExportPreviewButton";
+import ReferencesPaywallModal from "../ReferencesPaywallModal";
+import { formatPrice } from "@/lib/razorpay/pricing";
 import {
   MAX_REFEREES,
   MAX_REMINDERS,
   REFERENCE_CATEGORIES,
   computeReferenceReport,
   type ReferenceCheckStatusResult,
+  type ReferenceHistoryEntry,
   type RefereeRole,
 } from "@/lib/referenceChecks";
 import ReferenceScoreGauge, { getReferenceScoreBand } from "./ReferenceScoreGauge";
@@ -71,11 +74,19 @@ function StatusPill({ status }: { status: "pending" | "completed" | "rejected" }
 export default function ReferencesClient({
   initialStatus,
   hasPreviousReport = false,
+  refreshPricePaise = null,
+  fullPricePaise = 29900,
+  history = [],
 }: {
   initialStatus: ReferenceCheckStatusResult | null;
   hasPreviousReport?: boolean;
+  refreshPricePaise?: number | null;
+  fullPricePaise?: number;
+  history?: ReferenceHistoryEntry[];
 }) {
   const [status, setStatus] = useState(initialStatus);
+  const [refreshPrice, setRefreshPrice] = useState<number | null>(refreshPricePaise);
+  const [showRefreshPay, setShowRefreshPay] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [previousReport, setPreviousReport] = useState(hasPreviousReport);
@@ -104,19 +115,35 @@ export default function ReferencesClient({
 
   async function handleRestart() {
     const wasDone = status?.status === "completed";
+    // A fresh check after a completed one is paid (loyalty price): the
+    // payment modal replaces the confirm, and restarts once paid.
+    if (wasDone && refreshPrice !== null) {
+      setShowRefreshPay(true);
+      return;
+    }
     const message = wasDone
       ? "Start a new reference check? Your current report stays on your profile until 3 new references complete."
       : "Start over with new referees? Invites you've already sent will stop working.";
     if (!window.confirm(message)) return;
+    await doRestart(wasDone);
+  }
+
+  async function doRestart(wasDone: boolean) {
     setBusy(true);
     setError(null);
     const res = await fetch("/api/hub/references/restart", { method: "POST" });
     const data = await res.json();
     setBusy(false);
+    if (res.status === 402 && data.pricePaise) {
+      setRefreshPrice(data.pricePaise);
+      setShowRefreshPay(true);
+      return;
+    }
     if (!res.ok) {
       setError(data.error || "Something went wrong.");
       return;
     }
+    setRefreshPrice(null);
     if (wasDone) setPreviousReport(true);
     await refreshStatus();
   }
@@ -377,19 +404,76 @@ export default function ReferencesClient({
               className="font-[family-name:var(--font-poppins)] font-semibold text-white border border-white/[0.18] hover:bg-white/[0.06] transition-colors"
               style={{ background: "transparent", borderRadius: 8, padding: "9px 16px", fontSize: 13, cursor: busy ? "default" : "pointer" }}
             >
-              Start new references
+              {refreshPrice !== null ? (
+                <>
+                  Start new references · {formatPrice(refreshPrice)}{" "}
+                  <span className="text-white/45" style={{ textDecoration: "line-through", fontWeight: 400 }}>{formatPrice(fullPricePaise)}</span>
+                </>
+              ) : (
+                "Start new references"
+              )}
             </button>
           </div>
+          {showRefreshPay && refreshPrice !== null && (
+            <ReferencesPaywallModal
+              refresh
+              refreshPricePaise={refreshPrice}
+              fullPricePaise={fullPricePaise}
+              onClose={() => setShowRefreshPay(false)}
+              onUnlocked={() => {
+                setShowRefreshPay(false);
+                void doRestart(true);
+              }}
+            />
+          )}
         </>
       )}
 
       {!isDone && previousReport && (
         <p className="font-[family-name:var(--font-poppins)] text-white/55" style={{ fontSize: 13, margin: 0 }}>
-          Your previous reference report stays on your profile until this new check completes.{" "}
-          <a href="/hub/account/references/print" className="text-[#ed1a24] hover:text-white">
-            View previous report →
-          </a>
+          Your previous reference report stays on your profile until this new check completes.
         </p>
+      )}
+
+      {/* Every completed check stays viewable; the newest one is what the profile and exports use. */}
+      {(history.length > 1 || (history.length === 1 && !isDone)) && (
+        <div className={`${CARD} print:hidden`} style={{ borderRadius: 14, padding: "6px 20px" }}>
+          <p className="font-[family-name:var(--font-gabarito)] font-semibold text-white" style={{ fontSize: 15, margin: "14px 0 6px" }}>
+            Your reference reports
+          </p>
+          {history.map((entry, idx) => (
+            <div
+              key={entry.checkId}
+              className="flex items-center justify-between flex-wrap"
+              style={{ gap: 10, padding: "12px 0", borderTop: idx === 0 ? "none" : "1px solid rgba(255,255,255,0.08)" }}
+            >
+              <div className="font-[family-name:var(--font-poppins)]" style={{ fontSize: 13 }}>
+                <span className="text-white">
+                  {entry.completedAt
+                    ? new Date(entry.completedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })
+                    : "Completed"}
+                </span>
+                <span className="text-white/45">
+                  {" "}· {entry.overallScore.toFixed(1)}/5 · {entry.refereeCount} reference{entry.refereeCount === 1 ? "" : "s"}
+                </span>
+                {idx === 0 && (
+                  <span className="font-semibold" style={{ marginLeft: 8, fontSize: 11, color: "#3FCB8C", background: "rgba(63,203,140,0.12)", borderRadius: 999, padding: "3px 9px" }}>
+                    Current
+                  </span>
+                )}
+              </div>
+              <a
+                href={`/hub/account/references/print?check=${encodeURIComponent(entry.checkId)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-[family-name:var(--font-poppins)] font-semibold text-[#ed1a24] hover:text-white"
+                style={{ fontSize: 13 }}
+              >
+                View report →
+              </a>
+            </div>
+          ))}
+        </div>
       )}
 
       {!isDone && (
