@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabaseAuthServer";
-import { getReferenceCheckStatus, MIN_REFERENCES, REFERENCE_CATEGORIES } from "@/lib/referenceChecks";
+import { getReferenceCheckStatus, listCompletedReferenceChecks, MIN_REFERENCES, REFERENCE_CATEGORIES } from "@/lib/referenceChecks";
 import { isProductUnlocked } from "@/lib/productUnlocks";
 import { DEFAULT_LEVEL, PRODUCT_PRICING, type CandidateLevel } from "@/lib/razorpay/pricing";
 import { REFERENCE_REFRESH_PRICE_PAISE, referenceRefreshNeedsPayment } from "@/lib/referenceCredits";
@@ -65,6 +65,7 @@ export default async function ReferencesPage({
 
   const status = await getReferenceCheckStatus(user.id);
   const refreshPricePaise = status?.status === "completed" && (await referenceRefreshNeedsPayment(user.id)) ? REFERENCE_REFRESH_PRICE_PAISE : null;
+  const history = await listCompletedReferenceChecks(user.id);
   const previous = status && status.status !== "completed" ? await getReferenceCheckStatus(user.id, { completedOnly: true }) : null;
 
   return (
@@ -84,6 +85,7 @@ export default async function ReferencesPage({
           hasPreviousReport={Boolean(previous)}
           refreshPricePaise={refreshPricePaise}
           fullPricePaise={PRODUCT_PRICING.references[level]}
+          history={history}
         />
       </div>
     </main>

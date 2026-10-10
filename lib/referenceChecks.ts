@@ -249,12 +249,14 @@ export async function addReferee(checkId: string, input: RefereeInput): Promise<
 // still collecting responses. The references page itself reads the latest.
 export async function getReferenceCheckStatus(
   userId: string,
-  opts?: { completedOnly?: boolean }
+  opts?: { completedOnly?: boolean; checkId?: string }
 ): Promise<ReferenceCheckStatusResult | null> {
   const supabase = getSupabaseServerClient();
 
   let query = supabase.from("reference_checks").select("id, status, min_references").eq("user_id", userId);
   if (opts?.completedOnly) query = query.eq("status", "completed");
+  // A specific past check (reference history); user_id filter keeps it owner-only.
+  if (opts?.checkId) query = query.eq("id", opts.checkId);
   const { data: check, error: checkError } = await query
     .order("created_at", { ascending: false })
     .limit(1)
@@ -281,6 +283,39 @@ export async function getReferenceCheckStatus(
     minReferences: check.min_references,
     referees: (referees ?? []) as RefereeRow[],
   };
+}
+
+export type ReferenceHistoryEntry = {
+  checkId: string;
+  completedAt: string | null;
+  overallScore: number;
+  refereeCount: number;
+};
+
+// Every completed check, newest first: candidates who refresh their
+// references keep their earlier reports to view or reuse.
+export async function listCompletedReferenceChecks(userId: string): Promise<ReferenceHistoryEntry[]> {
+  const supabase = getSupabaseServerClient();
+  const { data: checks, error } = await supabase
+    .from("reference_checks")
+    .select("id, completed_at")
+    .eq("user_id", userId)
+    .eq("status", "completed")
+    .order("created_at", { ascending: false });
+  if (error) throw new Error(`Failed to load reference history: ${error.message}`);
+  if (!checks?.length) return [];
+
+  const { data: referees, error: refereesError } = await supabase
+    .from("referees")
+    .select("id, name, email, phone, status, reminder_count, role, organization, ratings, overall_feedback, reference_check_id")
+    .in("reference_check_id", checks.map((c) => c.id));
+  if (refereesError) throw new Error(`Failed to load referees: ${refereesError.message}`);
+
+  return checks.map((c) => {
+    const rows = ((referees ?? []) as (RefereeRow & { reference_check_id: string })[]).filter((r) => r.reference_check_id === c.id);
+    const report = computeReferenceReport(rows);
+    return { checkId: c.id, completedAt: c.completed_at, overallScore: report.overallScore, refereeCount: report.referees.length };
+  });
 }
 
 export async function getRefereeForUser(userId: string, refereeId: string): Promise<RefereeForUser | null> {

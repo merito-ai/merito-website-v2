@@ -432,3 +432,33 @@ describe("restartReferenceCheck", () => {
     expect(tokensIs).toHaveBeenCalledWith("used_at", null);
   });
 });
+
+describe("listCompletedReferenceChecks", () => {
+  beforeEach(() => fromMock.mockReset());
+
+  it("returns each completed check newest first with its own score and referee count", async () => {
+    const order = vi.fn().mockResolvedValue({
+      data: [
+        { id: "new", completed_at: "2026-10-01T00:00:00Z" },
+        { id: "old", completed_at: "2026-04-01T00:00:00Z" },
+      ],
+      error: null,
+    });
+    const eq2 = vi.fn().mockReturnValue({ order });
+    const eq1 = vi.fn().mockReturnValue({ eq: eq2 });
+    const checksSelect = vi.fn().mockReturnValue({ eq: eq1 });
+    const rated = (checkId: string, value: number) => ({
+      reference_check_id: checkId,
+      status: "completed",
+      ratings: [{ category: "teamwork", value }],
+    });
+    const inFn = vi.fn().mockResolvedValue({ data: [rated("new", 5), rated("old", 3), rated("old", 3)], error: null });
+    const refSelect = vi.fn().mockReturnValue({ in: inFn });
+    fromMock.mockReturnValueOnce({ select: checksSelect }).mockReturnValueOnce({ select: refSelect });
+
+    const { listCompletedReferenceChecks } = await import("../referenceChecks");
+    const history = await listCompletedReferenceChecks("user-1");
+    expect(history.map((h) => [h.checkId, h.refereeCount])).toEqual([["new", 1], ["old", 2]]);
+    expect(inFn).toHaveBeenCalledWith("reference_check_id", ["new", "old"]);
+  });
+});
