@@ -340,7 +340,7 @@ export default async function PublicSharePage({ params }: { params: Promise<{ to
           {personality && (
             <div id="personality">
               <SectionHeading index="02 · Personality" title="Big Five (OCEAN) working-style profile" blurb="Five research-backed traits describing working style, self-reported against a validated questionnaire. No score here is inherently good or bad — these describe tendencies, not ability." eyebrowColor="#4B4894" />
-              <CondensedPersonalitySection candidateName={displayName} scores={personality.scores} />
+              <CondensedPersonalitySection candidateName={displayName} scores={personality.scores} culture={personality.culture} />
             </div>
           )}
 

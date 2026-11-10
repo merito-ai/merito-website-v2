@@ -18,6 +18,11 @@ import {
   type Scores,
   type Validity,
 } from "@/lib/personality";
+import type { CultureScores } from "@/lib/psychometrics/scoring";
+import { isPersonalityComplete } from "@/lib/psychometrics/testFlow";
+import { SELF_DEV_NOTE } from "@/lib/psychometrics/reportCopy";
+import StrengthsSection from "../StrengthsSection";
+import CultureSection from "../CultureSection";
 
 const manrope = Manrope({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-manrope" });
 
@@ -74,16 +79,17 @@ export default async function PersonalityPrintPage({
   const unlocked = await isProductUnlocked(user.id, "personality");
   const { data: existing } = await supabase
     .from("personality_tests")
-    .select("scores, validity")
+    .select("scores, validity, version, culture_scores, culture_reliable")
     .eq("user_id", user.id)
     .maybeSingle();
 
-  if (!unlocked || !existing?.scores || !existing?.validity) {
+  if (!unlocked || !existing?.scores || !existing?.validity || !isPersonalityComplete(existing)) {
     redirect("/hub/account/personality");
   }
 
   const scores = existing.scores as Scores;
   const validity = existing.validity as Validity;
+  const cultureScores = existing.culture_scores as CultureScores | null;
   // Real name from the fitment form; the email local-part is only a fallback.
   const { data: latestLead } = await supabase
     .from("fitment_leads")
@@ -160,7 +166,7 @@ export default async function PersonalityPrintPage({
                     {TRAIT_NAME[t]}
                   </span>
                   <span className="font-semibold" style={{ fontSize: 12.5, color }}>
-                    {scores[t].pct}% · {BANDS[scores[t].band]}
+                    {Math.round(scores[t].pct)}% · {BANDS[scores[t].band]}
                   </span>
                 </div>
                 <div style={{ height: 6, borderRadius: 6, overflow: "hidden", background: "#E5E7EB" }}>
@@ -184,7 +190,7 @@ export default async function PersonalityPrintPage({
                   {TRAIT_NAME[t]}
                 </span>
                 <span className="font-bold" style={{ fontSize: 20, color }}>
-                  {s.pct}%
+                  {Math.round(s.pct)}%
                 </span>
               </div>
               <div>
@@ -203,6 +209,10 @@ export default async function PersonalityPrintPage({
           );
         })}
       </div>
+
+      <StrengthsSection scores={scores} candidateName={displayName} light />
+      {cultureScores && <CultureSection scores={cultureScores} reliable={existing.culture_reliable as boolean | null} light />}
+      <div style={{ height: 16 }} />
 
       <Card>
         <div className="flex items-center" style={{ gap: 8, marginBottom: 4 }}>
@@ -242,6 +252,8 @@ export default async function PersonalityPrintPage({
             : `Interpret with some caution. The response pattern shows signs of ${flags.join(", ")}. Treat the trait scores as indicative and confirm anything important in a structured interview.`}
         </div>
       </Card>
+
+      <p style={{ fontSize: 12, lineHeight: 1.6, margin: 0, color: "#6B7280" }}>{SELF_DEV_NOTE}</p>
     </div>
   );
 }

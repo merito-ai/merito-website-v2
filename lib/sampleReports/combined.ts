@@ -13,7 +13,7 @@ const NAME = "Ananya Iyer";
 
 export const SAMPLE_COMBINED_REPORT: CombinedReportData = {
   fitment: { roleTitle: ROLE, displayName: NAME, report: SAMPLE_FITMENT_REPORT },
-  personality: { scores: SAMPLE_PERSONALITY_SCORES },
+  personality: { scores: SAMPLE_PERSONALITY_SCORES, culture: null },
   interview: { roleTitle: ROLE, report: SAMPLE_INTERVIEW_REPORT, updatedAt: "2026-09-15T10:00:00.000Z" },
   references: computeReferenceReport(SAMPLE_REFEREES),
   displayName: NAME,

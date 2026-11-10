@@ -1,5 +1,6 @@
 import { createSupabaseServerClient } from "@/lib/supabaseAuthServer";
 import { renderPageToPdf, requestCookiesFor } from "@/lib/pdf/renderPageToPdf";
+import { isPersonalityComplete } from "@/lib/psychometrics/testFlow";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -34,11 +35,11 @@ export async function GET(request: Request) {
 
   const { data: existing } = await supabase
     .from("personality_tests")
-    .select("scores, validity")
+    .select("scores, validity, version, culture_scores")
     .eq("user_id", user.id)
     .maybeSingle();
 
-  if (!existing || !existing.scores || !existing.validity) {
+  if (!existing || !existing.scores || !existing.validity || !isPersonalityComplete(existing)) {
     return Response.json({ error: "Personality test not completed yet." }, { status: 404 });
   }
 

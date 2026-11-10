@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { ALL_ITEM_IDS } from "@/lib/personality";
+import { CULTURE_ITEMS } from "@/lib/psychometrics/cultureItems";
 import {
   createTestUser,
   deleteTestUser,
@@ -147,6 +148,28 @@ describe("POST /api/hub/save-personality-test — real DB", () => {
 
       const res = await post({ roleTitle: "Backend Engineer", answers: completeAnswers() });
       expect(res.status).toBe(200);
+    });
+  });
+
+  it("v2: part 1 then part 2 lands version=2 with culture_scores (migration 0070)", async () => {
+    await withTestUser(async (t) => {
+      state.user = t.user;
+      vi.stubEnv("RAZORPAY_BYPASS", "true");
+
+      expect((await post({ roleTitle: "Backend Engineer", part: "personality", answers: completeAnswers() })).status).toBe(200);
+      const culture = Object.fromEntries(CULTURE_ITEMS.map((i) => [i.id, 4]));
+      const res = await post({ roleTitle: "Backend Engineer", part: "culture", answers: { ...culture, attn1: 1, attn2: 1, attn3: 7 } });
+      expect(res.status).toBe(200);
+
+      const { data } = await admin
+        .from("personality_tests")
+        .select("version, culture_scores, culture_reliable, culture_completed_at")
+        .eq("user_id", t.user.id)
+        .single();
+      expect(data!.version).toBe(2);
+      expect(data!.culture_scores).toEqual({ Clan: 50, Adhocracy: 50, Market: 50, Hierarchy: 50 });
+      expect(data!.culture_reliable).toBe(true);
+      expect(data!.culture_completed_at).not.toBeNull();
     });
   });
 

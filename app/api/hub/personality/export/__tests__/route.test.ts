@@ -75,6 +75,21 @@ describe("GET /api/hub/personality/export", () => {
     expect(response.status).toBe(404);
   });
 
+  it("returns 404 for a v2 row with only Part 1 saved", async () => {
+    getUserMock.mockResolvedValue({ data: { user: { id: "user-1", email: "roshan@merito.in" } } });
+    leadMaybeSingleMock.mockResolvedValue({ data: { role_title: "Senior Product Manager" }, error: null });
+    const t = { raw: 30, pct: 50, band: 2 };
+    const scores = { E: t, A: t, C: t, ES: t, O: t };
+    const validity = { meanRaw: 3, pctMid: 10, incon: 0.5, sd: 2 };
+    testMaybeSingleMock.mockResolvedValue({ data: { scores, validity, version: 2, culture_scores: null }, error: null });
+    const { GET } = await importRoute();
+
+    const response = await GET(buildRequest());
+
+    expect(response.status).toBe(404);
+    expect(renderPageToPdfMock).not.toHaveBeenCalled();
+  });
+
   it("returns a PDF when the test has been completed", async () => {
     getUserMock.mockResolvedValue({ data: { user: { id: "user-1", email: "roshan@merito.in" } } });
     leadMaybeSingleMock.mockResolvedValue({ data: { role_title: "Senior Product Manager" }, error: null });

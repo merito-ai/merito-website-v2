@@ -111,6 +111,11 @@ export const SCHEMA_CONTRACT: ReadonlyArray<ContractCheck> = [
       where table_schema = 'public' and table_name = 'personality_tests'
       and column_name in ('user_id','role_title','scores','validity','answers','completed_at')`,
   },
+  columnExists("personality_tests", "version", "save-personality-test writes version 2 + culture columns (migration 0070)"),
+  columnExists("personality_tests", "culture_scores", "save-personality-test writes culture part 2 (migration 0070)"),
+  columnExists("personality_tests", "culture_reliable", "save-personality-test writes culture part 2 (migration 0070)"),
+  columnExists("personality_tests", "culture_answers", "save-personality-test writes culture part 2 (migration 0070)"),
+  columnExists("personality_tests", "culture_completed_at", "save-personality-test writes culture part 2 (migration 0070)"),
 
   // --- fitment check + AI interview flows ----------------------------------
   tableExists("fitment_leads", "fitment-check, razorpay, start-ai-interview all read/write it"),

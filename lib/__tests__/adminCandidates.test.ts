@@ -635,6 +635,25 @@ describe("listCandidates", () => {
 
     expect(result).toEqual({ rows: [], total: 0, totalPages: 1, page: 1 });
   });
+
+  it("counts a v2 personality row as completed only once Part 2 is saved", async () => {
+    stubCandidates(3);
+    personalityTestsSelectMock.mockResolvedValue({
+      data: [
+        { user_id: "user-0", version: 1, culture_scores: null },
+        { user_id: "user-1", version: 2, culture_scores: null },
+        { user_id: "user-2", version: 2, culture_scores: { Clan: 50 } },
+      ],
+    });
+    const { fetchAllCandidates } = await import("../adminCandidates");
+
+    const stages = Object.fromEntries((await fetchAllCandidates()).map((r) => [r.userId, r.funnelStage]));
+
+    expect(personalityTestsSelectMock).toHaveBeenCalledWith(expect.stringContaining("culture_scores"));
+    expect(stages["user-0"]).toBe("personality_completed");
+    expect(stages["user-1"]).not.toBe("personality_completed");
+    expect(stages["user-2"]).toBe("personality_completed");
+  });
 });
 
 describe("updateRecruiterPreviewOverride", () => {

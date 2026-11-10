@@ -1531,3 +1531,19 @@ Route `GET`: `createSupabaseServerClient` → user, else 401 → `Response.json(
 8. Concurrent report-credit race: accepted with code comment.
 9. Migrations 0068-0070: accepted; check the number is still free before applying.
 10. Python report narrative not ported in v1; reuse existing trait copy. Deferred.
+
+## Follow-ups (Phase C/D)
+
+Branch `feat/hub-plans-d` (on top of `feat/hub-plans-c`). Nice-to-haves and minor findings:
+
+- **Deploy order (blocking):** every `personality_tests` reader now selects `version, culture_scores` (dashboard, exports, share summary, admin, recruiter preview). Deploying before migration 0070 is applied breaks those pages, not just the test. BLOCKED-ON-HUMAN: apply `0070_personality_v2.sql` + `supabase migration repair --status applied 0070`, then `npm run verify:schema`.
+- Phase C: old-result retake is wired to `canRetakeV2 = false` (`app/hub/account/personality/page.tsx`) until Phase B merges; then set it to `Boolean(await getPlanOrder(user.id))` (PM decision #3).
+- Phase C: `app/api/hub/save-personality-test/__tests__/route.dbtest.ts` not yet run — local Supabase (127.0.0.1:54321) unreachable during C and D.
+- Manual browser checks (D2 step 4, D3 step 3) not done: report for v2 fit / v2 flat / v1 user, PDF export with culture section, `/hub/share/<token>` for a v2 user.
+- Dashboard `ProgressRail` has no "in progress" state: a Part-1-only v2 row shows "not started" (the personality page resumes at Part 2).
+- Admin candidate detail hides a Part-1-only row entirely; admins may want to see partial progress.
+- `lib/sampleReports/combined.ts` and `SamplePersonalityReport` carry no culture data; add sample culture scores so prospects see the new section.
+- Recruiter preview / extension lookup (`buildLookupPersonality`) shows no culture; spec only requires the share page.
+- Combined-report dashboard summary line (`personalitySummary`) doesn't mention culture.
+- Hub report "Show all 7" `<details>` lists all 7 (top 3 repeated) with basis; the PDF lists all 7 expanded since it can't open `<details>`.
+- No route-level test for the recruiter-preview lookup with a Part-1-only row; covered by `isPersonalityComplete` unit tests + admin funnel test.
