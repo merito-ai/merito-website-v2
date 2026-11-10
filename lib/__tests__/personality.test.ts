@@ -10,6 +10,8 @@ import {
   validityFlags,
   isCompleteAnswerSet,
   traitLevel,
+  toStoredScores,
+  toStoredValidity,
   type Answers,
 } from "../personality";
 
@@ -135,5 +137,46 @@ describe("traitLevel", () => {
     expect(traitLevel(75)).toBe("high");
     expect(traitLevel(50)).toBe("avg");
     expect(traitLevel(20)).toBe("low");
+  });
+});
+
+describe("v2 storage helpers (personality_tests keeps the v1 shape)", () => {
+  it("toStoredScores rounds pct, derives band, sums keyed raw of answered items", () => {
+    const answers = baselineAnswers(3);
+    const s = toStoredScores({ E: 64.58, A: 50, C: 100, ES: 0, O: 39.99 }, answers);
+    expect(s.E).toEqual({ raw: 36, pct: 65, band: 3 });
+    expect(s.C).toEqual({ raw: 36, pct: 100, band: 4 });
+    expect(s.ES).toEqual({ raw: 36, pct: 0, band: 0 });
+    expect(s.O.pct).toBe(40);
+    expect(s.O.band).toBe(2);
+  });
+
+  it("toStoredScores raw applies reverse keying", () => {
+    const answers = baselineAnswers(5);
+    // E: 6 '+' items -> 5 each, 6 '-' items -> 1 each
+    expect(toStoredScores({ E: 50, A: 50, C: 50, ES: 50, O: 50 }, answers).E.raw).toBe(36);
+    const allPlus = baselineAnswers(5);
+    ITEMS.filter((i) => i.t === "E" && i.k === "-").forEach((i) => (allPlus[i.id] = 1));
+    expect(toStoredScores({ E: 100, A: 50, C: 50, ES: 50, O: 50 }, allPlus).E.raw).toBe(60);
+  });
+
+  it("toStoredValidity maps v2 keys to legacy keys and keeps flags", () => {
+    expect(
+      toStoredValidity({
+        mean_raw: 3.07, pct_mid: 20, inconsistency: 1.67, social_desirability: 2.4,
+        longstring: 2, flags: ["x"], answered: 65, total: 65, insufficient: [],
+      })
+    ).toEqual({ meanRaw: 3.07, pctMid: 20, incon: 1.67, sd: 2.4, longstring: 2, flags: ["x"] });
+  });
+
+  it("validityFlags returns stored v2 flags as-is", () => {
+    expect(validityFlags({ meanRaw: 4, pctMid: 50, incon: 2, sd: 5, flags: ["x"] })).toEqual(["x"]);
+  });
+
+  it("validityFlags on a v1 object (no flags) still computes the old flags", () => {
+    expect(validityFlags({ meanRaw: 4, pctMid: 0, incon: 0, sd: 4.2 })).toEqual([
+      "agreement (yea-saying) bias",
+      "socially desirable responding (faking good)",
+    ]);
   });
 });

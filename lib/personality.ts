@@ -1,3 +1,5 @@
+import type { PersonalityValidityV2 } from "@/lib/psychometrics/scoring";
+
 export type TraitKey = "E" | "A" | "C" | "ES" | "O";
 
 export type Item = { id: number; t: TraitKey; k: "+" | "-"; s: string };
@@ -152,11 +154,14 @@ export type Answers = Record<number, number>;
 export type TraitScore = { raw: number; pct: number; band: number };
 export type Scores = Record<TraitKey, TraitScore>;
 
+// v1 rows carry only the first four keys; v2 rows (Python-ported scorer) also store longstring + flags.
 export type Validity = {
   meanRaw: number;
   pctMid: number;
   incon: number;
   sd: number;
+  longstring?: number;
+  flags?: string[];
 };
 
 function average(values: number[]): number {
@@ -210,7 +215,8 @@ export type ValidityFlag =
   | "inconsistent / careless responding"
   | "socially desirable responding (faking good)";
 
-export function validityFlags(v: Validity): ValidityFlag[] {
+export function validityFlags(v: Validity): string[] {
+  if (v.flags) return v.flags; // v2: flags computed by the Python-ported scorer
   const flags: ValidityFlag[] = [];
   if (v.meanRaw >= 3.6) flags.push("agreement (yea-saying) bias");
   else if (v.meanRaw <= 2.4) flags.push("disagreement bias");
@@ -218,6 +224,24 @@ export function validityFlags(v: Validity): ValidityFlag[] {
   if (v.incon >= 1.5) flags.push("inconsistent / careless responding");
   if (v.sd >= 4) flags.push("socially desirable responding (faking good)");
   return flags;
+}
+
+// v2 scores stored in the v1 TraitScore shape so every existing reader keeps working.
+export function toStoredScores(traitScores: Record<TraitKey, number>, answers: Answers): Scores {
+  const out = {} as Scores;
+  for (const t of TRAITS) {
+    const pct = Math.round(traitScores[t]);
+    const raw = ITEMS.filter((i) => i.t === t && answers[i.id] != null).reduce(
+      (s, i) => s + (i.k === "+" ? answers[i.id] : 6 - answers[i.id]),
+      0
+    );
+    out[t] = { raw, pct, band: Math.min(4, Math.floor(pct / 20)) };
+  }
+  return out;
+}
+
+export function toStoredValidity(v: PersonalityValidityV2): Validity {
+  return { meanRaw: v.mean_raw, pctMid: v.pct_mid, incon: v.inconsistency, sd: v.social_desirability, longstring: v.longstring, flags: v.flags };
 }
 
 export function traitLevel(pct: number): WorkLevel {
