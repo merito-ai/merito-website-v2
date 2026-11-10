@@ -4,13 +4,15 @@ import { createOrder } from "@/lib/razorpay/client";
 import { PRODUCT_PRICING, PRODUCT_LABELS, DEFAULT_LEVEL, type CandidateLevel, type RazorpayProduct } from "@/lib/razorpay/pricing";
 import { isProductUnlocked } from "@/lib/productUnlocks";
 import { REFERENCE_REFRESH_PRICE_PAISE, referenceRefreshNeedsPayment } from "@/lib/referenceCredits";
+import { isEmailAllowlisted } from "@/lib/planAllowlist";
+import { isPlanProduct, getPlanOrder } from "@/lib/plans";
 
 export const runtime = "nodejs";
 
 // "report" has its own dedicated route (app/api/hub/unlock-report) because
 // it's tied to a specific fitment_leads row (leadId) — this generic route
 // is for account-level products that aren't tied to any one lead.
-const INITIATABLE_PRODUCTS: RazorpayProduct[] = ["counselling", "personality", "references", "interview"];
+const INITIATABLE_PRODUCTS: RazorpayProduct[] = ["counselling", "personality", "references", "interview", "plan_prepare", "plan_mentor"];
 
 function isInitiatableProduct(value: unknown): value is RazorpayProduct {
   return typeof value === "string" && (INITIATABLE_PRODUCTS as string[]).includes(value);
@@ -37,6 +39,25 @@ export async function POST(request: Request) {
     return Response.json({ error: "Unknown product." }, { status: 400 });
   }
   const product = body.product;
+
+  if (isPlanProduct(product)) {
+    // Server-side gate (spec): hiding the plan in the UI is not enough. Fails closed on DB errors.
+    let allowlisted: boolean;
+    let existingPlan: unknown;
+    try {
+      allowlisted = await isEmailAllowlisted(user.email);
+      existingPlan = allowlisted ? await getPlanOrder(user.id) : null;
+    } catch {
+      return Response.json({ error: "Something went wrong starting payment." }, { status: 500 });
+    }
+    if (!allowlisted) {
+      return Response.json({ error: "Plans aren't available on this account." }, { status: 403 });
+    }
+    // No upgrade path (PM decision 2): Plan 1 holders buy mentoring individually.
+    if (existingPlan) {
+      return Response.json({ error: "You already have a plan." }, { status: 409 });
+    }
+  }
 
   const { data: lead } = await supabase
     .from("fitment_leads")
