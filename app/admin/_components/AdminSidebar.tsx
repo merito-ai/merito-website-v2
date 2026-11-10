@@ -17,6 +17,7 @@ const NAV_ITEMS = [
   { label: "Contact Requests", href: "/admin/contact-requests" },
   { label: "Duplicates", href: "/admin/duplicates" },
   { label: "Payments", href: "/admin/payments" },
+  { label: "Plan Allowlist", href: "/admin/plan-allowlist" },
   { label: "Counselling", href: "/admin/counselling" },
   { label: "Extension", href: "/admin/extension" },
   { label: "Pipeline Failures", href: "/admin/pipeline-failures" },

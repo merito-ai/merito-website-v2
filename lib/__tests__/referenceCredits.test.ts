@@ -51,6 +51,6 @@ describe("countReferenceCredits", () => {
     const { countReferenceCredits } = await import("../referenceCredits");
     await countReferenceCredits("u1", "order_x");
     expect(q.neq).toHaveBeenCalledWith("order_id", "order_x");
-    expect(q.in).toHaveBeenCalledWith("product", ["references", "bundle"]);
+    expect(q.in).toHaveBeenCalledWith("product", ["references", "bundle", "plan_prepare", "plan_mentor"]);
   });
 });

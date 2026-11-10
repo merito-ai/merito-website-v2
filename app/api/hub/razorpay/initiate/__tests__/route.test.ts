@@ -29,6 +29,14 @@ vi.mock("@/lib/razorpay/client", () => ({
   createOrder: createOrderMock,
 }));
 
+const isEmailAllowlistedMock = vi.fn();
+vi.mock("@/lib/planAllowlist", () => ({ isEmailAllowlisted: isEmailAllowlistedMock }));
+const getPlanOrderMock = vi.fn();
+vi.mock("@/lib/plans", async () => {
+  const actual = await vi.importActual<typeof import("@/lib/plans")>("@/lib/plans");
+  return { ...actual, getPlanOrder: getPlanOrderMock };
+});
+
 const insertMock = vi.fn();
 const adminFromMock = vi.fn().mockReturnValue({ insert: insertMock });
 vi.mock("@/lib/supabase", () => ({
@@ -56,6 +64,10 @@ describe("POST /api/hub/razorpay/initiate", () => {
     createOrderMock.mockResolvedValue({ orderId: "order_ABC123" });
     insertMock.mockReset();
     insertMock.mockResolvedValue({ error: null });
+    isEmailAllowlistedMock.mockReset();
+    isEmailAllowlistedMock.mockResolvedValue(true);
+    getPlanOrderMock.mockReset();
+    getPlanOrderMock.mockResolvedValue(null);
   });
 
   it("returns 401 when there is no session", async () => {
@@ -169,5 +181,58 @@ describe("POST /api/hub/razorpay/initiate", () => {
     const { POST } = await importRoute();
     const response = await POST(buildRequest({ product: "counselling" }));
     expect(response.status).toBe(500);
+  });
+  describe("plans", () => {
+    beforeEach(() => {
+      getUserMock.mockResolvedValue({ data: { user: { id: "user-1", email: "Seminar@Example.com" } } });
+    });
+
+    it("creates a flat-price plan_prepare order for an allowlisted user", async () => {
+      leadMaybeSingleMock.mockResolvedValue({ data: { candidate_level: "entry" }, error: null });
+      const { POST } = await importRoute();
+      const response = await POST(buildRequest({ product: "plan_prepare" }));
+      expect(response.status).toBe(200);
+      expect((await response.json()).amountPaise).toBe(299600);
+      expect(isEmailAllowlistedMock).toHaveBeenCalledWith("Seminar@Example.com");
+      expect(insertMock).toHaveBeenCalledWith(expect.objectContaining({ product: "plan_prepare", lead_id: null, amount_paise: 299600 }));
+    });
+
+    it("prices plan_mentor flat even for a senior lead", async () => {
+      const { POST } = await importRoute();
+      const response = await POST(buildRequest({ product: "plan_mentor" }));
+      expect(response.status).toBe(200);
+      expect((await response.json()).amountPaise).toBe(599500);
+    });
+
+    it("refuses a plan to a user not on the allowlist", async () => {
+      isEmailAllowlistedMock.mockResolvedValue(false);
+      const { POST } = await importRoute();
+      const response = await POST(buildRequest({ product: "plan_prepare" }));
+      expect(response.status).toBe(403);
+      expect(await response.json()).toEqual({ error: "Plans aren't available on this account." });
+      expect(createOrderMock).not.toHaveBeenCalled();
+    });
+
+    it("refuses a second plan", async () => {
+      getPlanOrderMock.mockResolvedValue({ orderId: "o1", product: "plan_prepare", interviewUsed: false });
+      const { POST } = await importRoute();
+      const response = await POST(buildRequest({ product: "plan_mentor" }));
+      expect(response.status).toBe(409);
+      expect(createOrderMock).not.toHaveBeenCalled();
+    });
+
+    it("fails closed when the allowlist check errors", async () => {
+      isEmailAllowlistedMock.mockRejectedValue(new Error("boom"));
+      const { POST } = await importRoute();
+      const response = await POST(buildRequest({ product: "plan_prepare" }));
+      expect(response.status).toBe(500);
+      expect(createOrderMock).not.toHaveBeenCalled();
+    });
+
+    it("never checks the allowlist for individual products", async () => {
+      const { POST } = await importRoute();
+      await POST(buildRequest({ product: "personality" }));
+      expect(isEmailAllowlistedMock).not.toHaveBeenCalled();
+    });
   });
 });

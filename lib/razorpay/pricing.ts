@@ -1,5 +1,5 @@
 export type CandidateLevel = "entry" | "mid" | "senior";
-export type RazorpayProduct = "report" | "personality" | "references" | "interview" | "counselling" | "bundle";
+export type RazorpayProduct = "report" | "personality" | "references" | "interview" | "counselling" | "bundle" | "plan_prepare" | "plan_mentor";
 
 export const DEFAULT_LEVEL: CandidateLevel = "entry";
 
@@ -13,6 +13,9 @@ export const PRODUCT_PRICING: Record<RazorpayProduct, Record<CandidateLevel, num
   interview: { entry: 99900, mid: 99900, senior: 149900 },
   counselling: { entry: 199900, mid: 199900, senior: 299900 },
   bundle: { entry: 74900, mid: 74900, senior: 74900 },
+  // Hub plans (allowlisted users only) are flat — no level split.
+  plan_prepare: { entry: 299600, mid: 299600, senior: 299600 },
+  plan_mentor: { entry: 599500, mid: 599500, senior: 599500 },
 };
 
 export const PRODUCT_LABELS: Record<RazorpayProduct, string> = {
@@ -22,6 +25,8 @@ export const PRODUCT_LABELS: Record<RazorpayProduct, string> = {
   interview: "Mock AI Interview",
   counselling: "1:1 Counselling Session",
   bundle: "Full Profile Bundle",
+  plan_prepare: "Assess + Prepare",
+  plan_mentor: "Assess + Mentor + Apply",
 };
 
 export function formatPrice(paise: number): string {

@@ -177,6 +177,18 @@ describe("POST /api/hub/razorpay/verify", () => {
     expect(completeReportUnlockMock).not.toHaveBeenCalled();
   });
 
+  it("returns unlocked for a plan order (no lead), without touching completeReportUnlock", async () => {
+    getUserMock.mockResolvedValue({ data: { user: { id: "user-1" } } });
+    verifyPaymentSignatureMock.mockReturnValue(true);
+    finalizeRazorpayOrderMock.mockResolvedValue({ ok: true, product: "plan_mentor", userId: "user-1", leadId: null });
+    const { POST } = await importRoute();
+    const response = await POST(buildRequest({ orderId: "order_1", paymentId: "pay_1", signature: "sig" }));
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({ status: "unlocked" });
+    expect(completeReportUnlockMock).not.toHaveBeenCalled();
+  });
+
   it("returns pending when completeReportUnlock reports pending", async () => {
     getUserMock.mockResolvedValue({ data: { user: { id: "user-1" } } });
     verifyPaymentSignatureMock.mockReturnValue(true);

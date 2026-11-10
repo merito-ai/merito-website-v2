@@ -46,13 +46,15 @@ export function complexityForLevel(level: CandidateLevel): "easy" | "medium" | "
 export async function createInterviewAgent(
   jobId: string,
   roleTitle: string,
-  candidateLevel: CandidateLevel
+  candidateLevel: CandidateLevel,
+  // Plan interviews are always 45 min regardless of level (plans/2026-11-10-hub-plans-design.md).
+  maxInterviewMinutes: 30 | 45 = durationForLevel(candidateLevel)
 ): Promise<{ ibAgentId: string }> {
   const response = await intervueBoxFetch<CreateInterviewAgentResponse>(`/public/jobs/${jobId}/interview`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      maxInterviewMinutes: durationForLevel(candidateLevel),
+      maxInterviewMinutes,
       interviewType: inferInterviewType(roleTitle),
       // Flipped back to false (skill-based) 2026-07-29 — product decision:
       // skill-based is what's actually needed, not criteria-based. Confirmed

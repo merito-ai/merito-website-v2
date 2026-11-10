@@ -28,6 +28,9 @@ vi.mock("@/lib/razorpay/client", () => ({
 vi.mock("@/lib/supabase", () => ({
   getSupabaseServerClient: () => ({ from: adminFromMock }),
 }));
+const getPlanOrderMock = vi.fn();
+const planReportCreditsLeftMock = vi.fn();
+vi.mock("@/lib/plans", () => ({ getPlanOrder: getPlanOrderMock, planReportCreditsLeft: planReportCreditsLeftMock }));
 
 function buildLeadChain(result: { data: unknown; error: unknown }) {
   sessionFromMock.mockReturnValue({ select: leadSelectMock });
@@ -55,6 +58,9 @@ describe("POST /api/hub/unlock-report", () => {
     insertMock.mockResolvedValue({ error: null });
     adminFromMock.mockReset();
     adminFromMock.mockReturnValue({ insert: insertMock });
+    getPlanOrderMock.mockReset();
+    getPlanOrderMock.mockResolvedValue(null);
+    planReportCreditsLeftMock.mockReset();
   });
 
   it("returns 401 when there is no session", async () => {
@@ -145,8 +151,11 @@ describe("POST /api/hub/unlock-report", () => {
       expect(completeReportUnlockMock).toHaveBeenCalledWith(
         "user-123",
         expect.objectContaining({ id: "lead-1", ib_applied_job_id: "APJ_1" }),
-        "report"
+        "report",
+        undefined
       );
+      // Bypassed: plan credits are never looked up or spent.
+      expect(getPlanOrderMock).not.toHaveBeenCalled();
       expect(createOrderMock).not.toHaveBeenCalled();
       expect(body).toEqual({ status: "unlocked", report: storedRaw });
     });
@@ -237,6 +246,57 @@ describe("POST /api/hub/unlock-report", () => {
         })
       );
       expect(completeReportUnlockMock).not.toHaveBeenCalled();
+    });
+
+    describe("plan report credits", () => {
+      const LEAD = { id: "lead-1", role_title: "PM", candidate_level: "entry", ib_applied_job_id: "APJ_1", resume_match_status: "READY", resume_match_raw: {} };
+      function post(body: unknown) {
+        return new Request("http://localhost/api/hub/unlock-report", { method: "POST", body: JSON.stringify(body) });
+      }
+      beforeEach(() => {
+        getUserMock.mockResolvedValue({ data: { user: { id: "user-123", email: "rushi@example.com" } } });
+        buildLeadChain({ data: LEAD, error: null });
+        createOrderMock.mockResolvedValue({ orderId: "order_ABC123" });
+        completeReportUnlockMock.mockResolvedValue({ status: "unlocked", report: { overallScore: 80 } });
+      });
+
+      it("spends a plan credit instead of charging", async () => {
+        getPlanOrderMock.mockResolvedValue({ orderId: "o1", product: "plan_prepare", interviewUsed: false });
+        planReportCreditsLeftMock.mockResolvedValue(2);
+        const { POST } = await importRoute();
+        const response = await POST(post({ leadId: "lead-1" }));
+
+        expect(await response.json()).toEqual({ status: "unlocked", report: { overallScore: 80 } });
+        expect(createOrderMock).not.toHaveBeenCalled();
+        expect(completeReportUnlockMock).toHaveBeenCalledWith("user-123", LEAD, "report", "o1");
+        expect(planReportCreditsLeftMock).toHaveBeenCalledWith("o1");
+      });
+
+      it("charges ₹299 for a 4th report once credits run out", async () => {
+        getPlanOrderMock.mockResolvedValue({ orderId: "o1", product: "plan_prepare", interviewUsed: false });
+        planReportCreditsLeftMock.mockResolvedValue(0);
+        const { POST } = await importRoute();
+        const response = await POST(post({ leadId: "lead-1" }));
+
+        expect((await response.json()).amountPaise).toBe(29900);
+        expect(completeReportUnlockMock).not.toHaveBeenCalled();
+      });
+
+      it("charges normally without a plan", async () => {
+        const { POST } = await importRoute();
+        const response = await POST(post({ leadId: "lead-1" }));
+
+        expect((await response.json()).status).toBe("checkout");
+        expect(planReportCreditsLeftMock).not.toHaveBeenCalled();
+      });
+
+      it("never spends plan credits on a bundle", async () => {
+        const { POST } = await importRoute();
+        await POST(post({ leadId: "lead-1", product: "bundle" }));
+
+        expect(getPlanOrderMock).not.toHaveBeenCalled();
+        expect(createOrderMock).toHaveBeenCalled();
+      });
     });
 
     it("looks up the bundle price and inserts a bundle transaction when product is 'bundle'", async () => {

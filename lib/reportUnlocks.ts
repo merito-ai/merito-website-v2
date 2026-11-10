@@ -5,7 +5,7 @@ import { getSupabaseServerClient } from "@/lib/supabase";
 // still passed (and stored, denormalized) so a row that stays lead_id NULL
 // through the migration->deploy window can still be found by the legacy
 // (role_title, lead_id IS NULL) check below.
-export async function unlockReport(userId: string, leadId: string, roleTitle: string): Promise<void> {
+export async function unlockReport(userId: string, leadId: string, roleTitle: string, orderId?: string): Promise<void> {
   const supabase = getSupabaseServerClient();
   // Plain insert + swallow 23505 (unique_violation). NOT upsert/onConflict:
   // onConflict cannot target the pre-0065 PK or a partial index (42P10), and
@@ -13,7 +13,8 @@ export async function unlockReport(userId: string, leadId: string, roleTitle: st
   // the migration->deploy window. Re-finalizing an unlocked order is a no-op.
   const { error } = await supabase
     .from("report_unlocks")
-    .insert({ user_id: userId, lead_id: leadId, role_title: roleTitle });
+    // order_id only when spending a plan credit, so non-plan unlocks don't depend on migration 0069.
+    .insert({ user_id: userId, lead_id: leadId, role_title: roleTitle, ...(orderId ? { order_id: orderId } : {}) });
   if (error && error.code !== "23505") {
     throw new Error(`Failed to unlock report: ${error.message}`);
   }

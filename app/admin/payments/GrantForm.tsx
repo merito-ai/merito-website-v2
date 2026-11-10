@@ -6,7 +6,7 @@ import Button from "@/app/admin/_components/Button";
 import ConfirmDialog from "@/app/admin/_components/ConfirmDialog";
 import { useToast } from "@/app/admin/_components/Toast";
 
-const PRODUCTS = ["report", "personality", "references", "interview", "counselling", "bundle"] as const;
+const PRODUCTS = ["report", "personality", "references", "interview", "counselling", "bundle", "plan_prepare", "plan_mentor"] as const;
 const LEVELS = ["entry", "mid", "senior"] as const;
 
 const inputStyle = { fontSize: 13, padding: "8px 12px", border: "1px solid #dcdcdc", borderRadius: 7 } as const;

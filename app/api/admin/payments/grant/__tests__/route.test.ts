@@ -26,6 +26,15 @@ describe("POST /api/admin/payments/grant", () => {
     enforceAdminRateLimitMock.mockResolvedValue(undefined);
   });
 
+  it("accepts a plan product", async () => {
+    const { POST } = await import("../route");
+
+    const response = await POST(buildRequest({ email: "candidate@example.com", product: "plan_prepare", level: "entry", reason: "seminar" }));
+
+    expect(response.status).toBe(200);
+    expect(grantFreeAccessMock).toHaveBeenCalledWith(expect.objectContaining({ product: "plan_prepare" }), "admin@merito.in");
+  });
+
   it("grants and returns ok", async () => {
     const { POST } = await import("../route");
 

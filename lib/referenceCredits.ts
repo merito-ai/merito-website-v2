@@ -1,10 +1,11 @@
 import { getSupabaseServerClient } from "@/lib/supabase";
 import { arePaymentsBypassed } from "@/lib/paymentsBypass";
+import { PLAN_PRODUCTS } from "@/lib/plans";
 
 // A returning candidate (new job / domain) refreshes their references at a
-// loyalty price. No separate product: each successful "references" (or
-// "bundle", which includes references) payment is one reference-check credit,
-// and each completed check has used one up.
+// loyalty price. No separate product: each successful references, bundle or
+// plan payment (bundle and plans include references) is one reference-check
+// credit, and each completed check has used one up.
 export const REFERENCE_REFRESH_PRICE_PAISE = 14900;
 
 export async function countReferenceCredits(userId: string, excludeOrderId?: string): Promise<number> {
@@ -14,7 +15,7 @@ export async function countReferenceCredits(userId: string, excludeOrderId?: str
     .select("order_id", { count: "exact", head: true })
     .eq("user_id", userId)
     .eq("status", "success")
-    .in("product", ["references", "bundle"]);
+    .in("product", ["references", "bundle", ...PLAN_PRODUCTS]);
   if (excludeOrderId) query = query.neq("order_id", excludeOrderId);
   const { count, error } = await query;
   if (error) throw new Error(`Failed to count reference credits: ${error.message}`);

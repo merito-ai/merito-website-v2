@@ -9,6 +9,8 @@ export type CreateJobInput = {
   candidateLevel: CandidateLevel;
   resumeText?: string;
   skills?: string[];
+  // Overrides the level-based skill cap (plan interviews are 45 min → 10 skills at any level).
+  maxSkills?: number;
 };
 
 type CreateJobResponse = {
@@ -74,7 +76,7 @@ const SKILL_KEYWORDS = [
 // (vendor-confirmed by Krupal, 2026-07-31): 7 skills in a 30-min interview,
 // 10 in a 45-min interview. Passing more than the slot supports just wastes
 // the extra skills, so cap inference to match durationForLevel's slot.
-const MAX_SKILLS_BY_DURATION: Record<30 | 45, number> = { 30: 7, 45: 10 };
+export const MAX_SKILLS_BY_DURATION: Record<30 | 45, number> = { 30: 7, 45: 10 };
 
 export function maxSkillsForLevel(level: CandidateLevel): number {
   return MAX_SKILLS_BY_DURATION[durationForLevel(level)];
@@ -103,8 +105,14 @@ export function inferSkillsFromJD(jobDescription: string, max: number): string[]
 // too, not "this JD truly has zero skills" -- IntervueBox's skill report
 // depends on this list not being empty. Single call, no verification
 // round-trip -- fitment-check's own requirement is least-possible-time.
-async function resolveSkills(jobTitle: string, jobDescription: string, candidateLevel: CandidateLevel, resumeText?: string): Promise<string[]> {
-  const max = maxSkillsForLevel(candidateLevel);
+async function resolveSkills(
+  jobTitle: string,
+  jobDescription: string,
+  candidateLevel: CandidateLevel,
+  resumeText?: string,
+  maxSkills?: number
+): Promise<string[]> {
+  const max = maxSkills ?? maxSkillsForLevel(candidateLevel);
   try {
     const skills = await extractSkillsWithLLM(jobDescription, max, resumeText);
     if (skills.length === 0) throw new Error("LLM returned no skills");
@@ -133,7 +141,7 @@ export async function resolveJobDetails(
 }
 
 export async function createJob(input: CreateJobInput): Promise<{ ibJobId: string }> {
-  const skills = input.skills ?? (await resolveSkills(input.title, input.jobDescription, input.candidateLevel, input.resumeText));
+  const skills = input.skills ?? (await resolveSkills(input.title, input.jobDescription, input.candidateLevel, input.resumeText, input.maxSkills));
   const response = await intervueBoxFetch<CreateJobResponse>("/public/jobs", {
     method: "POST",
     headers: { "Content-Type": "application/json" },

@@ -4,6 +4,8 @@ import { unlockProduct, revokeProduct } from "@/lib/productUnlocks";
 import { nextCounsellingState, updateCounsellingStatus, type CounsellingStatus } from "@/lib/adminCounselling";
 import type { RazorpayProduct } from "@/lib/razorpay/pricing";
 import { countReferenceCredits } from "@/lib/referenceCredits";
+import { isPlanProduct, PLAN_PRODUCTS } from "@/lib/plans";
+import { applyPlanGrants } from "@/lib/planGrants";
 
 async function getRoleTitleForLead(
   supabase: ReturnType<typeof getSupabaseServerClient>,
@@ -107,6 +109,8 @@ export async function finalizeRazorpayOrder(
       }
       await unlockProduct(txn.user_id, "personality");
       await unlockProduct(txn.user_id, "references");
+    } else if (isPlanProduct(product)) {
+      await applyPlanGrants(txn.user_id, orderId, product);
     }
     await supabase
       .from("razorpay_transactions")
@@ -194,17 +198,23 @@ export async function markRazorpayRefunded(orderId: string): Promise<MarkRefunde
   if (txn.product === "report") {
     await revokeReportForLead(supabase, txn.user_id, txn.lead_id);
   } else if (txn.product === "personality") {
-    await revokeProduct(txn.user_id, "personality");
+    await revokePersonalityUnlessOtherwisePaid(txn.user_id, orderId);
   } else if (txn.product === "references") {
     await revokeReferencesUnlessOtherwisePaid(txn.user_id, orderId);
   } else if (txn.product === "bundle") {
     await revokeReportForLead(supabase, txn.user_id, txn.lead_id);
-    await revokeProduct(txn.user_id, "personality");
+    await revokePersonalityUnlessOtherwisePaid(txn.user_id, orderId);
     await revokeReferencesUnlessOtherwisePaid(txn.user_id, orderId);
   } else if (txn.product === "counselling") {
     await revokeCounsellingForOrder(supabase, orderId);
+  } else if (isPlanProduct(txn.product)) {
+    const { error: unlockError } = await supabase.from("report_unlocks").delete().eq("order_id", orderId);
+    if (unlockError) throw new Error(`Failed to revoke plan reports: ${unlockError.message}`);
+    await revokePersonalityUnlessOtherwisePaid(txn.user_id, orderId);
+    await revokeReferencesUnlessOtherwisePaid(txn.user_id, orderId);
+    await revokeCounsellingForOrder(supabase, orderId);
   }
-  // "interview": no separate table for its grant -- the status flip below,
+  // "interview" (and a plan's interview credit): no separate table for its grant -- the status flip below,
   // which start-ai-interview checks via `status='success'`, is the entire revocation.
 
   await supabase.from("razorpay_transactions").update({ status: "refunded" }).eq("order_id", orderId);
@@ -216,4 +226,18 @@ export async function markRazorpayRefunded(orderId: string): Promise<MarkRefunde
 async function revokeReferencesUnlessOtherwisePaid(userId: string, refundedOrderId: string): Promise<void> {
   if ((await countReferenceCredits(userId, refundedOrderId)) > 0) return;
   await revokeProduct(userId, "references");
+}
+
+// Personality can be owned via several payments (personality, bundle, plan): a refund of one keeps it if another remains.
+async function revokePersonalityUnlessOtherwisePaid(userId: string, refundedOrderId: string): Promise<void> {
+  const { count, error } = await getSupabaseServerClient()
+    .from("razorpay_transactions")
+    .select("order_id", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .eq("status", "success")
+    .in("product", ["personality", "bundle", ...PLAN_PRODUCTS])
+    .neq("order_id", refundedOrderId);
+  if (error) throw new Error(`Failed to check other personality purchases: ${error.message}`);
+  if ((count ?? 0) > 0) return;
+  await revokeProduct(userId, "personality");
 }

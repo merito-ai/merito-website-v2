@@ -5,7 +5,15 @@ vi.mock("@/lib/recaptcha", () => ({
 }));
 vi.mock("@/lib/intervuebox/jobs", () => ({
   createJob: vi.fn().mockResolvedValue({ ibJobId: "JOB_123" }),
+  MAX_SKILLS_BY_DURATION: { 30: 7, 45: 10 },
 }));
+const getPlanOrderMock = vi.fn();
+vi.mock("@/lib/plans", async () => {
+  const actual = await vi.importActual<typeof import("@/lib/plans")>("@/lib/plans");
+  return { ...actual, getPlanOrder: getPlanOrderMock };
+});
+const isEmailAllowlistedMock = vi.fn();
+vi.mock("@/lib/planAllowlist", () => ({ isEmailAllowlisted: isEmailAllowlistedMock }));
 vi.mock("@/lib/intervuebox/resumes", () => ({
   uploadResume: vi.fn().mockResolvedValue({ ibResumeId: "RES_123" }),
 }));
@@ -80,6 +88,8 @@ describe("POST /api/hub/fitment-check", () => {
     insertSelectSingleMock.mockResolvedValue({ data: { id: "lead-1" }, error: null });
     extractJdTextMock.mockReset().mockResolvedValue("Sales and partnerships resume text.");
     getUserMock.mockReset().mockResolvedValue({ data: { user: null } });
+    getPlanOrderMock.mockReset().mockResolvedValue(null);
+    isEmailAllowlistedMock.mockReset().mockResolvedValue(false);
     const { addApplicant } = await import("@/lib/intervuebox/applicants");
     vi.mocked(addApplicant).mockReset().mockResolvedValue({ ibAppliedJobId: "APJ_123" });
     const { verifyRecaptchaToken } = await import("@/lib/recaptcha");
@@ -522,6 +532,49 @@ describe("POST /api/hub/fitment-check", () => {
       expect(response.status).toBe(400);
       const body = await response.json();
       expect(body.error).toMatch(/paste the job description instead/i);
+    });
+  });
+
+  describe("plan skill cap (45-min interview → 10 skills)", () => {
+    async function createJobInput() {
+      const { createJob } = await import("@/lib/intervuebox/jobs");
+      const { POST } = await importRoute();
+      const response = await POST(new Request("http://localhost/api/hub/fitment-check", { method: "POST", body: buildForm() }));
+      expect(response.status).toBe(200);
+      return vi.mocked(createJob).mock.calls.at(-1)![0];
+    }
+
+    it("gives an allowlisted signed-in user 10 skills", async () => {
+      getUserMock.mockResolvedValue({ data: { user: { id: "user-1", email: "seminar@example.com" } } });
+      isEmailAllowlistedMock.mockResolvedValue(true);
+      expect((await createJobInput()).maxSkills).toBe(10);
+      expect(isEmailAllowlistedMock).toHaveBeenCalledWith("seminar@example.com");
+    });
+
+    it("gives a holder of an unused plan interview 10 skills", async () => {
+      getUserMock.mockResolvedValue({ data: { user: { id: "user-1", email: "comp@example.com" } } });
+      getPlanOrderMock.mockResolvedValue({ orderId: "o1", product: "plan_prepare", interviewUsed: false });
+      expect((await createJobInput()).maxSkills).toBe(10);
+    });
+
+    it("keeps the level default once the plan interview is used", async () => {
+      getUserMock.mockResolvedValue({ data: { user: { id: "user-1", email: "seminar@example.com" } } });
+      isEmailAllowlistedMock.mockResolvedValue(true);
+      getPlanOrderMock.mockResolvedValue({ orderId: "o1", product: "plan_prepare", interviewUsed: true });
+      expect((await createJobInput()).maxSkills).toBeUndefined();
+    });
+
+    it("keeps the level default for anonymous and non-allowlisted users", async () => {
+      expect((await createJobInput()).maxSkills).toBeUndefined();
+      expect(getPlanOrderMock).not.toHaveBeenCalled();
+      getUserMock.mockResolvedValue({ data: { user: { id: "user-1", email: "normal@example.com" } } });
+      expect((await createJobInput()).maxSkills).toBeUndefined();
+    });
+
+    it("never blocks the fitment check when the plan lookup fails", async () => {
+      getUserMock.mockResolvedValue({ data: { user: { id: "user-1", email: "seminar@example.com" } } });
+      getPlanOrderMock.mockRejectedValue(new Error("db down"));
+      expect((await createJobInput()).maxSkills).toBeUndefined();
     });
   });
 
