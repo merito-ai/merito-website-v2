@@ -24,6 +24,9 @@ vi.mock("@/lib/adminCounselling", () => ({
   updateCounsellingStatus: updateCounsellingStatusMock,
 }));
 
+const applyPlanGrantsMock = vi.fn();
+vi.mock("@/lib/planGrants", () => ({ applyPlanGrants: applyPlanGrantsMock }));
+
 const txnSelectMock = vi.fn();
 const txnEqMock = vi.fn();
 const txnMaybeSingleMock = vi.fn();
@@ -579,5 +582,104 @@ describe("markRazorpayRefunded", () => {
 
     expect(nextCounsellingStateMock).not.toHaveBeenCalled();
     expect(updateCounsellingStatusMock).not.toHaveBeenCalled();
+  });
+});
+
+describe("plan orders", () => {
+  // Chainable query: every filter returns the chain; awaiting resolves `result`.
+  function chain(result: Record<string, unknown>) {
+    const c: Record<string, unknown> = {};
+    for (const m of ["select", "eq", "in", "neq", "delete"]) c[m] = vi.fn(() => c);
+    c.maybeSingle = vi.fn(() => Promise.resolve(result));
+    c.then = (resolve: (v: unknown) => unknown) => resolve(result);
+    return c as Record<string, ReturnType<typeof vi.fn>>;
+  }
+
+  let txnRow: Record<string, unknown>;
+  let otherPersonalityCount: number;
+  let txnQuery: Record<string, ReturnType<typeof vi.fn>>;
+  let countQuery: Record<string, ReturnType<typeof vi.fn>>;
+  let unlocksQuery: Record<string, ReturnType<typeof vi.fn>>;
+  let counsellingQuery: Record<string, ReturnType<typeof vi.fn>>;
+
+  beforeEach(() => {
+    applyPlanGrantsMock.mockReset();
+    applyPlanGrantsMock.mockResolvedValue(undefined);
+    unlockReportMock.mockReset();
+    revokeProductMock.mockReset();
+    revokeProductMock.mockResolvedValue(undefined);
+    updateCounsellingStatusMock.mockReset();
+    nextCounsellingStateMock.mockReset();
+    nextCounsellingStateMock.mockReturnValue({ status: "cancelled" });
+    updateMock.mockReset();
+    updateEqMock.mockReset();
+    updateEqMock.mockResolvedValue({ error: null });
+    updateMock.mockReturnValue({ eq: updateEqMock });
+    otherPersonalityCount = 0;
+    unlocksQuery = chain({ error: null });
+    counsellingQuery = chain({ data: { id: "c1", status: "requested" }, error: null });
+    let txnCalls = 0;
+    fromMock.mockReset();
+    fromMock.mockImplementation((table: string) => {
+      if (table === "report_unlocks") return unlocksQuery;
+      if (table === "counselling_requests") return counsellingQuery;
+      // 1st razorpay_transactions call = the order lookup; later ones = the "other personality purchase" count.
+      txnCalls += 1;
+      if (txnCalls === 1) {
+        txnQuery = chain({ data: txnRow, error: null });
+        return { ...txnQuery, update: updateMock };
+      }
+      if (txnCalls === 2) countQuery = chain({ count: otherPersonalityCount, error: null });
+      return { ...countQuery, update: updateMock };
+    });
+  });
+
+  it("applies plan grants then marks success", async () => {
+    txnRow = { user_id: "user-1", product: "plan_mentor", lead_id: null, status: "initiated" };
+    const { finalizeRazorpayOrder } = await import("../finalize");
+    const result = await finalizeRazorpayOrder("order_p", "pay_1");
+    expect(result).toEqual({ ok: true, product: "plan_mentor", userId: "user-1", leadId: null });
+    expect(applyPlanGrantsMock).toHaveBeenCalledWith("user-1", "order_p", "plan_mentor");
+    expect(unlockReportMock).not.toHaveBeenCalled();
+    expect(updateMock).toHaveBeenCalledWith({ status: "success", payment_id: "pay_1" });
+  });
+
+  it("leaves the txn initiated when plan grants throw (retry is real)", async () => {
+    txnRow = { user_id: "user-1", product: "plan_prepare", lead_id: null, status: "initiated" };
+    applyPlanGrantsMock.mockRejectedValue(new Error("db down"));
+    const { finalizeRazorpayOrder } = await import("../finalize");
+    await expect(finalizeRazorpayOrder("order_p", "pay_1")).rejects.toThrow("db down");
+    expect(updateMock).not.toHaveBeenCalled();
+  });
+
+  it("does not re-grant an already-successful plan (replay idempotent)", async () => {
+    txnRow = { user_id: "user-1", product: "plan_prepare", lead_id: null, status: "success" };
+    const { finalizeRazorpayOrder } = await import("../finalize");
+    await finalizeRazorpayOrder("order_p", "pay_1");
+    expect(applyPlanGrantsMock).not.toHaveBeenCalled();
+  });
+
+  it("refund reverses plan reports, personality, references and mentoring", async () => {
+    txnRow = { status: "success", product: "plan_mentor", user_id: "user-1", lead_id: null };
+    const { markRazorpayRefunded } = await import("../finalize");
+    const result = await markRazorpayRefunded("order_p");
+    expect(result).toEqual({ ok: true, alreadyProcessed: false });
+    expect(unlocksQuery.delete).toHaveBeenCalled();
+    expect(unlocksQuery.eq).toHaveBeenCalledWith("order_id", "order_p");
+    expect(countQuery.in).toHaveBeenCalledWith("product", ["personality", "bundle", "plan_prepare", "plan_mentor"]);
+    expect(countQuery.neq).toHaveBeenCalledWith("order_id", "order_p");
+    expect(revokeProductMock).toHaveBeenCalledWith("user-1", "personality");
+    expect(revokeProductMock).toHaveBeenCalledWith("user-1", "references");
+    expect(updateCounsellingStatusMock).toHaveBeenCalledWith("c1", { status: "cancelled" });
+    expect(updateMock).toHaveBeenCalledWith({ status: "refunded" });
+  });
+
+  it("refund keeps personality bought separately", async () => {
+    txnRow = { status: "success", product: "plan_prepare", user_id: "user-1", lead_id: null };
+    otherPersonalityCount = 1;
+    const { markRazorpayRefunded } = await import("../finalize");
+    await markRazorpayRefunded("order_p");
+    expect(revokeProductMock).not.toHaveBeenCalledWith("user-1", "personality");
+    expect(updateMock).toHaveBeenCalledWith({ status: "refunded" });
   });
 });
