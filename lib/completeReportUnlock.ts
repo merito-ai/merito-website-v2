@@ -23,10 +23,12 @@ export type UnlockableLead = {
 export async function completeReportUnlock(
   userId: string,
   lead: UnlockableLead,
-  product: "report" | "bundle" = "report"
+  product: "report" | "bundle" = "report",
+  // Set when a plan report credit pays for this unlock (lib/plans.ts counts by order_id).
+  orderId?: string
 ): Promise<CompleteReportUnlockResult> {
   try {
-    await unlockReport(userId, lead.id, lead.role_title);
+    await unlockReport(userId, lead.id, lead.role_title, orderId);
     if (product === "bundle") {
       await unlockProduct(userId, "personality");
       await unlockProduct(userId, "references");

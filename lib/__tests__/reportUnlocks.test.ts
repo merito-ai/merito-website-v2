@@ -120,6 +120,19 @@ describe("reportUnlocks", () => {
       expect(insertMock.mock.calls[0]).toHaveLength(1);
     });
 
+    it("records the plan order a report credit was spent from", async () => {
+      const { unlockReport } = await import("../reportUnlocks");
+
+      await unlockReport("user-123", "lead-1", "Senior Product Manager", "order_plan");
+
+      expect(insertMock).toHaveBeenCalledWith({
+        user_id: "user-123",
+        lead_id: "lead-1",
+        role_title: "Senior Product Manager",
+        order_id: "order_plan",
+      });
+    });
+
     it("5. swallows a 23505 unique_violation (already unlocked -> no throw)", async () => {
       insertMock.mockResolvedValue({ error: { code: "23505", message: "duplicate key value" } });
       const { unlockReport } = await import("../reportUnlocks");

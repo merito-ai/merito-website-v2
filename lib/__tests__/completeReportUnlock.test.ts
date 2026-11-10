@@ -36,6 +36,19 @@ describe("completeReportUnlock", () => {
     fromMock.mockClear();
   });
 
+  it("forwards a plan orderId to unlockReport", async () => {
+    const { completeReportUnlock } = await import("../completeReportUnlock");
+
+    await completeReportUnlock(
+      "user-1",
+      { id: "lead-1", role_title: "PM", ib_applied_job_id: "APJ_1", resume_match_status: "READY", resume_match_raw: {} },
+      "report",
+      "order_plan"
+    );
+
+    expect(unlockReportMock).toHaveBeenCalledWith("user-1", "lead-1", "PM", "order_plan");
+  });
+
   it("returns an error result when unlockReport throws", async () => {
     unlockReportMock.mockRejectedValue(new Error("db error"));
     const { completeReportUnlock } = await import("../completeReportUnlock");
@@ -64,7 +77,7 @@ describe("completeReportUnlock", () => {
       resume_match_raw: storedRaw,
     });
 
-    expect(unlockReportMock).toHaveBeenCalledWith("user-1", "lead-1", "Senior Product Manager");
+    expect(unlockReportMock).toHaveBeenCalledWith("user-1", "lead-1", "Senior Product Manager", undefined);
     expect(getResumeMatchReportMock).not.toHaveBeenCalled();
     expect(result).toEqual({ status: "unlocked", report: storedRaw });
   });
