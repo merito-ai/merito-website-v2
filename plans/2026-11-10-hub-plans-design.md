@@ -43,6 +43,7 @@ Plan prices are flat (no level split). After buying a plan, extras use normal pr
 - Plan interview is always 45 min (skill cap 10, `lib/intervuebox/jobs.ts:77`), regardless of level.
 - Normal users unchanged: `durationForLevel` (`lib/intervuebox/agents.ts:34`) — 45 senior, 30 entry/mid.
 - The plan's interview entitlement carries a 45-min override into job creation.
+- IntervueBox charges the same per interview for 30 and 45 min (confirmed by user 2026-11-10) — no extra vendor cost.
 
 ## Personality + culture assessment (replaces current test for all users)
 
@@ -56,11 +57,7 @@ Source: `D:\Work-Projects\staff-assessment-platform\backend\apps\psychometrics` 
 - **No company/benchmark fit score.** Candidate sees culture mix + org types that typically suit it (fixed text mapping below).
 - Existing personality results stay viewable as the old version; new takers get the new version (results carry a version).
 
-Draft culture → org-type mapping (copy only, needs expert sign-off):
-- Clan (team/family): NGO/social sector, family business/SME, academia, hospitals
-- Adhocracy (innovative): startups, product/tech companies, R&D
-- Market (results-driven): sales-led corporates, consulting, MNCs
-- Hierarchy (structured): government/PSU, banks/BFSI, manufacturing, IT services
+Culture → org-type mapping: **pending research** (no guessed mapping). Evidence-based mapping to be added here before build of the report section.
 
 ## Report
 
