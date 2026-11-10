@@ -66,7 +66,7 @@ Benchmarks (Clan / Adhocracy / Market / Hierarchy, ipsative, sum 100):
 | Org type | C | A | M | H | Basis |
 |---|---|---|---|---|---|
 | Government / PSU | 25 | 18 | 20 | 37 | Public-sector studies (Croatia, Pakistan): hierarchy dominant — direction only |
-| Hospital / healthcare | 31 | 21 | 22 | 24 | Croatian hospitals study — published numbers |
+| Hospital / healthcare | 31 | 21 | 23 | 25 | Croatian hospitals study — published numbers |
 | Early-stage startup | 33 | 32 | 20 | 15 | Startup/scale-up studies: clan + adhocracy — weak |
 | Product / tech company (scale-up) | 26 | 28 | 28 | 18 | Scale-up preference data — weak |
 | Family business / SME | 36 | 22 | 18 | 24 | Family-business review: clan + adhocracy — weak–moderate |

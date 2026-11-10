@@ -1518,3 +1518,16 @@ Route `GET`: `createSupabaseServerClient` → user, else 401 → `Response.json(
 - The existing `bundle` refund revokes personality without checking for other paid personality purchases. Plans use the safer helper (B3); switch bundle to it too.
 - Python's `longstring` runs on seed order, but the Hub shuffles items, so the straight-lining flag is weaker here than in the Django app.
 - The report-credit concurrency lock (open issue #8).
+
+## PM decisions on open issues (2026-11-10)
+
+1. Skill cap: for allowlisted users, fitment check extracts up to 10 skills (45-min cap) at fitment time. Older leads keep 7 skills; accepted.
+2. Plan 1 → Plan 2 upgrade: no upgrade product. Refuse a second plan; Plan 1 holders buy mentoring individually at ₹2,999 (equals the price difference).
+3. Old personality result + plan: plan buyers may take the new test even if they hold an old-version result.
+4. Flat-profile SD: population SD. Default accepted.
+5. Hospital benchmark corrected to C 31 / A 21 / M 23 / H 25 (sums 100); spec updated.
+6. `reliable = null`: treat as reliable only if all attention items are required in UI (they must be); default accepted.
+7. Individual purchases by allowlisted users without a plan: UI-only block accepted (no harm, normal price).
+8. Concurrent report-credit race: accepted with code comment.
+9. Migrations 0068-0070: accepted; check the number is still free before applying.
+10. Python report narrative not ported in v1; reuse existing trait copy. Deferred.
