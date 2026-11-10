@@ -1537,7 +1537,7 @@ Route `GET`: `createSupabaseServerClient` → user, else 401 → `Response.json(
 Branch `feat/hub-plans-d` (on top of `feat/hub-plans-c`). Nice-to-haves and minor findings:
 
 - **Deploy order (blocking):** every `personality_tests` reader now selects `version, culture_scores` (dashboard, exports, share summary, admin, recruiter preview). Deploying before migration 0070 is applied breaks those pages, not just the test. BLOCKED-ON-HUMAN: apply `0070_personality_v2.sql` + `supabase migration repair --status applied 0070`, then `npm run verify:schema`.
-- Phase C: old-result retake is wired to `canRetakeV2 = false` (`app/hub/account/personality/page.tsx`) until Phase B merges; then set it to `Boolean(await getPlanOrder(user.id))` (PM decision #3).
+- Phase C: old-result retake — DONE on `feat/hub-plans`: `canRetakeV2 = existing.version === 1 && getPlanOrder(user.id)` (PM decision #3).
 - Phase C: `app/api/hub/save-personality-test/__tests__/route.dbtest.ts` not yet run — local Supabase (127.0.0.1:54321) unreachable during C and D.
 - Manual browser checks (D2 step 4, D3 step 3) not done: report for v2 fit / v2 flat / v1 user, PDF export with culture section, `/hub/share/<token>` for a v2 user.
 - Dashboard `ProgressRail` has no "in progress" state: a Part-1-only v2 row shows "not started" (the personality page resumes at Part 2).

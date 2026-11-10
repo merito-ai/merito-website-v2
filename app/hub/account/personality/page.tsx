@@ -3,6 +3,7 @@ import { createSupabaseServerClient } from "@/lib/supabaseAuthServer";
 import { nameFromEmail, type Scores, type Validity } from "@/lib/personality";
 import type { CultureScores } from "@/lib/psychometrics/scoring";
 import { isProductUnlocked } from "@/lib/productUnlocks";
+import { getPlanOrder } from "@/lib/plans";
 import { DEFAULT_LEVEL, type CandidateLevel } from "@/lib/razorpay/pricing";
 import PersonalityTestClient from "./PersonalityTestClient";
 import PersonalityLockedState from "./PersonalityLockedState";
@@ -88,8 +89,7 @@ export default async function PersonalityTestPage({
         }
       : null;
   // PM decision 2026-11-10: plan buyers may take the new test over an old v1 result.
-  // shortcut: always false until Phase B's lib/plans.ts lands; then set to `Boolean(await getPlanOrder(user.id))`.
-  const canRetakeV2 = false;
+  const canRetakeV2 = existing?.version === 1 && Boolean(await getPlanOrder(user.id));
 
   // Real name from the fitment form; the email local-part is only a fallback.
   const candidateName = current.name || nameFromEmail(user.email ?? "");
