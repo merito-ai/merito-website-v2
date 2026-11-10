@@ -4,11 +4,13 @@ import { getReferenceCheckStatus, computeReferenceReport } from "@/lib/reference
 import type { ResumeMatchReportReady } from "@/lib/intervuebox/reports";
 import type { InterviewReportReady } from "@/lib/intervuebox/interviewReports";
 import { nameFromEmail, type Scores } from "@/lib/personality";
+import type { CultureScores } from "@/lib/psychometrics/scoring";
+import { isPersonalityComplete } from "@/lib/psychometrics/testFlow";
 import { leadIdOrRoleTitleFilter } from "@/lib/postgrestIdentityFilter";
 
 export type CombinedReportData = {
   fitment: { roleTitle: string; displayName: string; report: ResumeMatchReportReady } | null;
-  personality: { scores: Scores } | null;
+  personality: { scores: Scores; culture: { scores: CultureScores; reliable: boolean | null } | null } | null;
   interview: { roleTitle: string; report: InterviewReportReady; updatedAt: string } | null;
   references: ReturnType<typeof computeReferenceReport> | null;
   displayName: string;
@@ -66,11 +68,16 @@ export async function loadCombinedReportData({
   if (include.has("personality")) {
     const { data: existing } = await supabase
       .from("personality_tests")
-      .select("scores, validity")
+      .select("scores, validity, version, culture_scores, culture_reliable")
       .eq("user_id", userId)
       .maybeSingle();
-    if (existing?.scores && existing?.validity) {
-      personality = { scores: existing.scores as Scores };
+    if (existing?.scores && existing?.validity && isPersonalityComplete(existing)) {
+      personality = {
+        scores: existing.scores as Scores,
+        culture: existing.culture_scores
+          ? { scores: existing.culture_scores as CultureScores, reliable: existing.culture_reliable as boolean | null }
+          : null,
+      };
     }
   }
 

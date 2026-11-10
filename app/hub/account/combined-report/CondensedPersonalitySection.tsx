@@ -1,4 +1,8 @@
 import { TRAITS, TRAIT_NAME, TRAIT_MEANING, TRAIT_WORK_IMPLICATION, BANDS, traitLevel, type Scores } from "@/lib/personality";
+import { CULTURES } from "@/lib/psychometrics/cultureItems";
+import type { CultureScores } from "@/lib/psychometrics/scoring";
+import { cultureFit } from "@/lib/psychometrics/cultureFit";
+import { CULTURE_LABEL, FLAT_TEXT, SHARE_CULTURE_HEADING } from "@/lib/psychometrics/reportCopy";
 import CombinedRadar from "./CombinedRadar";
 
 // Compact 2-column card grid matching the specimen's Personality Profile
@@ -12,11 +16,14 @@ import CombinedRadar from "./CombinedRadar";
 export default function CondensedPersonalitySection({
   candidateName,
   scores,
+  culture,
 }: {
   candidateName: string;
   scores: Scores;
+  culture?: { scores: CultureScores; reliable: boolean | null } | null;
 }) {
   const firstName = candidateName.split(/\s+/)[0] || candidateName;
+  const fit = culture ? cultureFit(culture.scores, culture.reliable) : null;
 
   return (
     <>
@@ -56,7 +63,7 @@ export default function CondensedPersonalitySection({
                   {TRAIT_NAME[t]}
                 </h3>
                 <span className="font-[family-name:var(--font-ibm-plex-mono)] font-semibold text-[#4B4894]" style={{ fontSize: 12.5 }}>
-                  {s.pct}% · {BANDS[s.band]}
+                  {Math.round(s.pct)}% · {BANDS[s.band]}
                 </span>
               </div>
               <p
@@ -81,6 +88,39 @@ export default function CondensedPersonalitySection({
           );
         })}
       </div>
+
+      {culture && fit && (
+        <div className="bg-white border border-black/[0.08]" style={{ borderRadius: 16, padding: 20, marginTop: 16, breakInside: "avoid" }}>
+          <h3 className="font-[family-name:var(--font-inter)] font-semibold text-black" style={{ fontSize: "1.05rem", margin: "0 0 12px" }}>
+            {SHARE_CULTURE_HEADING}
+          </h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {CULTURES.map((k) => {
+              const pct = Math.round(culture.scores[k]);
+              return (
+                <div key={k}>
+                  <div className="flex items-center justify-between" style={{ marginBottom: 4 }}>
+                    <span className="font-[family-name:var(--font-inter)] text-black" style={{ fontSize: 12.5 }}>
+                      {CULTURE_LABEL[k]}
+                    </span>
+                    <span className="font-[family-name:var(--font-ibm-plex-mono)] font-semibold text-[#4B4894]" style={{ fontSize: 12.5 }}>
+                      {pct}/100
+                    </span>
+                  </div>
+                  <div style={{ height: 6, borderRadius: 6, overflow: "hidden", background: "#ECEBF7" }} aria-hidden="true">
+                    <div style={{ height: "100%", borderRadius: 6, width: `${Math.min(100, Math.max(0, pct))}%`, background: "#4B4894" }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          {fit.kind !== "unreliable" && (
+            <p className="font-[family-name:var(--font-inter)] text-black" style={{ fontSize: 12.5, lineHeight: 1.6, margin: "12px 0 0" }}>
+              {fit.kind === "flat" ? FLAT_TEXT : `Closest organisation type: ${fit.fits[0].label} (${fit.fits[0].fit}% fit, Merito estimate)`}
+            </p>
+          )}
+        </div>
+      )}
     </>
   );
 }
