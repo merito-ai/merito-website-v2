@@ -63,6 +63,20 @@ function functionExists(name: string, nargs: number, why: string): ContractCheck
   };
 }
 
+/** A `public` enum type contains every one of `values`. */
+function enumHasValues(type: string, values: string[], why: string): ContractCheck {
+  return {
+    name: `enum ${type} has ${values.join(", ")}`,
+    why,
+    sql: `select count(distinct e.enumlabel) = ${values.length} as ok
+      from pg_enum e
+      join pg_type t on t.oid = e.enumtypid
+      join pg_namespace n on n.oid = t.typnamespace
+      where n.nspname = 'public' and t.typname = '${type}'
+        and e.enumlabel in (${values.map((v) => `'${v}'`).join(", ")})`,
+  };
+}
+
 /**
  * A non-partial unique index covers exactly `columns` (order-insensitive —
  * Postgres infers an `ON CONFLICT (a, b)` target by column set). This is the
@@ -136,6 +150,11 @@ export const SCHEMA_CONTRACT: ReadonlyArray<ContractCheck> = [
   ),
   uniqueOn("product_unlocks", ["user_id", "product"], 'productUnlocks upserts with onConflict:"user_id,product"'),
   uniqueOn("plan_allowlist", ["email"], 'planAllowlist upserts with onConflict:"email"'),
+  enumHasValues(
+    "product_type",
+    ["plan_prepare", "plan_mentor"],
+    "getPlanOrder filters product IN (plan_*); without these enum values that query errors and breaks unlock-report, start-ai-interview, referenceCredits, refunds for every user (migration 0069)",
+  ),
   columnExists("report_unlocks", "order_id", "plan report credits count report_unlocks.order_id (migration 0069)"),
   functionExists("merge_candidate_accounts", 2, 'adminCandidates.rpc("merge_candidate_accounts") on the account-merge path'),
   functionExists("purge_candidate_data", 1, 'purgeCandidates.rpc("purge_candidate_data") on the candidate-purge cron'),
