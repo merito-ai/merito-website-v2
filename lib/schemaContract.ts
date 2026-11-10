@@ -131,6 +131,7 @@ export const SCHEMA_CONTRACT: ReadonlyArray<ContractCheck> = [
   ),
   uniqueOn("product_unlocks", ["user_id", "product"], 'productUnlocks upserts with onConflict:"user_id,product"'),
   uniqueOn("plan_allowlist", ["email"], 'planAllowlist upserts with onConflict:"email"'),
+  columnExists("report_unlocks", "order_id", "plan report credits count report_unlocks.order_id (migration 0069)"),
   functionExists("merge_candidate_accounts", 2, 'adminCandidates.rpc("merge_candidate_accounts") on the account-merge path'),
   functionExists("purge_candidate_data", 1, 'purgeCandidates.rpc("purge_candidate_data") on the candidate-purge cron'),
 
