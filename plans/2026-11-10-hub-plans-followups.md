@@ -35,3 +35,12 @@ Open:
 
 - **Second paid plan order:** `finalize` has no guard when a second plan order is paid (the concurrent-checkout race above). Add an auto-refund, or flag it for admin.
 - **Allowlisted users can still POST individual products** to `initiate` (the UI only shows plans). Accepted per PM decision 7.
+
+## Browser QA follow-ups (2026-11-10, local stack, Minor)
+
+- Report page card CTA still reads "Unlock full report for ₹299" for a plan holder with credits; only the modal says "Use 1 of your 3 plan reports — free". Label the card CTA from plan state too.
+- Interview page card CTA reads "Start my mock interview for ₹999" for a plan holder; modal briefly shows a disabled "Pay ₹999" while `/api/hub/plan-state` loads. Show the plan wording on the card and a neutral label while loading.
+- After buying a plan, `/hub/account/pricing` (no lead) shows the plan banner above the full normal catalog, incl. ₹749 bundle and ₹299 personality the user already owns. Consider hiding owned/plan-covered items.
+- Culture fit can show "100% fit" (r≈0.99 rounds up). Consider capping display (e.g. 95%) so it doesn't read as certainty.
+- Admin refund of a test-mode netbanking payment fails at Razorpay (400 "invalid request sent", even a plain refund without `speed`) — test-account side, not plan code. Grant reversal verified via signed `refund.processed` webhook instead. Re-check a real refund on prod/live before launch.
+- Local dev: Windows reserves TCP 54285-54484, so `supabase start` fails on 5433x ports. QA remapped to 5633x temporarily.
