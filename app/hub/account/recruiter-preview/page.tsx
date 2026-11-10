@@ -8,6 +8,7 @@ import type { ResumeMatchReportReady } from "@/lib/intervuebox/reports";
 import type { InterviewReportReady } from "@/lib/intervuebox/interviewReports";
 import { RECRUITER_PREVIEW_ENABLED } from "@/lib/featureFlags";
 import RecruiterPreviewClient from "./RecruiterPreviewClient";
+import { isPersonalityComplete } from "@/lib/psychometrics/testFlow";
 
 export default async function RecruiterPreviewPage({
   searchParams,
@@ -50,10 +51,10 @@ export default async function RecruiterPreviewPage({
   let personality: LookupResponse["personality"] = null;
   const { data: personalityRow } = await supabase
     .from("personality_tests")
-    .select("scores, completed_at")
+    .select("scores, completed_at, version, culture_scores")
     .eq("user_id", user.id)
     .maybeSingle();
-  if (personalityRow?.scores) {
+  if (personalityRow?.scores && isPersonalityComplete(personalityRow)) {
     personality = buildLookupPersonality(
       personalityRow.scores as Scores,
       candidateName,

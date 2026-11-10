@@ -3,6 +3,7 @@ import { isReportUnlocked } from "@/lib/reportUnlocks";
 import { getReferenceCheckStatus } from "@/lib/referenceChecks";
 import { renderPageToPdf, requestCookiesFor } from "@/lib/pdf/renderPageToPdf";
 import { leadIdOrRoleTitleFilter } from "@/lib/postgrestIdentityFilter";
+import { isPersonalityComplete } from "@/lib/psychometrics/testFlow";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -42,10 +43,10 @@ export async function GET(request: Request) {
   if (include.has("personality")) {
     const { data: existing } = await supabase
       .from("personality_tests")
-      .select("scores, validity")
+      .select("scores, validity, version, culture_scores")
       .eq("user_id", user.id)
       .maybeSingle();
-    if (existing?.scores && existing?.validity) {
+    if (existing?.scores && existing?.validity && isPersonalityComplete(existing)) {
       anyReady = true;
     }
   }

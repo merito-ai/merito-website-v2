@@ -5,6 +5,7 @@ import { isReportUnlocked } from "@/lib/reportUnlocks";
 import { getReferenceCheckStatus } from "@/lib/referenceChecks";
 import { nameFromEmail } from "@/lib/personality";
 import { getAbsoluteUrl } from "@/lib/site";
+import { isPersonalityComplete } from "@/lib/psychometrics/testFlow";
 
 const SECTION_COPY: Record<string, { label: string; blurb: string }> = {
   fitment: { label: "Role Fitment Analysis", blurb: "CV matched against the job description" },
@@ -58,10 +59,10 @@ export default async function ShareSummaryPage({
   if (include.has("personality")) {
     const { data: existing } = await supabase
       .from("personality_tests")
-      .select("scores, validity")
+      .select("scores, validity, version, culture_scores")
       .eq("user_id", user.id)
       .maybeSingle();
-    personalityDone = Boolean(existing?.scores && existing?.validity);
+    personalityDone = Boolean(existing?.scores && existing?.validity) && isPersonalityComplete(existing);
   }
 
   let interviewDone = false;

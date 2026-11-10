@@ -4,6 +4,7 @@ import { getCandidateResumeDetails, getResumeMatchReport, scoreOutOfTen, type Ca
 import { getInterviewReport, type InterviewReportReady } from "@/lib/intervuebox/interviewReports";
 import { buildReportRaw } from "@/lib/intervuebox/reportRaw";
 import type { Scores, Validity } from "@/lib/personality";
+import { isPersonalityComplete } from "@/lib/psychometrics/testFlow";
 import { logAdminAction, listActionsForTarget, type AdminActionRow } from "@/lib/adminAuditLog";
 import type { ReportType } from "@/app/hub/account/reportSections";
 import type { HubNotificationCategory } from "@/lib/hubNotifications";
@@ -73,7 +74,7 @@ export async function fetchAllCandidates(): Promise<CandidateListRow[]> {
     supabase.from("fitment_leads").select("user_id, email, name, role_title, created_at").order("created_at", { ascending: true }),
     supabase.from("report_unlocks").select("user_id"),
     supabase.from("fitment_interviews").select("user_id").eq("status", "ready"),
-    supabase.from("personality_tests").select("user_id"),
+    supabase.from("personality_tests").select("user_id, version, culture_scores"),
     supabase.from("reference_checks").select("user_id").eq("status", "completed"),
   ]);
 
@@ -86,7 +87,7 @@ export async function fetchAllCandidates(): Promise<CandidateListRow[]> {
   const sets: FunnelSets = {
     reportUnlocked: new Set((unlockRows ?? []).map((r) => r.user_id)),
     interviewReady: new Set((interviewRows ?? []).map((r) => r.user_id)),
-    personalityCompleted: new Set((personalityRows ?? []).map((r) => r.user_id)),
+    personalityCompleted: new Set((personalityRows ?? []).filter(isPersonalityComplete).map((r) => r.user_id)),
     referenceCompleted: new Set((referenceRows ?? []).map((r) => r.user_id)),
   };
 
@@ -340,7 +341,7 @@ export async function getCandidateDetail(userId: string): Promise<CandidateDetai
 
   const { data: personalityRow } = await supabase
     .from("personality_tests")
-    .select("role_title, scores, validity")
+    .select("role_title, scores, validity, version, culture_scores")
     .eq("user_id", userId)
     .order("completed_at", { ascending: false })
     .limit(1)
@@ -444,7 +445,7 @@ export async function getCandidateDetail(userId: string): Promise<CandidateDetai
     name: leadRows[0].name,
     leads,
     personality:
-      personalityRow && personalityRow.scores && personalityRow.validity
+      personalityRow && personalityRow.scores && personalityRow.validity && isPersonalityComplete(personalityRow)
         ? { roleTitle: personalityRow.role_title, scores: personalityRow.scores as Scores, validity: personalityRow.validity as Validity }
         : null,
     references: referenceStatus

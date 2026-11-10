@@ -17,6 +17,7 @@ import { RECRUITER_PREVIEW_ENABLED } from "@/lib/featureFlags";
 import AuthenticatedFitmentChecker from "./AuthenticatedFitmentChecker";
 import { resolveActiveLead } from "@/lib/activeLead";
 import { leadIdOrRoleTitleFilter } from "@/lib/postgrestIdentityFilter";
+import { isPersonalityComplete } from "@/lib/psychometrics/testFlow";
 
 export default async function AccountPage({
   searchParams,
@@ -187,7 +188,7 @@ export default async function AccountPage({
     resolveReport(),
     resolveInterview(),
     getReferenceCheckStatus(user.id),
-    supabase.from("personality_tests").select("role_title").eq("user_id", user.id).maybeSingle(),
+    supabase.from("personality_tests").select("role_title, version, culture_scores").eq("user_id", user.id).maybeSingle(),
     supabase.from("counselling_requests").select("id").eq("user_id", user.id).neq("status", "cancelled").limit(1).maybeSingle(),
     getRecruiterViewCount(user.id),
     Promise.all([isProductUnlocked(user.id, "personality"), isProductUnlocked(user.id, "references")]),
@@ -201,7 +202,8 @@ export default async function AccountPage({
   const referenceCheckStatus: "none" | "in_progress" | "completed" =
     !referenceCheck ? "none" : referenceCheck.status === "completed" ? "completed" : "in_progress";
 
-  const personalityStatus: PersonalityStatus = personalityRow ? "ready" : "not_started";
+  // A v2 row with only Part 1 saved is not done; the personality page resumes it at Part 2.
+  const personalityStatus: PersonalityStatus = isPersonalityComplete(personalityRow) ? "ready" : "not_started";
 
   const level = (current.candidate_level as CandidateLevel | null) ?? DEFAULT_LEVEL;
   const counsellingPriceLabel = formatPrice(PRODUCT_PRICING.counselling[level]);

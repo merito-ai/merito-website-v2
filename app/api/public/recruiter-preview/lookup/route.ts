@@ -11,6 +11,7 @@ import {
 import type { ResumeMatchReportReady } from "@/lib/intervuebox/reports";
 import type { InterviewReportReady } from "@/lib/intervuebox/interviewReports";
 import { leadIdOrRoleTitleFilter } from "@/lib/postgrestIdentityFilter";
+import { isPersonalityComplete } from "@/lib/psychometrics/testFlow";
 
 export const runtime = "nodejs";
 
@@ -118,10 +119,10 @@ export async function POST(request: Request) {
     if (enabledSections.includes("personality")) {
       const { data: personalityRow } = await admin
         .from("personality_tests")
-        .select("scores, completed_at")
+        .select("scores, completed_at, version, culture_scores")
         .eq("user_id", userId)
         .maybeSingle();
-      if (personalityRow?.scores) {
+      if (personalityRow?.scores && isPersonalityComplete(personalityRow)) {
         sections.personality = buildLookupPersonality(
           personalityRow.scores as Scores,
           candidateName,
