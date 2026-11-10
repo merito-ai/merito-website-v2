@@ -5,6 +5,7 @@ import { createInterviewAgent, type CandidateLevel } from "@/lib/intervuebox/age
 import { sendInterviewInvitation } from "@/lib/intervuebox/invitations";
 import { recordPipelineFailure } from "@/lib/pipelineFailures";
 import { arePaymentsBypassed } from "@/lib/paymentsBypass";
+import { isPlanProduct, PLAN_PRODUCTS, PLAN_INTERVIEW_MINUTES } from "@/lib/plans";
 
 export const runtime = "nodejs";
 
@@ -95,12 +96,14 @@ export async function POST(request: Request) {
   }
 
   let consumedOrderId: string | null = null;
+  // A plan's interview credit is always 45 min (spec); undefined keeps the level default.
+  let planMinutes: typeof PLAN_INTERVIEW_MINUTES | undefined;
   if (!arePaymentsBypassed()) {
     const { data: credit } = await admin
       .from("razorpay_transactions")
-      .select("order_id")
+      .select("order_id, product")
       .eq("user_id", user.id)
-      .eq("product", "interview")
+      .in("product", ["interview", ...PLAN_PRODUCTS])
       .eq("status", "success")
       .is("consumed_at", null)
       .order("created_at", { ascending: true })
@@ -115,6 +118,7 @@ export async function POST(request: Request) {
     }
 
     consumedOrderId = credit.order_id;
+    planMinutes = isPlanProduct(credit.product) ? PLAN_INTERVIEW_MINUTES : undefined;
     await admin
       .from("razorpay_transactions")
       .update({ consumed_at: new Date().toISOString() })
@@ -170,7 +174,7 @@ export async function POST(request: Request) {
     stage = "createInterviewAgent";
     const candidateLevel = (lead.candidate_level as CandidateLevel) || "mid";
 
-    ({ ibAgentId } = await createInterviewAgent(ibJobId, lead.role_title, candidateLevel));
+    ({ ibAgentId } = await createInterviewAgent(ibJobId, lead.role_title, candidateLevel, planMinutes));
 
     stage = "sendInterviewInvitation";
     const inviteResult = await sendInterviewInvitation(ibAgentId, [candidateId]);

@@ -97,6 +97,17 @@ describe("createInterviewAgent", () => {
     });
   });
 
+  it("posts a 45-minute override for a plan interview at entry level", async () => {
+    intervueBoxFetchMock.mockResolvedValue({ interviewId: "INT_125" });
+    const { createInterviewAgent } = await import("../agents");
+
+    await createInterviewAgent("JOB_123", "Sales Executive", "entry", 45);
+
+    const sentBody = JSON.parse(intervueBoxFetchMock.mock.calls[0][1].body);
+    expect(sentBody.maxInterviewMinutes).toBe(45);
+    expect(sentBody.complexity).toBe("easy");
+  });
+
   it("posts a 45-minute interview for a senior candidate", async () => {
     intervueBoxFetchMock.mockResolvedValue({
       interviewId: "INT_124",

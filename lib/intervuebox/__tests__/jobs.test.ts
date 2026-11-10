@@ -166,6 +166,26 @@ describe("createJob skill resolution (LLM primary, keyword fallback)", () => {
     expect(extractSkillsWithLLMMock).toHaveBeenCalledWith("Some JD.", 7, "Built AWS partnerships. Sales background.");
   });
 
+  it("uses an explicit maxSkills override (plan interviews: 10 at any level)", async () => {
+    intervueBoxFetchMock.mockResolvedValue({ success: true, jobId: "JOB_123" });
+    extractSkillsWithLLMMock.mockResolvedValue(["Sales"]);
+    const { createJob } = await import("../jobs");
+
+    await createJob({ title: "Sales Executive", jobDescription: "Some JD.", candidateLevel: "entry", maxSkills: 10 });
+
+    expect(extractSkillsWithLLMMock).toHaveBeenCalledWith("Some JD.", 10, undefined);
+  });
+
+  it("defaults to the level cap without maxSkills", async () => {
+    intervueBoxFetchMock.mockResolvedValue({ success: true, jobId: "JOB_123" });
+    extractSkillsWithLLMMock.mockResolvedValue(["Sales"]);
+    const { createJob } = await import("../jobs");
+
+    await createJob({ title: "Sales Executive", jobDescription: "Some JD.", candidateLevel: "entry" });
+
+    expect(extractSkillsWithLLMMock).toHaveBeenCalledWith("Some JD.", 7, undefined);
+  });
+
   it("logs LLM-extracted skills for review on success", async () => {
     intervueBoxFetchMock.mockResolvedValue({ success: true, jobId: "JOB_123" });
     extractSkillsWithLLMMock.mockResolvedValue(["Meta Ads", "Shopify", "GA4"]);

@@ -38,7 +38,8 @@ const creditOrderMock = vi.fn().mockReturnValue({ limit: creditLimitMock });
 const creditIsMock = vi.fn().mockReturnValue({ order: creditOrderMock });
 const creditEq3Mock = vi.fn().mockReturnValue({ is: creditIsMock });
 const creditEq2Mock = vi.fn().mockReturnValue({ eq: creditEq3Mock });
-const creditEq1Mock = vi.fn().mockReturnValue({ eq: creditEq2Mock });
+const creditInMock = vi.fn().mockReturnValue({ eq: creditEq3Mock });
+const creditEq1Mock = vi.fn().mockReturnValue({ eq: creditEq2Mock, in: creditInMock });
 const creditSelectMock = vi.fn().mockReturnValue({ eq: creditEq1Mock });
 
 const consumeUpdateEqMock = vi.fn().mockResolvedValue({ error: null });
@@ -221,7 +222,7 @@ describe("POST /api/hub/start-ai-interview", () => {
     const response = await POST(buildRequest({ leadId: "lead-1" }));
 
     expect(response.status).toBe(200);
-    expect(createInterviewAgentMock).toHaveBeenCalledWith("JOB_123", "Senior Product Manager", "mid");
+    expect(createInterviewAgentMock).toHaveBeenCalledWith("JOB_123", "Senior Product Manager", "mid", undefined);
     expect(insertMock).toHaveBeenCalledWith(expect.objectContaining({ ib_job_id: "JOB_123" }));
   });
 
@@ -256,7 +257,7 @@ describe("POST /api/hub/start-ai-interview", () => {
 
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({ status: "invited" });
-    expect(createInterviewAgentMock).toHaveBeenCalledWith("JOB_123", "Senior Product Manager", "senior");
+    expect(createInterviewAgentMock).toHaveBeenCalledWith("JOB_123", "Senior Product Manager", "senior", undefined);
     expect(sendInterviewInvitationMock).toHaveBeenCalledWith("INT_123", ["USR_123"]);
     expect(insertMock).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -451,5 +452,80 @@ describe("POST /api/hub/start-ai-interview", () => {
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({ status: "invited" });
     expect(adminReselectSelectMock).toHaveBeenCalled();
+  });
+});
+
+describe("POST /api/hub/start-ai-interview — plan interview credit", () => {
+  const LEAD = { id: "lead-plan", role_title: "Sales Executive", ib_job_id: "JOB_P", ib_applied_job_id: "APJ_P", candidate_level: "entry" };
+
+  beforeEach(() => {
+    process.env.RAZORPAY_BYPASS = "false";
+    getUserMock.mockReset();
+    getUserMock.mockResolvedValue({ data: { user: { id: "user-1" } } });
+    existingMaybeSingleMock.mockReset();
+    existingMaybeSingleMock.mockResolvedValue({ data: null, error: null });
+    priorAttemptMaybeSingleMock.mockReset();
+    priorAttemptMaybeSingleMock.mockResolvedValue({ data: null, error: null });
+    leadMaybeSingleMock.mockReset();
+    leadMaybeSingleMock.mockResolvedValue({ data: LEAD, error: null });
+    insertMock.mockClear();
+    insertMock.mockResolvedValue({ error: null });
+    getApplicantMock.mockReset();
+    getApplicantMock.mockResolvedValue({ candidateId: "USR_P" });
+    createInterviewAgentMock.mockReset();
+    createInterviewAgentMock.mockResolvedValue({ ibAgentId: "INT_P" });
+    sendInterviewInvitationMock.mockReset();
+    sendInterviewInvitationMock.mockResolvedValue({ invited: 1, failed: 0 });
+    creditMaybeSingleMock.mockReset();
+    creditInMock.mockClear();
+    consumeUpdateMock.mockClear();
+    consumeUpdateEqMock.mockClear();
+    consumeUpdateEqMock.mockResolvedValue({ error: null });
+    recordPipelineFailureMock.mockReset();
+    recordPipelineFailureMock.mockResolvedValue(undefined);
+  });
+
+  afterEach(() => {
+    delete process.env.RAZORPAY_BYPASS;
+  });
+
+  it("consumes a plan credit and forces a 45-minute interview at entry level", async () => {
+    creditMaybeSingleMock.mockResolvedValue({ data: { order_id: "order_plan", product: "plan_prepare" }, error: null });
+    const { POST } = await importRoute();
+    const response = await POST(buildRequest({ leadId: "lead-plan" }));
+
+    expect(response.status).toBe(200);
+    expect(creditInMock).toHaveBeenCalledWith("product", ["interview", "plan_prepare", "plan_mentor"]);
+    expect(consumeUpdateEqMock).toHaveBeenCalledWith("order_id", "order_plan");
+    expect(createInterviewAgentMock).toHaveBeenCalledWith("JOB_P", "Sales Executive", "entry", 45);
+  });
+
+  it("keeps the level duration for a normal interview credit", async () => {
+    creditMaybeSingleMock.mockResolvedValue({ data: { order_id: "order_int", product: "interview" }, error: null });
+    const { POST } = await importRoute();
+    await POST(buildRequest({ leadId: "lead-plan" }));
+
+    expect(createInterviewAgentMock).toHaveBeenCalledWith("JOB_P", "Sales Executive", "entry", undefined);
+  });
+
+  it("returns 402 once the plan interview is used (one start only)", async () => {
+    // A consumed plan txn is filtered out by .is("consumed_at", null), so no credit row comes back.
+    creditMaybeSingleMock.mockResolvedValue({ data: null, error: null });
+    const { POST } = await importRoute();
+    const response = await POST(buildRequest({ leadId: "lead-plan" }));
+
+    expect(response.status).toBe(402);
+    expect(createInterviewAgentMock).not.toHaveBeenCalled();
+  });
+
+  it("un-consumes the plan credit when the invite chain fails", async () => {
+    creditMaybeSingleMock.mockResolvedValue({ data: { order_id: "order_plan", product: "plan_mentor" }, error: null });
+    sendInterviewInvitationMock.mockRejectedValue(new Error("vendor 500"));
+    const { POST } = await importRoute();
+    const response = await POST(buildRequest({ leadId: "lead-plan" }));
+
+    expect(response.status).toBe(500);
+    expect(consumeUpdateMock).toHaveBeenNthCalledWith(2, { consumed_at: null });
+    expect(consumeUpdateEqMock).toHaveBeenNthCalledWith(2, "order_id", "order_plan");
   });
 });
