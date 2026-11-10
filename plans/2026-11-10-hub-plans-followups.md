@@ -28,5 +28,10 @@ Open:
 - Plan interview start: on failure, `startInterview`'s fallback text says "Payment succeeded, but starting the interview failed" even though no payment happened on the plan path.
 - `45-min` is a literal in `InterviewPaywallModal` because `lib/plans.ts` imports the service-role client and can't go in a client bundle. Move plan constants to a client-safe module if they change.
 - Plan 2 "mentoring" after purchase: banner says "book it from Expert"; no dedicated mentoring step in the plan purchase flow (verify returns `unlocked`).
-- `canRetakeV2` is UI-only: `save-personality-test` lets any personality-unlocked user overwrite a v1 row with v2. Harmless (they paid for personality) but not enforced server-side.
+- ~~`canRetakeV2` is UI-only~~ FIXED: `save-personality-test` now returns 409 for part 1 over a complete v2, or over a v1 unless the user has a plan.
 - Pre-existing lint error: `app/hub/account/pricing/PricingCardsClient.tsx:256` unescaped `'` (not from this phase).
+
+## Code review follow-ups (Low, deferred)
+
+- **Second paid plan order:** `finalize` has no guard when a second plan order is paid (the concurrent-checkout race above). Add an auto-refund, or flag it for admin.
+- **Allowlisted users can still POST individual products** to `initiate` (the UI only shows plans). Accepted per PM decision 7.
