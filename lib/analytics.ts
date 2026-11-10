@@ -30,6 +30,8 @@ const PURCHASE_EVENT: Record<string, string> = {
   references: "references_purchase",
   interview: "interview_purchase",
   counselling: "expert_purchase",
+  plan_prepare: "plan_prepare_purchase",
+  plan_mentor: "plan_mentor_purchase",
 };
 
 /** Fire after Razorpay verification succeeds. `product` is the value sent to the initiate/unlock endpoint. */
