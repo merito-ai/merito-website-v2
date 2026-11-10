@@ -8,6 +8,10 @@ import { buildPricingCards, buildBundleSummary } from "./pricingCatalog";
 import PricingCardsClient from "./PricingCardsClient";
 import { leadIdOrRoleTitleFilter } from "@/lib/postgrestIdentityFilter";
 import { resolveActiveLead } from "@/lib/activeLead";
+import { getPlanState } from "@/lib/plans";
+import { buildPlanCards } from "./pricingCatalog";
+import PlanCardsClient from "./PlanCardsClient";
+import PlanStatusBanner from "./PlanStatusBanner";
 
 export default async function PricingPage({
   searchParams,
@@ -23,6 +27,13 @@ export default async function PricingPage({
   if (!user) {
     redirect("/hub/login");
   }
+
+  // Allowlisted users see only the plans until they buy one (plans are account-level, no lead needed).
+  const planState = await getPlanState(user.id, user.email);
+  if (planState.allowlisted && !planState.plan) {
+    return <PlanCardsClient plans={buildPlanCards()} />;
+  }
+  const banner = planState.plan && <PlanStatusBanner plan={planState.plan} />;
 
   // Honour ?lead= (same resolution as app/hub/account/page.tsx) so arriving
   // from the role switcher prices and unlock-gates the role being viewed, not
@@ -49,20 +60,23 @@ export default async function PricingPage({
   // yet" empty state).
   if (!lead) {
     return (
-      <PricingCardsClient
-        cards={cards}
-        bundle={bundle}
-        level={level}
-        purchasable={false}
-        leadId={null}
-        roleTitle={null}
-        userEmail={user.email ?? ""}
-        reportUnlocked={false}
-        personalityUnlocked={false}
-        referencesUnlocked={false}
-        interviewStatus="not_started"
-        counsellingRequested={false}
-      />
+      <>
+        {banner}
+        <PricingCardsClient
+          cards={cards}
+          bundle={bundle}
+          level={level}
+          purchasable={false}
+          leadId={null}
+          roleTitle={null}
+          userEmail={user.email ?? ""}
+          reportUnlocked={false}
+          personalityUnlocked={false}
+          referencesUnlocked={false}
+          interviewStatus="not_started"
+          counsellingRequested={false}
+        />
+      </>
     );
   }
 
@@ -97,19 +111,22 @@ export default async function PricingPage({
   const { data: counsellingRequest } = await supabase.from("counselling_requests").select("id").eq("user_id", user.id).neq("status", "cancelled").limit(1).maybeSingle();
 
   return (
-    <PricingCardsClient
-      cards={cards}
-      bundle={bundle}
-      level={level}
-      purchasable
-      leadId={lead.id}
-      roleTitle={lead.role_title}
-      userEmail={user.email ?? ""}
-      reportUnlocked={reportUnlocked}
-      personalityUnlocked={personalityUnlocked}
-      referencesUnlocked={referencesUnlocked}
-      interviewStatus={interviewStatus}
-      counsellingRequested={Boolean(counsellingRequest)}
-    />
+    <>
+      {banner}
+      <PricingCardsClient
+        cards={cards}
+        bundle={bundle}
+        level={level}
+        purchasable
+        leadId={lead.id}
+        roleTitle={lead.role_title}
+        userEmail={user.email ?? ""}
+        reportUnlocked={reportUnlocked}
+        personalityUnlocked={personalityUnlocked}
+        referencesUnlocked={referencesUnlocked}
+        interviewStatus={interviewStatus}
+        counsellingRequested={Boolean(counsellingRequest)}
+      />
+    </>
   );
 }
