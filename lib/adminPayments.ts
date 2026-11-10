@@ -6,6 +6,8 @@ import { markRazorpayRefunded } from "@/lib/razorpay/finalize";
 import { unlockProduct, isProductUnlocked } from "@/lib/productUnlocks";
 import { completeReportUnlock } from "@/lib/completeReportUnlock";
 import type { RazorpayProduct, CandidateLevel } from "@/lib/razorpay/pricing";
+import { isPlanProduct, getPlanOrder } from "@/lib/plans";
+import { applyPlanGrants } from "@/lib/planGrants";
 
 export type TransactionStatus = "initiated" | "success" | "failed" | "refunded";
 
@@ -39,7 +41,10 @@ export function findUnpaidUnlocks(input: {
   productUnlocks: ProductUnlockInput[];
   successfulTransactions: SuccessfulTransactionInput[];
 }): UnpaidUnlock[] {
-  const bundleCoveredUsers = new Set(input.successfulTransactions.filter((t) => t.product === "bundle").map((t) => t.userId));
+  // shortcut: a plan covers all of a user's report unlocks (like bundle does), not just its 3 credits.
+  const bundleCoveredUsers = new Set(
+    input.successfulTransactions.filter((t) => t.product === "bundle" || isPlanProduct(t.product)).map((t) => t.userId)
+  );
   const reportCoveredPairs = new Set(
     input.successfulTransactions.filter((t) => t.product === "report").map((t) => `${t.userId}:${t.leadId}`)
   );
@@ -334,8 +339,13 @@ export async function grantFreeAccess(
       throw new Error(`Candidate already has ${params.product} unlocked.`);
     }
   }
+  // Admin decides who gets a comped plan, so no allowlist check; still one plan per candidate.
+  if (isPlanProduct(params.product) && (await getPlanOrder(userId))) {
+    throw new Error("Candidate already has a plan.");
+  }
 
-  const consumedAt = params.product === "interview" ? null : new Date().toISOString();
+  // interview / plan: the unconsumed $0 row is the interview credit.
+  const consumedAt = params.product === "interview" || isPlanProduct(params.product) ? null : new Date().toISOString();
   const orderId = `comp_${randomUUID()}`;
 
   const { error: insertError } = await supabase.from("razorpay_transactions").insert({
@@ -367,6 +377,8 @@ export async function grantFreeAccess(
     await unlockProduct(userId, "references");
   } else if (params.product === "counselling") {
     await supabase.from("counselling_requests").insert({ user_id: userId, order_id: orderId });
+  } else if (isPlanProduct(params.product)) {
+    await applyPlanGrants(userId, orderId, params.product);
   }
   // "interview": the $0 success/unconsumed row inserted above is itself the credit.
 

@@ -9,7 +9,11 @@ const {
   unlockProductMock,
   isProductUnlockedMock,
   completeReportUnlockMock,
+  applyPlanGrantsMock,
+  getPlanOrderMock,
 } = vi.hoisted(() => ({
+  applyPlanGrantsMock: vi.fn(),
+  getPlanOrderMock: vi.fn(),
   logAdminActionMock: vi.fn(),
   fromMock: vi.fn(),
   createRefundMock: vi.fn(),
@@ -24,6 +28,11 @@ vi.mock("@/lib/razorpay/client", () => ({ createRefund: createRefundMock }));
 vi.mock("@/lib/razorpay/finalize", () => ({ markRazorpayRefunded: markRazorpayRefundedMock }));
 vi.mock("@/lib/productUnlocks", () => ({ unlockProduct: unlockProductMock, isProductUnlocked: isProductUnlockedMock }));
 vi.mock("@/lib/completeReportUnlock", () => ({ completeReportUnlock: completeReportUnlockMock }));
+vi.mock("@/lib/planGrants", () => ({ applyPlanGrants: applyPlanGrantsMock }));
+vi.mock("@/lib/plans", async () => {
+  const actual = await vi.importActual<typeof import("@/lib/plans")>("@/lib/plans");
+  return { ...actual, getPlanOrder: getPlanOrderMock };
+});
 
 describe("findUnpaidUnlocks", () => {
   it("flags a report unlock with no matching transaction", () => {
@@ -87,6 +96,19 @@ describe("findUnpaidUnlocks", () => {
       reportUnlocks: [],
       productUnlocks: [{ userId: "u1", product: "personality", unlockedAt: "2026-08-01T00:00:00Z" }],
       successfulTransactions: [{ userId: "u1", product: "bundle", leadId: "lead-1" }],
+    });
+
+    expect(result).toEqual([]);
+  });
+
+  it("does not flag reports, personality or references covered by a plan transaction", () => {
+    const result = findUnpaidUnlocks({
+      reportUnlocks: [{ userId: "u1", leadId: "lead-1", roleTitle: "PM", unlockedAt: "2026-11-10T00:00:00Z" }],
+      productUnlocks: [
+        { userId: "u1", product: "personality", unlockedAt: "2026-11-10T00:00:00Z" },
+        { userId: "u1", product: "references", unlockedAt: "2026-11-10T00:00:00Z" },
+      ],
+      successfulTransactions: [{ userId: "u1", product: "plan_prepare", leadId: null }],
     });
 
     expect(result).toEqual([]);
@@ -296,6 +318,10 @@ describe("grantFreeAccess", () => {
     completeReportUnlockMock.mockResolvedValue({ status: "unlocked", report: {} });
     logAdminActionMock.mockReset();
     logAdminActionMock.mockResolvedValue(undefined);
+    applyPlanGrantsMock.mockReset();
+    applyPlanGrantsMock.mockResolvedValue(undefined);
+    getPlanOrderMock.mockReset();
+    getPlanOrderMock.mockResolvedValue(null);
   });
 
   function stubTables(leadRow: unknown) {
@@ -354,6 +380,30 @@ describe("grantFreeAccess", () => {
     await expect(
       grantFreeAccess({ email: "candidate@example.com", product: "personality", level: "entry", reason: "goodwill" }, "admin@merito.in")
     ).rejects.toThrow("already has personality unlocked");
+  });
+
+  it("grants a plan: $0 txn with the interview credit unused, then plan grants", async () => {
+    const insertMock = stubTables({ id: "lead-1", user_id: "user-1", role_title: "Backend Engineer" });
+    const { grantFreeAccess } = await import("../adminPayments");
+
+    await grantFreeAccess({ email: "candidate@example.com", product: "plan_mentor", level: "entry", reason: "seminar" }, "admin@merito.in");
+
+    expect(insertMock).toHaveBeenCalledWith(
+      expect.objectContaining({ user_id: "user-1", product: "plan_mentor", amount_paise: 0, status: "success", consumed_at: null })
+    );
+    const orderId = insertMock.mock.calls[0][0].order_id;
+    expect(applyPlanGrantsMock).toHaveBeenCalledWith("user-1", orderId, "plan_mentor");
+  });
+
+  it("refuses a second plan", async () => {
+    stubTables({ id: "lead-1", user_id: "user-1", role_title: "Backend Engineer" });
+    getPlanOrderMock.mockResolvedValue({ orderId: "o1", product: "plan_prepare", interviewUsed: false });
+    const { grantFreeAccess } = await import("../adminPayments");
+
+    await expect(
+      grantFreeAccess({ email: "candidate@example.com", product: "plan_prepare", level: "entry", reason: "seminar" }, "admin@merito.in")
+    ).rejects.toThrow("Candidate already has a plan.");
+    expect(applyPlanGrantsMock).not.toHaveBeenCalled();
   });
 
   it("throws when the email has no fitment lead and the product needs one", async () => {

@@ -20,6 +20,8 @@ const PRODUCT_LABEL: Record<string, string> = {
   interview: "Interview",
   counselling: "Counselling",
   bundle: "Bundle",
+  plan_prepare: "Plan: Assess + Prepare",
+  plan_mentor: "Plan: Assess + Mentor + Apply",
 };
 
 const UNPAID_KIND_LABEL: Record<string, string> = {
