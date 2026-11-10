@@ -130,6 +130,7 @@ export const SCHEMA_CONTRACT: ReadonlyArray<ContractCheck> = [
     "migration 0065 re-keyed this to a non-partial unique (user_id, lead_id); reportUnlocks relies on the 23505 it raises",
   ),
   uniqueOn("product_unlocks", ["user_id", "product"], 'productUnlocks upserts with onConflict:"user_id,product"'),
+  uniqueOn("plan_allowlist", ["email"], 'planAllowlist upserts with onConflict:"email"'),
   functionExists("merge_candidate_accounts", 2, 'adminCandidates.rpc("merge_candidate_accounts") on the account-merge path'),
   functionExists("purge_candidate_data", 1, 'purgeCandidates.rpc("purge_candidate_data") on the candidate-purge cron'),
 
