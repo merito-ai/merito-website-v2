@@ -198,12 +198,12 @@ export async function markRazorpayRefunded(orderId: string): Promise<MarkRefunde
   if (txn.product === "report") {
     await revokeReportForLead(supabase, txn.user_id, txn.lead_id);
   } else if (txn.product === "personality") {
-    await revokeProduct(txn.user_id, "personality");
+    await revokePersonalityUnlessOtherwisePaid(txn.user_id, orderId);
   } else if (txn.product === "references") {
     await revokeReferencesUnlessOtherwisePaid(txn.user_id, orderId);
   } else if (txn.product === "bundle") {
     await revokeReportForLead(supabase, txn.user_id, txn.lead_id);
-    await revokeProduct(txn.user_id, "personality");
+    await revokePersonalityUnlessOtherwisePaid(txn.user_id, orderId);
     await revokeReferencesUnlessOtherwisePaid(txn.user_id, orderId);
   } else if (txn.product === "counselling") {
     await revokeCounsellingForOrder(supabase, orderId);
@@ -228,7 +228,7 @@ async function revokeReferencesUnlessOtherwisePaid(userId: string, refundedOrder
   await revokeProduct(userId, "references");
 }
 
-// A plan buyer may also own personality from an earlier individual/bundle purchase: keep it.
+// Personality can be owned via several payments (personality, bundle, plan): a refund of one keeps it if another remains.
 async function revokePersonalityUnlessOtherwisePaid(userId: string, refundedOrderId: string): Promise<void> {
   const { count, error } = await getSupabaseServerClient()
     .from("razorpay_transactions")

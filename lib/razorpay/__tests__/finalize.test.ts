@@ -401,6 +401,7 @@ describe("markRazorpayPaymentFailed", () => {
 });
 
 describe("markRazorpayRefunded", () => {
+  let otherPersonalityPurchases = 0;
   const deleteIsMock = vi.fn();
   const deleteEq2Mock = vi.fn().mockReturnValue({ is: deleteIsMock });
   const deleteEq1Mock = vi.fn().mockReturnValue({ eq: deleteEq2Mock });
@@ -442,7 +443,12 @@ describe("markRazorpayRefunded", () => {
       return { select: txnSelectMock, update: updateMock };
     });
     txnSelectMock.mockReturnValue({ eq: txnEqMock });
-    txnEqMock.mockReturnValue({ maybeSingle: txnMaybeSingleMock });
+    otherPersonalityPurchases = 0;
+    // The "other personality purchase" count query chains eq/eq/in/neq off the same select.
+    const countChain: Record<string, unknown> = {};
+    for (const m of ["eq", "in", "neq"]) countChain[m] = () => countChain;
+    countChain.then = (resolve: (v: unknown) => unknown) => resolve({ count: otherPersonalityPurchases, error: null });
+    txnEqMock.mockReturnValue({ ...countChain, maybeSingle: txnMaybeSingleMock });
   });
 
   it("rejects with unknown_order when no transaction matches", async () => {
@@ -524,6 +530,20 @@ describe("markRazorpayRefunded", () => {
     expect(revokeProductMock).toHaveBeenCalledWith("user-1", "personality");
     expect(updateMock).toHaveBeenCalledWith({ status: "refunded" });
     expect(result).toEqual({ ok: true, alreadyProcessed: false });
+  });
+
+  it("keeps personality on a personality refund when a plan/bundle still covers it", async () => {
+    otherPersonalityPurchases = 1;
+    txnMaybeSingleMock.mockResolvedValue({
+      data: { status: "success", product: "personality", user_id: "user-1", lead_id: null },
+      error: null,
+    });
+    const { markRazorpayRefunded } = await import("../finalize");
+
+    await markRazorpayRefunded("order_1");
+
+    expect(revokeProductMock).not.toHaveBeenCalledWith("user-1", "personality");
+    expect(updateMock).toHaveBeenCalledWith({ status: "refunded" });
   });
 
   it("revokes references access on refund", async () => {
