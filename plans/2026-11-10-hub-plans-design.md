@@ -54,10 +54,37 @@ Source: `D:\Work-Projects\staff-assessment-platform\backend\apps\psychometrics` 
 - **Part 1 — Personality:** 60 IPIP Big Five items (12/trait, 6 reverse-keyed) + 5 impression-management items, 1–5 Likert (`seed_data.py` `PERSONALITY_ITEMS`, `PERSONALITY_IM`, `PERSONALITY_PAIRS`). Scoring per `scoring.py` `score_personality`: keyed mean → 0–100, min 6/12 answered per trait, response-quality flags.
 - **Part 2 — Culture:** 36 Competing Values items (9 per type: Clan, Adhocracy, Market, Hierarchy; 3 reverse-keyed) + 3 attention checks, 1–7 Likert (`seed_data.py` `CULTURE_ITEMS`). Scoring per `_culture_levels`: each type independent 0–100; attention checks set `reliable`.
 - One assessment, two parts; progress saved between parts. No 15-min timer.
-- **No company/benchmark fit score.** Candidate sees culture mix + org types that typically suit it (fixed text mapping below).
+- **Fit is scored against fixed Merito benchmarks** (below). No company ever fills a profile.
 - Existing personality results stay viewable as the old version; new takers get the new version (results carry a version).
 
-Culture → org-type mapping: **pending research** (no guessed mapping). Evidence-based mapping to be added here before build of the report section.
+### Culture benchmarks (Merito estimate v1, set 2026-11-10)
+
+Research summary: published CVF numbers by org type are thin and non-Indian; no India sector data found. Person–organisation fit predicts job satisfaction (ρ≈.44), commitment (ρ≈.51) and intent to quit (ρ≈−.35) (Kristof-Brown et al. 2005), weaker for actual turnover/performance. Benchmarks are therefore labelled "Merito estimate" and are a career signal, not a hiring screen.
+
+Benchmarks (Clan / Adhocracy / Market / Hierarchy, ipsative, sum 100):
+
+| Org type | C | A | M | H | Basis |
+|---|---|---|---|---|---|
+| Government / PSU | 25 | 18 | 20 | 37 | Public-sector studies (Croatia, Pakistan): hierarchy dominant — direction only |
+| Hospital / healthcare | 31 | 21 | 22 | 24 | Croatian hospitals study — published numbers |
+| Early-stage startup | 33 | 32 | 20 | 15 | Startup/scale-up studies: clan + adhocracy — weak |
+| Product / tech company (scale-up) | 26 | 28 | 28 | 18 | Scale-up preference data — weak |
+| Family business / SME | 36 | 22 | 18 | 24 | Family-business review: clan + adhocracy — weak–moderate |
+| Sales / finance / consulting | 20 | 20 | 37 | 23 | Qualitative CVF descriptions — weak |
+| IT services / MNC / manufacturing | 22 | 20 | 28 | 30 | Indian IT+manufacturing sample ≈ flat; shape is estimate — weak |
+
+Sources: Kristof-Brown 2005 via https://onlinelibrary.wiley.com/doi/10.1111/peps.12581 · public sector https://www.emerald.com/ccsm/article/doi/10.1108/CCM-05-2013-0082/143150 · hospitals https://britishjournalofnursing.com/content/professional/analysis-of-the-organisational-culture-in-two-croatian-hospitals · family business https://revistas.ucm.es/index.php/CESE/en/article/view/53632 · India https://www.pbr.co.in/2019/jan11.aspx · Czech baseline https://doaj.org/article/ad618661163949ef9351935ecd8f1448
+
+**Fit calculation** (our scores are independent 0–100, benchmarks are ipsative — compare shape, not level):
+1. Candidate: subtract the candidate's own mean of the 4 type scores. Benchmark: subtract 25.
+2. r = Pearson correlation of the two centred 4-value profiles (profile-correlation fit).
+3. Fit % = round(50 + 50 × r).
+4. Flat profile (SD of the 4 candidate scores < 8): no fit %, show "No strong preference — adaptable across cultures".
+5. Show top 3 benchmarks by fit %; rest collapsed. If `reliable` = false (attention checks failed), show culture mix only, no fit %.
+
+Thresholds (SD 8) are untested — recalibrate once real Merito data exists.
+
+**Candidate-facing caveats (must appear in report):** typical patterns only — teams inside one company vary more than industries do; fit modestly predicts satisfaction, weakly predicts turnover/performance; benchmarks are Merito estimates from small or non-Indian samples; this is a preference, not ability, and not a hiring screen; most people prefer collaborative (Clan) cultures, so a high Clan score is common.
 
 ## Report
 
@@ -85,7 +112,8 @@ Pricing: `app/hub/account/pricing/pricingCatalog.ts`, `BundlePromoCard.tsx`, `Pr
 
 ## Deferred (nice to have)
 
-- Culture fit % per org type (benchmarks) once real candidate data exists.
+- Recalibrate benchmarks + flat-profile threshold on real Merito data; norm against Merito population so high Clan doesn't over-match family business.
+- Buy Cameron & Quinn "Diagnosing and Changing Organizational Culture" (Fig 4.4/4.6 industry averages) to upgrade benchmark numbers.
 - Plans for all users / new individual prices for everyone (option 2, rejected 2026-11-10).
 - Upgrade credit for earlier individual purchases.
 - In-app application-assistance workflow (request form + admin queue).
