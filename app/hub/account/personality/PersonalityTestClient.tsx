@@ -166,6 +166,7 @@ export default function PersonalityTestClient({
           roleTitle={roleTitle}
           scores={result.scores}
           validity={result.validity}
+          culture={result.culture}
         />
       </div>
     );

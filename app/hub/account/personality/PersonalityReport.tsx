@@ -13,6 +13,10 @@ import {
   type Scores,
   type Validity,
 } from "@/lib/personality";
+import type { CultureScores } from "@/lib/psychometrics/scoring";
+import { SELF_DEV_NOTE } from "@/lib/psychometrics/reportCopy";
+import StrengthsSection from "./StrengthsSection";
+import CultureSection from "./CultureSection";
 
 // Single accent fill bar, matching the continuous-bar convention used across
 // the rest of the dashboard (e.g. ResumeMatchCategoryCard). Personality
@@ -33,11 +37,13 @@ export default function PersonalityReport({
   roleTitle,
   scores,
   validity,
+  culture,
 }: {
   candidateName: string;
   roleTitle: string;
   scores: Scores;
   validity: Validity;
+  culture?: { scores: CultureScores | null; reliable: boolean | null } | null;
 }) {
   const firstName = candidateName.split(/\s+/)[0] || candidateName;
   const flags = validityFlags(validity);
@@ -112,7 +118,7 @@ export default function PersonalityReport({
                   {TRAIT_NAME[t]}
                 </span>
                 <span className="font-[family-name:var(--font-poppins)] font-semibold text-[#ed1a24]" style={{ fontSize: 12.5 }}>
-                  {scores[t].pct}% · {BANDS[scores[t].band]}
+                  {Math.round(scores[t].pct)}% · {BANDS[scores[t].band]}
                 </span>
               </div>
               <ScoreBar pct={scores[t].pct} />
@@ -131,7 +137,7 @@ export default function PersonalityReport({
                 {TRAIT_NAME[t]}
               </h2>
               <span className="font-[family-name:var(--font-poppins)] font-bold text-[#ed1a24]" style={{ fontSize: "1.3rem" }}>
-                {s.pct}%
+                {Math.round(s.pct)}%
               </span>
             </div>
             <ScoreBar pct={s.pct} />
@@ -150,6 +156,9 @@ export default function PersonalityReport({
           </div>
         );
       })}
+
+      <StrengthsSection scores={scores} candidateName={candidateName} />
+      {culture?.scores && <CultureSection scores={culture.scores} reliable={culture.reliable} />}
 
       <div style={{ background: "rgb(29,25,31)", border: "1px solid rgb(49,47,55)", borderRadius: 14, padding: 22, marginTop: 16 }}>
         <div className="flex items-center" style={{ gap: 8, marginBottom: 4 }}>
@@ -195,6 +204,10 @@ export default function PersonalityReport({
           </p>
         </div>
       </div>
+
+      <p className="font-[family-name:var(--font-poppins)] text-white/50" style={{ fontSize: 12.5, lineHeight: 1.6, margin: "16px 0 0" }}>
+        {SELF_DEV_NOTE}
+      </p>
     </div>
   );
 }
