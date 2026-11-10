@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabaseAuthServer";
 import { nameFromEmail, type Scores, type Validity } from "@/lib/personality";
+import type { CultureScores } from "@/lib/psychometrics/scoring";
 import { isProductUnlocked } from "@/lib/productUnlocks";
 import { DEFAULT_LEVEL, type CandidateLevel } from "@/lib/razorpay/pricing";
 import PersonalityTestClient from "./PersonalityTestClient";
@@ -71,14 +72,24 @@ export default async function PersonalityTestPage({
 
   const { data: existing } = await supabase
     .from("personality_tests")
-    .select("scores, validity")
+    .select("scores, validity, version, culture_scores, culture_reliable")
     .eq("user_id", user.id)
     .maybeSingle();
 
+  const initialRow = existing ? { version: existing.version as number, culture_scores: existing.culture_scores } : null;
   const initialResult =
     existing && existing.scores && existing.validity
-      ? { scores: existing.scores as Scores, validity: existing.validity as Validity }
+      ? {
+          scores: existing.scores as Scores,
+          validity: existing.validity as Validity,
+          culture: existing.culture_scores
+            ? { scores: existing.culture_scores as CultureScores, reliable: existing.culture_reliable as boolean | null }
+            : null,
+        }
       : null;
+  // PM decision 2026-11-10: plan buyers may take the new test over an old v1 result.
+  // shortcut: always false until Phase B's lib/plans.ts lands; then set to `Boolean(await getPlanOrder(user.id))`.
+  const canRetakeV2 = false;
 
   // Real name from the fitment form; the email local-part is only a fallback.
   const candidateName = current.name || nameFromEmail(user.email ?? "");
@@ -94,7 +105,13 @@ export default async function PersonalityTestPage({
             Part of your profile &mdash; done once, applies to every application.
           </p>
         </div>
-        <PersonalityTestClient roleTitle={roleTitle} candidateName={candidateName} initialResult={initialResult} />
+        <PersonalityTestClient
+          roleTitle={roleTitle}
+          candidateName={candidateName}
+          initialRow={initialRow}
+          initialResult={initialResult}
+          canRetakeV2={canRetakeV2}
+        />
       </div>
     </main>
   );
