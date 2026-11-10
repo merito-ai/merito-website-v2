@@ -12,7 +12,10 @@ function query(result: Record<string, unknown>) {
   return chain as Record<string, ReturnType<typeof vi.fn>>;
 }
 
-import { isPlanProduct, getPlanOrder, planReportCreditsLeft } from "@/lib/plans";
+const isEmailAllowlistedMock = vi.hoisted(() => vi.fn());
+vi.mock("@/lib/planAllowlist", () => ({ isEmailAllowlisted: isEmailAllowlistedMock }));
+
+import { isPlanProduct, getPlanOrder, planReportCreditsLeft, getPlanState } from "@/lib/plans";
 import { PRODUCT_PRICING } from "@/lib/razorpay/pricing";
 
 describe("isPlanProduct", () => {
@@ -81,5 +84,30 @@ describe("planReportCreditsLeft", () => {
   it("never goes below zero", async () => {
     fromMock.mockReturnValue(query({ count: 5, error: null }));
     expect(await planReportCreditsLeft("o1")).toBe(0);
+  });
+});
+
+describe("getPlanState", () => {
+  beforeEach(() => {
+    fromMock.mockReset();
+    isEmailAllowlistedMock.mockReset();
+  });
+
+  it("returns allowlisted with no plan", async () => {
+    isEmailAllowlistedMock.mockResolvedValue(true);
+    fromMock.mockReturnValue(query({ data: null, error: null }));
+    expect(await getPlanState("u1", "a@b.co")).toEqual({ allowlisted: true, plan: null });
+    expect(isEmailAllowlistedMock).toHaveBeenCalledWith("a@b.co");
+  });
+
+  it("adds report credits left to the plan", async () => {
+    isEmailAllowlistedMock.mockResolvedValue(false);
+    fromMock
+      .mockReturnValueOnce(query({ data: { order_id: "o1", product: "plan_prepare", consumed_at: null }, error: null }))
+      .mockReturnValueOnce(query({ count: 1, error: null }));
+    expect(await getPlanState("u1", "a@b.co")).toEqual({
+      allowlisted: false,
+      plan: { orderId: "o1", product: "plan_prepare", interviewUsed: false, reportCreditsLeft: 2 },
+    });
   });
 });

@@ -1,4 +1,5 @@
 import { getSupabaseServerClient } from "@/lib/supabase";
+import { isEmailAllowlisted } from "@/lib/planAllowlist";
 
 export const PLAN_PRODUCTS = ["plan_prepare", "plan_mentor"] as const;
 export type PlanProduct = (typeof PLAN_PRODUCTS)[number];
@@ -35,4 +36,11 @@ export async function planReportCreditsLeft(orderId: string): Promise<number> {
     .eq("order_id", orderId);
   if (error) throw new Error(`Failed to count plan report credits: ${error.message}`);
   return Math.max(0, PLAN_REPORT_CREDITS - (count ?? 0));
+}
+
+export type PlanState = { allowlisted: boolean; plan: (PlanOrder & { reportCreditsLeft: number }) | null };
+
+export async function getPlanState(userId: string, email: string | null | undefined): Promise<PlanState> {
+  const [allowlisted, plan] = await Promise.all([isEmailAllowlisted(email), getPlanOrder(userId)]);
+  return { allowlisted, plan: plan ? { ...plan, reportCreditsLeft: await planReportCreditsLeft(plan.orderId) } : null };
 }

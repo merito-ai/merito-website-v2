@@ -1,5 +1,39 @@
 import { describe, it, expect } from "vitest";
-import { buildPricingCards, buildBundleSummary, getPersonalityBundleRate } from "../pricingCatalog";
+import { buildPricingCards, buildBundleSummary, getPersonalityBundleRate, buildPlanCards } from "../pricingCatalog";
+
+describe("buildPlanCards", () => {
+  const cards = buildPlanCards();
+
+  it("returns both plans at flat prices", () => {
+    expect(cards.map((c) => [c.product, c.priceLabel])).toEqual([
+      ["plan_prepare", "₹2996"],
+      ["plan_mentor", "₹5995"],
+    ]);
+  });
+
+  it("lists the seminar value table in spec order", () => {
+    for (const c of cards) {
+      expect(c.lines.map((l) => l.label)).toEqual([
+        "CV analysis with detailed report (3 roles)",
+        "Personality + culture assessment",
+        "Mock AI interview (45 min)",
+        "References module",
+        "1-hour mentoring session",
+        "Application assistance (3 companies)",
+        "Shareable profile",
+      ]);
+      expect(c.lines.map((l) => l.valueLabel)).toEqual(["₹499", "₹499", "₹1499", "₹499", "₹2999", "—", "—"]);
+    }
+    expect(cards[0].lines.map((l) => l.included)).toEqual([true, true, true, true, false, false, true]);
+    expect(cards[1].lines.map((l) => l.included)).toEqual([true, true, true, true, true, true, true]);
+  });
+
+  it("only the mentor plan has the referral footnote, and nothing promises a guaranteed outcome", () => {
+    expect(cards[0].footnote).toBeNull();
+    expect(cards[1].footnote).toMatch(/we refer you/i);
+    expect(JSON.stringify(cards)).not.toMatch(/guaranteed/i);
+  });
+});
 
 describe("getPersonalityBundleRate", () => {
   it("derives entry-level personality bundle rate from bundle total minus report/references", () => {

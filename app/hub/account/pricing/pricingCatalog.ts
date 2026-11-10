@@ -1,5 +1,6 @@
 import { PRODUCT_PRICING, PRODUCT_LABELS, formatPrice, type CandidateLevel } from "@/lib/razorpay/pricing";
 import { MIN_REFERENCES } from "@/lib/referenceChecks";
+import type { PlanProduct } from "@/lib/plans";
 
 export type PricingCardKey = "report" | "personality" | "references" | "interview" | "counselling";
 
@@ -86,4 +87,43 @@ export function buildBundleSummary(level: CandidateLevel): BundleSummary {
     savings,
     savingsLabel: formatPrice(savings),
   };
+}
+
+type PlanLine = { label: string; valuePaise: number | null; prepare: boolean; mentor: boolean };
+// Seminar value table (spec "Pricing"). Values are shown for context only, never charged.
+const PLAN_LINES: PlanLine[] = [
+  { label: "CV analysis with detailed report (3 roles)", valuePaise: 49900, prepare: true, mentor: true },
+  { label: "Personality + culture assessment", valuePaise: 49900, prepare: true, mentor: true },
+  { label: "Mock AI interview (45 min)", valuePaise: 149900, prepare: true, mentor: true },
+  { label: "References module", valuePaise: 49900, prepare: true, mentor: true },
+  { label: "1-hour mentoring session", valuePaise: 299900, prepare: false, mentor: true },
+  { label: "Application assistance (3 companies)", valuePaise: null, prepare: false, mentor: true },
+  { label: "Shareable profile", valuePaise: null, prepare: true, mentor: true },
+];
+
+export type PlanCard = {
+  product: PlanProduct;
+  title: string;
+  price: number;
+  priceLabel: string;
+  lines: { label: string; valueLabel: string; included: boolean }[];
+  footnote: string | null;
+};
+
+export function buildPlanCards(): PlanCard[] {
+  return (["plan_prepare", "plan_mentor"] as const).map((product) => ({
+    product,
+    title: PRODUCT_LABELS[product],
+    price: PRODUCT_PRICING[product].entry, // flat across levels
+    priceLabel: formatPrice(PRODUCT_PRICING[product].entry),
+    lines: PLAN_LINES.map((l) => ({
+      label: l.label,
+      valueLabel: l.valuePaise === null ? "—" : formatPrice(l.valuePaise),
+      included: product === "plan_mentor" ? l.mentor : l.prepare,
+    })),
+    footnote:
+      product === "plan_mentor"
+        ? "Application assistance: our team refers you to 3 companies you choose, through our own network. We refer you; we can't guarantee interviews or offers."
+        : null,
+  }));
 }
