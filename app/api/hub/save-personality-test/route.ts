@@ -5,6 +5,8 @@ import { isCompleteAnswerSet, toStoredScores, toStoredValidity, type Answers } f
 import { scorePersonality, scoreCulture, type RawAnswers } from "@/lib/psychometrics/scoring";
 import { CULTURE_ITEMS } from "@/lib/psychometrics/cultureItems";
 import { arePaymentsBypassed } from "@/lib/paymentsBypass";
+import { isPersonalityComplete } from "@/lib/psychometrics/testFlow";
+import { getPlanOrder } from "@/lib/plans";
 
 export const runtime = "nodejs";
 
@@ -64,6 +66,21 @@ export async function POST(request: Request) {
     }
     const scores = toStoredScores(result.trait_scores, answers);
     const validity = toStoredValidity(result.validity);
+
+    // Part 1 must not overwrite a finished result: only an incomplete v2 may be redone, and a v1
+    // result only by a plan holder (same rule as the page's canRetakeV2).
+    const { data: existing, error: existingError } = await admin
+      .from("personality_tests")
+      .select("version, culture_scores")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (existingError) {
+      console.error("personality_tests read failed", { user_id: user.id, error: existingError });
+      return Response.json({ error: "Something went wrong saving your results. Please try again." }, { status: 500 });
+    }
+    if (isPersonalityComplete(existing) && !(existing?.version === 1 && (await getPlanOrder(user.id)))) {
+      return Response.json({ error: "You have already completed this test." }, { status: 409 });
+    }
 
     // Retaking part 1 starts a fresh v2 attempt, so any earlier culture part is cleared.
     const { error: upsertError } = await admin.from("personality_tests").upsert(

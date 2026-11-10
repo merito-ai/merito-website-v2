@@ -12,6 +12,9 @@ vi.mock("@/lib/productUnlocks", () => ({
   isProductUnlocked: isProductUnlockedMock,
 }));
 
+const getPlanOrderMock = vi.fn().mockResolvedValue(null);
+vi.mock("@/lib/plans", () => ({ getPlanOrder: getPlanOrderMock }));
+
 const upsertMock = vi.fn().mockResolvedValue({ error: null });
 const maybeSingleMock = vi.fn().mockResolvedValue({ data: null, error: null });
 const updateEqMock = vi.fn().mockResolvedValue({ error: null });
@@ -219,5 +222,26 @@ describe("POST /api/hub/save-personality-test — v2 two-part flow", () => {
   it("culture part still requires the personality unlock (402)", async () => {
     isProductUnlockedMock.mockResolvedValue(false);
     expect((await post({ roleTitle: "X", part: "culture", answers: cultureAnswers() })).status).toBe(402);
+  });
+
+  it.each([
+    ["complete v1, no plan", { version: 1, culture_scores: null }, null],
+    ["complete v2", { version: 2, culture_scores: { Clan: 50 } }, { orderId: "o1" }],
+  ])("part 1 over a %s row -> 409, row untouched", async (_label, row, plan) => {
+    maybeSingleMock.mockResolvedValue({ data: row, error: null });
+    getPlanOrderMock.mockResolvedValue(plan);
+    const res = await post({ roleTitle: "X", answers: completeAnswers() });
+    expect(res.status).toBe(409);
+    expect(upsertMock).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ["v1 row with a plan (retake-eligible)", { version: 1, culture_scores: null }, { orderId: "o1" }],
+    ["incomplete v2 row", { version: 2, culture_scores: null }, null],
+  ])("part 1 over a %s -> 200", async (_label, row, plan) => {
+    maybeSingleMock.mockResolvedValue({ data: row, error: null });
+    getPlanOrderMock.mockResolvedValue(plan);
+    expect((await post({ roleTitle: "X", part: "personality", answers: completeAnswers() })).status).toBe(200);
+    expect(upsertMock).toHaveBeenCalledTimes(1);
   });
 });
