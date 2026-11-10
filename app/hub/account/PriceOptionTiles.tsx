@@ -1,6 +1,8 @@
 "use client";
 
 import { PRODUCT_PRICING, formatPrice, type CandidateLevel } from "@/lib/razorpay/pricing";
+import { usePlanState, isPlanOnly, freePlanReports } from "./usePlanState";
+import PlanOnlyNotice from "./PlanOnlyNotice";
 
 export type PriceOptionTilesProps = {
   soloProduct: "report" | "personality" | "references";
@@ -16,13 +18,19 @@ export default function PriceOptionTiles({
   soloLabel,
   level,
   bundleEligible,
-  submitting,
+  submitting: submittingProp,
   onContinue,
 }: PriceOptionTilesProps) {
+  const { loading, state } = usePlanState();
+  // Disabled until plan state loads, so an allowlisted user can't buy individually first.
+  const submitting = submittingProp || loading;
+  const freeReports = freePlanReports(state, soloProduct);
   const soloPrice = PRODUCT_PRICING[soloProduct][level];
   const bundlePrice = PRODUCT_PRICING.bundle[level];
   const savings =
     PRODUCT_PRICING.report[level] + PRODUCT_PRICING.personality[level] + PRODUCT_PRICING.references[level] - bundlePrice;
+
+  if (isPlanOnly(state)) return <PlanOnlyNotice />;
 
   if (!bundleEligible) {
     return (
@@ -33,7 +41,11 @@ export default function PriceOptionTiles({
           className="w-full font-[family-name:var(--font-poppins)] font-semibold text-white"
           style={{ height: 50, borderRadius: 8, fontSize: 15, background: submitting ? "#dcdcdc" : "#ed1a24", border: "none", cursor: submitting ? "default" : "pointer", boxShadow: submitting ? "none" : "0 4px 6px rgba(236,34,40,0.3)" }}
         >
-          {submitting ? "Redirecting…" : `Continue to payment for ${formatPrice(soloPrice)}`}
+          {submittingProp
+            ? "Redirecting…"
+            : freeReports > 0
+              ? `Use 1 of your ${freeReports} plan reports — free`
+              : `Continue to payment for ${formatPrice(soloPrice)}`}
         </button>
         <p className="text-[#9c9c9c]" style={{ fontSize: 11.5, textAlign: "center", margin: "10px 0 0" }}>
           One-time payment · No subscription · UPI, card & netbanking
@@ -65,7 +77,7 @@ export default function PriceOptionTiles({
           className="font-[family-name:var(--font-poppins)] font-semibold"
           style={{ width: "100%", height: 44, borderRadius: 8, fontSize: 14, background: submitting ? "#dcdcdc" : "#fff", color: "#000", border: "none", cursor: submitting ? "default" : "pointer" }}
         >
-          {submitting ? "Redirecting…" : "Get the bundle"}
+          {submittingProp ? "Redirecting…" : "Get the bundle"}
         </button>
       </div>
 
@@ -75,7 +87,7 @@ export default function PriceOptionTiles({
           className="font-[family-name:var(--font-poppins)]"
           style={{ fontSize: 12, color: "#ed1a24", textDecoration: "underline", cursor: submitting ? "default" : "pointer" }}
         >
-          {soloLabel} for {formatPrice(soloPrice)} instead →
+          {freeReports > 0 ? `Use 1 of your ${freeReports} plan reports — free` : `${soloLabel} for ${formatPrice(soloPrice)} instead →`}
         </span>
       </p>
 

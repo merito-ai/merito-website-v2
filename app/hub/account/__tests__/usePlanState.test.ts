@@ -1,0 +1,31 @@
+import { describe, it, expect } from "vitest";
+import { isPlanOnly, freePlanReports, hasUnusedPlanInterview } from "../usePlanState";
+import type { PlanState } from "@/lib/plans";
+
+const plan = (over: Partial<NonNullable<PlanState["plan"]>> = {}): PlanState => ({
+  allowlisted: true,
+  plan: { orderId: "o1", product: "plan_prepare", interviewUsed: false, reportCreditsLeft: 2, ...over },
+});
+
+describe("plan paywall helpers", () => {
+  it("plan-only = allowlisted without a plan; null state is a normal user", () => {
+    expect(isPlanOnly({ allowlisted: true, plan: null })).toBe(true);
+    expect(isPlanOnly({ allowlisted: false, plan: null })).toBe(false);
+    expect(isPlanOnly(plan())).toBe(false);
+    expect(isPlanOnly(null)).toBe(false);
+  });
+
+  it("free plan reports only apply to the report product", () => {
+    expect(freePlanReports(plan(), "report")).toBe(2);
+    expect(freePlanReports(plan(), "personality")).toBe(0);
+    expect(freePlanReports(plan({ reportCreditsLeft: 0 }), "report")).toBe(0);
+    expect(freePlanReports(null, "report")).toBe(0);
+  });
+
+  it("unused plan interview", () => {
+    expect(hasUnusedPlanInterview(plan())).toBe(true);
+    expect(hasUnusedPlanInterview(plan({ interviewUsed: true }))).toBe(false);
+    expect(hasUnusedPlanInterview({ allowlisted: true, plan: null })).toBe(false);
+    expect(hasUnusedPlanInterview(null)).toBe(false);
+  });
+});

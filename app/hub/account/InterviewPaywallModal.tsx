@@ -5,6 +5,8 @@ import type { InterviewStatus } from "./ProgressRail";
 import { PRODUCT_PRICING, formatPrice, type CandidateLevel } from "@/lib/razorpay/pricing";
 import { trackPurchase } from "@/lib/analytics";
 import { fetchWithTimeout, networkErrorMessage } from "@/lib/hub/fetchWithTimeout";
+import { usePlanState, isPlanOnly, hasUnusedPlanInterview } from "./usePlanState";
+import PlanOnlyNotice from "./PlanOnlyNotice";
 
 type RazorpayHandlerResponse = {
   razorpay_order_id: string;
@@ -63,6 +65,7 @@ export default function InterviewPaywallModal({
   onStarted: (status: InterviewStatus) => void;
 }) {
   const [paying, setPaying] = useState(false);
+  const { loading: planLoading, state: planState } = usePlanState();
   const [error, setError] = useState<string | null>(null);
   // Set once the invite is actually sent — while set, the modal shows a
   // confirmation instead of closing immediately, so the candidate doesn't
@@ -222,17 +225,36 @@ export default function InterviewPaywallModal({
               {`You'll be able to launch your AI interview for ${roleTitle} right from your dashboard, whenever you're ready.`}
             </p>
 
-            <button
-              onClick={handlePay}
-              disabled={paying}
-              className="w-full font-[family-name:var(--font-poppins)] font-semibold text-white"
-              style={{ height: 50, borderRadius: 8, fontSize: 15, background: paying ? "#dcdcdc" : "#ed1a24", border: "none", cursor: paying ? "default" : "pointer", boxShadow: paying ? "none" : "0 4px 6px rgba(236,34,40,0.3)" }}
-            >
-              {paying ? "Processing…" : `Pay ${formatPrice(PRODUCT_PRICING.interview[level])}`}
-            </button>
-            <p className="text-[#9c9c9c]" style={{ fontSize: 11.5, textAlign: "center", margin: "10px 0 0" }}>
-              One-time payment per attempt · UPI, card & netbanking
-            </p>
+            {hasUnusedPlanInterview(planState) ? (
+              <button
+                onClick={() => {
+                  setPaying(true);
+                  setError(null);
+                  void startInterview();
+                }}
+                disabled={paying}
+                className="w-full font-[family-name:var(--font-poppins)] font-semibold text-white"
+                style={{ height: 50, borderRadius: 8, fontSize: 15, background: paying ? "#dcdcdc" : "#ed1a24", border: "none", cursor: paying ? "default" : "pointer", boxShadow: paying ? "none" : "0 4px 6px rgba(236,34,40,0.3)" }}
+              >
+                {paying ? "Starting…" : "Start your 45-min interview (included in your plan)"}
+              </button>
+            ) : isPlanOnly(planState) ? (
+              <PlanOnlyNotice />
+            ) : (
+              <>
+                <button
+                  onClick={handlePay}
+                  disabled={paying || planLoading}
+                  className="w-full font-[family-name:var(--font-poppins)] font-semibold text-white"
+                  style={{ height: 50, borderRadius: 8, fontSize: 15, background: paying || planLoading ? "#dcdcdc" : "#ed1a24", border: "none", cursor: paying || planLoading ? "default" : "pointer", boxShadow: paying || planLoading ? "none" : "0 4px 6px rgba(236,34,40,0.3)" }}
+                >
+                  {paying ? "Processing…" : `Pay ${formatPrice(PRODUCT_PRICING.interview[level])}`}
+                </button>
+                <p className="text-[#9c9c9c]" style={{ fontSize: 11.5, textAlign: "center", margin: "10px 0 0" }}>
+                  One-time payment per attempt · UPI, card & netbanking
+                </p>
+              </>
+            )}
           </>
         )}
 

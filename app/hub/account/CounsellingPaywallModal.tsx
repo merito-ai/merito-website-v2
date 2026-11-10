@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { trackPurchase } from "@/lib/analytics";
 import { fetchWithTimeout, networkErrorMessage } from "@/lib/hub/fetchWithTimeout";
+import { usePlanState, isPlanOnly } from "./usePlanState";
+import PlanOnlyNotice from "./PlanOnlyNotice";
 
 type RazorpayHandlerResponse = {
   razorpay_order_id: string;
@@ -55,6 +57,8 @@ export default function CounsellingPaywallModal({
   onRequested: () => void;
 }) {
   const [paying, setPaying] = useState(false);
+  const { loading: planLoading, state: planState } = usePlanState();
+  const busy = paying || planLoading;
   const [error, setError] = useState<string | null>(null);
 
   const handlePay = async () => {
@@ -160,17 +164,23 @@ export default function CounsellingPaywallModal({
           Book a one-on-one with a Merito career expert who reads your fitment and gives you a straight, personalised plan to improve your odds.
         </p>
 
-        <button
-          onClick={handlePay}
-          disabled={paying}
-          className="w-full font-[family-name:var(--font-poppins)] font-semibold text-white"
-          style={{ height: 50, borderRadius: 8, fontSize: 15, background: paying ? "#dcdcdc" : "#ed1a24", border: "none", cursor: paying ? "default" : "pointer", boxShadow: paying ? "none" : "0 4px 6px rgba(236,34,40,0.3)" }}
-        >
-          {paying ? "Redirecting…" : `Book my expert call for ${priceLabel}`}
-        </button>
-        <p className="text-[#9c9c9c]" style={{ fontSize: 11.5, textAlign: "center", margin: "10px 0 0" }}>
-          One-time payment · No subscription · UPI, card & netbanking
-        </p>
+        {isPlanOnly(planState) ? (
+          <PlanOnlyNotice />
+        ) : (
+          <>
+            <button
+              onClick={handlePay}
+              disabled={busy}
+              className="w-full font-[family-name:var(--font-poppins)] font-semibold text-white"
+              style={{ height: 50, borderRadius: 8, fontSize: 15, background: busy ? "#dcdcdc" : "#ed1a24", border: "none", cursor: busy ? "default" : "pointer", boxShadow: busy ? "none" : "0 4px 6px rgba(236,34,40,0.3)" }}
+            >
+              {paying ? "Redirecting…" : `Book my expert call for ${priceLabel}`}
+            </button>
+            <p className="text-[#9c9c9c]" style={{ fontSize: 11.5, textAlign: "center", margin: "10px 0 0" }}>
+              One-time payment · No subscription · UPI, card & netbanking
+            </p>
+          </>
+        )}
 
         {error && (
           <p style={{ fontSize: 12.5, color: "#ed1a24", marginTop: 10, textAlign: "center" }}>{error}</p>

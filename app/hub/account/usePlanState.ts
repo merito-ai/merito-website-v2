@@ -26,3 +26,11 @@ export function usePlanState(): { loading: boolean; state: PlanState | null } {
 export function isPlanOnly(state: PlanState | null): boolean {
   return Boolean(state?.allowlisted && !state.plan);
 }
+
+export function freePlanReports(state: PlanState | null, product: string): number {
+  return product === "report" && state?.plan ? state.plan.reportCreditsLeft : 0;
+}
+
+export function hasUnusedPlanInterview(state: PlanState | null): boolean {
+  return Boolean(state?.plan && !state.plan.interviewUsed);
+}
