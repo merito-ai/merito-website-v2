@@ -73,7 +73,7 @@ export default function InterviewPaywallModal({
   // sitting on this page waiting.
   const [invitedStatus, setInvitedStatus] = useState<InterviewStatus | null>(null);
 
-  const startInterview = async () => {
+  const startInterview = async (failText = "Payment succeeded, but starting the interview failed. Please contact support.") => {
     try {
       const res = await fetchWithTimeout("/api/hub/start-ai-interview", {
         method: "POST",
@@ -83,13 +83,13 @@ export default function InterviewPaywallModal({
       const data = await res.json();
       setPaying(false);
       if (!res.ok) {
-        setError(data.error || "Payment succeeded, but starting the interview failed. Please contact support.");
+        setError(data.error || failText);
         return;
       }
       setInvitedStatus(data.status as InterviewStatus);
     } catch (err) {
       setPaying(false);
-      setError(networkErrorMessage(err, "Payment succeeded, but starting the interview failed. Please contact support."));
+      setError(networkErrorMessage(err, failText));
     }
   };
 
@@ -230,7 +230,7 @@ export default function InterviewPaywallModal({
                 onClick={() => {
                   setPaying(true);
                   setError(null);
-                  void startInterview();
+                  void startInterview("Couldn't start your interview. Please try again or contact support.");
                 }}
                 disabled={paying}
                 className="w-full font-[family-name:var(--font-poppins)] font-semibold text-white"
@@ -248,7 +248,7 @@ export default function InterviewPaywallModal({
                   className="w-full font-[family-name:var(--font-poppins)] font-semibold text-white"
                   style={{ height: 50, borderRadius: 8, fontSize: 15, background: paying || planLoading ? "#dcdcdc" : "#ed1a24", border: "none", cursor: paying || planLoading ? "default" : "pointer", boxShadow: paying || planLoading ? "none" : "0 4px 6px rgba(236,34,40,0.3)" }}
                 >
-                  {paying ? "Processing…" : `Pay ${formatPrice(PRODUCT_PRICING.interview[level])}`}
+                  {paying ? "Processing…" : planLoading ? "Checking your plan…" : `Pay ${formatPrice(PRODUCT_PRICING.interview[level])}`}
                 </button>
                 <p className="text-[#9c9c9c]" style={{ fontSize: 11.5, textAlign: "center", margin: "10px 0 0" }}>
                   One-time payment per attempt · UPI, card & netbanking

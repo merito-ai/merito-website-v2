@@ -34,3 +34,12 @@ export function freePlanReports(state: PlanState | null, product: string): numbe
 export function hasUnusedPlanInterview(state: PlanState | null): boolean {
   return Boolean(state?.plan && !state.plan.interviewUsed);
 }
+
+// Locked-card price slot for plan users; null = show the normal price (normal user, or plan extras like a 4th report).
+export function planCardLabel(state: PlanState | null, product: "report" | "interview"): string | null {
+  if (isPlanOnly(state)) return "Available with a plan";
+  const reports = freePlanReports(state, product);
+  if (reports > 0) return `Included in your plan · ${reports} left`;
+  if (product === "interview" && hasUnusedPlanInterview(state)) return "Included in your plan";
+  return null;
+}

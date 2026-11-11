@@ -8,6 +8,7 @@ import type { ResumeMatchReportReady } from "@/lib/intervuebox/reports";
 import { SAMPLE_FITMENT_REPORT } from "@/lib/sampleReports/fitment";
 import ReportPaywallModal from "../ReportPaywallModal";
 import LockedFeatureLayout from "../LockedFeatureLayout";
+import { usePlanState, planCardLabel } from "../usePlanState";
 import SamplePreviewFrame from "../SamplePreviewFrame";
 import SampleFitmentReport from "./SampleFitmentReport";
 
@@ -45,7 +46,11 @@ export default function ReportLockedState({
 }) {
   const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
-  const priceLabel = formatPrice(PRODUCT_PRICING.report[level]);
+  const price = formatPrice(PRODUCT_PRICING.report[level]);
+  const { loading: planLoading, state: planState } = usePlanState();
+  const planLabel = planCardLabel(planState, "report");
+  // Neutral while plan state loads, so plan users never flash a price they won't pay.
+  const priceLabel = planLoading ? "" : (planLabel ?? price);
 
   // The fitment report is generated before purchase, so a locked candidate
   // normally sees their own real numbers here. The fixture only stands in
@@ -60,7 +65,7 @@ export default function ReportLockedState({
       style={{ gap: 8, height: 48, padding: "0 24px", borderRadius: 8, fontSize: 14.5, border: "none", cursor: "pointer" }}
     >
       <Unlock size={15} strokeWidth={2} />
-      Unlock full report for {priceLabel}
+      {planLoading || planLabel ? "Unlock full report" : `Unlock full report for ${priceLabel}`}
     </button>
   );
 

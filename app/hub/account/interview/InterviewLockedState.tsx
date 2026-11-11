@@ -6,6 +6,7 @@ import { Mic, Play } from "lucide-react";
 import { PRODUCT_PRICING, formatPrice, type CandidateLevel } from "@/lib/razorpay/pricing";
 import InterviewPaywallModal from "../InterviewPaywallModal";
 import LockedFeatureLayout from "../LockedFeatureLayout";
+import { usePlanState, planCardLabel } from "../usePlanState";
 import SamplePreviewFrame from "../SamplePreviewFrame";
 import SampleInterviewReport from "./SampleInterviewReport";
 
@@ -41,7 +42,11 @@ export default function InterviewLockedState({
 }) {
   const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
-  const priceLabel = formatPrice(PRODUCT_PRICING.interview[level]);
+  const price = formatPrice(PRODUCT_PRICING.interview[level]);
+  const { loading: planLoading, state: planState } = usePlanState();
+  const planLabel = planCardLabel(planState, "interview");
+  // Neutral while plan state loads, so plan users never flash a price they won't pay.
+  const priceLabel = planLoading ? "" : (planLabel ?? price);
 
   const cta = (
     <button
@@ -50,7 +55,7 @@ export default function InterviewLockedState({
       style={{ gap: 8, height: 48, padding: "0 24px", borderRadius: 8, fontSize: 14.5, border: "none", cursor: "pointer" }}
     >
       <Play size={15} strokeWidth={2} />
-      Start my mock interview for {priceLabel}
+      {planLoading || planLabel ? "Start my mock interview" : `Start my mock interview for ${priceLabel}`}
     </button>
   );
 
