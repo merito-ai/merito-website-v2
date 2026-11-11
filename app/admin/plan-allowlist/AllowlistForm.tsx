@@ -27,8 +27,9 @@ export default function AllowlistForm() {
         body: JSON.stringify({ emails, note }),
       });
       const data = await response.json().catch(() => null);
-      if (!response.ok) {
-        showToast("error", data?.error || "Something went wrong. Try again.");
+      // A non-JSON 200 is requireAdmin's redirect to sign-in (expired session), not a success.
+      if (!response.ok || !data) {
+        showToast("error", data?.error || (response.ok ? "Your session expired. Reload and sign in again." : "Something went wrong. Try again."));
         return;
       }
       const invalid: string[] = data?.invalid ?? [];

@@ -15,6 +15,12 @@ describe("parseEmailList", () => {
       invalid: ["bad-email"],
     });
   });
+  it("unwraps pasted mail-client formats and rejects addresses that can never match", () => {
+    expect(parseEmailList('Asha Rao <Asha@X.com>, "b@y.in"; c@z.org. d@e f@g.c')).toEqual({
+      valid: ["asha@x.com", "b@y.in", "c@z.org"],
+      invalid: ["Asha", "Rao", "d@e", "f@g.c"],
+    });
+  });
   it("ignores empty input", () => {
     expect(parseEmailList(" \n ,")).toEqual({ valid: [], invalid: [] });
   });

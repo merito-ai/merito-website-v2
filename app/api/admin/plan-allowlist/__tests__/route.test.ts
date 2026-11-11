@@ -54,9 +54,16 @@ describe("/api/admin/plan-allowlist", () => {
     expect(removeFromAllowlistMock).toHaveBeenCalledWith("a@x.com", "admin@merito.in");
   });
 
-  it("DELETE with invalid email → 400", async () => {
+  it("DELETE removes a malformed row stored by an older parser", async () => {
     const { DELETE } = await import("../route");
-    const res = await DELETE(req("DELETE", { email: "nope" }));
+    const res = await DELETE(req("DELETE", { email: "<a@x.com>" }));
+    expect(res.status).toBe(200);
+    expect(removeFromAllowlistMock).toHaveBeenCalledWith("<a@x.com>", "admin@merito.in");
+  });
+
+  it("DELETE with no email → 400", async () => {
+    const { DELETE } = await import("../route");
+    const res = await DELETE(req("DELETE", { email: "  " }));
     expect(res.status).toBe(400);
     expect(removeFromAllowlistMock).not.toHaveBeenCalled();
   });

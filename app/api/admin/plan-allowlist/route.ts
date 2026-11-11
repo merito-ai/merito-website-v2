@@ -4,7 +4,8 @@ import { enforceAdminRateLimit, RateLimitExceededError } from "@/lib/adminRateLi
 import { parseEmailList, addToAllowlist, removeFromAllowlist } from "@/lib/planAllowlist";
 
 const PostSchema = z.object({ emails: z.string().min(1), note: z.string().max(200).optional() });
-const DeleteSchema = z.object({ email: z.string().email() });
+// Not .email(): rows stored by an older, looser parser must still be removable.
+const DeleteSchema = z.object({ email: z.string().trim().min(1).max(320) });
 
 async function readJson(request: Request): Promise<unknown> {
   try { return await request.json(); } catch { return null; }

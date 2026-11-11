@@ -1,14 +1,15 @@
 import { getSupabaseServerClient } from "@/lib/supabase";
 import { logAdminAction } from "@/lib/adminAuditLog";
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EMAIL_RE = /^[^\s@<>"'(),;]+@[^\s@<>"'(),;]+\.[a-z]{2,}$/;
 
 export function parseEmailList(text: string): { valid: string[]; invalid: string[] } {
   const valid = new Set<string>();
   const invalid: string[] = [];
   for (const raw of text.split(/[\s,;]+/)) {
-    const email = raw.trim().toLowerCase();
-    if (!email) continue;
+    // Unwrap pasted "Name <a@b.com>" / quoted / sentence-ending forms; anything else stored would never match a login.
+    const email = raw.trim().toLowerCase().replace(/^[<"'(]+|[>"').]+$/g, "");
+    if (!raw.trim()) continue;
     if (EMAIL_RE.test(email)) valid.add(email);
     else invalid.push(raw.trim());
   }
