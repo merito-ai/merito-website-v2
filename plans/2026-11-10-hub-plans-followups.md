@@ -71,3 +71,6 @@ FIXED 2026-11-11: Plan 2 holder with no role was redirected off /hub/account/exp
 FIXED 2026-11-11: dashboard (no role) now shows the "Your plan" panel for plan holders; role-bound rows (personality, interview, references, Plan 1 mentoring) say "Check a role first" and open the new-role modal (#check-role). Same on Pricing. Non-plan no-role dashboard unchanged.
 
 PM decision 2026-11-11: Plan 1 holders see the real individual expert call price (₹1,999 entry/mid, ₹2,999 senior, 30 min) — no ₹2,999 1-hour mentoring add-on product; revisit if seminar buyers ask for upgrades.
+
+- (Low, PM 2026-11-11) Dashboard for a plan holder with no role still leads with "No fitment scores yet / Head back to the HUB" above the Your plan panel; for a paid user this should welcome them to their plan and point to "Check a role" as step 1. Copy-only.
+- (Low) Plan 1 holder with no role not browser-checked.
