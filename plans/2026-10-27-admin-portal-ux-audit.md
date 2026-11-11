@@ -129,12 +129,7 @@ Not checked: live UI in browser, real data volumes, mobile rendering. Run a brow
 
 Done: sidebar groups, page titles, Home to-do list, Insights page, readable logs, confirm dialogs, 0-100 interview score chart, internal-account exclusion (`ADMIN_INTERNAL_EMAILS`).
 
-Left for the A+D pass (blocked while the hub-plans session was editing payments, initiate route and pricing):
-- T1 interview double-pay: shared `lib/interviewCredits.ts`, initiate route refuses a new interview order while a credit is unused, paywall shows "use credit"
-- Candidate page: header strip, entitlements table (`getCandidateEntitlements`), Billing tab (grant/refund/reconcile pre-filled), report admin action bar, merge search picker, list columns (paid, credits, roles), stage filter, search box
-- T8 `findUnpaidUnlocks`: bundle covers only its own `lead_id` (lib/adminPayments.ts)
-- Payments page: title, abandoned label for old `initiated` rows, product filter
-- Plan allowlist page: title + one sentence
+A+D pass done (2026-11-11, after rebase on hub-plans 30eae1c): T1 interview double-pay fix (`lib/interviewCredits.ts`, initiate refuses a new interview order, paywall offers the credit), T8 bundle per role, candidate page (header strip, `getCandidateEntitlements` in `lib/adminEntitlements.ts`, Billing and Account tabs, report action bar, merge search picker), candidates list columns + filters, payments title / product filter / abandoned label, plan allowlist title.
 
 ## Deferred / nice to have
 
@@ -149,3 +144,9 @@ Left for the A+D pass (blocked while the hub-plans session was editing payments,
 - Minor: Revenue counts all `success` rows; prod still runs on Razorpay test keys, so Insights revenue is test money until the live key swap
 - Minor: Recruiters list still lacks lookups count, last active and reveals (M7); recruiter pages not merged into tabs (M6)
 - Minor: Email templates list shows the internal template key, not a human name (L2)
+- Minor: older admin error messages from lib (e.g. "isn't ready yet — nothing to override") still contain em-dashes and show in toasts
+- Minor: Plan 2 buyers with no fitment check have no admin candidate page (getCandidateDetail needs a lead), so Home shows them as plain text
+- Minor: Reconcile on the Payments page uses the entry-level list price (report/personality/references are flat today); the candidate Billing tab uses the candidate level
+- Minor: entitlements treat any bundle or plan as owning personality and references, same rule as findUnpaidUnlocks
+- Minor: dev server redirects magic-link callbacks to localhost while the browser is on 127.0.0.1, so local QA must reopen 127.0.0.1 after sign-in (env quirk, not a product bug)
+- Minor: the admin layout still shows the public site chat widget bubble

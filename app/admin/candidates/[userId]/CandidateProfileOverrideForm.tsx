@@ -81,7 +81,7 @@ export default function CandidateProfileOverrideForm({
       </div>
 
       <p className="font-[family-name:var(--font-poppins)] text-[#9c9c9c]" style={{ fontSize: 12, margin: "6px 0 0" }}>
-        Fetched fresh from IntervueBox on every page load — an override here always wins over that live fetch.
+        Read from the resume each time. A value set here replaces it.
       </p>
 
       {open && (

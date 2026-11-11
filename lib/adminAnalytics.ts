@@ -368,7 +368,8 @@ export async function getDataQualityStats(): Promise<DataQualityStats> {
   return { interviewsReady, interviewsMissingSkillReport, fitmentReady, fitmentMissingResumeText, fitmentMissingCategories };
 }
 
-export type AttentionPerson = { userId: string; email: string };
+// email is null when the account has no fitment check yet (no candidate page to open).
+export type AttentionPerson = { userId: string; email: string | null };
 export type AttentionItem = { key: string; label: string; count: number; href?: string; people?: AttentionPerson[] };
 
 const ATTENTION_PEOPLE_LIMIT = 5;
@@ -409,7 +410,7 @@ export async function getNeedsAttention(includeInternal = false): Promise<Attent
 
   function people(rows: { user_id: string }[] | null): AttentionPerson[] {
     const ids = Array.from(new Set((rows ?? []).map((r) => r.user_id).filter(keepUser)));
-    return ids.map((userId) => ({ userId, email: emailByUser.get(userId) ?? "Unknown email" }));
+    return ids.map((userId) => ({ userId, email: emailByUser.get(userId) ?? null }));
   }
   const kept = (rows: { user_id: string }[] | null) => (rows ?? []).filter((r) => keepUser(r.user_id));
 

@@ -54,7 +54,12 @@ export default async function AdminHomePage({ searchParams }: { searchParams: Pr
               )}
               {item.people && (
                 <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                  {item.people.map((p) => (
+                  {item.people.map((p) =>
+                    p.email === null ? (
+                      <span key={p.userId} className="font-[family-name:var(--font-poppins)] text-[#9c9c9c]" style={{ fontSize: 12 }}>
+                        Account with no fitment check yet
+                      </span>
+                    ) : (
                     <Link
                       key={p.userId}
                       href={`/admin/candidates/${p.userId}`}
@@ -63,7 +68,8 @@ export default async function AdminHomePage({ searchParams }: { searchParams: Pr
                     >
                       {p.email}
                     </Link>
-                  ))}
+                    )
+                  )}
                 </div>
               )}
             </div>
