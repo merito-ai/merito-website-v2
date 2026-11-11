@@ -82,3 +82,15 @@ Seminar pay-first flow (2026-11-11): allowlisted users without a plan see "Plans
 - (Low) Allowlisted no-plan user WITH a role (offer above the greeting cards) not browser-checked; QA user had no role.
 - (Low) No-role offer page has an h2 ("Plans unlocked for you") but no h1.
 - (Low) Steps "done" rules: references done once referees are invited; mentoring done once scheduled; share never shows done (no share state).
+
+Upgrade + welcome email (2026-11-11):
+- FIXED: the (Medium) "no confirmation email" item above: plan purchases and upgrades now send a welcome email.
+- FIXED: the (Low) "Talk to us" item above for Plan 1 holders: Plan 2 column is now "Upgrade for ₹2,999". Plan 2 holders still see "Talk to us" on Plan 1 (no downgrade).
+- (Low) Panel "Upgrade to unlock" links to /hub/account/pricing (one extra click) instead of opening checkout in place. A Plan 1 holder who is NOT allowlisted (admin comp) lands on the normal per-product pricing page with no upgrade button.
+- (Low) Admin comp grants (plan or upgrade) send no welcome email.
+- (Low) Plan 1 refund while an upgrade is paid only logs a console.error; consider an ops email alert (like sendRefundFailedAlert).
+- (Low) Double-pay: two upgrade checkouts opened in parallel can both be paid (same as plans). Second payment grants nothing new; refund by hand.
+- (Low) Welcome email is plain HTML like the ops alerts (no branded template, not admin-editable in emailTemplates).
+- (Low) Em-dash sweep changed IM_FLAG copy; v2 personality results already stored keep the old flag string with the em-dash.
+- (Low) Pre-existing em-dash not on this branch: app/hub/account/combined-report/CombinedReportActions.tsx "Caption copied — paste it..." (rule says sweep branch changes only).
+- (Low) Upgrade refund path verified by unit tests only, not on the local stack.

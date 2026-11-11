@@ -1,3 +1,5 @@
+import { PLAN_UPGRADE_PRICE_LABEL } from "@/lib/razorpay/pricing";
+
 // "Your plan" panel rows (dashboard + pricing). Pure + client-safe: lib/plans.ts imports the service-role client.
 export type PlanPanelInput = {
   product: "plan_prepare" | "plan_mentor";
@@ -6,7 +8,6 @@ export type PlanPanelInput = {
   interview: "unused" | "in_progress" | "ready";
   references: "none" | "in_progress" | "completed";
   mentoring: { status: string; scheduledAt: string | null } | null;
-  mentoringPriceLabel: string;
   hasRole?: boolean; // default true; false = bought a plan before checking any role
 };
 
@@ -49,8 +50,10 @@ export function buildPlanPanelRows(i: PlanPanelInput): PlanPanelRow[] {
     completed: { status: "Completed", action: { label: "View", href: "/hub/account/references" } },
   };
   const m = i.mentoring;
+  // Plan 1's Plan-2-only rows sell the upgrade; the pricing table carries the checkout.
+  const upgrade = { label: `Upgrade to unlock for ${PLAN_UPGRADE_PRICE_LABEL}`, href: "/hub/account/pricing" };
   const mentoring: Pick<PlanPanelRow, "status" | "action"> = !mentor
-    ? { status: "Not in your plan", action: { label: `Add a mentoring session — ${i.mentoringPriceLabel}`, href: "/hub/account/expert" } }
+    ? { status: "Not in your plan", action: upgrade }
     : m?.status === "completed"
       ? { status: "Completed", action: null }
       : m?.status === "scheduled"
@@ -77,7 +80,7 @@ export function buildPlanPanelRows(i: PlanPanelInput): PlanPanelRow[] {
       included: mentor,
       done: false, // informational: the team calls, nothing for the user to finish
       status: mentor ? "Our team will call you about your 3 dream companies" : "Not in your plan",
-      action: mentor ? { label: "Contact us", href: CONTACT_HREF } : null,
+      action: mentor ? { label: "Contact us", href: CONTACT_HREF } : upgrade,
     },
     // The existing consolidated report + its share link; no separate profile feature.
     { key: "share", label: "Share consolidated profile", included: true, done: false, status: "One report combining all your results", action: { label: "View & share", href: "/hub/account/combined-report" } },
@@ -90,7 +93,7 @@ export function buildPlanPanelRows(i: PlanPanelInput): PlanPanelRow[] {
     marker: r.key === nextKey ? (r.key === "reports" ? "Start here" : "Next step") : null,
   }));
   if (i.hasRole !== false) return rows;
-  // These pages redirect away without a role (expert too, unless Plan 2): send to the new-role modal instead.
-  const needsRole = new Set(["personality", "interview", "references", ...(mentor ? [] : ["mentoring"])]);
+  // These pages redirect away without a role: send to the new-role modal instead (expert/pricing don't need one).
+  const needsRole = new Set(["personality", "interview", "references"]);
   return rows.map((r) => (needsRole.has(r.key) ? { ...r, action: { label: "Check a role first", href: "#check-role" } } : r));
 }

@@ -6,6 +6,9 @@ vi.mock("resend", () => ({ Resend: class { emails = { send: sendMock }; } } ));
 const renderTemplateMock = vi.fn();
 vi.mock("@/lib/emailTemplates", () => ({ renderTemplate: renderTemplateMock }));
 
+const getUserByIdMock = vi.fn();
+vi.mock("@/lib/supabase", () => ({ getSupabaseServerClient: () => ({ auth: { admin: { getUserById: getUserByIdMock } } }) }));
+
 const ORIGINAL_ENV = { ...process.env };
 
 describe("paymentEmails", () => {
@@ -15,6 +18,45 @@ describe("paymentEmails", () => {
     renderTemplateMock.mockReset();
     renderTemplateMock.mockResolvedValue({ subject: "rendered subject", bodyText: "rendered text", bodyHtml: "rendered html" });
     process.env = { ...ORIGINAL_ENV, RESEND_API_KEY: "re_test", CONTACT_FROM_EMAIL: "admin@merito.ai", CONTACT_TO_EMAIL: "shikha@merito.in" };
+  });
+
+  describe("sendPlanWelcomeEmail", () => {
+    beforeEach(() => {
+      getUserByIdMock.mockReset();
+      getUserByIdMock.mockResolvedValue({ data: { user: { email: "buyer@example.test" } }, error: null });
+    });
+
+    it("emails the buyer their plan's benefits (table wording), numbered steps and the step-1 link", async () => {
+      const { sendPlanWelcomeEmail } = await import("../paymentEmails");
+      await sendPlanWelcomeEmail("u1", "plan_mentor");
+      expect(getUserByIdMock).toHaveBeenCalledWith("u1");
+      const msg = sendMock.mock.calls[0][0];
+      expect(msg.to).toEqual(["buyer@example.test"]);
+      expect(msg.from).toBe("admin@merito.ai");
+      expect(msg.subject).toBe("Your Merito plan is active: Assess + Mentor + Apply");
+      expect(msg.text).toContain("CV analysis with detailed report (3 roles)");
+      expect(msg.text).toContain("1-hour mentoring session");
+      expect(msg.text).toContain("1. Check a role (CV report)");
+      expect(msg.text).toContain("5. Book mentoring (1 hour)");
+      expect(msg.text).toMatch(/Start with step 1: check a role\s*\S+\/hub\/account/);
+      expect(msg.html).toContain('/hub/account">Start with step 1: check a role</a>');
+    });
+
+    it("lists only Plan 1's benefits and steps for plan_prepare", async () => {
+      const { sendPlanWelcomeEmail } = await import("../paymentEmails");
+      await sendPlanWelcomeEmail("u1", "plan_prepare");
+      const msg = sendMock.mock.calls[0][0];
+      expect(msg.subject).toBe("Your Merito plan is active: Assess + Prepare");
+      expect(msg.text).not.toContain("mentoring");
+      expect(msg.text).toContain("5. Share consolidated profile");
+    });
+
+    it("sends nothing when the user has no email", async () => {
+      getUserByIdMock.mockResolvedValue({ data: { user: null }, error: null });
+      const { sendPlanWelcomeEmail } = await import("../paymentEmails");
+      await sendPlanWelcomeEmail("u1", "plan_prepare");
+      expect(sendMock).not.toHaveBeenCalled();
+    });
   });
 
   describe("sendPaymentFailedAlertEmail", () => {

@@ -406,6 +406,29 @@ describe("grantFreeAccess", () => {
     expect(applyPlanGrantsMock).not.toHaveBeenCalled();
   });
 
+  it("grants an upgrade to a Plan 1 holder: $0 upgrade txn, then upgrade grants", async () => {
+    const insertMock = stubTables({ id: "lead-1", user_id: "user-1", role_title: "Backend Engineer" });
+    getPlanOrderMock.mockResolvedValue({ orderId: "o1", product: "plan_prepare", interviewUsed: false });
+    const { grantFreeAccess } = await import("../adminPayments");
+
+    await grantFreeAccess({ email: "candidate@example.com", product: "plan_upgrade_mentor", level: "entry", reason: "seminar" }, "admin@merito.in");
+
+    expect(insertMock).toHaveBeenCalledWith(expect.objectContaining({ user_id: "user-1", product: "plan_upgrade_mentor", amount_paise: 0, status: "success" }));
+    const orderId = insertMock.mock.calls[0][0].order_id;
+    expect(applyPlanGrantsMock).toHaveBeenCalledWith("user-1", orderId, "plan_upgrade_mentor");
+  });
+
+  it("refuses an upgrade without an active Plan 1", async () => {
+    stubTables({ id: "lead-1", user_id: "user-1", role_title: "Backend Engineer" });
+    getPlanOrderMock.mockResolvedValue({ orderId: "o1", product: "plan_mentor", interviewUsed: false });
+    const { grantFreeAccess } = await import("../adminPayments");
+
+    await expect(
+      grantFreeAccess({ email: "candidate@example.com", product: "plan_upgrade_mentor", level: "entry", reason: "seminar" }, "admin@merito.in")
+    ).rejects.toThrow("Upgrade needs an active Plan 1");
+    expect(applyPlanGrantsMock).not.toHaveBeenCalled();
+  });
+
   it("throws when the email has no fitment lead and the product needs one", async () => {
     stubTables(null);
     const { grantFreeAccess } = await import("../adminPayments");

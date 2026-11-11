@@ -6,7 +6,7 @@ vi.mock("@/lib/supabase", () => ({ getSupabaseServerClient: () => ({ from: fromM
 // Chainable query: every filter returns the chain; awaiting / maybeSingle resolves `result`.
 function query(result: Record<string, unknown>) {
   const chain: Record<string, ReturnType<typeof vi.fn> | unknown> = {};
-  for (const m of ["select", "eq", "in", "order", "limit"]) chain[m] = vi.fn(() => chain);
+  for (const m of ["select", "eq", "in", "gte", "order", "limit"]) chain[m] = vi.fn(() => chain);
   chain.maybeSingle = vi.fn(() => Promise.resolve(result));
   chain.then = (resolve: (v: unknown) => unknown) => resolve(result);
   return chain as Record<string, ReturnType<typeof vi.fn>>;
@@ -15,7 +15,7 @@ function query(result: Record<string, unknown>) {
 const isEmailAllowlistedMock = vi.hoisted(() => vi.fn());
 vi.mock("@/lib/planAllowlist", () => ({ isEmailAllowlisted: isEmailAllowlistedMock }));
 
-import { isPlanProduct, getPlanOrder, planReportCreditsLeft, getPlanState } from "@/lib/plans";
+import { isPlanProduct, getPlanOrder, planReportCreditsLeft, getPlanState, PLAN_UPGRADE } from "@/lib/plans";
 import { PRODUCT_PRICING } from "@/lib/razorpay/pricing";
 
 describe("isPlanProduct", () => {
@@ -23,6 +23,8 @@ describe("isPlanProduct", () => {
     expect(isPlanProduct("plan_prepare")).toBe(true);
     expect(isPlanProduct("plan_mentor")).toBe(true);
     expect(isPlanProduct("bundle")).toBe(false);
+    // The upgrade is not a plan of its own: no interview/report/reference credit rides on it.
+    expect(isPlanProduct(PLAN_UPGRADE)).toBe(false);
     expect(isPlanProduct(undefined)).toBe(false);
   });
 });
@@ -31,6 +33,9 @@ describe("PRODUCT_PRICING", () => {
   it("prices plans flat at every level", () => {
     expect(PRODUCT_PRICING.plan_prepare).toEqual({ entry: 299600, mid: 299600, senior: 299600 });
     expect(PRODUCT_PRICING.plan_mentor).toEqual({ entry: 599500, mid: 599500, senior: 599500 });
+  });
+  it("prices the upgrade at the plan difference", () => {
+    expect(PRODUCT_PRICING.plan_upgrade_mentor).toEqual({ entry: 299900, mid: 299900, senior: 299900 });
   });
   it("leaves existing prices unchanged", () => {
     expect(PRODUCT_PRICING.report).toEqual({ entry: 29900, mid: 29900, senior: 29900 });
@@ -57,6 +62,31 @@ describe("getPlanOrder", () => {
     expect(fromMock).toHaveBeenCalledWith("razorpay_transactions");
     expect(q.eq).toHaveBeenCalledWith("status", "success");
     expect(q.in).toHaveBeenCalledWith("product", ["plan_prepare", "plan_mentor"]);
+  });
+
+  it("a paid upgrade on Plan 1 makes the effective plan Plan 2, keeping Plan 1's order (credits)", async () => {
+    const up = query({ data: { order_id: "up1" }, error: null });
+    fromMock
+      .mockReturnValueOnce(query({ data: { order_id: "o1", product: "plan_prepare", consumed_at: "2026-11-10T00:00:00Z", created_at: "2026-11-10T00:00:00Z" }, error: null }))
+      .mockReturnValueOnce(up);
+    expect(await getPlanOrder("u1")).toEqual({ orderId: "o1", product: "plan_mentor", interviewUsed: true, upgradeOrderId: "up1" });
+    expect(up.eq).toHaveBeenCalledWith("product", "plan_upgrade_mentor");
+    expect(up.eq).toHaveBeenCalledWith("status", "success");
+    expect(up.gte).toHaveBeenCalledWith("created_at", "2026-11-10T00:00:00Z");
+  });
+
+  it("stays Plan 1 without a paid upgrade", async () => {
+    fromMock
+      .mockReturnValueOnce(query({ data: { order_id: "o1", product: "plan_prepare", consumed_at: null, created_at: "2026-11-10T00:00:00Z" }, error: null }))
+      .mockReturnValueOnce(query({ data: null, error: null }));
+    expect(await getPlanOrder("u1")).toEqual({ orderId: "o1", product: "plan_prepare", interviewUsed: false });
+  });
+
+  it("fails closed (throws) when the upgrade lookup errors", async () => {
+    fromMock
+      .mockReturnValueOnce(query({ data: { order_id: "o1", product: "plan_prepare", consumed_at: null, created_at: "2026-11-10T00:00:00Z" }, error: null }))
+      .mockReturnValueOnce(query({ data: null, error: { message: "upgrade boom" } }));
+    await expect(getPlanOrder("u1")).rejects.toThrow("upgrade boom");
   });
 
   it("reports a consumed interview", async () => {
@@ -104,6 +134,7 @@ describe("getPlanState", () => {
     isEmailAllowlistedMock.mockResolvedValue(false);
     fromMock
       .mockReturnValueOnce(query({ data: { order_id: "o1", product: "plan_prepare", consumed_at: null }, error: null }))
+      .mockReturnValueOnce(query({ data: null, error: null }))
       .mockReturnValueOnce(query({ count: 1, error: null }));
     expect(await getPlanState("u1", "a@b.co")).toEqual({
       allowlisted: false,

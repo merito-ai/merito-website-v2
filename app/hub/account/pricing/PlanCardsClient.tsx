@@ -152,18 +152,20 @@ export default function PlanCardsClient({ plans, owned = null, embedded = false 
           <span className="sr-only"> about {plan.title}</span>
         </a>
       );
+    // The upgrade is its own product (lib/plans.ts PLAN_UPGRADE; that module is server-only).
+    const buy = c.kind === "upgrade" ? "plan_upgrade_mentor" : plan.product;
     return (
       <>
         <button
-          onClick={() => runCheckout(plan.product)}
+          onClick={() => runCheckout(buy)}
           disabled={paying !== null}
           className={`${base} text-white bg-[#ed1a24] hover:bg-[#c8151e] transition-colors disabled:opacity-60`}
           style={{ ...box, border: "none", cursor: paying ? "default" : "pointer" }}
         >
-          {paying === plan.product ? "Opening payment…" : "Choose this plan"}
-          {paying !== plan.product && <span className="sr-only">: {plan.title}, {plan.priceLabel}</span>}
+          {paying === buy ? "Opening payment…" : c.kind === "upgrade" ? `Upgrade for ${c.priceLabel}` : "Choose this plan"}
+          {paying !== buy && <span className="sr-only">: {plan.title}{c.kind === "upgrade" ? "" : `, ${plan.priceLabel}`}</span>}
         </button>
-        {error?.product === plan.product && (
+        {error?.product === buy && (
           <p role="alert" className="font-[family-name:var(--font-poppins)]" style={{ fontSize: 12.5, color: "#ed1a24", margin: "10px 0 0", textAlign: "center" }}>
             {error.message}
           </p>

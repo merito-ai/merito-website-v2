@@ -43,6 +43,12 @@ describe("applyPlanGrants", () => {
     expect(insertMock).toHaveBeenCalledWith({ user_id: "u1", order_id: "o1" });
   });
 
+  it("the upgrade records only the mentoring request, on the upgrade order (no re-grant of Plan 1 items)", async () => {
+    await applyPlanGrants("u1", "up1", "plan_upgrade_mentor");
+    expect(unlockProductMock).not.toHaveBeenCalled();
+    expect(insertMock).toHaveBeenCalledWith({ user_id: "u1", order_id: "up1" });
+  });
+
   it("does not insert a second mentoring request on retry", async () => {
     existingMock.mockResolvedValue({ data: { id: "c1" }, error: null });
     await applyPlanGrants("u1", "o1", "plan_mentor");

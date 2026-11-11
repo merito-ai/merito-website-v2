@@ -1,4 +1,4 @@
-import { PRODUCT_PRICING, PRODUCT_LABELS, formatPrice, type CandidateLevel } from "@/lib/razorpay/pricing";
+import { PRODUCT_PRICING, PRODUCT_LABELS, PLAN_UPGRADE_PRICE_LABEL, formatPrice, type CandidateLevel } from "@/lib/razorpay/pricing";
 import { MIN_REFERENCES } from "@/lib/referenceChecks";
 import type { PlanProduct, PlanState } from "@/lib/plans";
 import { CONTACT_HREF } from "@/lib/planPanel";
@@ -136,9 +136,10 @@ export function buildPlanCards(): PlanCard[] {
   });
 }
 
-export type PlanCta = { kind: "buy" } | { kind: "active" } | { kind: "contact"; href: string };
-// No upgrade/switch product exists, so a holder's other plan routes to support.
+export type PlanCta = { kind: "buy" } | { kind: "active" } | { kind: "upgrade"; priceLabel: string } | { kind: "contact"; href: string };
+// Plan 1 holders upgrade to Plan 2 for the difference; there is no downgrade, so Plan 2's other column routes to support.
 export function planCta(product: PlanProduct, owned: PlanProduct | null): PlanCta {
   if (!owned) return { kind: "buy" };
-  return product === owned ? { kind: "active" } : { kind: "contact", href: CONTACT_HREF };
+  if (product === owned) return { kind: "active" };
+  return owned === "plan_prepare" ? { kind: "upgrade", priceLabel: PLAN_UPGRADE_PRICE_LABEL } : { kind: "contact", href: CONTACT_HREF };
 }

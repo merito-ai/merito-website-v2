@@ -1,5 +1,5 @@
 export type CandidateLevel = "entry" | "mid" | "senior";
-export type RazorpayProduct = "report" | "personality" | "references" | "interview" | "counselling" | "bundle" | "plan_prepare" | "plan_mentor";
+export type RazorpayProduct = "report" | "personality" | "references" | "interview" | "counselling" | "bundle" | "plan_prepare" | "plan_mentor" | "plan_upgrade_mentor";
 
 export const DEFAULT_LEVEL: CandidateLevel = "entry";
 
@@ -16,6 +16,8 @@ export const PRODUCT_PRICING: Record<RazorpayProduct, Record<CandidateLevel, num
   // Hub plans (allowlisted users only) are flat — no level split.
   plan_prepare: { entry: 299600, mid: 299600, senior: 299600 },
   plan_mentor: { entry: 599500, mid: 599500, senior: 599500 },
+  // Plan 1 -> Plan 2: the ₹2,999 difference (5995 - 2996, rounded to the PM-approved ₹2,999).
+  plan_upgrade_mentor: { entry: 299900, mid: 299900, senior: 299900 },
 };
 
 export const PRODUCT_LABELS: Record<RazorpayProduct, string> = {
@@ -27,7 +29,10 @@ export const PRODUCT_LABELS: Record<RazorpayProduct, string> = {
   bundle: "Full Profile Bundle",
   plan_prepare: "Assess + Prepare",
   plan_mentor: "Assess + Mentor + Apply",
+  plan_upgrade_mentor: "Upgrade to Assess + Mentor + Apply",
 };
+
+export const PLAN_UPGRADE_PRICE_LABEL = `₹${(PRODUCT_PRICING.plan_upgrade_mentor.entry / 100).toLocaleString("en-IN")}`;
 
 export function formatPrice(paise: number): string {
   return `₹${Math.round(paise / 100)}`;

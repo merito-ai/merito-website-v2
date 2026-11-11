@@ -5,14 +5,14 @@ import { PRODUCT_PRICING, PRODUCT_LABELS, DEFAULT_LEVEL, type CandidateLevel, ty
 import { isProductUnlocked } from "@/lib/productUnlocks";
 import { REFERENCE_REFRESH_PRICE_PAISE, referenceRefreshNeedsPayment } from "@/lib/referenceCredits";
 import { isEmailAllowlisted } from "@/lib/planAllowlist";
-import { isPlanProduct, getPlanOrder } from "@/lib/plans";
+import { isPlanProduct, getPlanOrder, PLAN_UPGRADE } from "@/lib/plans";
 
 export const runtime = "nodejs";
 
 // "report" has its own dedicated route (app/api/hub/unlock-report) because
 // it's tied to a specific fitment_leads row (leadId) — this generic route
 // is for account-level products that aren't tied to any one lead.
-const INITIATABLE_PRODUCTS: RazorpayProduct[] = ["counselling", "personality", "references", "interview", "plan_prepare", "plan_mentor"];
+const INITIATABLE_PRODUCTS: RazorpayProduct[] = ["counselling", "personality", "references", "interview", "plan_prepare", "plan_mentor", PLAN_UPGRADE];
 
 function isInitiatableProduct(value: unknown): value is RazorpayProduct {
   return typeof value === "string" && (INITIATABLE_PRODUCTS as string[]).includes(value);
@@ -40,10 +40,10 @@ export async function POST(request: Request) {
   }
   const product = body.product;
 
-  if (isPlanProduct(product)) {
+  if (isPlanProduct(product) || product === PLAN_UPGRADE) {
     // Server-side gate (spec): hiding the plan in the UI is not enough. Fails closed on DB errors.
     let allowlisted: boolean;
-    let existingPlan: unknown;
+    let existingPlan: Awaited<ReturnType<typeof getPlanOrder>>;
     try {
       allowlisted = await isEmailAllowlisted(user.email);
       existingPlan = allowlisted ? await getPlanOrder(user.id) : null;
@@ -53,8 +53,12 @@ export async function POST(request: Request) {
     if (!allowlisted) {
       return Response.json({ error: "Plans aren't available on this account." }, { status: 403 });
     }
-    // No upgrade path (PM decision 2): Plan 1 holders buy mentoring individually.
-    if (existingPlan) {
+    // Upgrade (PM 2026-11-11) only lifts an active Plan 1; no downgrade, no second plan.
+    if (product === PLAN_UPGRADE) {
+      if (existingPlan?.product !== "plan_prepare") {
+        return Response.json({ error: existingPlan ? "You already have Plan 2." : "Upgrading needs an active Plan 1." }, { status: 409 });
+      }
+    } else if (existingPlan) {
       return Response.json({ error: "You already have a plan." }, { status: 409 });
     }
   }

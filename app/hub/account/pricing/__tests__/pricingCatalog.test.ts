@@ -43,9 +43,9 @@ describe("planCta", () => {
     expect(planCta("plan_mentor", null)).toEqual({ kind: "buy" });
   });
 
-  it("plan holder: own plan is active, the other is talk-to-us (no upgrade product)", () => {
+  it("plan holder: own plan is active; Plan 1 upgrades to Plan 2; no downgrade (talk to us)", () => {
     expect(planCta("plan_prepare", "plan_prepare")).toEqual({ kind: "active" });
-    expect(planCta("plan_mentor", "plan_prepare")).toEqual({ kind: "contact", href: "mailto:admin@merito.ai" });
+    expect(planCta("plan_mentor", "plan_prepare")).toEqual({ kind: "upgrade", priceLabel: "₹2,999" });
     expect(planCta("plan_mentor", "plan_mentor")).toEqual({ kind: "active" });
     expect(planCta("plan_prepare", "plan_mentor")).toEqual({ kind: "contact", href: "mailto:admin@merito.ai" });
   });

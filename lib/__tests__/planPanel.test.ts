@@ -8,7 +8,6 @@ const base: PlanPanelInput = {
   interview: "unused",
   references: "none",
   mentoring: null,
-  mentoringPriceLabel: "₹1999",
 };
 const row = (input: PlanPanelInput, key: string) => buildPlanPanelRows(input).find((r) => r.key === key)!;
 
@@ -44,9 +43,10 @@ describe("buildPlanPanelRows", () => {
     expect(row(base, "share")).toMatchObject({ label: "Share consolidated profile", action: { label: "View & share", href: "/hub/account/combined-report" } });
   });
 
-  it("Plan 1: mentoring + assistance not included, mentoring sold individually", () => {
-    expect(row(base, "mentoring")).toMatchObject({ included: false, action: { label: "Add a mentoring session — ₹1999", href: "/hub/account/expert" } });
-    expect(row(base, "assistance")).toMatchObject({ included: false, action: null });
+  it("Plan 1: mentoring + assistance not included, both offer the ₹2,999 upgrade", () => {
+    const upgrade = { label: "Upgrade to unlock for ₹2,999", href: "/hub/account/pricing" };
+    expect(row(base, "mentoring")).toMatchObject({ included: false, action: upgrade });
+    expect(row(base, "assistance")).toMatchObject({ included: false, action: upgrade });
   });
 
   it("Plan 2: mentoring book / scheduled / completed; assistance contact", () => {
@@ -57,11 +57,12 @@ describe("buildPlanPanelRows", () => {
     expect(row(p2, "assistance")).toMatchObject({ included: true, action: { href: "mailto:admin@merito.ai" } });
   });
 
-  it("no role yet: role-bound rows point to check-a-role; Plan 2 mentoring + share keep their pages", () => {
+  it("no role yet: role-bound rows point to check-a-role; mentoring/upgrade + share keep their pages", () => {
     const noRole = { ...base, hasRole: false };
-    for (const k of ["reports", "personality", "interview", "references", "mentoring"]) {
+    for (const k of ["reports", "personality", "interview", "references"]) {
       expect(row(noRole, k).action!.href).toBe("#check-role");
     }
+    expect(row(noRole, "mentoring").action!.href).toBe("/hub/account/pricing");
     expect(row({ ...noRole, product: "plan_mentor" }, "mentoring").action!.href).toBe("/hub/account/expert");
     expect(row(noRole, "share").action!.href).toBe("/hub/account/combined-report");
     expect(row(base, "interview").action!.href).toBe("/hub/account/interview");

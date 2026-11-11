@@ -4,8 +4,9 @@ import { unlockProduct, revokeProduct } from "@/lib/productUnlocks";
 import { nextCounsellingState, updateCounsellingStatus, type CounsellingStatus } from "@/lib/adminCounselling";
 import type { RazorpayProduct } from "@/lib/razorpay/pricing";
 import { countReferenceCredits } from "@/lib/referenceCredits";
-import { isPlanProduct, PLAN_PRODUCTS } from "@/lib/plans";
+import { isPlanProduct, PLAN_PRODUCTS, PLAN_UPGRADE } from "@/lib/plans";
 import { applyPlanGrants } from "@/lib/planGrants";
+import { sendPlanWelcomeEmail } from "@/lib/paymentEmails";
 
 async function getRoleTitleForLead(
   supabase: ReturnType<typeof getSupabaseServerClient>,
@@ -109,13 +110,21 @@ export async function finalizeRazorpayOrder(
       }
       await unlockProduct(txn.user_id, "personality");
       await unlockProduct(txn.user_id, "references");
-    } else if (isPlanProduct(product)) {
+    } else if (isPlanProduct(product) || product === PLAN_UPGRADE) {
       await applyPlanGrants(txn.user_id, orderId, product);
     }
-    await supabase
+    // Compare-and-set: when verify and webhook race, only the path that actually flips the row sends the email.
+    const { data: flipped } = await supabase
       .from("razorpay_transactions")
       .update({ status: "success", payment_id: paymentId })
-      .eq("order_id", orderId);
+      .eq("order_id", orderId)
+      .neq("status", "success")
+      .select("order_id");
+    if (flipped?.length && (isPlanProduct(product) || product === PLAN_UPGRADE)) {
+      await sendPlanWelcomeEmail(txn.user_id, product === PLAN_UPGRADE ? "plan_mentor" : product).catch((err) =>
+        console.error("finalize: plan welcome email failed", { orderId, err })
+      );
+    }
   }
 
   return { ok: true, product, userId: txn.user_id, leadId: txn.lead_id };
@@ -213,12 +222,30 @@ export async function markRazorpayRefunded(orderId: string): Promise<MarkRefunde
     await revokePersonalityUnlessOtherwisePaid(txn.user_id, orderId);
     await revokeReferencesUnlessOtherwisePaid(txn.user_id, orderId);
     await revokeCounsellingForOrder(supabase, orderId);
+    if (txn.product === "plan_prepare") await flagOrphanedUpgrade(txn.user_id, orderId);
+  } else if (txn.product === PLAN_UPGRADE) {
+    // Only Plan 2's extras; the effective plan reverts to Plan 1 because getPlanOrder ignores non-success upgrades.
+    await revokeCounsellingForOrder(supabase, orderId);
   }
   // "interview" (and a plan's interview credit): no separate table for its grant -- the status flip below,
   // which start-ai-interview checks via `status='success'`, is the entire revocation.
 
   await supabase.from("razorpay_transactions").update({ status: "refunded" }).eq("order_id", orderId);
   return { ok: true, alreadyProcessed: false };
+}
+
+// Plan 1 refunded while its upgrade stays paid: the upgrade no longer confers a plan (getPlanOrder needs a
+// live base) but its mentoring request is kept — the user paid for it. Not auto-refunded; ops decides.
+async function flagOrphanedUpgrade(userId: string, refundedOrderId: string): Promise<void> {
+  const { count } = await getSupabaseServerClient()
+    .from("razorpay_transactions")
+    .select("order_id", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .eq("status", "success")
+    .eq("product", PLAN_UPGRADE);
+  if ((count ?? 0) > 0) {
+    console.error("refund: Plan 1 refunded while its paid plan upgrade remains; refund the upgrade too if intended", { userId, refundedOrderId });
+  }
 }
 
 // A loyalty refresh is a second "references" payment: refunding it (or a

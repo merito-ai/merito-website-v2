@@ -26,6 +26,11 @@ describe("SCHEMA_CONTRACT", () => {
     }
   });
 
+  it("checks product_type has the upgrade value (migration 0071)", () => {
+    const check = SCHEMA_CONTRACT.find((c) => c.name === "enum product_type has plan_upgrade_mentor");
+    expect(check?.sql).toContain("'plan_upgrade_mentor'");
+  });
+
   it("checks product_type has the plan values (migration 0069)", () => {
     const check = SCHEMA_CONTRACT.find((c) => c.name === "enum product_type has plan_prepare, plan_mentor");
     expect(check?.sql).toMatch(/pg_enum/);

@@ -5,7 +5,7 @@ import { enforceAdminRateLimit, RateLimitExceededError } from "@/lib/adminRateLi
 
 const PostSchema = z.object({
   email: z.string().email(),
-  product: z.enum(["report", "personality", "references", "interview", "counselling", "bundle", "plan_prepare", "plan_mentor"]),
+  product: z.enum(["report", "personality", "references", "interview", "counselling", "bundle", "plan_prepare", "plan_mentor", "plan_upgrade_mentor"]),
   level: z.enum(["entry", "mid", "senior"]),
   reason: z.string().min(1),
 });

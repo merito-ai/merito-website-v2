@@ -119,3 +119,17 @@ Pricing: `app/hub/account/pricing/pricingCatalog.ts`, `BundlePromoCard.tsx`, `Pr
 - In-app application-assistance workflow (request form + admin queue).
 - Allowlist expiry / per-seminar batches.
 - Expert validation of culture items and org-type mapping.
+
+## Upgrade (2026-11-11)
+
+PM decision (user-approved): Plan 1 holders can self-serve upgrade to Plan 2 for ₹2,999 (the difference). No downgrade.
+
+- Product `plan_upgrade_mentor` (migration 0071), flat ₹2,999. Not a plan of its own (`isPlanProduct` false): it carries no interview, report or reference credit.
+- Initiate: allowlisted AND effective plan is `plan_prepare`, else 403 (not allowlisted) / 409 (no plan, or already Plan 2). Fails closed (500) on lookup errors.
+- Effective plan: `getPlanOrder` returns `plan_mentor` when a successful upgrade was paid at or after the live Plan 1 order. `orderId` stays the Plan 1 order (report credits, interview credit unchanged); `upgradeOrderId` holds the mentoring request. Everything keyed on the effective plan (table, panel, expert page, assistance row) follows.
+- Finalize grants only the extras: a `counselling_requests` row on the upgrade order. Application assistance is derived from the effective plan. Idempotent like other plan grants.
+- Refund of the upgrade: cancels its mentoring request (if not yet completed); effective plan reverts to Plan 1.
+- Refund of Plan 1 while the upgrade is still paid: Plan 1 grants are reversed as usual and the user has no plan (an upgrade needs a live base). The upgrade's mentoring request is kept (paid separately) and a `console.error` asks ops to refund the upgrade too if intended. Nothing is auto-refunded.
+- Admin grant accepts `plan_upgrade_mentor` (needs an active Plan 1); admin payments label "Plan upgrade".
+- UI: Plan 1 holder sees "Upgrade for ₹2,999" in the Plan 2 column; dashboard panel Plan-2-only rows say "Upgrade to unlock for ₹2,999" (links to pricing). GTM event `plan_upgrade_purchase`.
+- Welcome email ("Your Merito plan is active: <plan>") on every plan purchase and upgrade: table-wording benefits, numbered steps, "Start with step 1: check a role" link. Sent once per order (compare-and-set on the success flip, so verify/webhook races send one); send failures never fail finalize.

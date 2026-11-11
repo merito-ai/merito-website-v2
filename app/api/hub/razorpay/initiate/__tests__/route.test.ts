@@ -229,6 +229,45 @@ describe("POST /api/hub/razorpay/initiate", () => {
       expect(createOrderMock).not.toHaveBeenCalled();
     });
 
+    describe("upgrade", () => {
+      it("charges a Plan 1 holder the ₹2,999 difference", async () => {
+        getPlanOrderMock.mockResolvedValue({ orderId: "o1", product: "plan_prepare", interviewUsed: true });
+        const { POST } = await importRoute();
+        const response = await POST(buildRequest({ product: "plan_upgrade_mentor" }));
+        expect(response.status).toBe(200);
+        expect((await response.json()).amountPaise).toBe(299900);
+        expect(insertMock).toHaveBeenCalledWith(expect.objectContaining({ product: "plan_upgrade_mentor", amount_paise: 299900 }));
+      });
+
+      it("refuses a non-allowlisted user", async () => {
+        isEmailAllowlistedMock.mockResolvedValue(false);
+        getPlanOrderMock.mockResolvedValue({ orderId: "o1", product: "plan_prepare", interviewUsed: false });
+        const { POST } = await importRoute();
+        expect((await POST(buildRequest({ product: "plan_upgrade_mentor" }))).status).toBe(403);
+        expect(createOrderMock).not.toHaveBeenCalled();
+      });
+
+      it("refuses without a plan (nothing to upgrade)", async () => {
+        const { POST } = await importRoute();
+        expect((await POST(buildRequest({ product: "plan_upgrade_mentor" }))).status).toBe(409);
+        expect(createOrderMock).not.toHaveBeenCalled();
+      });
+
+      it("refuses a Plan 2 holder (already upgraded or bought Plan 2)", async () => {
+        getPlanOrderMock.mockResolvedValue({ orderId: "o1", product: "plan_mentor", interviewUsed: false, upgradeOrderId: "up1" });
+        const { POST } = await importRoute();
+        expect((await POST(buildRequest({ product: "plan_upgrade_mentor" }))).status).toBe(409);
+        expect(createOrderMock).not.toHaveBeenCalled();
+      });
+
+      it("fails closed when the plan lookup errors", async () => {
+        getPlanOrderMock.mockRejectedValue(new Error("boom"));
+        const { POST } = await importRoute();
+        expect((await POST(buildRequest({ product: "plan_upgrade_mentor" }))).status).toBe(500);
+        expect(createOrderMock).not.toHaveBeenCalled();
+      });
+    });
+
     it("never checks the allowlist for individual products", async () => {
       const { POST } = await importRoute();
       await POST(buildRequest({ product: "personality" }));

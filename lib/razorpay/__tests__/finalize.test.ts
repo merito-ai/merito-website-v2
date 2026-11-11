@@ -27,6 +27,13 @@ vi.mock("@/lib/adminCounselling", () => ({
 const applyPlanGrantsMock = vi.fn();
 vi.mock("@/lib/planGrants", () => ({ applyPlanGrants: applyPlanGrantsMock }));
 
+const sendPlanWelcomeEmailMock = vi.fn();
+vi.mock("@/lib/paymentEmails", () => ({ sendPlanWelcomeEmail: sendPlanWelcomeEmailMock }));
+
+// Success flip is a compare-and-set: .eq(order).neq(status, success).select() -> rows actually flipped.
+let flippedRows: unknown[] = [{ order_id: "order_1" }];
+const casTail = () => ({ neq: () => ({ select: () => Promise.resolve({ data: flippedRows, error: null }) }) });
+
 const txnSelectMock = vi.fn();
 const txnEqMock = vi.fn();
 const txnMaybeSingleMock = vi.fn();
@@ -54,7 +61,7 @@ describe("finalizeRazorpayOrder", () => {
     txnMaybeSingleMock.mockReset();
     updateMock.mockReset();
     updateEqMock.mockReset();
-    updateEqMock.mockResolvedValue({ error: null });
+    updateEqMock.mockImplementation(casTail);
     updateMock.mockReturnValue({ eq: updateEqMock });
     insertMock.mockReset();
     insertMock.mockResolvedValue({ error: null });
@@ -633,8 +640,12 @@ describe("plan orders", () => {
     nextCounsellingStateMock.mockReturnValue({ status: "cancelled" });
     updateMock.mockReset();
     updateEqMock.mockReset();
-    updateEqMock.mockResolvedValue({ error: null });
+    // CAS chain for the success flip; also awaitable for the refunded flip.
+    updateEqMock.mockImplementation(() => ({ ...casTail(), then: (r: (v: unknown) => unknown) => r({ error: null }) }));
     updateMock.mockReturnValue({ eq: updateEqMock });
+    flippedRows = [{ order_id: "order_p" }];
+    sendPlanWelcomeEmailMock.mockReset();
+    sendPlanWelcomeEmailMock.mockResolvedValue(undefined);
     otherPersonalityCount = 0;
     unlocksQuery = chain({ error: null });
     counsellingQuery = chain({ data: { id: "c1", status: "requested" }, error: null });
@@ -662,6 +673,70 @@ describe("plan orders", () => {
     expect(applyPlanGrantsMock).toHaveBeenCalledWith("user-1", "order_p", "plan_mentor");
     expect(unlockReportMock).not.toHaveBeenCalled();
     expect(updateMock).toHaveBeenCalledWith({ status: "success", payment_id: "pay_1" });
+  });
+
+  it("emails the buyer once, for the plan bought", async () => {
+    txnRow = { user_id: "user-1", product: "plan_prepare", lead_id: null, status: "initiated" };
+    const { finalizeRazorpayOrder } = await import("../finalize");
+    await finalizeRazorpayOrder("order_p", "pay_1");
+    expect(sendPlanWelcomeEmailMock).toHaveBeenCalledTimes(1);
+    expect(sendPlanWelcomeEmailMock).toHaveBeenCalledWith("user-1", "plan_prepare");
+  });
+
+  it("does not email when another finalize path already flipped the order (verify/webhook race)", async () => {
+    txnRow = { user_id: "user-1", product: "plan_mentor", lead_id: null, status: "initiated" };
+    flippedRows = [];
+    const { finalizeRazorpayOrder } = await import("../finalize");
+    const result = await finalizeRazorpayOrder("order_p", "pay_1");
+    expect(result.ok).toBe(true);
+    expect(sendPlanWelcomeEmailMock).not.toHaveBeenCalled();
+  });
+
+  it("does not email on a replay of an already-successful order", async () => {
+    txnRow = { user_id: "user-1", product: "plan_mentor", lead_id: null, status: "success" };
+    const { finalizeRazorpayOrder } = await import("../finalize");
+    await finalizeRazorpayOrder("order_p", "pay_1");
+    expect(sendPlanWelcomeEmailMock).not.toHaveBeenCalled();
+  });
+
+  it("a failed welcome email never fails finalize", async () => {
+    txnRow = { user_id: "user-1", product: "plan_mentor", lead_id: null, status: "initiated" };
+    sendPlanWelcomeEmailMock.mockRejectedValue(new Error("resend down"));
+    const { finalizeRazorpayOrder } = await import("../finalize");
+    expect((await finalizeRazorpayOrder("order_p", "pay_1")).ok).toBe(true);
+  });
+
+  it("upgrade: grants Plan 2 extras on the upgrade order and emails the Plan 2 welcome", async () => {
+    txnRow = { user_id: "user-1", product: "plan_upgrade_mentor", lead_id: null, status: "initiated" };
+    const { finalizeRazorpayOrder } = await import("../finalize");
+    const result = await finalizeRazorpayOrder("order_p", "pay_1");
+    expect(result).toEqual({ ok: true, product: "plan_upgrade_mentor", userId: "user-1", leadId: null });
+    expect(applyPlanGrantsMock).toHaveBeenCalledWith("user-1", "order_p", "plan_upgrade_mentor");
+    expect(sendPlanWelcomeEmailMock).toHaveBeenCalledWith("user-1", "plan_mentor");
+  });
+
+  it("upgrade refund reverses only the mentoring request (Plan 1 items untouched)", async () => {
+    txnRow = { status: "success", product: "plan_upgrade_mentor", user_id: "user-1", lead_id: null };
+    const { markRazorpayRefunded } = await import("../finalize");
+    expect(await markRazorpayRefunded("order_p")).toEqual({ ok: true, alreadyProcessed: false });
+    expect(counsellingQuery.eq).toHaveBeenCalledWith("order_id", "order_p");
+    expect(updateCounsellingStatusMock).toHaveBeenCalledWith("c1", { status: "cancelled" });
+    expect(unlocksQuery.delete).not.toHaveBeenCalled();
+    expect(revokeProductMock).not.toHaveBeenCalled();
+    expect(updateMock).toHaveBeenCalledWith({ status: "refunded" });
+  });
+
+  it("Plan 1 refund with a paid upgrade: revokes Plan 1 as usual and flags the orphan upgrade for ops", async () => {
+    txnRow = { status: "success", product: "plan_prepare", user_id: "user-1", lead_id: null };
+    otherPersonalityCount = 1; // the count query also answers the orphan-upgrade lookup
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const { markRazorpayRefunded } = await import("../finalize");
+    await markRazorpayRefunded("order_p");
+    expect(unlocksQuery.delete).toHaveBeenCalled();
+    expect(countQuery.eq).toHaveBeenCalledWith("product", "plan_upgrade_mentor");
+    expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining("upgrade"), expect.anything());
+    expect(updateMock).toHaveBeenCalledWith({ status: "refunded" });
+    errorSpy.mockRestore();
   });
 
   it("leaves the txn initiated when plan grants throw (retry is real)", async () => {

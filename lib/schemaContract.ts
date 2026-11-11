@@ -155,6 +155,11 @@ export const SCHEMA_CONTRACT: ReadonlyArray<ContractCheck> = [
     ["plan_prepare", "plan_mentor"],
     "getPlanOrder filters product IN (plan_*); without these enum values that query errors and breaks unlock-report, start-ai-interview, referenceCredits, refunds for every user (migration 0069)",
   ),
+  enumHasValues(
+    "product_type",
+    ["plan_upgrade_mentor"],
+    "initiate inserts and getPlanOrder filters product = plan_upgrade_mentor; without it every Plan 1 holder's plan lookup errors (migration 0071)",
+  ),
   columnExists("report_unlocks", "order_id", "plan report credits count report_unlocks.order_id (migration 0069)"),
   functionExists("merge_candidate_accounts", 2, 'adminCandidates.rpc("merge_candidate_accounts") on the account-merge path'),
   functionExists("purge_candidate_data", 1, 'purgeCandidates.rpc("purge_candidate_data") on the candidate-purge cron'),

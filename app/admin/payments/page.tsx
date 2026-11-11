@@ -22,6 +22,7 @@ const PRODUCT_LABEL: Record<string, string> = {
   bundle: "Bundle",
   plan_prepare: "Plan: Assess + Prepare",
   plan_mentor: "Plan: Assess + Mentor + Apply",
+  plan_upgrade_mentor: "Plan upgrade",
 };
 
 const UNPAID_KIND_LABEL: Record<string, string> = {

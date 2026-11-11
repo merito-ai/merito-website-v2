@@ -6,7 +6,7 @@ import { markRazorpayRefunded } from "@/lib/razorpay/finalize";
 import { unlockProduct, isProductUnlocked } from "@/lib/productUnlocks";
 import { completeReportUnlock } from "@/lib/completeReportUnlock";
 import type { RazorpayProduct, CandidateLevel } from "@/lib/razorpay/pricing";
-import { isPlanProduct, getPlanOrder } from "@/lib/plans";
+import { isPlanProduct, getPlanOrder, PLAN_UPGRADE } from "@/lib/plans";
 import { applyPlanGrants } from "@/lib/planGrants";
 
 export type TransactionStatus = "initiated" | "success" | "failed" | "refunded";
@@ -343,6 +343,9 @@ export async function grantFreeAccess(
   if (isPlanProduct(params.product) && (await getPlanOrder(userId))) {
     throw new Error("Candidate already has a plan.");
   }
+  if (params.product === PLAN_UPGRADE && (await getPlanOrder(userId))?.product !== "plan_prepare") {
+    throw new Error("Upgrade needs an active Plan 1 (and no Plan 2).");
+  }
 
   // interview / plan: the unconsumed $0 row is the interview credit.
   const consumedAt = params.product === "interview" || isPlanProduct(params.product) ? null : new Date().toISOString();
@@ -377,7 +380,7 @@ export async function grantFreeAccess(
     await unlockProduct(userId, "references");
   } else if (params.product === "counselling") {
     await supabase.from("counselling_requests").insert({ user_id: userId, order_id: orderId });
-  } else if (isPlanProduct(params.product)) {
+  } else if (isPlanProduct(params.product) || params.product === PLAN_UPGRADE) {
     await applyPlanGrants(userId, orderId, params.product);
   }
   // "interview": the $0 success/unconsumed row inserted above is itself the credit.

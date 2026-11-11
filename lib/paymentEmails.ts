@@ -1,5 +1,11 @@
 import { Resend } from "resend";
 import { renderTemplate } from "@/lib/emailTemplates";
+import { getSupabaseServerClient } from "@/lib/supabase";
+import { PRODUCT_LABELS } from "@/lib/razorpay/pricing";
+import { buildPlanPanelRows } from "@/lib/planPanel";
+import { buildPlanCards } from "@/app/hub/account/pricing/pricingCatalog";
+import { getAbsoluteUrl } from "@/lib/site";
+import type { PlanProduct } from "@/lib/plans";
 
 type PaymentFailedAlertParams = {
   orderId: string;
@@ -31,9 +37,41 @@ function getOpsEmail(): string {
   return toEmail;
 }
 
-// Candidate-facing payment emails are deliberately not sent from here —
-// Razorpay's own checkout already sends the payer a receipt/failure email;
-// a second, Merito-branded one for the same event would be redundant.
+// Candidate-facing receipt/failure emails are deliberately not sent from here —
+// Razorpay's own checkout already sends the payer one. The plan welcome below is
+// onboarding (what you got + where to start), not a receipt.
+
+// Plan bought or upgraded (product = the effective plan). Benefits use the comparison-table
+// wording, steps the dashboard panel's. Caller sends once per order and swallows failures.
+export async function sendPlanWelcomeEmail(userId: string, product: PlanProduct): Promise<void> {
+  const { data } = await getSupabaseServerClient().auth.admin.getUserById(userId);
+  const to = data?.user?.email;
+  if (!to) return;
+  const name = PRODUCT_LABELS[product];
+  const benefits = buildPlanCards().find((c) => c.product === product)!.lines.filter((l) => l.included).map((l) => l.label);
+  const steps = buildPlanPanelRows({ product, reportCreditsLeft: 3, personality: "none", interview: "unused", references: "none", mentoring: null })
+    .filter((r) => r.included)
+    .map((r) => r.label);
+  const url = getAbsoluteUrl("/hub/account");
+  const text = [
+    `Your Merito plan "${name}" is active.`,
+    "",
+    "What's included:",
+    ...benefits.map((b) => `- ${b}`),
+    "",
+    "Your steps:",
+    ...steps.map((st, i) => `${i + 1}. ${st}`),
+    "",
+    `Start with step 1: check a role\n${url}`,
+  ].join("\n");
+  const html =
+    `<p>Your Merito plan <strong>${name}</strong> is active.</p>` +
+    `<p><strong>What's included:</strong></p><ul>${benefits.map((b) => `<li>${b}</li>`).join("")}</ul>` +
+    `<p><strong>Your steps:</strong></p><ol>${steps.map((st) => `<li>${st}</li>`).join("")}</ol>` +
+    `<p><a href="${url}">Start with step 1: check a role</a></p>`;
+
+  await getResendClient().emails.send({ from: getFromEmail(), to: [to], subject: `Your Merito plan is active: ${name}`, text, html });
+}
 export async function sendPaymentFailedAlertEmail(params: PaymentFailedAlertParams): Promise<void> {
   const resend = getResendClient();
   const rupees = (params.amountPaise / 100).toFixed(2);
