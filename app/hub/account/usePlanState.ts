@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { PlanState } from "@/lib/plans";
+import type { PlanState as BasePlanState } from "@/lib/plans";
+
+// interviewCredits: unused paid or plan interviews (lib/interviewCredits), added by /api/hub/plan-state.
+export type PlanState = BasePlanState & { interviewCredits?: number };
 
 // state === null (error / signed out) means "normal user": callers show today's pricing.
 export function usePlanState(): { loading: boolean; state: PlanState | null } {
@@ -35,8 +38,15 @@ export function hasUnusedPlanInterview(state: PlanState | null): boolean {
   return Boolean(state?.plan && !state.plan.interviewUsed);
 }
 
+// Any unused interview credit (a paid interview or a plan's). Never take payment while one exists.
+export function hasUnusedInterviewCredit(state: PlanState | null): boolean {
+  return hasUnusedPlanInterview(state) || (state?.interviewCredits ?? 0) > 0;
+}
+
 // Locked-card price slot for plan users; null = show the normal price (normal user, or plan extras like a 4th report).
 export function planCardLabel(state: PlanState | null, product: "report" | "interview" | "personality" | "references"): string | null {
+  // A paid interview credit wins over plan-only gating: it is already paid for.
+  if (product === "interview" && !hasUnusedPlanInterview(state) && (state?.interviewCredits ?? 0) > 0) return "Paid, ready to start";
   if (isPlanOnly(state)) return "Available with a plan";
   if (state?.plan && (product === "personality" || product === "references")) return "Included in your plan";
   const reports = freePlanReports(state, product);

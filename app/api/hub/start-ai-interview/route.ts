@@ -5,7 +5,8 @@ import { createInterviewAgent, type CandidateLevel } from "@/lib/intervuebox/age
 import { sendInterviewInvitation } from "@/lib/intervuebox/invitations";
 import { recordPipelineFailure } from "@/lib/pipelineFailures";
 import { arePaymentsBypassed } from "@/lib/paymentsBypass";
-import { isPlanProduct, PLAN_PRODUCTS, PLAN_INTERVIEW_MINUTES } from "@/lib/plans";
+import { isPlanProduct, PLAN_INTERVIEW_MINUTES } from "@/lib/plans";
+import { findOldestUnusedInterviewCredit } from "@/lib/interviewCredits";
 
 export const runtime = "nodejs";
 
@@ -99,16 +100,13 @@ export async function POST(request: Request) {
   // A plan's interview credit is always 45 min (spec); undefined keeps the level default.
   let planMinutes: typeof PLAN_INTERVIEW_MINUTES | undefined;
   if (!arePaymentsBypassed()) {
-    const { data: credit } = await admin
-      .from("razorpay_transactions")
-      .select("order_id, product")
-      .eq("user_id", user.id)
-      .in("product", ["interview", ...PLAN_PRODUCTS])
-      .eq("status", "success")
-      .is("consumed_at", null)
-      .order("created_at", { ascending: true })
-      .limit(1)
-      .maybeSingle();
+    let credit: Awaited<ReturnType<typeof findOldestUnusedInterviewCredit>>;
+    try {
+      credit = await findOldestUnusedInterviewCredit(user.id);
+    } catch (error) {
+      console.error("start-ai-interview: credit lookup failed", { leadId, error });
+      return Response.json({ error: "Something went wrong starting your AI interview. Please try again." }, { status: 500 });
+    }
 
     if (!credit) {
       return Response.json(
@@ -117,12 +115,12 @@ export async function POST(request: Request) {
       );
     }
 
-    consumedOrderId = credit.order_id;
+    consumedOrderId = credit.orderId;
     planMinutes = isPlanProduct(credit.product) ? PLAN_INTERVIEW_MINUTES : undefined;
     await admin
       .from("razorpay_transactions")
       .update({ consumed_at: new Date().toISOString() })
-      .eq("order_id", credit.order_id);
+      .eq("order_id", credit.orderId);
   }
 
   const { data: lead, error: leadError } = await supabase

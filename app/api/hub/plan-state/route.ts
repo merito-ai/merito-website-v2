@@ -1,5 +1,6 @@
 import { createSupabaseServerClient } from "@/lib/supabaseAuthServer";
 import { getPlanState } from "@/lib/plans";
+import { countUnusedInterviewCredits } from "@/lib/interviewCredits";
 
 export const runtime = "nodejs";
 
@@ -13,5 +14,6 @@ export async function GET() {
     return Response.json({ error: "Not signed in." }, { status: 401 });
   }
 
-  return Response.json(await getPlanState(user.id, user.email));
+  const [state, interviewCredits] = await Promise.all([getPlanState(user.id, user.email), countUnusedInterviewCredits(user.id)]);
+  return Response.json({ ...state, interviewCredits });
 }

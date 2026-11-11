@@ -6,6 +6,7 @@ import { isProductUnlocked } from "@/lib/productUnlocks";
 import { referenceRefreshNeedsPayment } from "@/lib/referenceCredits";
 import { isEmailAllowlisted } from "@/lib/planAllowlist";
 import { isPlanProduct, getPlanOrder, PLAN_UPGRADE } from "@/lib/plans";
+import { countUnusedInterviewCredits } from "@/lib/interviewCredits";
 
 export const runtime = "nodejs";
 
@@ -60,6 +61,23 @@ export async function POST(request: Request) {
       }
     } else if (existingPlan) {
       return Response.json({ error: "You already have a plan." }, { status: 409 });
+    }
+  }
+
+  // A paid or plan interview not yet started is a credit; a second order would
+  // just pile up unused (audit T1). Fails closed on DB errors.
+  if (product === "interview") {
+    let credits: number;
+    try {
+      credits = await countUnusedInterviewCredits(user.id);
+    } catch {
+      return Response.json({ error: "Something went wrong starting payment." }, { status: 500 });
+    }
+    if (credits > 0) {
+      return Response.json(
+        { error: "You already have an interview credit. Start your interview instead of paying again.", code: "interview_credit_unused" },
+        { status: 409 }
+      );
     }
   }
 

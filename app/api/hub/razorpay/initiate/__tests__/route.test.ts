@@ -36,6 +36,9 @@ vi.mock("@/lib/plans", async () => {
   return { ...actual, getPlanOrder: getPlanOrderMock };
 });
 
+const countUnusedInterviewCreditsMock = vi.fn();
+vi.mock("@/lib/interviewCredits", () => ({ countUnusedInterviewCredits: countUnusedInterviewCreditsMock }));
+
 const insertMock = vi.fn();
 const adminFromMock = vi.fn().mockReturnValue({ insert: insertMock });
 vi.mock("@/lib/supabase", () => ({
@@ -67,6 +70,38 @@ describe("POST /api/hub/razorpay/initiate", () => {
     isEmailAllowlistedMock.mockResolvedValue(true);
     getPlanOrderMock.mockReset();
     getPlanOrderMock.mockResolvedValue(null);
+    countUnusedInterviewCreditsMock.mockReset();
+    countUnusedInterviewCreditsMock.mockResolvedValue(0);
+  });
+
+  it("refuses a new interview order while an unused interview credit exists", async () => {
+    getUserMock.mockResolvedValue({ data: { user: { id: "user-1", email: "rushi@example.com" } } });
+    countUnusedInterviewCreditsMock.mockResolvedValue(1);
+    const { POST } = await importRoute();
+    const response = await POST(buildRequest({ product: "interview" }));
+    expect(response.status).toBe(409);
+    expect((await response.json()).code).toBe("interview_credit_unused");
+    expect(countUnusedInterviewCreditsMock).toHaveBeenCalledWith("user-1");
+    expect(createOrderMock).not.toHaveBeenCalled();
+    expect(insertMock).not.toHaveBeenCalled();
+  });
+
+  it("fails closed when the interview credit check errors", async () => {
+    getUserMock.mockResolvedValue({ data: { user: { id: "user-1", email: "rushi@example.com" } } });
+    countUnusedInterviewCreditsMock.mockRejectedValue(new Error("db down"));
+    const { POST } = await importRoute();
+    const response = await POST(buildRequest({ product: "interview" }));
+    expect(response.status).toBe(500);
+    expect(createOrderMock).not.toHaveBeenCalled();
+  });
+
+  it("does not check interview credits for other products", async () => {
+    getUserMock.mockResolvedValue({ data: { user: { id: "user-1", email: "rushi@example.com" } } });
+    countUnusedInterviewCreditsMock.mockResolvedValue(3);
+    const { POST } = await importRoute();
+    const response = await POST(buildRequest({ product: "counselling" }));
+    expect(response.status).toBe(200);
+    expect(countUnusedInterviewCreditsMock).not.toHaveBeenCalled();
   });
 
   it("returns 401 when there is no session", async () => {

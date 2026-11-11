@@ -5,7 +5,7 @@ import type { InterviewStatus } from "./ProgressRail";
 import { PRODUCT_PRICING, formatPrice, type CandidateLevel } from "@/lib/razorpay/pricing";
 import { trackPurchase } from "@/lib/analytics";
 import { fetchWithTimeout, networkErrorMessage } from "@/lib/hub/fetchWithTimeout";
-import { usePlanState, isPlanOnly, hasUnusedPlanInterview } from "./usePlanState";
+import { usePlanState, isPlanOnly, hasUnusedPlanInterview, hasUnusedInterviewCredit } from "./usePlanState";
 import PlanOnlyNotice from "./PlanOnlyNotice";
 
 type RazorpayHandlerResponse = {
@@ -225,7 +225,13 @@ export default function InterviewPaywallModal({
               {`You'll be able to launch your AI interview for ${roleTitle} right from your dashboard, whenever you're ready.`}
             </p>
 
-            {hasUnusedPlanInterview(planState) ? (
+            {hasUnusedInterviewCredit(planState) ? (
+              <>
+                {!hasUnusedPlanInterview(planState) && (
+                  <p className="font-[family-name:var(--font-poppins)] text-black" style={{ fontSize: 13.5, fontWeight: 600, margin: "0 0 12px" }}>
+                    You have 1 interview credit: start now
+                  </p>
+                )}
               <button
                 onClick={() => {
                   setPaying(true);
@@ -236,8 +242,13 @@ export default function InterviewPaywallModal({
                 className="w-full font-[family-name:var(--font-poppins)] font-semibold text-white"
                 style={{ height: 50, borderRadius: 8, fontSize: 15, background: paying ? "#dcdcdc" : "#ed1a24", border: "none", cursor: paying ? "default" : "pointer", boxShadow: paying ? "none" : "0 4px 6px rgba(236,34,40,0.3)" }}
               >
-                {paying ? "Starting…" : "Start your 45-min interview (included in your plan)"}
+                {paying
+                  ? "Starting…"
+                  : hasUnusedPlanInterview(planState)
+                    ? "Start your 45-min interview (included in your plan)"
+                    : "Start interview (already paid)"}
               </button>
+              </>
             ) : isPlanOnly(planState) ? (
               <PlanOnlyNotice />
             ) : (

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { isPlanOnly, freePlanReports, hasUnusedPlanInterview, planCardLabel } from "../usePlanState";
+import { isPlanOnly, freePlanReports, hasUnusedPlanInterview, hasUnusedInterviewCredit, planCardLabel } from "../usePlanState";
 import type { PlanState } from "@/lib/plans";
 
 const plan = (over: Partial<NonNullable<PlanState["plan"]>> = {}): PlanState => ({
@@ -27,6 +27,15 @@ describe("plan paywall helpers", () => {
     expect(hasUnusedPlanInterview(plan({ interviewUsed: true }))).toBe(false);
     expect(hasUnusedPlanInterview({ allowlisted: true, plan: null })).toBe(false);
     expect(hasUnusedPlanInterview(null)).toBe(false);
+  });
+
+  it("any unused interview credit (paid or plan) counts, and a paid one shows as ready to start", () => {
+    expect(hasUnusedInterviewCredit(plan())).toBe(true);
+    expect(hasUnusedInterviewCredit({ allowlisted: false, plan: null, interviewCredits: 1 })).toBe(true);
+    expect(hasUnusedInterviewCredit({ allowlisted: false, plan: null, interviewCredits: 0 })).toBe(false);
+    expect(hasUnusedInterviewCredit(null)).toBe(false);
+    expect(planCardLabel({ allowlisted: true, plan: null, interviewCredits: 1 }, "interview")).toBe("Paid, ready to start");
+    expect(planCardLabel({ ...plan(), interviewCredits: 1 }, "interview")).toBe("Included in your plan");
   });
 
   it("card label replaces the price only where the plan covers it", () => {
