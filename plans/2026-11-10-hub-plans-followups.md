@@ -61,7 +61,11 @@ Low:
 - Pricing card CTA on an included report still reads "Get this now →"; "Use a plan report →" would be clearer.
 - 4th-report modal shows ₹299 with no "You've used your 3 plan reports" line.
 - Admin payments shows a level ("entry") on plan rows; plans are flat.
-- Expert page step list still says "Your 30-minute session" for Plan 2 (1-hour).
+- Expert page step list + booking card ("30 minutes, video call") still say 30 min for Plan 2 (1-hour).
 - If a Plan 2 counselling request is ever cancelled, the expert button would read "Book my expert call for Included in your plan".
 - Panel "Shareable consolidated profile" status is static (no "link created" state).
 - Not browser-checked this pass: actual interview start (vendor call), PDF export, share page culture section, personality two-part flow (progress/resume/validation/errors), flat/unreliable culture states (unit-tested only), real Razorpay iframe completion (plan purchases finalized via signed local `payment.captured` webhook).
+
+FIXED 2026-11-11: Plan 2 holder with no role was redirected off /hub/account/expert (page required a lead); now only users with neither a role nor Plan 2 are redirected. Note: dashboard shows no "Your plan" panel without a role; panel is still reachable via Pricing.
+
+PM decision 2026-11-11: Plan 1 holders see the real individual expert call price (₹1,999 entry/mid, ₹2,999 senior, 30 min) — no ₹2,999 1-hour mentoring add-on product; revisit if seminar buyers ask for upgrades.

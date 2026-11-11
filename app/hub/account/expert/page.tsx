@@ -163,17 +163,17 @@ export default async function ExpertBioPage({
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
-  if (!leads?.length) {
-    redirect("/hub/account");
-  }
-  const activeLead = leadIdParam
-    ? leads.find(l => l.id === leadIdParam) || leads[0]
-    : leads[0];
-
-  const level = (activeLead.candidate_level as CandidateLevel | null) ?? DEFAULT_LEVEL;
   // Plan 2 covers the (1-hour) mentoring session: never show it a price.
   const planOrder = await getPlanOrder(user.id);
   const mentorPlan = planOrder?.product === "plan_mentor";
+
+  // A role only sets the price level; Plan 2's included session needs none.
+  if (!leads?.length && !mentorPlan) {
+    redirect("/hub/account");
+  }
+  const activeLead = leads?.find(l => l.id === leadIdParam) ?? leads?.[0];
+
+  const level = (activeLead?.candidate_level as CandidateLevel | null | undefined) ?? DEFAULT_LEVEL;
   const priceLabel = mentorPlan ? "Included in your plan" : formatPrice(PRODUCT_PRICING.counselling[level]);
 
   const { data: counsellingRequest } = await supabase
