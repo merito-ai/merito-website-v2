@@ -42,13 +42,14 @@ export async function loadCombinedReportData({
   // itself is excluded or still locked, this lookup is the only thing
   // standing between the displayed name and the generic email-less
   // nameFromEmail("") fallback ("You").
-  const { data: leads } = await supabase
-    .from("fitment_leads")
-    .select("id, role_title, name, resume_match_status, resume_match_raw")
-    .eq("user_id", userId)
-    .order("created_at", { ascending: false })
-    .limit(1);
-  const currentLead = leads?.[0];
+  // The lead for the requested role (a share link's frozen role), else the latest lead.
+  const latestLead = async (role: string | null) => {
+    let q = supabase.from("fitment_leads").select("id, role_title, name, resume_match_status, resume_match_raw").eq("user_id", userId);
+    if (role) q = q.eq("role_title", role);
+    const { data } = await q.order("created_at", { ascending: false }).limit(1);
+    return data?.[0];
+  };
+  const currentLead = (roleTitleParam ? await latestLead(roleTitleParam) : undefined) ?? (await latestLead(null));
 
   let fitment: CombinedReportData["fitment"] = null;
   if (include.has("fitment") && currentLead) {
@@ -81,8 +82,8 @@ export async function loadCombinedReportData({
     }
   }
 
-  // currentLead is always the candidate's LATEST lead, but roleTitle can be a
-  // caller-supplied roleTitleParam for a DIFFERENT, older role (the public
+  // currentLead is the requested role's lead, or the LATEST lead when no lead
+  // matches roleTitleParam, so roleTitle can still name a DIFFERENT, older role (the public
   // share page passes a role title frozen at share-link-creation time -- see
   // lib/reportShareTokens.ts). OR-ing currentLead.id together with a
   // requested roleTitle that belongs to a different lead would match

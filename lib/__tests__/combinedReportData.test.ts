@@ -45,3 +45,34 @@ describe("loadCombinedReportData personality", () => {
     expect((await load(supabase)).personality).toBeNull();
   });
 });
+
+describe("loadCombinedReportData fitment lead", () => {
+  const leadA = { id: "A", role_title: "Analyst", name: "Asha", resume_match_status: "READY", resume_match_raw: { categories: [] } };
+  const leadB = { ...leadA, id: "B", role_title: "Designer" }; // latest
+  function leadsClient() {
+    const from = vi.fn(() => {
+      const filters: Record<string, string> = {};
+      const q = {
+        select: () => q,
+        eq: (col: string, v: string) => ((filters[col] = v), q),
+        order: () => q,
+        limit: async () => ({ data: [leadB, leadA].filter((l) => !filters.role_title || l.role_title === filters.role_title).slice(0, 1) }),
+      };
+      return q;
+    });
+    return { from } as never;
+  }
+  const loadFitment = (roleTitleParam: string | null) =>
+    loadCombinedReportData({ supabase: leadsClient(), userId: "u1", userEmail: null, include: new Set(["fitment"]), roleTitleParam });
+
+  it("uses the lead for the share link's role, not the latest lead", async () => {
+    const { isReportUnlocked } = await import("@/lib/reportUnlocks");
+    vi.mocked(isReportUnlocked).mockResolvedValue(true);
+    expect((await loadFitment("Analyst")).fitment?.roleTitle).toBe("Analyst");
+    expect(isReportUnlocked).toHaveBeenLastCalledWith("u1", "A", "Analyst");
+  });
+  it("falls back to the latest lead when no role is stored or no lead matches", async () => {
+    expect((await loadFitment(null)).fitment?.roleTitle).toBe("Designer");
+    expect((await loadFitment("Gone")).fitment?.roleTitle).toBe("Designer");
+  });
+});
