@@ -124,8 +124,8 @@ export default function TopBar({
 
   return (
     <header
-      className="print:hidden sticky top-0 flex items-center justify-between backdrop-blur-md"
-      style={{ height: 96, padding: "0 28px", zIndex: 30, gap: 16, background: "rgba(20,18,22,0.85)", borderBottom: "1px solid rgb(49,47,55)" }}
+      className="print:hidden sticky top-0 flex items-center justify-between backdrop-blur-md px-3 gap-2 sm:px-7 sm:gap-4"
+      style={{ height: 96, zIndex: 30, background: "rgba(20,18,22,0.85)", borderBottom: "1px solid rgb(49,47,55)" }}
     >
       <div className="flex items-center shrink-0" style={{ gap: 8 }}>
         <Link href={leadHref("/hub/account")} className="flex items-center" style={{ gap: 8 }}>
