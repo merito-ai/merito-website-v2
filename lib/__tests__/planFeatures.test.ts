@@ -7,7 +7,7 @@ import { buildPlanPanelRows } from "../planPanel";
 
 describe("referenceRefreshPricePaise", () => {
   it("charges plan holders ₹299", () => expect(referenceRefreshPricePaise(true)).toBe(29900));
-  it("keeps normal users on the ₹149 loyalty price", () => expect(referenceRefreshPricePaise(false)).toBe(14900));
+  it("charges normal users ₹299 too (was ₹149)", () => expect(referenceRefreshPricePaise(false)).toBe(29900));
 });
 
 describe("PLAN_FEATURE_DETAILS (facts must match code)", () => {

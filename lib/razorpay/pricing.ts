@@ -34,9 +34,9 @@ export const PRODUCT_LABELS: Record<RazorpayProduct, string> = {
 
 export const PLAN_UPGRADE_PRICE_LABEL = `₹${(PRODUCT_PRICING.plan_upgrade_mentor.entry / 100).toLocaleString("en-IN")}`;
 
-// Re-reference ("reference refresh") after a completed check. Plan holders (incl. upgraded) pay ₹299 (PM 2026-11-11);
-// normal users keep the ₹149 loyalty price for now, change REFERENCE_REFRESH_PRICE_PAISE to reprice them.
-export const REFERENCE_REFRESH_PRICE_PAISE = 14900;
+// Re-reference ("reference refresh") after a completed check: ₹299 for everyone (PM 2026-11-11; normal users were ₹149).
+// Kept as two constants so plan and normal pricing can diverge again with a one-line change.
+export const REFERENCE_REFRESH_PRICE_PAISE = 29900;
 export const PLAN_REFERENCE_REFRESH_PRICE_PAISE = 29900;
 export function referenceRefreshPricePaise(planHolder: boolean): number {
   return planHolder ? PLAN_REFERENCE_REFRESH_PRICE_PAISE : REFERENCE_REFRESH_PRICE_PAISE;

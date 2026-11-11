@@ -74,7 +74,7 @@ PM decision 2026-11-11: Plan 1 holders see the real individual expert call price
 
 - FIXED 2026-11-11 (was Low, PM): no-role plan holder dashboard now reads "Welcome to <plan name>" / "Start with step 1: check a role." instead of "No fitment scores yet".
 - (Low) Plan 1 holder with no role not browser-checked.
-- (Medium, 2026-11-11) Pricing now shows only the plan comparison table to allowlisted users, plan holders included, so plan holders no longer see the per-product cards (extra ₹299 role report, ₹149 reference refresh, expert call) on /hub/account/pricing. The footer only lists the prices. Check whether those extras can still be bought from their feature pages, or add an "Extras" section under the table.
+- (Medium, 2026-11-11) Pricing now shows only the plan comparison table to allowlisted users, plan holders included, so plan holders no longer see the per-product cards (extra ₹299 role report, ₹299 reference refresh, expert call) on /hub/account/pricing. The footer only lists the prices. Check whether those extras can still be bought from their feature pages, or add an "Extras" section under the table.
 - (Low, 2026-11-11) The "Talk to us" CTA on the other plan is a mailto link (admin@merito.ai). Replace it with a real upgrade product if seminar buyers ask to switch plans.
 
 Seminar pay-first flow (2026-11-11): allowlisted users without a plan see "Plans unlocked for you" + the plan comparison at the top of the dashboard (role or no role); "Your plan" panel is now numbered steps with one Start here / Next step marker.
@@ -100,7 +100,7 @@ Upgrade + welcome email (2026-11-11):
 
 - Mentoring length: plan copy says 1 hour, but the Calendly fallback (`lib/hub/calendlyUrl.ts`) is the `30min` event and `/hub/account/expert` still says "30 minutes" / "Your 30-minute session" for Plan 2 holders. Detail line omits the duration until a 60-min event exists. Confirm prod `NEXT_PUBLIC_CALENDLY_URL`. RESOLVED 2026-11-11: Plan 2 mentoring = two 30-min sessions (first + follow-up) on the 30-min Calendly event; see design doc "Mentoring (2026-11-11)".
 - Application assistance "3 companies you choose" is an offline promise; no code backs it (copy kept per PM spec).
-- Normal-user re-reference price still ₹149 (awaiting user answer); change `REFERENCE_REFRESH_PRICE_PAISE` in `lib/razorpay/pricing.ts`.
+- Normal-user re-reference price still ₹149 (awaiting user answer); change `REFERENCE_REFRESH_PRICE_PAISE` in `lib/razorpay/pricing.ts`. RESOLVED 2026-11-11: user decided ₹299 for normal users too; constant changed (UI reads the server price).
 
 
 - (Minor, 2026-11-11) Admin counselling queue sorts by requested_at only, so legacy follow-up rows backfilled by 0072 list after all first sessions. Could sort by order then session if ops finds it confusing.

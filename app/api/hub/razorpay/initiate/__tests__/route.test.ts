@@ -144,14 +144,14 @@ describe("POST /api/hub/razorpay/initiate", () => {
     expect(response.status).toBe(200);
   });
 
-  it("charges the loyalty refresh price when references are already owned", async () => {
+  it("charges the ₹299 refresh price when references are already owned", async () => {
     const { isProductUnlocked } = await import("@/lib/productUnlocks");
     vi.mocked(isProductUnlocked).mockResolvedValueOnce(true);
     getUserMock.mockResolvedValue({ data: { user: { id: "user-1", email: "rushi@example.com" } } });
     const { POST } = await importRoute();
     const response = await POST(buildRequest({ product: "references" }));
     expect(response.status).toBe(200);
-    expect((await response.json()).amountPaise).toBe(14900);
+    expect((await response.json()).amountPaise).toBe(29900);
   });
 
   it("charges plan holders ₹299 for a re-reference", async () => {

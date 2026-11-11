@@ -15,7 +15,7 @@ Sell two fixed-price plans to **selected users only** (e.g. Merito Hub seminar a
 
 ## Pricing
 
-**Normal users: no change.** `lib/razorpay/pricing.ts` stays as is (level-based; report/personality/references ₹299; interview ₹999 / ₹1,499; counselling ₹1,999 / ₹2,999; ₹749 bundle; ₹149 reference refresh).
+**Normal users: no change.** `lib/razorpay/pricing.ts` stays as is (level-based; report/personality/references ₹299; interview ₹999 / ₹1,499; counselling ₹1,999 / ₹2,999; ₹749 bundle). Exception: reference refresh moved ₹149 → ₹299 for normal users too (user decision 2026-11-11).
 
 **Allowlisted users** see only the two plans on pricing surfaces (no individual module purchases until they buy a plan). Plan card shows the value breakdown from the seminar table:
 
@@ -29,7 +29,7 @@ Sell two fixed-price plans to **selected users only** (e.g. Merito Hub seminar a
 | Application assistance (3 companies) | — | — | ✓ (manual, offline) |
 | Shareable profile | — | ✓ | ✓ |
 
-Plan prices are flat (no level split). After buying a plan, extras: 4th+ role report ₹299 (normal price); re-reference report (the "reference refresh") ₹299 for plan holders incl. upgraded (PM 2026-11-11), while normal users stay ₹149 pending PM. Rule: `referenceRefreshPricePaise(planHolder)` in `lib/razorpay/pricing.ts`, used by the initiate route (server amount), restart route and references page; repricing normal users is a one-constant change (`REFERENCE_REFRESH_PRICE_PAISE`). An allowlisted user who already bought something individually before being allowlisted gets no credit.
+Plan prices are flat (no level split). After buying a plan, extras: 4th+ role report ₹299 (normal price); re-reference report (the "reference refresh") ₹299 for plan holders incl. upgraded (PM 2026-11-11), and normal users ₹299 as well (user decision 2026-11-11, was ₹149). Rule: `referenceRefreshPricePaise(planHolder)` in `lib/razorpay/pricing.ts`, used by the initiate route (server amount), restart route and references page; repricing normal users is a one-constant change (`REFERENCE_REFRESH_PRICE_PAISE`). An allowlisted user who already bought something individually before being allowlisted gets no credit.
 
 ## Entitlements
 
