@@ -49,7 +49,7 @@ export default function RoleSwitcherMenu({
           className="flex items-center transition-colors font-[family-name:var(--font-poppins)] font-medium"
           style={{ borderRadius: 50, padding: "6px 12px", fontSize: 14, background: "rgba(39,37,45,0.6)", border: "1px solid rgb(49,47,55)", color: "rgb(236,235,233)", cursor: "pointer", gap: 8 }}
         >
-          <span data-testid="role-label" className="block truncate max-w-[140px] sm:max-w-none">{activeLead.role_title}</span>
+          <span data-testid="role-label" className="block truncate max-w-[96px] sm:max-w-none">{activeLead.role_title}</span>
           <Plus size={14} strokeWidth={2} style={{ color: "rgb(156,153,163)" }} />
         </button>
 
@@ -96,7 +96,7 @@ export default function RoleSwitcherMenu({
         className="flex items-center transition-colors font-[family-name:var(--font-poppins)] font-medium"
         style={{ borderRadius: 50, padding: "6px 12px", fontSize: 14, background: "rgba(39,37,45,0.6)", border: "1px solid rgb(49,47,55)", color: "rgb(236,235,233)", cursor: "pointer", gap: 8 }}
       >
-        <span data-testid="role-label" className="block truncate max-w-[140px] sm:max-w-none">{activeLead?.role_title ?? ""}</span>
+        <span data-testid="role-label" className="block truncate max-w-[96px] sm:max-w-none">{activeLead?.role_title ?? ""}</span>
         <ChevronDown size={14} strokeWidth={2} style={{ color: "rgb(156,153,163)" }} />
       </button>
 
