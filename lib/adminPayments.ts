@@ -22,6 +22,7 @@ export type TransactionRow = {
   amountPaise: number;
   status: TransactionStatus;
   createdAt: string;
+  consumedAt: string | null;
 };
 
 type ReportUnlockInput = { userId: string; leadId: string; roleTitle: string; unlockedAt: string };
@@ -84,7 +85,7 @@ async function fetchAllTransactions(): Promise<TransactionRow[]> {
   const [{ data: txnRows }, { data: leadRows }] = await Promise.all([
     supabase
       .from("razorpay_transactions")
-      .select("order_id, payment_id, user_id, product, level, lead_id, amount_paise, status, created_at")
+      .select("order_id, payment_id, user_id, product, level, lead_id, amount_paise, status, consumed_at, created_at")
       .order("created_at", { ascending: false }),
     supabase.from("fitment_leads").select("id, user_id, email, role_title"),
   ]);
@@ -105,6 +106,7 @@ async function fetchAllTransactions(): Promise<TransactionRow[]> {
     roleTitle: t.lead_id ? (roleByLead.get(t.lead_id) ?? null) : null,
     level: t.level,
     amountPaise: t.amount_paise,
+    consumedAt: t.consumed_at,
     status: t.status as TransactionStatus,
     createdAt: t.created_at,
   }));

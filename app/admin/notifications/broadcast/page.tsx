@@ -1,5 +1,6 @@
 "use client";
 
+import PageHeader from "@/app/admin/_components/PageHeader";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { HUB_NOTIFICATION_CATEGORIES, type HubNotificationCategory } from "@/lib/hubNotifications";
 import { FUNNEL_STAGE_LABEL, FUNNEL_STAGES, type FunnelStage } from "@/lib/adminCandidates";
@@ -125,9 +126,7 @@ export default function BroadcastNotificationPage() {
 
   return (
     <div style={{ maxWidth: 560, display: "flex", flexDirection: "column", gap: 20 }}>
-      <p className="font-[family-name:var(--font-gabarito)] font-semibold" style={{ fontSize: 20, margin: 0 }}>
-        Broadcast notification
-      </p>
+      <PageHeader title="Broadcast" description="Send one in-app notification to many candidates at once. Pick who, write it, send." />
 
       <div>
         <p className="font-[family-name:var(--font-poppins)] font-semibold" style={{ fontSize: 13, margin: "0 0 8px" }}>

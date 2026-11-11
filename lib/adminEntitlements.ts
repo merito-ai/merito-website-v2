@@ -21,7 +21,9 @@ const NOT_BOUGHT: EntitlementStatus = { label: "Not bought", tone: "neutral" };
 
 function howPaid(txn: Txn | undefined): string {
   if (!txn) return "no payment found";
-  return txn.amount_paise === 0 ? "free grant" : `paid ₹${(txn.amount_paise / 100).toLocaleString("en-IN")}`;
+  if (txn.amount_paise === 0) return "free grant";
+  const paid = `paid ₹${(txn.amount_paise / 100).toLocaleString("en-IN")}`;
+  return txn.product === "bundle" ? `${paid} (bundle)` : paid;
 }
 
 function plural(n: number, word: string): string {

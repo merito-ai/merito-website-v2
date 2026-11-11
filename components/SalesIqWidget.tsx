@@ -5,7 +5,7 @@ import Script from "next/script";
 
 export default function SalesIqWidget() {
   const pathname = usePathname();
-  if (pathname?.startsWith("/hub")) return null;
+  if (pathname?.startsWith("/hub") || pathname?.startsWith("/admin")) return null;
 
   return (
     <>

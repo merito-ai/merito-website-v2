@@ -179,7 +179,7 @@ export default function AdminSidebar({ adminEmail, recentViews }: { adminEmail: 
         >
           {adminEmail}
         </p>
-        <Button variant="secondary" onClick={handleSignOut} loading={signingOut} style={{ width: "100%" }}>
+        <Button variant="secondary" onClick={handleSignOut} loading={signingOut} style={{ width: "100%", color: "#fff", borderColor: "rgba(255,255,255,0.35)" }}>
           Sign out
         </Button>
       </div>

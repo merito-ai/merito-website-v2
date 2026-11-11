@@ -80,7 +80,11 @@ export default function CandidateProfileOverrideForm({
         </button>
       </div>
 
-      <p className="font-[family-name:var(--font-poppins)] text-[#9c9c9c]" style={{ fontSize: 12, margin: "6px 0 0" }}>
+      <p className="font-[family-name:var(--font-poppins)] text-black" style={{ fontSize: 14, margin: "8px 0 0" }}>
+        Phone: {phoneNumber || "not given"} · Location: {location || "not given"} · Experience:{" "}
+        {totalExperience === null ? "not given" : `${totalExperience} yrs`}
+      </p>
+      <p className="font-[family-name:var(--font-poppins)] text-[#9c9c9c]" style={{ fontSize: 12, margin: "4px 0 0" }}>
         Read from the resume each time. A value set here replaces it.
       </p>
 

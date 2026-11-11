@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { INTERVIEW_CREDIT_PRODUCTS } from "@/lib/interviewCredits";
 import { listTransactions, listUnpaidUnlocks } from "@/lib/adminPayments";
 import { PRODUCT_PRICING, type RazorpayProduct } from "@/lib/razorpay/pricing";
 import { Table, TableHeadRow, TableRow, TableCell, TableEmptyRow } from "@/app/admin/_components/Table";
@@ -73,6 +74,9 @@ export default async function AdminPaymentsPage({ searchParams }: { searchParams
                   <TableCell>
                     {PRODUCT_LABEL[t.product] ?? t.product}
                     {t.roleTitle && <span className="text-[#9c9c9c]"> · {t.roleTitle}</span>}
+                    {t.status === "success" && (INTERVIEW_CREDIT_PRODUCTS as readonly string[]).includes(t.product) && (
+                      <span className={t.consumedAt ? "text-[#9c9c9c]" : "text-[#b45309]"}> · {t.consumedAt ? "interview used" : "interview not used yet"}</span>
+                    )}
                   </TableCell>
                   <TableCell>{formatAmount(t.amountPaise)}</TableCell>
                   <TableCell>
