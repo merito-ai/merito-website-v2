@@ -9,7 +9,7 @@ import PricingCardsClient from "./PricingCardsClient";
 import { leadIdOrRoleTitleFilter } from "@/lib/postgrestIdentityFilter";
 import { resolveActiveLead } from "@/lib/activeLead";
 import { getPlanState } from "@/lib/plans";
-import { buildPlanCards } from "./pricingCatalog";
+import { buildPlanCards, applyPlanToCards } from "./pricingCatalog";
 import PlanCardsClient from "./PlanCardsClient";
 import PlanStatusBanner from "./PlanStatusBanner";
 
@@ -51,7 +51,7 @@ export default async function PricingPage({
 
   const level = (lead?.candidate_level as CandidateLevel | null) ?? DEFAULT_LEVEL;
 
-  const cards = buildPricingCards(level);
+  const cards = applyPlanToCards(buildPricingCards(level), planState.plan);
   const bundle = buildBundleSummary(level);
 
   // Purchasing needs a real lead/role to attach the unlock to -- without one
@@ -65,6 +65,7 @@ export default async function PricingPage({
         <PricingCardsClient
           cards={cards}
           bundle={bundle}
+          hideBundle={Boolean(planState.plan)}
           level={level}
           purchasable={false}
           leadId={null}
@@ -116,6 +117,7 @@ export default async function PricingPage({
       <PricingCardsClient
         cards={cards}
         bundle={bundle}
+        hideBundle={Boolean(planState.plan)}
         level={level}
         purchasable
         leadId={lead.id}

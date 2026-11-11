@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildPricingCards, buildBundleSummary, getPersonalityBundleRate, buildPlanCards } from "../pricingCatalog";
+import { buildPricingCards, buildBundleSummary, getPersonalityBundleRate, buildPlanCards, applyPlanToCards } from "../pricingCatalog";
 
 describe("buildPlanCards", () => {
   const cards = buildPlanCards();
@@ -114,5 +114,32 @@ describe("buildBundleSummary", () => {
   it("computes senior-level savings", () => {
     const summary = buildBundleSummary("senior");
     expect(summary.savingsLabel).toBe("₹148");
+  });
+});
+
+describe("applyPlanToCards", () => {
+  const base = buildPricingCards("entry");
+  const plan = (over = {}) => ({ orderId: "o1", product: "plan_prepare" as const, interviewUsed: false, reportCreditsLeft: 2, ...over });
+  const labels = (cs: ReturnType<typeof buildPricingCards>) => Object.fromEntries(cs.map((c) => [c.key, c.priceLabel]));
+
+  it("no plan leaves the catalog unchanged", () => {
+    expect(applyPlanToCards(base, null)).toEqual(base);
+  });
+
+  it("plan holder sees owned items as included, not priced or bundled", () => {
+    const cs = applyPlanToCards(base, plan());
+    expect(labels(cs)).toEqual({
+      report: "Included · 2 left",
+      personality: "Included in your plan",
+      references: "Included in your plan",
+      interview: "Included in your plan",
+      counselling: "₹1999",
+    });
+    for (const c of cs) expect([c.inBundle, c.bundlePriceLabel]).toEqual([false, null]);
+  });
+
+  it("spent credits and used interview fall back to the normal price; Plan 2 includes mentoring", () => {
+    const cs = applyPlanToCards(base, plan({ product: "plan_mentor", reportCreditsLeft: 0, interviewUsed: true }));
+    expect(labels(cs)).toMatchObject({ report: "₹299", interview: "₹999", counselling: "Included in your plan" });
   });
 });

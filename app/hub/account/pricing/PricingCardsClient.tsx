@@ -31,6 +31,7 @@ type Modal = "none" | "report" | "personality" | "references" | "interview" | "c
 export default function PricingCardsClient({
   cards,
   bundle,
+  hideBundle = false,
   level,
   purchasable,
   leadId,
@@ -44,6 +45,7 @@ export default function PricingCardsClient({
 }: {
   cards: PricingCard[];
   bundle: BundleSummary;
+  hideBundle?: boolean; // plan holders already own everything the bundle sells
   level: CandidateLevel;
   purchasable: boolean;
   leadId: string | null;
@@ -216,6 +218,7 @@ export default function PricingCardsClient({
             );
           })}
 
+          {!hideBundle && (
           <div
             className={bundlePartiallyOwned ? "border border-white/[0.08] flex flex-col" : "border border-[#ed1a24]/30 flex flex-col"}
             style={{
@@ -289,12 +292,15 @@ export default function PricingCardsClient({
               </>
             )}
           </div>
+          )}
         </div>
 
-        <p className="font-[family-name:var(--font-poppins)] text-white/40" style={{ fontSize: 12, lineHeight: 1.6, maxWidth: 640, margin: 0 }}>
-          Only the personality test is discounted inside the bundle. Report and reference pricing stay identical either way, so bundling never
-          costs more than buying separately.
-        </p>
+        {!hideBundle && (
+          <p className="font-[family-name:var(--font-poppins)] text-white/40" style={{ fontSize: 12, lineHeight: 1.6, maxWidth: 640, margin: 0 }}>
+            Only the personality test is discounted inside the bundle. Report and reference pricing stay identical either way, so bundling never
+            costs more than buying separately.
+          </p>
+        )}
       </div>
 
       {modal === "report" && leadId && roleTitle && (

@@ -1,6 +1,6 @@
 import { PRODUCT_PRICING, PRODUCT_LABELS, formatPrice, type CandidateLevel } from "@/lib/razorpay/pricing";
 import { MIN_REFERENCES } from "@/lib/referenceChecks";
-import type { PlanProduct } from "@/lib/plans";
+import type { PlanProduct, PlanState } from "@/lib/plans";
 
 export type PricingCardKey = "report" | "personality" | "references" | "interview" | "counselling";
 
@@ -64,6 +64,19 @@ export function buildPricingCards(level: CandidateLevel): PricingCard[] {
       inBundle: IN_BUNDLE[key],
     };
   });
+}
+
+// Plan holders: never price what the plan already covers. Spent credits / a used interview keep the normal price (extras).
+export function applyPlanToCards(cards: PricingCard[], plan: PlanState["plan"]): PricingCard[] {
+  if (!plan) return cards;
+  const included: Record<PricingCardKey, string | null> = {
+    report: plan.reportCreditsLeft > 0 ? `Included · ${plan.reportCreditsLeft} left` : null,
+    personality: "Included in your plan",
+    references: "Included in your plan",
+    interview: plan.interviewUsed ? null : "Included in your plan",
+    counselling: plan.product === "plan_mentor" ? "Included in your plan" : null,
+  };
+  return cards.map((c) => ({ ...c, priceLabel: included[c.key] ?? c.priceLabel, inBundle: false, bundlePrice: null, bundlePriceLabel: null }));
 }
 
 export type BundleSummary = {
