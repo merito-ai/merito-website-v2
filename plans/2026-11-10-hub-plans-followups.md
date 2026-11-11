@@ -44,3 +44,24 @@ Open:
 - Culture fit can show "100% fit" (r≈0.99 rounds up). Consider capping display (e.g. 95%) so it doesn't read as certainty.
 - Admin refund of a test-mode netbanking payment fails at Razorpay (400 "invalid request sent", even a plain refund without `speed`) — test-account side, not plan code. Grant reversal verified via signed `refund.processed` webhook instead. Re-check a real refund on prod/live before launch.
 - Local dev: Windows reserves TCP 54285-54484, so `supabase start` fails on 5433x ports. QA remapped to 5633x temporarily.
+
+## UX audit follow-ups (2026-11-11, local stack, Medium/Low — not fixed)
+
+Fixed in this pass: plan-covered prices on report/interview/personality/references cards, pricing page owned items + bundle, culture fit capped 1-99%, 375px top-bar overflow (clipped every Hub modal), "Payment succeeded" copy on plan interview start, Plan 2 expert page price, new-role modal ₹299 for plan holders, plan comparison table, "Your plan" panel (dashboard + pricing).
+
+Medium:
+- **Plan holder with no lead** (bought before any fitment check): dashboard shows "No fitment scores yet"; `/hub/account/expert` redirects to `/hub/account`, so the panel's "Book session" (Plan 2) is a dead end. The panel only shows on pricing for them. Let expert/personality work without a lead, or show the panel on the empty dashboard.
+- **Mentoring add-on price (PM call):** PM asked for "Add a mentoring session — ₹2,999" for Plan 1; there is no such product. The panel uses the real counselling price (₹1,999 entry/mid, ₹2,999 senior) for a **30-min** call, while the plan sells a **1-hour** session. Decide the add-on product/price.
+- **Contrast:** `rgba(255,255,255,0.4)` text on the dark cards (culture "Show all 7", benchmark basis lines, pricing footnotes) and `#9c9c9c` on white (PlanOnlyNotice, "One-time payment" sub-lines) are under 4.5:1.
+- **Keyboard:** `PriceOptionTiles` bundle tile (`div onClick`) and "…instead →" (`span onClick`) aren't focusable (pre-existing).
+- **Admin allowlist:** no page `<h1>`; "1 emails"; duplicate emails get no explicit "already on the list" feedback (only the toast count).
+- **Deploy order:** the dashboard now also calls `getPlanState` (throws on DB error), so 0068/0069 must be applied before deploy for the dashboard too, not just pricing.
+
+Low:
+- Pricing card CTA on an included report still reads "Get this now →"; "Use a plan report →" would be clearer.
+- 4th-report modal shows ₹299 with no "You've used your 3 plan reports" line.
+- Admin payments shows a level ("entry") on plan rows; plans are flat.
+- Expert page step list still says "Your 30-minute session" for Plan 2 (1-hour).
+- If a Plan 2 counselling request is ever cancelled, the expert button would read "Book my expert call for Included in your plan".
+- Panel "Shareable consolidated profile" status is static (no "link created" state).
+- Not browser-checked this pass: actual interview start (vendor call), PDF export, share page culture section, personality two-part flow (progress/resume/validation/errors), flat/unreliable culture states (unit-tested only), real Razorpay iframe completion (plan purchases finalized via signed local `payment.captured` webhook).
