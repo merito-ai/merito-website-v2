@@ -1,4 +1,4 @@
-import { redirect, notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabaseAuthServer";
 
 export class ReauthRequiredError extends Error {
@@ -9,7 +9,7 @@ export class ReauthRequiredError extends Error {
 }
 
 /** Parse ADMIN_EMAIL (comma-separated list of one or more emails) into a normalized allowlist. */
-function getAdminEmails(): string[] {
+export function getAdminEmails(): string[] {
   const raw = process.env.ADMIN_EMAIL;
   if (!raw) {
     throw new Error("Admin area is not configured (ADMIN_EMAIL missing).");
@@ -37,7 +37,8 @@ export async function requireAdmin() {
   }
 
   if (!user.email || !adminEmails.includes(user.email.toLowerCase())) {
-    notFound();
+    // Signed in with a non-admin account: offer an account switch instead of a dead-end 404.
+    redirect("/admin-access");
   }
 
   return user;

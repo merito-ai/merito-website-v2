@@ -46,14 +46,14 @@ describe("requireAdmin", () => {
     expect(notFoundMock).not.toHaveBeenCalled();
   });
 
-  it("404s when the signed-in user is not the admin", async () => {
+  it("redirects to /admin-access when the signed-in user is not the admin", async () => {
     getUserMock.mockResolvedValue({ data: { user: { id: "u1", email: "candidate@example.com" } } });
 
     const { requireAdmin } = await importAdminAuth();
-    await expect(requireAdmin()).rejects.toThrow("NEXT_NOT_FOUND");
+    await expect(requireAdmin()).rejects.toThrow("NEXT_REDIRECT");
 
-    expect(notFoundMock).toHaveBeenCalled();
-    expect(redirectMock).not.toHaveBeenCalled();
+    expect(redirectMock).toHaveBeenCalledWith("/admin-access");
+    expect(notFoundMock).not.toHaveBeenCalled();
   });
 
   it("returns the user when they match ADMIN_EMAIL", async () => {
@@ -89,14 +89,14 @@ describe("requireAdmin", () => {
     expect(notFoundMock).not.toHaveBeenCalled();
   });
 
-  it("404s for an email not in the comma-separated ADMIN_EMAIL list", async () => {
+  it("sends an email not in the comma-separated ADMIN_EMAIL list to /admin-access", async () => {
     process.env.ADMIN_EMAIL = "roshan@merito.in,shikha@merito.in";
     getUserMock.mockResolvedValue({ data: { user: { id: "u3", email: "someone@merito.in" } } });
 
     const { requireAdmin } = await importAdminAuth();
-    await expect(requireAdmin()).rejects.toThrow("NEXT_NOT_FOUND");
+    await expect(requireAdmin()).rejects.toThrow("NEXT_REDIRECT");
 
-    expect(notFoundMock).toHaveBeenCalled();
+    expect(redirectMock).toHaveBeenCalledWith("/admin-access");
   });
 
   it("throws when ADMIN_EMAIL is not configured", async () => {
