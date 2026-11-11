@@ -2,7 +2,8 @@ import { getSupabaseServerClient } from "@/lib/supabase";
 import { PLAN_PRODUCTS, type PlanProduct } from "@/lib/plans";
 
 // An interview credit is a successful "interview" or plan transaction whose
-// consumed_at is still null. start-ai-interview consumes the oldest one;
+// consumed_at is still null. start-ai-interview consumes a plan credit first
+// (the paywall promises the plan's 45 min), then the oldest;
 // the initiate route refuses a new interview order while one is unused.
 export const INTERVIEW_CREDIT_PRODUCTS = ["interview", ...PLAN_PRODUCTS] as const;
 
@@ -16,6 +17,7 @@ export async function findOldestUnusedInterviewCredit(userId: string): Promise<I
     .in("product", [...INTERVIEW_CREDIT_PRODUCTS])
     .eq("status", "success")
     .is("consumed_at", null)
+    .order("product", { ascending: false }) // plan_* before "interview"
     .order("created_at", { ascending: true })
     .limit(1)
     .maybeSingle();

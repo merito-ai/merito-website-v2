@@ -31,6 +31,18 @@ describe("interviewCredits", () => {
     expect(calls).toContainEqual(["order", "created_at", { ascending: true }]);
   });
 
+  it("spends a plan credit before an older solo interview credit (the UI promises the plan's 45 min)", async () => {
+    result = { data: null, error: null };
+    const { findOldestUnusedInterviewCredit } = await import("../interviewCredits");
+    await findOldestUnusedInterviewCredit("u1");
+    const orders = calls.filter((c) => c[0] === "order");
+    // "plan_*" sorts after "interview", so descending product puts plan credits first.
+    expect(orders).toEqual([
+      ["order", "product", { ascending: false }],
+      ["order", "created_at", { ascending: true }],
+    ]);
+  });
+
   it("returns null when there is no credit and throws on a database error", async () => {
     const { findOldestUnusedInterviewCredit, countUnusedInterviewCredits } = await import("../interviewCredits");
     result = { data: null, error: null };
