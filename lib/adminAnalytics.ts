@@ -1,5 +1,26 @@
 import { getSupabaseServerClient } from "@/lib/supabase";
 import { fetchAllCandidates, FUNNEL_STAGES, FUNNEL_STAGE_LABEL, type FunnelStage } from "@/lib/adminCandidates";
+import { isInternalEmail, parseInternalList } from "@/lib/adminInternal";
+import { listUnresolvedPipelineFailures } from "@/lib/pipelineFailures";
+import { listCounsellingRequests } from "@/lib/adminCounselling";
+import { listUnpaidUnlocks } from "@/lib/adminPayments";
+import { PLAN_PRODUCTS } from "@/lib/plans";
+
+const DAY_MS = 86_400_000;
+
+async function fetchCandidates(includeInternal: boolean) {
+  const all = await fetchAllCandidates();
+  const list = parseInternalList();
+  return includeInternal || list.length === 0 ? all : all.filter((c) => !isInternalEmail(c.email, list));
+}
+
+// user_ids of internal/test accounts; empty (and no query) when the list is unset or includeInternal.
+async function internalUserIds(includeInternal: boolean): Promise<Set<string>> {
+  const list = parseInternalList();
+  if (includeInternal || list.length === 0) return new Set();
+  const { data } = await getSupabaseServerClient().from("fitment_leads").select("user_id, email");
+  return new Set((data ?? []).filter((r) => isInternalEmail(r.email, list)).map((r) => r.user_id as string));
+}
 
 export type FunnelDropoffRow = {
   stage: FunnelStage;
@@ -13,8 +34,8 @@ export type FunnelDropoffRow = {
 // matches how computeFunnelStage already models progress as a single
 // highest-stage-reached value per candidate, so a later stage's count is
 // always <= every earlier stage's (a true funnel, not a histogram).
-export async function getFunnelDropoff(): Promise<FunnelDropoffRow[]> {
-  const candidates = await fetchAllCandidates();
+export async function getFunnelDropoff(includeInternal = false): Promise<FunnelDropoffRow[]> {
+  const candidates = await fetchCandidates(includeInternal);
   const total = candidates.length;
   const stageIndex = new Map(FUNNEL_STAGES.map((s, i) => [s, i]));
 
@@ -34,8 +55,8 @@ export async function getFunnelDropoff(): Promise<FunnelDropoffRow[]> {
 
 export type RoleTitleBreakdownRow = { roleTitle: string; total: number } & Record<FunnelStage, number>;
 
-export async function getRoleTitleBreakdown(): Promise<RoleTitleBreakdownRow[]> {
-  const candidates = await fetchAllCandidates();
+export async function getRoleTitleBreakdown(includeInternal = false): Promise<RoleTitleBreakdownRow[]> {
+  const candidates = await fetchCandidates(includeInternal);
   const stageIndex = new Map(FUNNEL_STAGES.map((s, i) => [s, i]));
 
   const byRole = new Map<string, RoleTitleBreakdownRow>();
@@ -62,12 +83,14 @@ export type RevenueBreakdown = {
   byRoleTitle: { roleTitle: string; amountPaise: number; count: number }[];
 };
 
-export async function getRevenueBreakdown(): Promise<RevenueBreakdown> {
+export async function getRevenueBreakdown(includeInternal = false): Promise<RevenueBreakdown> {
   const supabase = getSupabaseServerClient();
-  const [{ data: txnRows }, { data: leadRows }] = await Promise.all([
-    supabase.from("razorpay_transactions").select("product, lead_id, amount_paise, created_at").eq("status", "success"),
+  const [{ data: allTxnRows }, { data: leadRows }, internalIds] = await Promise.all([
+    supabase.from("razorpay_transactions").select("user_id, product, lead_id, amount_paise, created_at").eq("status", "success"),
     supabase.from("fitment_leads").select("id, role_title"),
+    internalUserIds(includeInternal),
   ]);
+  const txnRows = (allTxnRows ?? []).filter((t) => !internalIds.has(t.user_id));
 
   const roleByLead = new Map((leadRows ?? []).map((l) => [l.id, l.role_title]));
   const monthStart = new Date();
@@ -79,7 +102,7 @@ export async function getRevenueBreakdown(): Promise<RevenueBreakdown> {
   const byProduct = new Map<string, { amountPaise: number; count: number }>();
   const byRoleTitle = new Map<string, { amountPaise: number; count: number }>();
 
-  for (const t of txnRows ?? []) {
+  for (const t of txnRows) {
     totalPaise += t.amount_paise;
     if (new Date(t.created_at) >= monthStart) totalThisMonthPaise += t.amount_paise;
 
@@ -122,12 +145,14 @@ export type WeeklyTrendPoint = { weekStart: string; newCandidates: number; reven
 // funnel-stage-over-time isn't recoverable from this schema (no transition
 // timestamps are stored, only the current stage) -- but signups and revenue
 // both have a clean created_at, so those are what actually trend here.
-export async function getWeeklyTrends(weeksBack: number = 12): Promise<WeeklyTrendPoint[]> {
+export async function getWeeklyTrends(weeksBack: number = 12, includeInternal = false): Promise<WeeklyTrendPoint[]> {
   const supabase = getSupabaseServerClient();
-  const [candidates, { data: txnRows }] = await Promise.all([
-    fetchAllCandidates(),
-    supabase.from("razorpay_transactions").select("amount_paise, created_at").eq("status", "success"),
+  const [candidates, { data: allTxnRows }, internalIds] = await Promise.all([
+    fetchCandidates(includeInternal),
+    supabase.from("razorpay_transactions").select("user_id, amount_paise, created_at").eq("status", "success"),
+    internalUserIds(includeInternal),
   ]);
+  const txnRows = (allTxnRows ?? []).filter((t) => !internalIds.has(t.user_id));
 
   const weeks: string[] = [];
   const cursor = new Date(startOfWeek(new Date().toISOString()));
@@ -144,7 +169,7 @@ export async function getWeeklyTrends(weeksBack: number = 12): Promise<WeeklyTre
   }
 
   const revenueByWeek = new Map<string, number>();
-  for (const t of txnRows ?? []) {
+  for (const t of txnRows) {
     const week = startOfWeek(t.created_at);
     if (weekSet.has(week)) revenueByWeek.set(week, (revenueByWeek.get(week) ?? 0) + t.amount_paise);
   }
@@ -243,9 +268,9 @@ export type ScoreAnalysis = {
 // flagged before this item could be built at all -- Phase 4's
 // resume_match_overridden / Phase 5's report_overridden are what make it
 // safe to build now).
-export async function getScoreAnalysis(): Promise<ScoreAnalysis> {
+export async function getScoreAnalysis(includeInternal = false): Promise<ScoreAnalysis> {
   const supabase = getSupabaseServerClient();
-  const [{ data: leadRows }, { data: interviewRows }] = await Promise.all([
+  const [{ data: allLeadRows }, { data: allInterviewRows }, internalIds] = await Promise.all([
     supabase
       .from("fitment_leads")
       .select("id, user_id, role_title, resume_match_status, resume_match_score, resume_match_overridden")
@@ -257,7 +282,10 @@ export async function getScoreAnalysis(): Promise<ScoreAnalysis> {
       .eq("status", "ready")
       .eq("report_overridden", false)
       .order("updated_at", { ascending: false }),
+    internalUserIds(includeInternal),
   ]);
+  const leadRows = (allLeadRows ?? []).filter((r) => !internalIds.has(r.user_id));
+  const interviewRows = (allInterviewRows ?? []).filter((r) => !internalIds.has(r.user_id));
 
   const fitmentScores = (leadRows ?? []).map((r) => r.resume_match_score as number).filter((s) => Number.isFinite(s));
   const interviewScores = (interviewRows ?? [])
@@ -338,4 +366,75 @@ export async function getDataQualityStats(): Promise<DataQualityStats> {
   }).length;
 
   return { interviewsReady, interviewsMissingSkillReport, fitmentReady, fitmentMissingResumeText, fitmentMissingCategories };
+}
+
+export type AttentionPerson = { userId: string; email: string };
+export type AttentionItem = { key: string; label: string; count: number; href?: string; people?: AttentionPerson[] };
+
+const ATTENTION_PEOPLE_LIMIT = 5;
+
+// The admin Home to-do list. Each item is a count of things waiting on an
+// admin; items without their own admin page carry up to 5 candidate links.
+export async function getNeedsAttention(includeInternal = false): Promise<AttentionItem[]> {
+  const supabase = getSupabaseServerClient();
+  const now = Date.now();
+  const weekAgo = new Date(now - 7 * DAY_MS).toISOString();
+  const monthAgo = new Date(now - 30 * DAY_MS).toISOString();
+  const hourAgo = new Date(now - 3_600_000).toISOString();
+
+  const [failures, counselling, unpaid, { data: stuckRows }, { data: creditRows }, { data: abandonedRows }, { data: planRows }, { data: leadRows }] =
+    await Promise.all([
+      listUnresolvedPipelineFailures(),
+      listCounsellingRequests(false),
+      listUnpaidUnlocks(),
+      supabase.from("fitment_interviews").select("user_id").not("stuck_at", "is", null),
+      supabase
+        .from("razorpay_transactions")
+        .select("user_id")
+        .in("product", ["interview", ...PLAN_PRODUCTS])
+        .eq("status", "success")
+        .is("consumed_at", null)
+        .lt("created_at", weekAgo),
+      // Older than an hour so checkouts still in progress are not flagged.
+      supabase.from("razorpay_transactions").select("user_id").eq("status", "initiated").gte("created_at", weekAgo).lt("created_at", hourAgo),
+      supabase.from("razorpay_transactions").select("user_id").eq("product", "plan_mentor").eq("status", "success").gte("created_at", monthAgo),
+      supabase.from("fitment_leads").select("user_id, email"),
+    ]);
+
+  const emailByUser = new Map<string, string>();
+  for (const l of leadRows ?? []) emailByUser.set(l.user_id as string, l.email as string);
+  const list = includeInternal ? [] : parseInternalList();
+  const keepUser = (userId: string | null) => !userId || !isInternalEmail(emailByUser.get(userId), list);
+  const keepEmail = (email: string) => !isInternalEmail(email, list);
+
+  function people(rows: { user_id: string }[] | null): AttentionPerson[] {
+    const ids = Array.from(new Set((rows ?? []).map((r) => r.user_id).filter(keepUser)));
+    return ids.map((userId) => ({ userId, email: emailByUser.get(userId) ?? "Unknown email" }));
+  }
+  const kept = (rows: { user_id: string }[] | null) => (rows ?? []).filter((r) => keepUser(r.user_id));
+
+  const stuck = people(stuckRows);
+  const unusedCredits = kept(creditRows);
+  const plan2 = people(planRows);
+
+  const items: AttentionItem[] = [
+    { key: "pipeline", label: "Pipeline failures to fix", count: failures.filter((f) => keepUser(f.userId)).length, href: "/admin/pipeline-failures" },
+    {
+      key: "counselling",
+      label: "Counselling or mentoring to schedule",
+      count: counselling.filter((c) => c.status === "requested" && keepEmail(c.email)).length,
+      href: "/admin/counselling",
+    },
+    { key: "stuck", label: "Stuck interviews", count: stuck.length, people: stuck.slice(0, ATTENTION_PEOPLE_LIMIT) },
+    {
+      key: "credits",
+      label: "Paid interviews unused for over 7 days",
+      count: unusedCredits.length,
+      people: people(unusedCredits).slice(0, ATTENTION_PEOPLE_LIMIT),
+    },
+    { key: "unpaid", label: "Unlocked without payment", count: unpaid.filter((u) => keepEmail(u.email)).length, href: "/admin/payments" },
+    { key: "abandoned", label: "Checkouts started but not paid (7 days)", count: kept(abandonedRows).length, href: "/admin/payments" },
+    { key: "plan2", label: "New Plan 2 buyers (30 days)", count: plan2.length, people: plan2.slice(0, ATTENTION_PEOPLE_LIMIT) },
+  ];
+  return items.filter((i) => i.count > 0);
 }

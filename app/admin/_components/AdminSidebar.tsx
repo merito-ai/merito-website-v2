@@ -15,6 +15,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Recruiters", href: "/admin/recruiters" },
   { label: "Payments", href: "/admin/payments" },
   { label: "Counselling & Plans", href: "/admin/counselling" },
+  { label: "Insights", href: "/admin/insights" },
 ];
 
 const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
