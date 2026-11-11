@@ -2,6 +2,7 @@ import { PRODUCT_PRICING, PRODUCT_LABELS, PLAN_UPGRADE_PRICE_LABEL, formatPrice,
 import { MIN_REFERENCES } from "@/lib/referenceChecks";
 import type { PlanProduct, PlanState } from "@/lib/plans";
 import { CONTACT_HREF } from "@/lib/planPanel";
+import { PLAN_FEATURE_DETAILS } from "@/lib/planFeatures";
 
 export type PricingCardKey = "report" | "personality" | "references" | "interview" | "counselling";
 
@@ -110,9 +111,9 @@ const PLAN_LINES: PlanLine[] = [
   { label: "Personality + culture assessment", helper: null, prepare: true, mentor: true },
   { label: "Mock AI interview (45 min)", helper: null, prepare: true, mentor: true },
   { label: "References module", helper: null, prepare: true, mentor: true },
-  { label: "1-hour mentoring session", helper: "1:1 with a Merito expert, booked via calendar", prepare: false, mentor: true },
-  { label: "Application assistance (3 companies, via Merito's network)", helper: "Our team refers you to 3 companies you choose", prepare: false, mentor: true },
-  { label: "Shareable consolidated profile", helper: "One report combining all your results, shareable by link", prepare: true, mentor: true },
+  { label: "1-hour mentoring session", helper: PLAN_FEATURE_DETAILS.mentoring, prepare: false, mentor: true },
+  { label: "Application assistance (3 companies, via Merito's network)", helper: PLAN_FEATURE_DETAILS.assistance, prepare: false, mentor: true },
+  { label: "Shareable consolidated profile", helper: PLAN_FEATURE_DETAILS.share, prepare: true, mentor: true },
 ];
 
 export type PlanCard = {

@@ -7,6 +7,7 @@ import { getPlanOrder } from "@/lib/plans";
 import { DEFAULT_LEVEL, type CandidateLevel } from "@/lib/razorpay/pricing";
 import PersonalityTestClient from "./PersonalityTestClient";
 import PersonalityLockedState from "./PersonalityLockedState";
+import PlanFeatureNote from "@/app/hub/account/PlanFeatureNote";
 
 export default async function PersonalityTestPage({
   searchParams,
@@ -104,6 +105,7 @@ export default async function PersonalityTestPage({
           <p className="font-[family-name:var(--font-poppins)] text-white/55" style={{ fontSize: 14, margin: 0 }}>
             Part of your profile &mdash; done once, applies to every application.
           </p>
+          <PlanFeatureNote userId={user.id} feature="personality" />
         </div>
         <PersonalityTestClient
           roleTitle={roleTitle}

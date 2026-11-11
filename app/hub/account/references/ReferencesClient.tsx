@@ -406,8 +406,13 @@ export default function ReferencesClient({
             >
               {refreshPrice !== null ? (
                 <>
-                  Start new references · {formatPrice(refreshPrice)}{" "}
-                  <span className="text-white/45" style={{ textDecoration: "line-through", fontWeight: 400 }}>{formatPrice(fullPricePaise)}</span>
+                  Start new references · {formatPrice(refreshPrice)}
+                  {refreshPrice < fullPricePaise && (
+                    <>
+                      {" "}
+                      <span className="text-white/45" style={{ textDecoration: "line-through", fontWeight: 400 }}>{formatPrice(fullPricePaise)}</span>
+                    </>
+                  )}
                 </>
               ) : (
                 "Start new references"

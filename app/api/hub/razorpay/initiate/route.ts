@@ -1,9 +1,9 @@
 import { createSupabaseServerClient } from "@/lib/supabaseAuthServer";
 import { getSupabaseServerClient } from "@/lib/supabase";
 import { createOrder } from "@/lib/razorpay/client";
-import { PRODUCT_PRICING, PRODUCT_LABELS, DEFAULT_LEVEL, type CandidateLevel, type RazorpayProduct } from "@/lib/razorpay/pricing";
+import { PRODUCT_PRICING, PRODUCT_LABELS, DEFAULT_LEVEL, referenceRefreshPricePaise, type CandidateLevel, type RazorpayProduct } from "@/lib/razorpay/pricing";
 import { isProductUnlocked } from "@/lib/productUnlocks";
-import { REFERENCE_REFRESH_PRICE_PAISE, referenceRefreshNeedsPayment } from "@/lib/referenceCredits";
+import { referenceRefreshNeedsPayment } from "@/lib/referenceCredits";
 import { isEmailAllowlisted } from "@/lib/planAllowlist";
 import { isPlanProduct, getPlanOrder, PLAN_UPGRADE } from "@/lib/plans";
 
@@ -80,7 +80,7 @@ export async function POST(request: Request) {
     if (!(await referenceRefreshNeedsPayment(user.id))) {
       return Response.json({ error: "You already have a reference check available." }, { status: 409 });
     }
-    amountPaise = REFERENCE_REFRESH_PRICE_PAISE;
+    amountPaise = referenceRefreshPricePaise(Boolean(await getPlanOrder(user.id)));
   }
 
   const { orderId } = await createOrder({

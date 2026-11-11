@@ -21,7 +21,6 @@ vi.mock("@/lib/productUnlocks", () => ({
   isProductUnlocked: vi.fn().mockResolvedValue(false),
 }));
 vi.mock("@/lib/referenceCredits", () => ({
-  REFERENCE_REFRESH_PRICE_PAISE: 14900,
   referenceRefreshNeedsPayment: vi.fn().mockResolvedValue(true),
 }));
 
@@ -153,6 +152,18 @@ describe("POST /api/hub/razorpay/initiate", () => {
     const response = await POST(buildRequest({ product: "references" }));
     expect(response.status).toBe(200);
     expect((await response.json()).amountPaise).toBe(14900);
+  });
+
+  it("charges plan holders ₹299 for a re-reference", async () => {
+    const { isProductUnlocked } = await import("@/lib/productUnlocks");
+    vi.mocked(isProductUnlocked).mockResolvedValueOnce(true);
+    getPlanOrderMock.mockResolvedValueOnce({ orderId: "o1", product: "plan_mentor", interviewUsed: false });
+    getUserMock.mockResolvedValue({ data: { user: { id: "user-1", email: "rushi@example.com" } } });
+    const { POST } = await importRoute();
+    const response = await POST(buildRequest({ product: "references" }));
+    expect(response.status).toBe(200);
+    expect((await response.json()).amountPaise).toBe(29900);
+    expect(insertMock).toHaveBeenCalledWith(expect.objectContaining({ product: "references", amount_paise: 29900 }));
   });
 
   it("refuses a refresh purchase while an unused reference credit remains", async () => {

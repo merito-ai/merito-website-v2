@@ -95,3 +95,9 @@ Upgrade + welcome email (2026-11-11):
 - (Low) Pre-existing em-dash not on this branch: app/hub/account/combined-report/CombinedReportActions.tsx "Caption copied — paste it..." (rule says sweep branch changes only).
 - (Low) Upgrade refund path verified by unit tests only, not on the local stack.
 - (Ops) Seminar attendee message (team WhatsApp/email) should say the first email from Merito is titled "Confirm your email to sign in to Merito" and they must click its button to sign in.
+
+## Feature details copy follow-ups (2026-11-11, PM call needed)
+
+- Mentoring length: plan copy says 1 hour, but the Calendly fallback (`lib/hub/calendlyUrl.ts`) is the `30min` event and `/hub/account/expert` still says "30 minutes" / "Your 30-minute session" for Plan 2 holders. Detail line omits the duration until a 60-min event exists. Confirm prod `NEXT_PUBLIC_CALENDLY_URL`.
+- Application assistance "3 companies you choose" is an offline promise; no code backs it (copy kept per PM spec).
+- Normal-user re-reference price still ₹149 (awaiting user answer); change `REFERENCE_REFRESH_PRICE_PAISE` in `lib/razorpay/pricing.ts`.

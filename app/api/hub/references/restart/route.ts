@@ -1,6 +1,8 @@
 import { createSupabaseServerClient } from "@/lib/supabaseAuthServer";
 import { restartReferenceCheck, getReferenceCheckStatus } from "@/lib/referenceChecks";
-import { REFERENCE_REFRESH_PRICE_PAISE, referenceRefreshNeedsPayment } from "@/lib/referenceCredits";
+import { referenceRefreshNeedsPayment } from "@/lib/referenceCredits";
+import { referenceRefreshPricePaise } from "@/lib/razorpay/pricing";
+import { getPlanOrder } from "@/lib/plans";
 import { isProductUnlocked } from "@/lib/productUnlocks";
 import { arePaymentsBypassed } from "@/lib/paymentsBypass";
 
@@ -26,7 +28,7 @@ export async function POST(_request: Request) {
   const latest = await getReferenceCheckStatus(user.id);
   if (latest?.status === "completed" && (await referenceRefreshNeedsPayment(user.id))) {
     return Response.json(
-      { error: "REFRESH_PAYMENT_REQUIRED", pricePaise: REFERENCE_REFRESH_PRICE_PAISE },
+      { error: "REFRESH_PAYMENT_REQUIRED", pricePaise: referenceRefreshPricePaise(Boolean(await getPlanOrder(user.id))) },
       { status: 402 }
     );
   }

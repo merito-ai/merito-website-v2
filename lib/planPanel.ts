@@ -1,4 +1,5 @@
 import { PLAN_UPGRADE_PRICE_LABEL } from "@/lib/razorpay/pricing";
+import { PLAN_FEATURE_DETAILS, type PlanFeatureKey } from "@/lib/planFeatures";
 
 // "Your plan" panel rows (dashboard + pricing). Pure + client-safe: lib/plans.ts imports the service-role client.
 export type PlanPanelInput = {
@@ -14,6 +15,7 @@ export type PlanPanelInput = {
 export type PlanPanelRow = {
   key: string;
   label: string;
+  detail: string;
   included: boolean;
   status: string;
   action: { label: string; href: string } | null;
@@ -60,7 +62,7 @@ export function buildPlanPanelRows(i: PlanPanelInput): PlanPanelRow[] {
         ? { status: m.scheduledAt ? `Scheduled ${date(m.scheduledAt)}` : "Scheduled", action: { label: "View", href: "/hub/account/expert" } }
         : { status: "Not booked yet", action: { label: "Book session", href: "/hub/account/expert" } };
 
-  type Base = Omit<PlanPanelRow, "step" | "done" | "marker"> & { done: boolean };
+  type Base = Omit<PlanPanelRow, "step" | "done" | "marker" | "detail"> & { key: PlanFeatureKey; done: boolean };
   const base: Base[] = [
     {
       key: "reports",
@@ -83,12 +85,13 @@ export function buildPlanPanelRows(i: PlanPanelInput): PlanPanelRow[] {
       action: mentor ? { label: "Contact us", href: CONTACT_HREF } : upgrade,
     },
     // The existing consolidated report + its share link; no separate profile feature.
-    { key: "share", label: "Share consolidated profile", included: true, done: false, status: "One report combining all your results", action: { label: "View & share", href: "/hub/account/combined-report" } },
+    { key: "share", label: "Share consolidated profile", included: true, done: false, status: "Updates as you complete steps", action: { label: "View & share", href: "/hub/account/combined-report" } },
   ];
   let n = 0;
   const nextKey = base.find((r) => r.included && !r.done && r.key !== "assistance")?.key;
   const rows: PlanPanelRow[] = base.map((r) => ({
     ...r,
+    detail: PLAN_FEATURE_DETAILS[r.key],
     step: r.included ? ++n : null,
     marker: r.key === nextKey ? (r.key === "reports" ? "Start here" : "Next step") : null,
   }));

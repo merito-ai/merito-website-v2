@@ -58,6 +58,7 @@ export default async function PlanPanel({ userId, plan, hasRole = true }: { user
                   {r.marker}
                 </span>
               )}
+              <span className="block text-white/45" style={{ fontSize: 12, lineHeight: 1.45, margin: "1px 0 2px" }}>{r.detail}</span>
               <span className="block text-white/55" style={{ fontSize: 12.5 }}>{!r.done ? r.status : r.status === "Completed" ? "Done" : `Done · ${r.status}`}</span>
             </span>
             {r.action &&

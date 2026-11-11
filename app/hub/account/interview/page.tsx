@@ -16,6 +16,7 @@ import InterviewStuckState from "./InterviewStuckState";
 import InterviewStatusPoller from "./InterviewStatusPoller";
 import { resolveInterviewViewState } from "./resolveInterviewViewState";
 import ExportPreviewButton from "../ExportPreviewButton";
+import PlanFeatureNote from "@/app/hub/account/PlanFeatureNote";
 
 const EYEBROW = "font-[family-name:var(--font-poppins)] font-bold uppercase text-white/40";
 
@@ -91,6 +92,7 @@ export default async function InterviewReportPage({
             <p className="font-[family-name:var(--font-poppins)] text-white/55" style={{ fontSize: 14, margin: 0 }}>
               Role-matched questions with a scored breakdown afterward.
             </p>
+            <PlanFeatureNote userId={user.id} feature="interview" />
           </div>
           <InterviewLockedState leadId={activeLead.id} roleTitle={activeLead.role_title} level={level} userEmail={user.email ?? ""} />
         </div>

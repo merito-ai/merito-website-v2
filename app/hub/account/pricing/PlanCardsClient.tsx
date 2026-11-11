@@ -6,6 +6,7 @@ import { Check, X } from "lucide-react";
 import { trackPurchase } from "@/lib/analytics";
 import { fetchWithTimeout, networkErrorMessage } from "@/lib/hub/fetchWithTimeout";
 import { planCta, type PlanCard } from "./pricingCatalog";
+import { PLAN_REFERENCE_REFRESH_PRICE_PAISE, formatPrice } from "@/lib/razorpay/pricing";
 import type { PlanProduct } from "@/lib/plans";
 
 // Checkout copied verbatim from PersonalityPaywallModal.tsx (repo's per-modal pattern; see plan "Deferred").
@@ -275,7 +276,7 @@ export default function PlanCardsClient({ plans, owned = null, embedded = false 
 
         <p className="font-[family-name:var(--font-poppins)] text-white/50" style={{ fontSize: 12, lineHeight: 1.6, maxWidth: 640, margin: 0 }}>
           One-time payment · features never expire · application assistance and mentoring are delivered by the Merito team. Extra role reports are ₹299
-          and a reference refresh is ₹149. We refer you; we can&apos;t guarantee interviews or offers.
+          and a re-reference report is {formatPrice(PLAN_REFERENCE_REFRESH_PRICE_PAISE)}. We refer you; we can&apos;t guarantee interviews or offers.
         </p>
       </div>
     </Wrap>

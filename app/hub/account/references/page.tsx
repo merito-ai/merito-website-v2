@@ -3,9 +3,12 @@ import { createSupabaseServerClient } from "@/lib/supabaseAuthServer";
 import { getReferenceCheckStatus, listCompletedReferenceChecks, MIN_REFERENCES, REFERENCE_CATEGORIES } from "@/lib/referenceChecks";
 import { isProductUnlocked } from "@/lib/productUnlocks";
 import { DEFAULT_LEVEL, PRODUCT_PRICING, type CandidateLevel } from "@/lib/razorpay/pricing";
-import { REFERENCE_REFRESH_PRICE_PAISE, referenceRefreshNeedsPayment } from "@/lib/referenceCredits";
+import { referenceRefreshNeedsPayment } from "@/lib/referenceCredits";
+import { referenceRefreshPricePaise } from "@/lib/razorpay/pricing";
+import { getPlanOrder } from "@/lib/plans";
 import ReferencesClient from "./ReferencesClient";
 import ReferencesLockedState from "./ReferencesLockedState";
+import PlanFeatureNote from "@/app/hub/account/PlanFeatureNote";
 
 export default async function ReferencesPage({
   searchParams,
@@ -64,7 +67,7 @@ export default async function ReferencesPage({
   }
 
   const status = await getReferenceCheckStatus(user.id);
-  const refreshPricePaise = status?.status === "completed" && (await referenceRefreshNeedsPayment(user.id)) ? REFERENCE_REFRESH_PRICE_PAISE : null;
+  const refreshPricePaise = status?.status === "completed" && (await referenceRefreshNeedsPayment(user.id)) ? referenceRefreshPricePaise(Boolean(await getPlanOrder(user.id))) : null;
   const history = await listCompletedReferenceChecks(user.id);
   const previous = status && status.status !== "completed" ? await getReferenceCheckStatus(user.id, { completedOnly: true }) : null;
 
@@ -79,6 +82,7 @@ export default async function ReferencesPage({
             Invite people who&apos;ve worked with you to rate you across {REFERENCE_CATEGORIES.length} categories. {MIN_REFERENCES}{" "}
             completed references unlock this step.
           </p>
+          <PlanFeatureNote userId={user.id} feature="references" />
         </div>
         <ReferencesClient
           initialStatus={status}

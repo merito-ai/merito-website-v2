@@ -29,7 +29,7 @@ Sell two fixed-price plans to **selected users only** (e.g. Merito Hub seminar a
 | Application assistance (3 companies) | — | — | ✓ (manual, offline) |
 | Shareable profile | — | ✓ | ✓ |
 
-Plan prices are flat (no level split). After buying a plan, extras use normal prices (4th role report ₹299, reference refresh ₹149). An allowlisted user who already bought something individually before being allowlisted gets no credit.
+Plan prices are flat (no level split). After buying a plan, extras: 4th+ role report ₹299 (normal price); re-reference report (the "reference refresh") ₹299 for plan holders incl. upgraded (PM 2026-11-11), while normal users stay ₹149 pending PM. Rule: `referenceRefreshPricePaise(planHolder)` in `lib/razorpay/pricing.ts`, used by the initiate route (server amount), restart route and references page; repricing normal users is a one-constant change (`REFERENCE_REFRESH_PRICE_PAISE`). An allowlisted user who already bought something individually before being allowlisted gets no credit.
 
 ## Entitlements
 

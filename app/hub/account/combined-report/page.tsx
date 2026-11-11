@@ -9,6 +9,7 @@ import { remapBandDark } from "./combinedBandColors";
 import { TRAITS, TRAIT_NAME } from "@/lib/personality";
 import CombinedGauge from "./CombinedGauge";
 import CombinedReportActions from "./CombinedReportActions";
+import PlanFeatureNote from "@/app/hub/account/PlanFeatureNote";
 
 const EYEBROW = "font-[family-name:var(--font-poppins)] font-bold uppercase text-white/40";
 
@@ -188,6 +189,7 @@ export default async function CombinedReportPage({
           <p className="font-[family-name:var(--font-poppins)] text-white/45" style={{ fontSize: 12.5, margin: "6px 0 0" }}>
             {includedCount} of 4 sections included right now. Updates automatically as you complete more.
           </p>
+          <PlanFeatureNote userId={user.id} feature="share" />
         </div>
 
         <div

@@ -17,6 +17,7 @@ import { DEFAULT_LEVEL, PRODUCT_PRICING, formatPrice, type CandidateLevel } from
 import ExpertBookingCard from "./ExpertBookingCard";
 import ExpertBookingButton from "./ExpertBookingButton";
 import { getPlanOrder } from "@/lib/plans";
+import PlanFeatureNote from "@/app/hub/account/PlanFeatureNote";
 
 // Static bio + section content, verbatim from mockups/merito-dashboard-v34.html's
 // expert-guidance page (minified component `fz`). No live data for the bio itself --
@@ -199,6 +200,7 @@ export default async function ExpertBioPage({
           <p className="font-[family-name:var(--font-poppins)] text-white/55" style={{ fontSize: 14, margin: "8px 0 0" }}>
             A 1:1 session with a Merito career expert.
           </p>
+          <PlanFeatureNote userId={user.id} feature="mentoring" />
         </div>
 
         <div className="flex flex-col" style={{ gap: 20 }}>
