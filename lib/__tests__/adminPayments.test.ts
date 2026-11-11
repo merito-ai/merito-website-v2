@@ -400,6 +400,37 @@ describe("grantFreeAccess", () => {
     expect(completeReportUnlockMock).toHaveBeenCalledWith("user-1", expect.objectContaining({ id: "lead-1" }), "report");
   });
 
+  it("grants a report on the chosen role when leadId belongs to the candidate, and refuses another user's lead", async () => {
+    const insertMock = vi.fn().mockResolvedValue({ error: null });
+    const leadById: Record<string, unknown> = {
+      "lead-2": { id: "lead-2", user_id: "user-1", role_title: "PM", ib_applied_job_id: null, resume_match_status: "READY", resume_match_raw: {} },
+      "lead-x": { id: "lead-x", user_id: "user-9", role_title: "Other" },
+    };
+    fromMock.mockImplementation((table: string) => {
+      if (table === "fitment_leads") {
+        return {
+          select: () => ({
+            eq: (col: string, val: string) =>
+              col === "id"
+                ? { maybeSingle: vi.fn().mockResolvedValue({ data: leadById[val] ?? null, error: null }) }
+                : { order: () => ({ limit: () => ({ maybeSingle: vi.fn().mockResolvedValue({ data: { id: "lead-1", user_id: "user-1", role_title: "SDE" }, error: null }) }) }) },
+          }),
+        };
+      }
+      if (table === "razorpay_transactions") return { insert: insertMock };
+      throw new Error(`unexpected table ${table}`);
+    });
+    const { grantFreeAccess } = await import("../adminPayments");
+
+    await grantFreeAccess({ email: "c@example.com", product: "report", level: "mid", reason: "r", leadId: "lead-2" }, "admin@merito.in");
+    expect(insertMock).toHaveBeenCalledWith(expect.objectContaining({ lead_id: "lead-2", product: "report", amount_paise: 0 }));
+    expect(completeReportUnlockMock).toHaveBeenCalledWith("user-1", expect.objectContaining({ id: "lead-2" }), "report");
+
+    await expect(
+      grantFreeAccess({ email: "c@example.com", product: "report", level: "mid", reason: "r", leadId: "lead-x" }, "admin@merito.in")
+    ).rejects.toThrow("does not belong");
+  });
+
   it("rejects granting a product the candidate already has unlocked", async () => {
     stubTables({ id: "lead-1", user_id: "user-1", role_title: "Backend Engineer" });
     isProductUnlockedMock.mockResolvedValue(true);

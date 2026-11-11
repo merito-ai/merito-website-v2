@@ -148,8 +148,8 @@ export async function listPaymentsForCandidate(userId: string): Promise<Candidat
   }));
 }
 
-export async function listTransactions(page: number = 1): Promise<PaginatedTransactions> {
-  const all = await fetchAllTransactions();
+export async function listTransactions(page: number = 1, product?: string): Promise<PaginatedTransactions> {
+  const all = (await fetchAllTransactions()).filter((t) => !product || t.product === product);
   const total = all.length;
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const clampedPage = Math.min(Math.max(1, page), totalPages);
@@ -321,11 +321,19 @@ export async function resolveCandidateByEmail(email: string): Promise<ResolvedCa
 }
 
 export async function grantFreeAccess(
-  params: { email: string; product: RazorpayProduct; level: CandidateLevel; reason: string },
+  params: { email: string; product: RazorpayProduct; level: CandidateLevel; reason: string; leadId?: string },
   adminEmail: string
 ): Promise<void> {
   const supabase = getSupabaseServerClient();
-  const candidate = await resolveCandidateByEmail(params.email);
+  let candidate = await resolveCandidateByEmail(params.email);
+  // Candidate page grants pick the role; the lead must belong to the same candidate.
+  if (candidate && params.leadId && params.leadId !== candidate.leadId) {
+    const { data: picked } = await supabase.from("fitment_leads").select("id, user_id, role_title").eq("id", params.leadId).maybeSingle();
+    if (!picked || picked.user_id !== candidate.userId) {
+      throw new Error("That role does not belong to this candidate.");
+    }
+    candidate = { userId: candidate.userId, leadId: picked.id, roleTitle: picked.role_title };
+  }
 
   const needsLead = params.product === "report" || params.product === "bundle";
   if (needsLead && !candidate) {

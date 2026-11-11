@@ -3,15 +3,14 @@ import { listAllowlist } from "@/lib/planAllowlist";
 import { Table, TableHeadRow, TableRow, TableCell, TableEmptyRow } from "@/app/admin/_components/Table";
 import AllowlistForm from "./AllowlistForm";
 import RemoveButton from "./RemoveButton";
+import PageHeader from "@/app/admin/_components/PageHeader";
 
 export default async function PlanAllowlistPage() {
   await requireAdmin();
   const rows = await listAllowlist();
   return (
     <div>
-      <p className="font-[family-name:var(--font-poppins)] text-[#6b6b6b]" style={{ fontSize: 13, margin: "0 0 16px" }}>
-        Signed-in users with these emails see the two plans instead of individual prices. Removing an email does not take away a plan already bought.
-      </p>
+      <PageHeader title="Plan allowlist" description="People on this list see the two plans instead of single prices. Removing someone keeps any plan they bought." />
       <AllowlistForm />
       <p className="font-[family-name:var(--font-poppins)]" style={{ fontSize: 13, margin: "0 0 8px" }}>{rows.length} emails</p>
       <Table>

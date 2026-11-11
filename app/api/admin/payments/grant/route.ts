@@ -8,6 +8,7 @@ const PostSchema = z.object({
   product: z.enum(["report", "personality", "references", "interview", "counselling", "bundle", "plan_prepare", "plan_mentor", "plan_upgrade_mentor"]),
   level: z.enum(["entry", "mid", "senior"]),
   reason: z.string().min(1),
+  leadId: z.string().uuid().optional(),
 });
 
 export async function POST(request: Request) {

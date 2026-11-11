@@ -5,11 +5,22 @@ import { useRouter } from "next/navigation";
 import Button from "@/app/admin/_components/Button";
 import ConfirmDialog from "@/app/admin/_components/ConfirmDialog";
 import { useToast } from "@/app/admin/_components/Toast";
+import { PRODUCT_LABELS, type RazorpayProduct } from "@/lib/razorpay/pricing";
 
-export default function ReconcileForm({ userId, leadId, product }: { userId: string; leadId: string | null; product: string }) {
+export default function ReconcileForm({
+  userId,
+  leadId,
+  product,
+  defaultAmountPaise,
+}: {
+  userId: string;
+  leadId: string | null;
+  product: RazorpayProduct;
+  defaultAmountPaise?: number;
+}) {
   const router = useRouter();
   const { showToast } = useToast();
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState(defaultAmountPaise ? String(defaultAmountPaise / 100) : "");
   const [busy, setBusy] = useState(false);
   const [confirming, setConfirming] = useState(false);
 
@@ -34,13 +45,13 @@ export default function ReconcileForm({ userId, leadId, product }: { userId: str
       });
       const data = await response.json().catch(() => null);
       if (!response.ok) {
-        showToast("error", data?.error || "Something went wrong — try again.");
+        showToast("error", data?.error || "Something went wrong, try again.");
         return;
       }
       showToast("success", "Reconciled.");
       router.refresh();
     } catch {
-      showToast("error", "Something went wrong — try again.");
+      showToast("error", "Something went wrong, try again.");
     } finally {
       setBusy(false);
     }
@@ -62,7 +73,7 @@ export default function ReconcileForm({ userId, leadId, product }: { userId: str
       <ConfirmDialog
         open={confirming}
         title="Record manual reconciliation?"
-        message={`Records a manual reconciliation of ₹${amount} for this ${product} unlock.`}
+        message={`Records that ₹${amount} was paid outside the checkout for this ${PRODUCT_LABELS[product]} unlock. No money moves.`}
         confirmLabel="Reconcile"
         busy={busy}
         onConfirm={submit}

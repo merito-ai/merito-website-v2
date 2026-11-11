@@ -31,13 +31,13 @@ export default function PaymentActions({ orderId, status, amountPaise }: { order
       });
       const data = await response.json().catch(() => null);
       if (!response.ok) {
-        showToast("error", data?.error || "Something went wrong — try again.");
+        showToast("error", data?.error || "Something went wrong, try again.");
         return;
       }
       showToast("success", data?.speedProcessed === "optimum" ? "Refunded instantly." : "Refunded (5-7 day standard processing).");
       router.refresh();
     } catch {
-      showToast("error", "Something went wrong — try again.");
+      showToast("error", "Something went wrong, try again.");
     } finally {
       setBusy(null);
       setRefundReason(null);
@@ -51,13 +51,13 @@ export default function PaymentActions({ orderId, status, amountPaise }: { order
       const response = await fetch(`/api/admin/payments/${orderId}/void`, { method: "POST" });
       const data = await response.json().catch(() => null);
       if (!response.ok) {
-        showToast("error", data?.error || "Something went wrong — try again.");
+        showToast("error", data?.error || "Something went wrong, try again.");
         return;
       }
       showToast("success", "Voided.");
       router.refresh();
     } catch {
-      showToast("error", "Something went wrong — try again.");
+      showToast("error", "Something went wrong, try again.");
     } finally {
       setBusy(null);
     }
@@ -90,7 +90,7 @@ export default function PaymentActions({ orderId, status, amountPaise }: { order
       <ConfirmDialog
         open={confirmingVoid}
         title="Void this transaction?"
-        message="Does not move any money — only marks the row as failed."
+        message="Does not move any money. Only marks the checkout as failed."
         confirmLabel="Void"
         busy={busy === "void"}
         onConfirm={voidTransaction}

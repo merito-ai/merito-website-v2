@@ -5,18 +5,30 @@ import { useRouter } from "next/navigation";
 import Button from "@/app/admin/_components/Button";
 import ConfirmDialog from "@/app/admin/_components/ConfirmDialog";
 import { useToast } from "@/app/admin/_components/Toast";
+import { PRODUCT_LABELS, type CandidateLevel } from "@/lib/razorpay/pricing";
 
 const PRODUCTS = ["report", "personality", "references", "interview", "counselling", "bundle", "plan_prepare", "plan_mentor", "plan_upgrade_mentor"] as const;
 const LEVELS = ["entry", "mid", "senior"] as const;
 
 const inputStyle = { fontSize: 13, padding: "8px 12px", border: "1px solid #dcdcdc", borderRadius: 7 } as const;
 
-export default function GrantForm() {
+// Candidate page passes email, roles and level so the admin only picks the product.
+export default function GrantForm({
+  email: fixedEmail,
+  roles,
+  level: defaultLevel,
+}: {
+  email?: string;
+  roles?: { leadId: string; roleTitle: string }[];
+  level?: CandidateLevel;
+} = {}) {
   const router = useRouter();
   const { showToast } = useToast();
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(fixedEmail ?? "");
   const [product, setProduct] = useState<(typeof PRODUCTS)[number]>("personality");
-  const [level, setLevel] = useState<(typeof LEVELS)[number]>("entry");
+  const [level, setLevel] = useState<(typeof LEVELS)[number]>(defaultLevel ?? "entry");
+  const [leadId, setLeadId] = useState(roles?.[0]?.leadId ?? "");
+  const needsRole = Boolean(roles && roles.length > 0) && (product === "report" || product === "bundle");
   const [reason, setReason] = useState("");
   const [busy, setBusy] = useState(false);
   const [confirming, setConfirming] = useState(false);
@@ -36,19 +48,19 @@ export default function GrantForm() {
       const response = await fetch("/api/admin/payments/grant", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, product, level, reason }),
+        body: JSON.stringify({ email, product, level, reason, ...(needsRole ? { leadId } : {}) }),
       });
       const data = await response.json().catch(() => null);
       if (!response.ok) {
-        showToast("error", data?.error || "Something went wrong — try again.");
+        showToast("error", data?.error || "Something went wrong, try again.");
         return;
       }
-      setEmail("");
+      if (!fixedEmail) setEmail("");
       setReason("");
       showToast("success", "Access granted.");
       router.refresh();
     } catch {
-      showToast("error", "Something went wrong — try again.");
+      showToast("error", "Something went wrong, try again.");
     } finally {
       setBusy(false);
     }
@@ -56,14 +68,25 @@ export default function GrantForm() {
 
   return (
     <div className="bg-white border border-black/[0.08]" style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 24, padding: 16, borderRadius: 14 }}>
-      <input placeholder="Candidate email" value={email} onChange={(e) => setEmail(e.target.value)} className="font-[family-name:var(--font-poppins)]" style={{ ...inputStyle, width: 220 }} />
+      {!fixedEmail && (
+        <input placeholder="Candidate email" value={email} onChange={(e) => setEmail(e.target.value)} className="font-[family-name:var(--font-poppins)]" style={{ ...inputStyle, width: 220 }} />
+      )}
       <select value={product} onChange={(e) => setProduct(e.target.value as (typeof PRODUCTS)[number])} className="font-[family-name:var(--font-poppins)]" style={inputStyle}>
         {PRODUCTS.map((p) => (
           <option key={p} value={p}>
-            {p}
+            {PRODUCT_LABELS[p]}
           </option>
         ))}
       </select>
+      {needsRole && (
+        <select value={leadId} onChange={(e) => setLeadId(e.target.value)} className="font-[family-name:var(--font-poppins)]" style={inputStyle}>
+          {roles!.map((r) => (
+            <option key={r.leadId} value={r.leadId}>
+              {r.roleTitle}
+            </option>
+          ))}
+        </select>
+      )}
       <select value={level} onChange={(e) => setLevel(e.target.value as (typeof LEVELS)[number])} className="font-[family-name:var(--font-poppins)]" style={inputStyle}>
         {LEVELS.map((l) => (
           <option key={l} value={l}>
@@ -79,7 +102,7 @@ export default function GrantForm() {
       <ConfirmDialog
         open={confirming}
         title="Grant free access?"
-        message={`Grants free ${product} access (${level}) to ${email}, with no payment record.`}
+        message={`Gives ${email} free ${PRODUCT_LABELS[product]} (${level} level). Recorded as a ₹0 payment.`}
         confirmLabel="Grant"
         busy={busy}
         onConfirm={submit}

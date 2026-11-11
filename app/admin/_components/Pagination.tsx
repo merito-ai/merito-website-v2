@@ -21,7 +21,7 @@ export default function Pagination({ page, totalPages, basePath }: { page: numbe
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, padding: "16px 0" }}>
       {page > 1 ? (
-        <Link href={`${basePath}?page=${page - 1}`} className="font-[family-name:var(--font-poppins)] font-semibold" style={LINK_STYLE}>
+        <Link href={`${basePath}${basePath.includes("?") ? "&" : "?"}page=${page - 1}`} className="font-[family-name:var(--font-poppins)] font-semibold" style={LINK_STYLE}>
           Previous
         </Link>
       ) : (
@@ -33,7 +33,7 @@ export default function Pagination({ page, totalPages, basePath }: { page: numbe
         Page {page} of {totalPages}
       </span>
       {page < totalPages ? (
-        <Link href={`${basePath}?page=${page + 1}`} className="font-[family-name:var(--font-poppins)] font-semibold" style={LINK_STYLE}>
+        <Link href={`${basePath}${basePath.includes("?") ? "&" : "?"}page=${page + 1}`} className="font-[family-name:var(--font-poppins)] font-semibold" style={LINK_STYLE}>
           Next
         </Link>
       ) : (
