@@ -9,6 +9,7 @@ import ReferencesPaywallModal from "../ReferencesPaywallModal";
 import LockedFeatureLayout from "../LockedFeatureLayout";
 import SamplePreviewFrame from "../SamplePreviewFrame";
 import SampleReferenceReport from "./SampleReferenceReport";
+import { usePlanState, planCardLabel } from "../usePlanState";
 
 const IMPACT_POINTS = [
   "Collects and verifies your references up front, so trust stops being the thing that stalls an offer.",
@@ -39,7 +40,10 @@ export default function ReferencesLockedState({
 }) {
   const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
-  const priceLabel = formatPrice(PRODUCT_PRICING.references[level]);
+  const price = formatPrice(PRODUCT_PRICING.references[level]);
+  const { loading: planLoading, state: planState } = usePlanState();
+  const planLabel = planCardLabel(planState, "references");
+  const priceLabel = planLoading ? "" : (planLabel ?? price);
 
   const cta = (
     <button
@@ -48,7 +52,7 @@ export default function ReferencesLockedState({
       style={{ gap: 8, height: 48, padding: "0 24px", borderRadius: 8, fontSize: 14.5, border: "none", cursor: "pointer" }}
     >
       <Unlock size={15} strokeWidth={2} />
-      Start my reference checks for {priceLabel}
+      {planLoading || planLabel ? "Start my reference checks" : `Start my reference checks for ${priceLabel}`}
     </button>
   );
 

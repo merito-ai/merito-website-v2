@@ -9,6 +9,7 @@ import PersonalityPaywallModal from "../PersonalityPaywallModal";
 import LockedFeatureLayout from "../LockedFeatureLayout";
 import SamplePreviewFrame from "../SamplePreviewFrame";
 import SamplePersonalityReport from "./SamplePersonalityReport";
+import { usePlanState, planCardLabel } from "../usePlanState";
 
 const TOTAL_STATEMENTS = ITEMS.length + IMPRESSION_ITEMS.length;
 
@@ -43,7 +44,10 @@ export default function PersonalityLockedState({
 }) {
   const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
-  const priceLabel = formatPrice(PRODUCT_PRICING.personality[level]);
+  const price = formatPrice(PRODUCT_PRICING.personality[level]);
+  const { loading: planLoading, state: planState } = usePlanState();
+  const planLabel = planCardLabel(planState, "personality");
+  const priceLabel = planLoading ? "" : (planLabel ?? price);
 
   const cta = (
     <button
@@ -52,7 +56,7 @@ export default function PersonalityLockedState({
       style={{ gap: 8, height: 48, padding: "0 24px", borderRadius: 8, fontSize: 14.5, border: "none", cursor: "pointer" }}
     >
       <Play size={15} strokeWidth={2} fill="currentColor" />
-      Start my personality test for {priceLabel}
+      {planLoading || planLabel ? "Start my personality test" : `Start my personality test for ${priceLabel}`}
     </button>
   );
 

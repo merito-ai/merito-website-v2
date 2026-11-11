@@ -37,5 +37,8 @@ describe("plan paywall helpers", () => {
     expect(planCardLabel(plan({ interviewUsed: true }), "interview")).toBeNull();
     expect(planCardLabel({ allowlisted: true, plan: null }, "report")).toBe("Available with a plan");
     expect(planCardLabel(null, "interview")).toBeNull();
+    expect(planCardLabel(plan({ reportCreditsLeft: 0, interviewUsed: true }), "personality")).toBe("Included in your plan");
+    expect(planCardLabel({ allowlisted: true, plan: null }, "references")).toBe("Available with a plan");
+    expect(planCardLabel(null, "references")).toBeNull();
   });
 });

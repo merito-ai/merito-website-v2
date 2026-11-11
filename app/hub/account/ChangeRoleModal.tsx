@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { usePlanState, isPlanOnly, freePlanReports } from "./usePlanState";
 
 export default function ChangeRoleModal({
   onClose,
@@ -11,6 +12,8 @@ export default function ChangeRoleModal({
   onRoleChanged: (roleTitle: string) => void;
 }) {
   const router = useRouter();
+  const { state: planState } = usePlanState();
+  const freeReports = freePlanReports(planState, "report");
   const [role, setRole] = useState("");
   const [candidateLevel, setCandidateLevel] = useState<"" | "entry" | "mid" | "senior">("");
   const [jdText, setJdText] = useState("");
@@ -64,7 +67,12 @@ export default function ChangeRoleModal({
           Change target role
         </h2>
         <p className="text-[#9c9c9c]" style={{ fontSize: 12.5, lineHeight: 1.6, margin: "0 0 18px" }}>
-          Your completed steps carry over. The detailed report re-locks for the new role (₹299).
+          Your completed steps carry over.{" "}
+          {freeReports > 0
+            ? `The detailed report for the new role is included in your plan (${freeReports} left).`
+            : isPlanOnly(planState)
+              ? "The detailed report for the new role is included in Merito plans."
+              : "The detailed report re-locks for the new role (₹299)."}
         </p>
 
         <input

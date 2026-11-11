@@ -36,8 +36,9 @@ export function hasUnusedPlanInterview(state: PlanState | null): boolean {
 }
 
 // Locked-card price slot for plan users; null = show the normal price (normal user, or plan extras like a 4th report).
-export function planCardLabel(state: PlanState | null, product: "report" | "interview"): string | null {
+export function planCardLabel(state: PlanState | null, product: "report" | "interview" | "personality" | "references"): string | null {
   if (isPlanOnly(state)) return "Available with a plan";
+  if (state?.plan && (product === "personality" || product === "references")) return "Included in your plan";
   const reports = freePlanReports(state, product);
   if (reports > 0) return `Included in your plan · ${reports} left`;
   if (product === "interview" && hasUnusedPlanInterview(state)) return "Included in your plan";
