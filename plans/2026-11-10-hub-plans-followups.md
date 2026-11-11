@@ -72,7 +72,13 @@ FIXED 2026-11-11: dashboard (no role) now shows the "Your plan" panel for plan h
 
 PM decision 2026-11-11: Plan 1 holders see the real individual expert call price (₹1,999 entry/mid, ₹2,999 senior, 30 min) — no ₹2,999 1-hour mentoring add-on product; revisit if seminar buyers ask for upgrades.
 
-- (Low, PM 2026-11-11) Dashboard for a plan holder with no role still leads with "No fitment scores yet / Head back to the HUB" above the Your plan panel; for a paid user this should welcome them to their plan and point to "Check a role" as step 1. Copy-only.
+- FIXED 2026-11-11 (was Low, PM): no-role plan holder dashboard now reads "Welcome to <plan name>" / "Start with step 1: check a role." instead of "No fitment scores yet".
 - (Low) Plan 1 holder with no role not browser-checked.
 - (Medium, 2026-11-11) Pricing now shows only the plan comparison table to allowlisted users, plan holders included, so plan holders no longer see the per-product cards (extra ₹299 role report, ₹149 reference refresh, expert call) on /hub/account/pricing. The footer only lists the prices. Check whether those extras can still be bought from their feature pages, or add an "Extras" section under the table.
 - (Low, 2026-11-11) The "Talk to us" CTA on the other plan is a mailto link (admin@merito.ai). Replace it with a real upgrade product if seminar buyers ask to switch plans.
+
+Seminar pay-first flow (2026-11-11): allowlisted users without a plan see "Plans unlocked for you" + the plan comparison at the top of the dashboard (role or no role); "Your plan" panel is now numbered steps with one Start here / Next step marker.
+- (Medium) A successful plan purchase sends the buyer NO confirmation email: lib/paymentEmails.ts only sends ops alerts (failed/mismatch/refund/stuck). Only Razorpay's own receipt (if enabled in its dashboard, unverified) reaches the buyer. Add a "Welcome to <plan>" email with the step list.
+- (Low) Allowlisted no-plan user WITH a role (offer above the greeting cards) not browser-checked; QA user had no role.
+- (Low) No-role offer page has an h2 ("Plans unlocked for you") but no h1.
+- (Low) Steps "done" rules: references done once referees are invited; mentoring done once scheduled; share never shows done (no share state).

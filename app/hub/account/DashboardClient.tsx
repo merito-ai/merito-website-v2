@@ -34,6 +34,7 @@ export default function DashboardClient({
   initialCounsellingRequested,
   applications,
   planPanel,
+  planOffer,
   recruiterActivity,
 }: {
   leadId: string;
@@ -54,6 +55,7 @@ export default function DashboardClient({
   initialCounsellingRequested: boolean;
   applications: Application[];
   planPanel: React.ReactNode;
+  planOffer?: React.ReactNode; // allowlisted (seminar) users without a plan: plan comparison at the top
   recruiterActivity: React.ReactNode;
 }) {
   const [modal, setModal] = useState<"none" | "report" | "generate" | "counselling" | "tour">("none");
@@ -125,6 +127,8 @@ export default function DashboardClient({
             </span>
           </div>
         </div>
+
+        {planOffer}
 
         <OnboardingBanner roleTitle={roleTitle} />
 

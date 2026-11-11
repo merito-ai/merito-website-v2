@@ -16,7 +16,15 @@ export type PlanPanelRow = {
   included: boolean;
   status: string;
   action: { label: string; href: string } | null;
+  step: number | null; // null = not in this plan
+  done: boolean;
+  marker: "Start here" | "Next step" | null; // only on the first incomplete step
 };
+
+// Dashboard plan slot: holders get the panel, allowlisted (seminar) users without a plan get the plan offer.
+export function planDashboardView(s: { allowlisted: boolean; plan: unknown }): "panel" | "offer" | "none" {
+  return s.plan ? "panel" : s.allowlisted ? "offer" : "none";
+}
 
 const REPORT_CREDITS = 3; // mirrors PLAN_REPORT_CREDITS in lib/plans.ts
 export const CONTACT_HREF = "mailto:admin@merito.ai"; // the support address the legal/contact pages already use
@@ -49,28 +57,38 @@ export function buildPlanPanelRows(i: PlanPanelInput): PlanPanelRow[] {
         ? { status: m.scheduledAt ? `Scheduled ${date(m.scheduledAt)}` : "Scheduled", action: { label: "View", href: "/hub/account/expert" } }
         : { status: "Not booked yet", action: { label: "Book session", href: "/hub/account/expert" } };
 
-  const rows: PlanPanelRow[] = [
+  type Base = Omit<PlanPanelRow, "step" | "done" | "marker"> & { done: boolean };
+  const base: Base[] = [
     {
       key: "reports",
-      label: "CV reports (3 roles)",
+      label: "Check a role (CV report)",
       included: true,
+      done: i.hasRole !== false,
       status: i.reportCreditsLeft > 0 ? `${i.reportCreditsLeft} of ${REPORT_CREDITS} left` : `All ${REPORT_CREDITS} used · extra reports ₹299`,
       action: { label: "Check a role", href: "#check-role" },
     },
-    { key: "personality", label: "Personality + culture", included: true, ...personality[i.personality] },
-    { key: "interview", label: "AI interview (45 min)", included: true, ...interview[i.interview] },
-    { key: "references", label: "References", included: true, ...references[i.references] },
-    { key: "mentoring", label: "1-hour mentoring session", included: mentor, ...mentoring },
+    { key: "personality", label: "Personality + culture", included: true, done: i.personality === "done", ...personality[i.personality] },
+    { key: "references", label: "Invite referees", included: true, done: i.references !== "none", ...references[i.references] },
+    { key: "interview", label: "AI interview (45 min)", included: true, done: i.interview === "ready", ...interview[i.interview] },
+    { key: "mentoring", label: "Book mentoring (1 hour)", included: mentor, done: mentor && (m?.status === "scheduled" || m?.status === "completed"), ...mentoring },
     {
       key: "assistance",
       label: "Application assistance (3 companies)",
       included: mentor,
-      status: mentor ? "Our team will contact you to choose your 3 dream companies" : "Not in your plan",
+      done: false, // informational: the team calls, nothing for the user to finish
+      status: mentor ? "Our team will call you about your 3 dream companies" : "Not in your plan",
       action: mentor ? { label: "Contact us", href: CONTACT_HREF } : null,
     },
     // The existing consolidated report + its share link; no separate profile feature.
-    { key: "share", label: "Shareable consolidated profile", included: true, status: "One report combining all your results", action: { label: "View & share", href: "/hub/account/combined-report" } },
+    { key: "share", label: "Share consolidated profile", included: true, done: false, status: "One report combining all your results", action: { label: "View & share", href: "/hub/account/combined-report" } },
   ];
+  let n = 0;
+  const nextKey = base.find((r) => r.included && !r.done && r.key !== "assistance")?.key;
+  const rows: PlanPanelRow[] = base.map((r) => ({
+    ...r,
+    step: r.included ? ++n : null,
+    marker: r.key === nextKey ? (r.key === "reports" ? "Start here" : "Next step") : null,
+  }));
   if (i.hasRole !== false) return rows;
   // These pages redirect away without a role (expert too, unless Plan 2): send to the new-role modal instead.
   const needsRole = new Set(["personality", "interview", "references", ...(mentor ? [] : ["mentoring"])]);

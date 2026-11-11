@@ -52,7 +52,8 @@ function loadRazorpayCheckoutScript(): Promise<void> {
 
 const EYEBROW = "font-[family-name:var(--font-poppins)] font-bold uppercase text-white/40";
 
-export default function PlanCardsClient({ plans, owned = null }: { plans: PlanCard[]; owned?: PlanProduct | null }) {
+// embedded: dashboard offer for allowlisted (seminar) users without a plan; section + h2 instead of a page.
+export default function PlanCardsClient({ plans, owned = null, embedded = false }: { plans: PlanCard[]; owned?: PlanProduct | null; embedded?: boolean }) {
   const router = useRouter();
   const [paying, setPaying] = useState<string | null>(null);
   const [error, setError] = useState<{ product: string; message: string } | null>(null);
@@ -178,18 +179,25 @@ export default function PlanCardsClient({ plans, owned = null }: { plans: PlanCa
       ? `bg-[#ed1a24]/[0.06] border-x border-[#ed1a24]/40${edge === "top" ? " border-t" : edge === "bottom" ? " border-b" : ""}`
       : "";
 
+  const Wrap = embedded ? "section" : "main";
+  const Heading = embedded ? "h2" : "h1";
   return (
-    <main>
-      <div className="mx-auto px-4 md:px-6" style={{ maxWidth: 1040, paddingTop: 28, paddingBottom: 40, display: "flex", flexDirection: "column", gap: 20 }}>
+    <Wrap aria-labelledby="plans-heading">
+      <div
+        className={embedded ? undefined : "mx-auto px-4 md:px-6"}
+        style={{ maxWidth: 1040, ...(embedded ? {} : { paddingTop: 28, paddingBottom: 40 }), display: "flex", flexDirection: "column", gap: 20 }}
+      >
         <div>
-          <p className={EYEBROW} style={{ fontSize: 10.5, letterSpacing: "0.08em", margin: "0 0 6px" }}>
-            Account
-          </p>
-          <h1 className="font-[family-name:var(--font-gabarito)] font-semibold text-white" style={{ fontSize: "1.7rem", margin: 0 }}>
-            Your Merito plans
-          </h1>
+          {!embedded && (
+            <p className={EYEBROW} style={{ fontSize: 10.5, letterSpacing: "0.08em", margin: "0 0 6px" }}>
+              Account
+            </p>
+          )}
+          <Heading id="plans-heading" className="font-[family-name:var(--font-gabarito)] font-semibold text-white" style={{ fontSize: "1.7rem", margin: 0 }}>
+            {embedded ? "Plans unlocked for you" : "Your Merito plans"}
+          </Heading>
           <p className="font-[family-name:var(--font-poppins)] text-white/50" style={{ fontSize: 13.5, margin: "6px 0 0" }}>
-            One payment, no expiry. Each feature can be used once.
+            {embedded ? "As a Merito seminar attendee you can unlock everything with one payment." : "One payment, no expiry. Each feature can be used once."}
           </p>
         </div>
 
@@ -268,7 +276,7 @@ export default function PlanCardsClient({ plans, owned = null }: { plans: PlanCa
           and a reference refresh is ₹149. We refer you; we can&apos;t guarantee interviews or offers.
         </p>
       </div>
-    </main>
+    </Wrap>
   );
 }
 

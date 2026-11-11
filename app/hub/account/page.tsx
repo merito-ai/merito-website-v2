@@ -9,7 +9,7 @@ import { getResumeMatchReport, scoreOutOfTen, type ResumeMatchReportReady } from
 import { getInterviewReport } from "@/lib/intervuebox/interviewReports";
 import { buildReportRaw } from "@/lib/intervuebox/reportRaw";
 import { getSupabaseServerClient } from "@/lib/supabase";
-import { PRODUCT_PRICING, DEFAULT_LEVEL, formatPrice, type CandidateLevel } from "@/lib/razorpay/pricing";
+import { PRODUCT_PRICING, PRODUCT_LABELS, DEFAULT_LEVEL, formatPrice, type CandidateLevel } from "@/lib/razorpay/pricing";
 import { isProductUnlocked } from "@/lib/productUnlocks";
 import { getRecruiterViewCount } from "@/lib/recruiterActivity";
 import RecruiterActivityPanel from "./RecruiterActivityPanel";
@@ -20,6 +20,9 @@ import { leadIdOrRoleTitleFilter } from "@/lib/postgrestIdentityFilter";
 import { isPersonalityComplete } from "@/lib/psychometrics/testFlow";
 import { getPlanState } from "@/lib/plans";
 import PlanPanel from "./PlanPanel";
+import PlanCardsClient from "./pricing/PlanCardsClient";
+import { buildPlanCards } from "./pricing/pricingCatalog";
+import { planDashboardView } from "@/lib/planPanel";
 
 export default async function AccountPage({
   searchParams,
@@ -42,16 +45,25 @@ export default async function AccountPage({
     .order("created_at", { ascending: false });
 
   if (!leads || leads.length === 0) {
-    // Seminar buyers often pay before checking a role: still show what they bought.
-    const { plan } = await getPlanState(user.id, user.email);
+    // Seminar buyers often pay before checking a role: still show what they bought, or offer the plans (pay first).
+    const planState = await getPlanState(user.id, user.email);
+    const { plan } = planState;
     return (
       <main style={{ padding: "48px 20px", maxWidth: 640, margin: "0 auto" }}>
-        <h1 className="font-[family-name:var(--font-gabarito)] font-semibold text-white" style={{ fontSize: "1.6rem" }}>
-          No fitment scores yet
-        </h1>
-        <p className="font-[family-name:var(--font-poppins)] text-white/50" style={{ fontSize: 14 }}>
-          Head back to the HUB to check your fit for a role.
-        </p>
+        {planDashboardView(planState) === "offer" ? (
+          <div style={{ marginBottom: 24 }}>
+            <PlanCardsClient plans={buildPlanCards()} embedded />
+          </div>
+        ) : (
+          <>
+            <h1 className="font-[family-name:var(--font-gabarito)] font-semibold text-white" style={{ fontSize: "1.6rem" }}>
+              {plan ? `Welcome to ${PRODUCT_LABELS[plan.product]}` : "No fitment scores yet"}
+            </h1>
+            <p className="font-[family-name:var(--font-poppins)] text-white/50" style={{ fontSize: 14 }}>
+              {plan ? "Start with step 1: check a role." : "Head back to the HUB to check your fit for a role."}
+            </p>
+          </>
+        )}
         {plan && (
           <div style={{ margin: "20px 0" }}>
             <PlanPanel userId={user.id} plan={plan} level={DEFAULT_LEVEL} hasRole={false} />
@@ -241,6 +253,7 @@ export default async function AccountPage({
       initialCounsellingRequested={Boolean(counsellingRequest)}
       applications={leads.map((l) => ({ id: l.id, roleTitle: l.role_title, score: l.score, createdAt: l.created_at }))}
       planPanel={planState.plan ? <PlanPanel userId={user.id} plan={planState.plan} level={level} /> : null}
+      planOffer={planDashboardView(planState) === "offer" ? <PlanCardsClient plans={buildPlanCards()} embedded /> : null}
       recruiterActivity={RECRUITER_PREVIEW_ENABLED ? <RecruiterActivityPanel viewCount={recruiterViewCount} /> : null}
     />
   );

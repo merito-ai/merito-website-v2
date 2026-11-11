@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildPlanPanelRows, type PlanPanelInput } from "../planPanel";
+import { buildPlanPanelRows, planDashboardView, type PlanPanelInput } from "../planPanel";
 
 const base: PlanPanelInput = {
   product: "plan_prepare",
@@ -13,8 +13,8 @@ const base: PlanPanelInput = {
 const row = (input: PlanPanelInput, key: string) => buildPlanPanelRows(input).find((r) => r.key === key)!;
 
 describe("buildPlanPanelRows", () => {
-  it("lists every benefit in plan order", () => {
-    expect(buildPlanPanelRows(base).map((r) => r.key)).toEqual(["reports", "personality", "interview", "references", "mentoring", "assistance", "share"]);
+  it("lists every benefit in step order", () => {
+    expect(buildPlanPanelRows(base).map((r) => r.key)).toEqual(["reports", "personality", "references", "interview", "mentoring", "assistance", "share"]);
   });
 
   it("reports: remaining count, check-a-role action; spent shows ₹299 extras", () => {
@@ -41,7 +41,7 @@ describe("buildPlanPanelRows", () => {
   });
 
   it("shareable profile is the existing consolidated report", () => {
-    expect(row(base, "share")).toMatchObject({ label: "Shareable consolidated profile", action: { label: "View & share", href: "/hub/account/combined-report" } });
+    expect(row(base, "share")).toMatchObject({ label: "Share consolidated profile", action: { label: "View & share", href: "/hub/account/combined-report" } });
   });
 
   it("Plan 1: mentoring + assistance not included, mentoring sold individually", () => {
@@ -65,5 +65,60 @@ describe("buildPlanPanelRows", () => {
     expect(row({ ...noRole, product: "plan_mentor" }, "mentoring").action!.href).toBe("/hub/account/expert");
     expect(row(noRole, "share").action!.href).toBe("/hub/account/combined-report");
     expect(row(base, "interview").action!.href).toBe("/hub/account/interview");
+  });
+});
+
+describe("plan steps", () => {
+  const p2: PlanPanelInput = { ...base, product: "plan_mentor" };
+  const marked = (input: PlanPanelInput) => buildPlanPanelRows(input).filter((r) => r.marker);
+
+  it("Plan 2 numbers all 7 steps 1-7", () => {
+    expect(buildPlanPanelRows(p2).map((r) => r.step)).toEqual([1, 2, 3, 4, 5, 6, 7]);
+  });
+
+  it("Plan 1: Plan-2-only rows have no number; share is step 5", () => {
+    expect(buildPlanPanelRows(base).map((r) => r.step)).toEqual([1, 2, 3, 4, null, null, 5]);
+  });
+
+  it("no role: single Start here marker on step 1", () => {
+    expect(marked({ ...base, hasRole: false })).toEqual([expect.objectContaining({ key: "reports", marker: "Start here", done: false })]);
+  });
+
+  it("role checked: step 1 done, Next step on personality", () => {
+    expect(row(base, "reports").done).toBe(true);
+    expect(marked(base)).toEqual([expect.objectContaining({ key: "personality", marker: "Next step" })]);
+  });
+
+  it("walks the order: personality done -> references; invited -> interview; interview ready -> mentoring (Plan 2)", () => {
+    const a = { ...p2, personality: "done" as const };
+    expect(marked(a)[0].key).toBe("references");
+    const b = { ...a, references: "in_progress" as const };
+    expect(row(b, "references").done).toBe(true);
+    expect(marked(b)[0].key).toBe("interview");
+    const c = { ...b, interview: "in_progress" as const };
+    expect(marked(c)[0].key).toBe("interview");
+    const d = { ...b, interview: "ready" as const };
+    expect(marked(d)[0].key).toBe("mentoring");
+  });
+
+  it("assistance is informational: never marked, never done; booked mentoring skips to share", () => {
+    const all = { ...p2, personality: "done" as const, references: "completed" as const, interview: "ready" as const, mentoring: { status: "scheduled", scheduledAt: null } };
+    expect(row(all, "mentoring").done).toBe(true);
+    expect(row(all, "assistance")).toMatchObject({ done: false, marker: null, status: "Our team will call you about your 3 dream companies" });
+    expect(marked(all)).toEqual([expect.objectContaining({ key: "share", marker: "Next step" })]);
+  });
+
+  it("Plan 1 skips not-included mentoring for the marker", () => {
+    const all = { ...base, personality: "done" as const, references: "completed" as const, interview: "ready" as const };
+    expect(marked(all)[0].key).toBe("share");
+  });
+});
+
+describe("planDashboardView", () => {
+  const plan = { orderId: "o", product: "plan_prepare" as const, interviewUsed: false, reportCreditsLeft: 3 };
+  it("plan holder -> panel; allowlisted without plan -> offer; everyone else -> none", () => {
+    expect(planDashboardView({ allowlisted: true, plan })).toBe("panel");
+    expect(planDashboardView({ allowlisted: true, plan: null })).toBe("offer");
+    expect(planDashboardView({ allowlisted: false, plan: null })).toBe("none");
   });
 });

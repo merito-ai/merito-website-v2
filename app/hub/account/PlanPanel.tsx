@@ -6,7 +6,7 @@ import { PRODUCT_LABELS, PRODUCT_PRICING, formatPrice, type CandidateLevel } fro
 import type { PlanState } from "@/lib/plans";
 import { buildPlanPanelRows, type PlanPanelInput } from "@/lib/planPanel";
 
-// "Your plan": one row per benefit with live state + next action (dashboard, and pricing in place of the old banner).
+// "Your plan": numbered steps with live state, next action and a single next-step marker (dashboard).
 export default async function PlanPanel({ userId, plan, level, hasRole = true }: { userId: string; plan: NonNullable<PlanState["plan"]>; level: CandidateLevel; hasRole?: boolean }) {
   const db = getSupabaseServerClient();
   const [{ data: personality }, { data: interview }, refs, { data: mentoring }] = await Promise.all([
@@ -36,15 +36,30 @@ export default async function PlanPanel({ userId, plan, level, hasRole = true }:
       <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
         {rows.map((r) => (
           <li key={r.key} className="flex flex-wrap items-center border-t border-white/[0.06]" style={{ gap: "6px 12px", padding: "10px 0", fontSize: 13.5 }}>
-            {r.included ? (
-              <Check size={15} strokeWidth={2.5} className="text-[#3FCB8C] shrink-0" aria-hidden="true" />
+            {!r.included ? (
+              <X size={15} strokeWidth={2} className="text-white/40 shrink-0" aria-hidden="true" style={{ margin: "0 5px" }} />
+            ) : r.done ? (
+              <span className="inline-flex items-center justify-center shrink-0 bg-[#3FCB8C]/15 text-[#3FCB8C]" style={{ width: 24, height: 24, borderRadius: "50%" }} aria-hidden="true">
+                <Check size={14} strokeWidth={3} />
+              </span>
             ) : (
-              <X size={15} strokeWidth={2} className="text-white/40 shrink-0" aria-hidden="true" />
+              <span
+                className={`inline-flex items-center justify-center shrink-0 font-semibold ${r.marker ? "bg-[#ed1a24] text-white" : "border border-white/25 text-white/70"}`}
+                style={{ width: 24, height: 24, borderRadius: "50%", fontSize: 12 }}
+                aria-hidden="true"
+              >
+                {r.step}
+              </span>
             )}
-            <span className="sr-only">{r.included ? "Included:" : "Not included:"}</span>
+            <span className="sr-only">{!r.included ? "Not included:" : `Step ${r.step}${r.done ? ", done" : ""}:`}</span>
             <span className={r.included ? "text-white" : "text-white/55"} style={{ flex: "1 1 180px", minWidth: 0 }}>
               <span className="font-semibold">{r.label}</span>
-              <span className="block text-white/55" style={{ fontSize: 12.5 }}>{r.status}</span>
+              {r.marker && (
+                <span className="inline-block align-middle font-semibold uppercase text-[#ed1a24] border border-[#ed1a24]/50" style={{ fontSize: 10, letterSpacing: "0.06em", borderRadius: 999, padding: "1px 8px", marginLeft: 8 }}>
+                  {r.marker}
+                </span>
+              )}
+              <span className="block text-white/55" style={{ fontSize: 12.5 }}>{!r.done ? r.status : r.status === "Completed" ? "Done" : `Done · ${r.status}`}</span>
             </span>
             {r.action &&
               (!r.action.href.startsWith("/") ? (
