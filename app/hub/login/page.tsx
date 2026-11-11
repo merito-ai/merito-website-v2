@@ -7,9 +7,9 @@ import { getAbsoluteUrl } from "@/lib/site";
 export default function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ next?: string; error?: string }>;
 }) {
-  const { next } = use(searchParams);
+  const { next, error: linkError } = use(searchParams);
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
 
@@ -113,6 +113,15 @@ export default function LoginPage({
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
+            {linkError === "expired" && status === "idle" && (
+              <p
+                role="alert"
+                className="font-[family-name:var(--font-poppins)] bg-[#fff4f4] border border-[#f5c2c4] text-[#7a1015]"
+                style={{ fontSize: 13, lineHeight: 1.6, margin: "0 0 12px", padding: "10px 12px", borderRadius: 8 }}
+              >
+                That sign-in link has expired or was already used. Enter your email and we&apos;ll send a new one.
+              </p>
+            )}
             <input
               type="email"
               value={email}

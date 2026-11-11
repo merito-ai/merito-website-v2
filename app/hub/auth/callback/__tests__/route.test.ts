@@ -1,11 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 const verifyOtpMock = vi.fn();
+const getUserMock = vi.fn();
 const claimFitmentLeadsMock = vi.fn();
 
 vi.mock("@/lib/supabaseAuthServer", () => ({
   createSupabaseServerClient: async () => ({
-    auth: { verifyOtp: verifyOtpMock },
+    auth: { verifyOtp: verifyOtpMock, getUser: getUserMock },
   }),
 }));
 vi.mock("@/lib/claimFitmentLeads", () => ({
@@ -20,6 +21,16 @@ describe("GET /hub/auth/callback", () => {
   beforeEach(() => {
     verifyOtpMock.mockReset();
     claimFitmentLeadsMock.mockReset();
+    getUserMock.mockReset();
+    getUserMock.mockResolvedValue({ data: { user: null }, error: null });
+  });
+
+  it("sends an already-signed-in user to the dashboard when the link was already used (clicked twice)", async () => {
+    verifyOtpMock.mockResolvedValue({ data: { user: null }, error: { message: "Email link is invalid or has expired" } });
+    getUserMock.mockResolvedValue({ data: { user: { id: "user-1" } }, error: null });
+    const { GET } = await importRoute();
+    const response = await GET(new Request("http://localhost/hub/auth/callback?next=&token_hash=used&type=magiclink"));
+    expect(response.headers.get("location")).toBe("http://localhost/hub/account");
   });
 
   it("claims leads and redirects to /hub/account on a valid token_hash", async () => {

@@ -22,6 +22,9 @@ export async function GET(request: Request) {
   const { data, error } = await supabase.auth.verifyOtp({ token_hash, type });
 
   if (error || !data.user) {
+    // Link clicked twice (or pre-opened by a mail scanner) while already signed in: don't strand them on the login form.
+    const { data: current } = await supabase.auth.getUser();
+    if (current.user) return Response.redirect(`${origin}${destination}`, 307);
     return Response.redirect(`${origin}/hub/login?error=expired`, 307);
   }
 
