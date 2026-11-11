@@ -101,7 +101,7 @@ export default function BroadcastNotificationPage() {
       });
       const data = await response.json().catch(() => null);
       if (!response.ok) {
-        showToast("error", data?.error || "Something went wrong — try again.");
+        showToast("error", data?.error || "Something went wrong, try again.");
         return;
       }
       if (data.sent === 0 && data.failed > 0) {
@@ -116,7 +116,7 @@ export default function BroadcastNotificationPage() {
       // The state resets above already trigger the debounced preview
       // useEffect -- no need to call fetchPreview directly here too.
     } catch {
-      showToast("error", "Something went wrong — try again.");
+      showToast("error", "Something went wrong, try again.");
     } finally {
       setSending(false);
       setConfirming(false);

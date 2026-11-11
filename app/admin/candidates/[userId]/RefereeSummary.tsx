@@ -42,13 +42,13 @@ function EditContactForm({ referee, prefill, onDone }: { referee: RefereeRow; pr
       });
       const data = await response.json().catch(() => null);
       if (!response.ok) {
-        setError(data?.error || "Something went wrong — try again.");
+        setError(data?.error || "Something went wrong, try again.");
         return;
       }
       router.refresh();
       onDone();
     } catch {
-      setError("Something went wrong — try again.");
+      setError("Something went wrong, try again.");
     } finally {
       setBusy(false);
     }

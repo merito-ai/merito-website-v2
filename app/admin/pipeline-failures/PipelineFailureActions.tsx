@@ -21,13 +21,13 @@ export default function PipelineFailureActions({ id, kind }: { id: string; kind:
       const response = await fetch(`/api/admin/pipeline-failures/${id}/${action}`, { method: "POST" });
       const data = await response.json().catch(() => null);
       if (!response.ok) {
-        showToast("error", data?.error || "Something went wrong — try again.");
+        showToast("error", data?.error || "Something went wrong, try again.");
         return;
       }
       showToast("success", "Done.");
       router.refresh();
     } catch {
-      showToast("error", "Something went wrong — try again.");
+      showToast("error", "Something went wrong, try again.");
     } finally {
       setBusy(null);
     }
@@ -36,7 +36,7 @@ export default function PipelineFailureActions({ id, kind }: { id: string; kind:
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
       {kind === "interview_invite_after_payment" && (
-        <Button variant="danger" onClick={() => setPending({ action: "retry-interview", label: "retry" })} disabled={busy !== null} loading={busy === "retry"}>
+        <Button variant="primary" onClick={() => setPending({ action: "retry-interview", label: "retry" })} disabled={busy !== null} loading={busy === "retry"}>
           Retry interview
         </Button>
       )}
@@ -49,7 +49,7 @@ export default function PipelineFailureActions({ id, kind }: { id: string; kind:
         title={pending?.label === "retry" ? "Retry this pipeline failure?" : "Discard this pipeline failure?"}
         message={pending?.label === "retry" ? "Re-attempts the interview invite for this candidate." : "Marks this failure as resolved without retrying."}
         confirmLabel={pending?.label === "retry" ? "Retry" : "Discard"}
-        danger={pending?.label === "retry"}
+        danger={false}
         busy={busy === pending?.label}
         onConfirm={() => pending && run(pending.action, pending.label)}
         onCancel={() => setPending(null)}

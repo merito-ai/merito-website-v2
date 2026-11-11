@@ -247,8 +247,8 @@ describe("getScoreAnalysis", () => {
     );
     fitmentInterviewsSelectMock.mockReturnValue(
       chainOfOrdered([
-        { user_id: "u1", role_title: "SDE", lead_id: "lead-1", status: "ready", report_raw: { overallScore: 2 } },
-        { user_id: "u2", role_title: "SDE", lead_id: "lead-2", status: "ready", report_raw: { overallScore: 9 } },
+        { user_id: "u1", role_title: "SDE", lead_id: "lead-1", status: "ready", report_raw: { overallScore: 25 } },
+        { user_id: "u2", role_title: "SDE", lead_id: "lead-2", status: "ready", report_raw: { overallScore: 76 } },
       ])
     );
 
@@ -257,7 +257,8 @@ describe("getScoreAnalysis", () => {
 
     expect(result.fitmentDistribution.find((b) => b.label === "20-30")?.count).toBe(1);
     expect(result.fitmentDistribution.find((b) => b.label === "90-100")?.count).toBe(1);
-    expect(result.interviewDistribution.find((b) => b.label === "2-3")?.count).toBe(1);
+    expect(result.interviewDistribution.find((b) => b.label === "20-30")?.count).toBe(1);
+    expect(result.interviewDistribution.find((b) => b.label === "70-80")?.count).toBe(1);
     expect(result.correlationSampleSize).toBe(2);
     expect(result.correlation).toBeCloseTo(1, 5); // perfectly aligned low/high pairs
   });

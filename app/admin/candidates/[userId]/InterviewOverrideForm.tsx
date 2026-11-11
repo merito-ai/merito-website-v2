@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/app/admin/_components/Button";
 import Badge from "@/app/admin/_components/Badge";
+import ConfirmDialog from "@/app/admin/_components/ConfirmDialog";
 import { useToast } from "@/app/admin/_components/Toast";
 import type { AdminActionRow } from "@/lib/adminAuditLog";
 
@@ -34,6 +35,7 @@ export default function InterviewOverrideForm({
   const [reason, setReason] = useState("");
   const [busy, setBusy] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [confirmingClear, setConfirmingClear] = useState(false);
 
   async function save() {
     const parsed = Number(score);
@@ -47,20 +49,21 @@ export default function InterviewOverrideForm({
       });
       const data = await response.json().catch(() => null);
       if (!response.ok) {
-        showToast("error", data?.error || "Something went wrong — try again.");
+        showToast("error", data?.error || "Something went wrong, try again.");
         return;
       }
       setReason("");
       showToast("success", "Saved.");
       router.refresh();
     } catch {
-      showToast("error", "Something went wrong — try again.");
+      showToast("error", "Something went wrong, try again.");
     } finally {
       setBusy(false);
     }
   }
 
   async function clearOverride() {
+    setConfirmingClear(false);
     if (!reason.trim()) return;
     setBusy(true);
     try {
@@ -71,14 +74,14 @@ export default function InterviewOverrideForm({
       });
       const data = await response.json().catch(() => null);
       if (!response.ok) {
-        showToast("error", data?.error || "Something went wrong — try again.");
+        showToast("error", data?.error || "Something went wrong, try again.");
         return;
       }
       setReason("");
-      showToast("success", "Override cleared — resync is available again.");
+      showToast("success", "Override cleared. Resync is available again.");
       router.refresh();
     } catch {
-      showToast("error", "Something went wrong — try again.");
+      showToast("error", "Something went wrong, try again.");
     } finally {
       setBusy(false);
     }
@@ -100,8 +103,8 @@ export default function InterviewOverrideForm({
       {open && (
         <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 480, marginTop: 10 }}>
           <label className="font-[family-name:var(--font-poppins)]" style={{ fontSize: 12, display: "flex", flexDirection: "column", gap: 4 }}>
-            Overall score (0-10)
-            <input type="number" min={0} max={10} step={0.1} value={score} onChange={(e) => setScore(e.target.value)} style={inputStyle} />
+            Overall score (0-100)
+            <input type="number" min={0} max={100} value={score} onChange={(e) => setScore(e.target.value)} style={inputStyle} />
           </label>
           <label className="font-[family-name:var(--font-poppins)]" style={{ fontSize: 12, display: "flex", flexDirection: "column", gap: 4 }}>
             Summary
@@ -119,10 +122,20 @@ export default function InterviewOverrideForm({
               Save override
             </Button>
             {overridden && (
-              <Button variant="danger" onClick={clearOverride} disabled={busy || !reason.trim()}>
+              <Button variant="danger" onClick={() => setConfirmingClear(true)} disabled={busy || !reason.trim()}>
                 Clear override
               </Button>
             )}
+            <ConfirmDialog
+              open={confirmingClear}
+              title="Clear this override?"
+              message="Removes the admin-set score and summary and puts back the original interview result."
+              confirmLabel="Clear override"
+              danger
+              busy={busy}
+              onConfirm={clearOverride}
+              onCancel={() => setConfirmingClear(false)}
+            />
           </div>
         </div>
       )}
@@ -147,7 +160,7 @@ export default function InterviewOverrideForm({
                       {row.adminEmail} · {formatDateTime(row.createdAt)}
                     </p>
                     <p className="font-[family-name:var(--font-poppins)] text-[#9c9c9c]" style={{ margin: 0 }}>
-                      Set overallScore={nv?.overallScore}, summary="{nv?.overallSummary}" — {nv?.reason}
+                      Score set to {nv?.overallScore}, summary &quot;{nv?.overallSummary}&quot;. Reason: {nv?.reason}
                     </p>
                     {pv && (
                       <button

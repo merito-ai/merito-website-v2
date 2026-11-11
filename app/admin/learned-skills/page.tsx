@@ -1,5 +1,6 @@
 import { listLearnedSkills } from "@/lib/adminLearnedSkills";
 import { Table, TableHeadRow, TableRow, TableCell, TableEmptyRow } from "@/app/admin/_components/Table";
+import PageHeader from "@/app/admin/_components/PageHeader";
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-IN", { year: "numeric", month: "short", day: "numeric" });
@@ -10,9 +11,7 @@ export default async function AdminLearnedSkillsPage() {
 
   return (
     <div>
-      <p className="font-[family-name:var(--font-poppins)] text-black" style={{ fontSize: 14, margin: "0 0 24px" }}>
-        {skills.length} skills learned from job descriptions, not yet in the fallback keyword list.
-      </p>
+      <PageHeader title="Learned skills" description={`${skills.length} skills found in job descriptions that are not in the built-in skill list yet.`} />
 
       <Table>
         <TableHeadRow columns={["Skill", "Sample job", "First seen"]} />

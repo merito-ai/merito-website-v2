@@ -2,11 +2,7 @@ import type { AdminActionRow } from "@/lib/adminAuditLog";
 import type { CandidateNotificationRow } from "@/lib/adminCandidates";
 import type { CandidatePaymentRow } from "@/lib/adminPayments";
 import Badge, { type BadgeVariant } from "@/app/admin/_components/Badge";
-
-function formatActionLabel(action: string): string {
-  const spaced = action.split(".").join(" ").split("_").join(" ");
-  return spaced.charAt(0).toUpperCase() + spaced.slice(1);
-}
+import { formatActionLabel, formatChange } from "@/lib/adminLabels";
 
 function formatDateTime(iso: string): string {
   return new Date(iso).toLocaleString("en-IN", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
@@ -46,7 +42,7 @@ export default function ActivityFeed({
       timestamp: row.createdAt,
       badge: { label: "Admin", variant: "neutral" as BadgeVariant },
       title: formatActionLabel(row.action),
-      detail: `${row.adminEmail} — ${JSON.stringify(row.newValue)}`,
+      detail: `${row.adminEmail} · ${formatChange(row.priorValue, row.newValue)}`,
     })),
     ...notifications.map((row) => ({
       id: `notification:${row.id}`,
@@ -59,7 +55,7 @@ export default function ActivityFeed({
       id: `payment:${row.orderId}`,
       timestamp: row.createdAt,
       badge: { label: row.status, variant: PAYMENT_STATUS_VARIANT[row.status] ?? "neutral" },
-      title: `${row.product} (${row.level})${row.roleTitle ? ` — ${row.roleTitle}` : ""}`,
+      title: `${row.product} (${row.level})${row.roleTitle ? `, ${row.roleTitle}` : ""}`,
       detail: formatMoney(row.amountPaise),
     })),
   ].sort((a, b) => (a.timestamp < b.timestamp ? 1 : -1));

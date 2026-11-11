@@ -777,8 +777,8 @@ describe("overrideInterviewReport", () => {
   it("throws on an out-of-range score", async () => {
     const { overrideInterviewReport } = await import("../adminCandidates");
     await expect(
-      overrideInterviewReport("row-1", { overallScore: 15, overallSummary: "x" }, "roshan@merito.in", "x")
-    ).rejects.toThrow(/between 0 and 10/);
+      overrideInterviewReport("row-1", { overallScore: 150, overallSummary: "x" }, "roshan@merito.in", "x")
+    ).rejects.toThrow(/between 0 and 100/);
     expect(rowSelectMaybeSingle).not.toHaveBeenCalled();
   });
 });

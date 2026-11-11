@@ -2,11 +2,14 @@ import Link from "next/link";
 import { listRecruiters } from "@/lib/adminRecruiters";
 import { Table, TableHeadRow, TableRow, TableCell, TableEmptyRow } from "@/app/admin/_components/Table";
 import Badge from "@/app/admin/_components/Badge";
+import PageHeader from "@/app/admin/_components/PageHeader";
 
 export default async function AdminRecruitersPage() {
   const recruiters = await listRecruiters();
 
   return (
+    <div>
+    <PageHeader title="Recruiters" description="Recruiter accounts. Open one to verify, ban or edit the company." />
     <Table>
       <TableHeadRow columns={["Email", "Company", "Verified", "Banned"]} />
       <tbody>
@@ -29,5 +32,6 @@ export default async function AdminRecruitersPage() {
         {recruiters.length === 0 && <TableEmptyRow colSpan={4} message="No recruiters yet." />}
       </tbody>
     </Table>
+    </div>
   );
 }

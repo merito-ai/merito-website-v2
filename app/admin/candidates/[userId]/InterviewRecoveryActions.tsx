@@ -34,13 +34,13 @@ export default function InterviewRecoveryActions({ interviewId, status }: { inte
       const response = await fetch(`/api/admin/interviews/${interviewId}/${action}`, { method: "POST" });
       const data = await response.json().catch(() => null);
       if (!response.ok) {
-        showToast("error", data?.error || "Something went wrong — try again.");
+        showToast("error", data?.error || "Something went wrong, try again.");
         return;
       }
       showToast("success", action === "generate" ? "Report generation requested." : `Reinvited (${data.invited} sent).`);
       router.refresh();
     } catch {
-      showToast("error", "Something went wrong — try again.");
+      showToast("error", "Something went wrong, try again.");
     } finally {
       setBusy(null);
     }

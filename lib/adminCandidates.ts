@@ -486,6 +486,13 @@ export async function getCandidateDetail(userId: string): Promise<CandidateDetai
   };
 }
 
+export async function isCandidateBanned(userId: string): Promise<boolean> {
+  const { data, error } = await getSupabaseServerClient().auth.admin.getUserById(userId);
+  if (error) throw new Error(`Failed to load user: ${error.message}`);
+  const bannedUntil = data.user?.banned_until;
+  return Boolean(bannedUntil) && new Date(bannedUntil as string).getTime() > Date.now();
+}
+
 export async function banCandidate(userId: string, adminEmail: string, reason: string): Promise<void> {
   const supabase = getSupabaseServerClient();
   const { error } = await supabase.auth.admin.updateUserById(userId, { ban_duration: BAN_DURATION_INDEFINITE });
@@ -970,8 +977,8 @@ export async function overrideInterviewReport(
   adminEmail: string,
   reason: string
 ): Promise<void> {
-  if (!Number.isFinite(updates.overallScore) || updates.overallScore < 0 || updates.overallScore > 10) {
-    throw new Error("overallScore must be a number between 0 and 10.");
+  if (!Number.isFinite(updates.overallScore) || updates.overallScore < 0 || updates.overallScore > 100) {
+    throw new Error("overallScore must be a number between 0 and 100.");
   }
 
   const supabase = getSupabaseServerClient();

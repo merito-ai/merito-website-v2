@@ -64,10 +64,10 @@ export default function CounsellingStatusForm({
         router.refresh();
       } else {
         const body = await response.json().catch(() => null);
-        showToast("error", body?.error ?? "Something went wrong — try again.");
+        showToast("error", body?.error ?? "Something went wrong, try again.");
       }
     } catch {
-      showToast("error", "Something went wrong — try again.");
+      showToast("error", "Something went wrong, try again.");
     } finally {
       setSaving(false);
     }

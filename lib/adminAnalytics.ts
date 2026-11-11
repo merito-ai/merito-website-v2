@@ -301,7 +301,7 @@ export async function getScoreAnalysis(): Promise<ScoreAnalysis> {
 
   return {
     fitmentDistribution: bucketize(fitmentScores, 10, 100),
-    interviewDistribution: bucketize(interviewScores, 1, 10),
+    interviewDistribution: bucketize(interviewScores, 10, 100),
     correlation: pearsonCorrelation(pairs),
     correlationSampleSize: pairs.length,
   };

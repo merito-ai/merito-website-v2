@@ -1,6 +1,7 @@
 import { getLookupStats, listRecentLookups } from "@/lib/adminExtension";
 import { Table, TableHeadRow, TableRow, TableCell, TableEmptyRow } from "@/app/admin/_components/Table";
 import Badge from "@/app/admin/_components/Badge";
+import PageHeader from "@/app/admin/_components/PageHeader";
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-IN", { year: "numeric", month: "short", day: "numeric" });
@@ -11,9 +12,10 @@ export default async function AdminExtensionPage() {
 
   return (
     <div>
-      <p className="font-[family-name:var(--font-poppins)] text-black" style={{ fontSize: 14, margin: "0 0 24px" }}>
-        {stats.totalLookups} total lookups · {stats.matchedLookups} matched · {stats.last30DaysLookups} in the last 30 days
-      </p>
+      <PageHeader
+        title="Extension lookups"
+        description={`Recruiters looking up candidates with the browser extension: ${stats.totalLookups} total, ${stats.matchedLookups} matched, ${stats.last30DaysLookups} in the last 30 days.`}
+      />
 
       <Table>
         <TableHeadRow columns={["Candidate", "Date"]} />

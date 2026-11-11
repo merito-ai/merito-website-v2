@@ -3,6 +3,7 @@ import { listCandidates, FUNNEL_STAGE_LABEL } from "@/lib/adminCandidates";
 import { Table, TableHeadRow, TableRow, TableCell, TableEmptyRow } from "@/app/admin/_components/Table";
 import Badge from "@/app/admin/_components/Badge";
 import Pagination from "@/app/admin/_components/Pagination";
+import PageHeader from "@/app/admin/_components/PageHeader";
 
 export default async function AdminCandidatesPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const { page: pageParam } = await searchParams;
@@ -10,6 +11,7 @@ export default async function AdminCandidatesPage({ searchParams }: { searchPara
 
   return (
     <div>
+    <PageHeader title="Candidates" description="Everyone who started a fitment check, newest first. Open one to see and fix everything about them." />
     <Table>
       <TableHeadRow columns={["Name", "Email", "Latest role", "First seen", "Funnel stage"]} />
       <tbody>

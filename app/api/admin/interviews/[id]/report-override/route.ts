@@ -3,7 +3,7 @@ import { requireAdmin } from "@/lib/adminAuth";
 import { overrideInterviewReport, clearInterviewOverride } from "@/lib/adminCandidates";
 
 const PostSchema = z.object({
-  overallScore: z.number().min(0).max(10),
+  overallScore: z.number().min(0).max(100),
   overallSummary: z.string(),
   reason: z.string().min(1),
 });

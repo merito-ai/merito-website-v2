@@ -311,7 +311,7 @@ export default async function AdminFunnelPage() {
         <div className="bg-white border border-black/[0.08]" style={{ borderRadius: 14, padding: 20, marginBottom: 12 }}>
           <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) minmax(0,1fr)", gap: 32, marginBottom: 20 }}>
             <HistogramBars title="Fitment score distribution (0-100)" buckets={scoreAnalysis.fitmentDistribution} color="#ed1a24" />
-            <HistogramBars title="Interview score distribution (0-10)" buckets={scoreAnalysis.interviewDistribution} color="#ed1a24" />
+            <HistogramBars title="Interview score distribution (0-100)" buckets={scoreAnalysis.interviewDistribution} color="#ed1a24" />
           </div>
           <p className="font-[family-name:var(--font-poppins)] text-[#9c9c9c]" style={{ fontSize: 11, margin: 0 }}>
             Fitment-vs-interview score correlation:{" "}

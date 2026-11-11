@@ -7,28 +7,61 @@ import { createSupabaseBrowserClient } from "@/lib/supabaseAuth";
 import Button from "@/app/admin/_components/Button";
 import type { RecentCandidateView } from "@/lib/adminRecentViews";
 
-const NAV_ITEMS = [
-  { label: "Overview", href: "/admin" },
-  { label: "Activity", href: "/admin/activity" },
+type NavItem = { label: string; href: string };
+
+const NAV_ITEMS: NavItem[] = [
+  { label: "Home", href: "/admin" },
   { label: "Candidates", href: "/admin/candidates" },
-  { label: "Broadcast", href: "/admin/notifications/broadcast" },
   { label: "Recruiters", href: "/admin/recruiters" },
-  { label: "Recruiter Activity", href: "/admin/recruiter-activity" },
-  { label: "Contact Requests", href: "/admin/contact-requests" },
-  { label: "Duplicates", href: "/admin/duplicates" },
   { label: "Payments", href: "/admin/payments" },
-  { label: "Plan Allowlist", href: "/admin/plan-allowlist" },
-  { label: "Counselling", href: "/admin/counselling" },
-  { label: "Extension", href: "/admin/extension" },
-  { label: "Pipeline Failures", href: "/admin/pipeline-failures" },
-  { label: "Webhook Events", href: "/admin/webhook-events" },
-  { label: "Learned Skills", href: "/admin/learned-skills" },
-  { label: "Email Templates", href: "/admin/email-templates" },
+  { label: "Counselling & Plans", href: "/admin/counselling" },
+];
+
+const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
+  {
+    label: "Tools",
+    items: [
+      { label: "Broadcast", href: "/admin/notifications/broadcast" },
+      { label: "Email templates", href: "/admin/email-templates" },
+      { label: "Duplicates", href: "/admin/duplicates" },
+      { label: "Plan allowlist", href: "/admin/plan-allowlist" },
+    ],
+  },
+  {
+    label: "System",
+    items: [
+      { label: "Pipeline failures", href: "/admin/pipeline-failures" },
+      { label: "Webhook events", href: "/admin/webhook-events" },
+      { label: "Learned skills", href: "/admin/learned-skills" },
+      { label: "Recruiter activity", href: "/admin/recruiter-activity" },
+      { label: "Contact reveals", href: "/admin/contact-requests" },
+      { label: "Extension", href: "/admin/extension" },
+      { label: "Admin log", href: "/admin/activity" },
+    ],
+  },
 ];
 
 function isNavItemActive(pathname: string, href: string): boolean {
   if (href === "/admin") return pathname === "/admin";
   return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+function NavLink({ item, active, small = false }: { item: NavItem; active: boolean; small?: boolean }) {
+  return (
+    <Link
+      href={item.href}
+      className="font-[family-name:var(--font-poppins)] font-semibold"
+      style={{
+        fontSize: small ? 13 : 14,
+        padding: small ? "7px 12px" : "10px 12px",
+        borderRadius: 8,
+        color: active ? "#fff" : "rgba(255,255,255,0.6)",
+        background: active ? "#ed1a24" : "transparent",
+      }}
+    >
+      {item.label}
+    </Link>
+  );
 }
 
 export default function AdminSidebar({ adminEmail, recentViews }: { adminEmail: string; recentViews: RecentCandidateView[] }) {
@@ -84,23 +117,25 @@ export default function AdminSidebar({ adminEmail, recentViews }: { adminEmail: 
       </form>
 
       <nav style={{ display: "flex", flexDirection: "column", gap: 4, flex: 1 }}>
-        {NAV_ITEMS.map((item) => {
-          const active = isNavItemActive(pathname ?? "", item.href);
+        {NAV_ITEMS.map((item) => (
+          <NavLink key={item.href} item={item} active={isNavItemActive(pathname ?? "", item.href)} />
+        ))}
+        {NAV_GROUPS.map((group) => {
+          const groupActive = group.items.some((item) => isNavItemActive(pathname ?? "", item.href));
           return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="font-[family-name:var(--font-poppins)] font-semibold"
-              style={{
-                fontSize: 14,
-                padding: "10px 12px",
-                borderRadius: 8,
-                color: active ? "#fff" : "rgba(255,255,255,0.6)",
-                background: active ? "#ed1a24" : "transparent",
-              }}
-            >
-              {item.label}
-            </Link>
+            <details key={group.label} open={groupActive} style={{ marginTop: 8 }}>
+              <summary
+                className="font-[family-name:var(--font-poppins)] font-semibold"
+                style={{ fontSize: 11, letterSpacing: 0.4, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", padding: "8px 12px", cursor: "pointer" }}
+              >
+                {group.label}
+              </summary>
+              <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                {group.items.map((item) => (
+                  <NavLink key={item.href} item={item} active={isNavItemActive(pathname ?? "", item.href)} small />
+                ))}
+              </div>
+            </details>
           );
         })}
       </nav>

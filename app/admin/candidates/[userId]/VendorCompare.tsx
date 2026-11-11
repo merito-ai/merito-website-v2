@@ -33,13 +33,13 @@ export default function VendorCompare({ compareUrl }: { compareUrl: string }) {
       const response = await fetch(compareUrl);
       const data = await response.json().catch(() => null);
       if (!response.ok) {
-        showToast("error", data?.error || "Something went wrong — try again.");
+        showToast("error", data?.error || "Something went wrong, try again.");
         setOpen(false);
         return;
       }
       setResult(data);
     } catch {
-      showToast("error", "Something went wrong — try again.");
+      showToast("error", "Something went wrong, try again.");
       setOpen(false);
     } finally {
       setBusy(false);

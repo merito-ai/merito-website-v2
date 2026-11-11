@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { findDuplicateCandidates } from "@/lib/adminCandidates";
-import Badge from "@/app/admin/_components/Badge";
 import EmptyState from "@/app/admin/_components/EmptyState";
 import type { CandidateListRow, DuplicateCandidateGroup } from "@/lib/adminCandidates";
 
@@ -70,7 +69,7 @@ export default async function AdminDuplicatesPage() {
         Possible duplicate candidates
       </h2>
       <p className="font-[family-name:var(--font-poppins)] text-[#9c9c9c]" style={{ fontSize: 13, margin: "0 0 24px" }}>
-        Heuristic surfacing, not an auto-merge — review each group and use the existing &quot;Merge into this account&quot; control on a candidate&apos;s detail page. <Badge variant="warning">Email match</Badge> is a strong signal (dots/+alias-normalized); <Badge variant="neutral">Name match</Badge> alone is weak (common names collide) — treat it as a starting point, not a verdict.
+        Accounts that may be the same person. Email matches are strong, name matches are weak. Merge from the candidate page.
       </p>
       <GroupSection
         title="Matching email"

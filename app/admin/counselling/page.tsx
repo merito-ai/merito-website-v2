@@ -2,6 +2,7 @@ import Link from "next/link";
 import { listCounsellingRequests, type CounsellingStatus } from "@/lib/adminCounselling";
 import { Table, TableHeadRow, TableRow, TableCell, TableEmptyRow } from "@/app/admin/_components/Table";
 import Badge, { type BadgeVariant } from "@/app/admin/_components/Badge";
+import PageHeader from "@/app/admin/_components/PageHeader";
 
 const STATUS_VARIANT: Record<CounsellingStatus, BadgeVariant> = {
   requested: "warning",
@@ -26,10 +27,10 @@ export default async function AdminCounsellingPage({
 
   return (
     <div>
-      <div className="flex items-center justify-between" style={{ marginBottom: 16 }}>
-        <p className="font-[family-name:var(--font-poppins)] text-[#9c9c9c]" style={{ fontSize: 13, margin: 0 }}>
-          {includeAll ? "All requests" : "Active queue (requested + scheduled)"}
-        </p>
+      <PageHeader
+        title="Counselling & Plans"
+        description={includeAll ? "All counselling and mentoring requests." : "Requests waiting to be scheduled or held. Open one to update it."}
+      >
         <Link
           href={includeAll ? "/admin/counselling" : "/admin/counselling?all=1"}
           className="font-[family-name:var(--font-poppins)] font-semibold text-[#ed1a24]"
@@ -37,7 +38,7 @@ export default async function AdminCounsellingPage({
         >
           {includeAll ? "Show active only" : "Show all"}
         </Link>
-      </div>
+      </PageHeader>
 
       <Table>
         <TableHeadRow columns={["Candidate", "Session", "Order", "Status", "Requested", "Scheduled"]} />
@@ -59,7 +60,7 @@ export default async function AdminCounsellingPage({
             </TableRow>
           ))}
           {requests.length === 0 && (
-            <TableEmptyRow colSpan={6} message={includeAll ? "No counselling requests yet." : "Queue is empty — nothing to schedule."} />
+            <TableEmptyRow colSpan={6} message={includeAll ? "No counselling requests yet." : "Nothing to schedule."} />
           )}
         </tbody>
       </Table>

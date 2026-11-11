@@ -2,6 +2,8 @@ import Link from "next/link";
 import { listAdminActions, getAdminActivityStats } from "@/lib/adminAuditLog";
 import { Table, TableHeadRow, TableRow, TableCell, TableEmptyRow } from "@/app/admin/_components/Table";
 import Pagination from "@/app/admin/_components/Pagination";
+import PageHeader from "@/app/admin/_components/PageHeader";
+import { formatActionLabel, formatChange, formatTarget } from "@/lib/adminLabels";
 
 const TARGET_HREF: Record<string, (targetId: string) => string> = {
   candidate: (id) => `/admin/candidates/${id}`,
@@ -13,12 +15,6 @@ function formatDateTime(iso: string): string {
   return new Date(iso).toLocaleString("en-IN", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
 }
 
-function formatChange(priorValue: unknown, newValue: unknown): string {
-  const prior = priorValue == null ? "—" : JSON.stringify(priorValue);
-  const next = newValue == null ? "—" : JSON.stringify(newValue);
-  return `${prior} → ${next}`;
-}
-
 export default async function AdminActivityPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const { page: pageParam } = await searchParams;
   const [{ rows: actions, page, totalPages }, stats] = await Promise.all([
@@ -28,6 +24,7 @@ export default async function AdminActivityPage({ searchParams }: { searchParams
 
   return (
     <div>
+      <PageHeader title="Admin log" description="Every change an admin made, newest first." />
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0,1fr))", gap: 14, marginBottom: 20 }}>
         {([
           ["Last 24h", stats.last24h],
@@ -53,14 +50,14 @@ export default async function AdminActivityPage({ searchParams }: { searchParams
               <TableRow key={a.id}>
                 <TableCell>{formatDateTime(a.createdAt)}</TableCell>
                 <TableCell>{a.adminEmail}</TableCell>
-                <TableCell>{a.action}</TableCell>
+                <TableCell>{formatActionLabel(a.action)}</TableCell>
                 <TableCell>
                   {href ? (
                     <Link href={href} className="font-[family-name:var(--font-poppins)] font-semibold text-[#ed1a24]">
-                      {a.targetType}:{a.targetId}
+                      {formatTarget(a.targetType, a.targetId)}
                     </Link>
                   ) : (
-                    `${a.targetType}:${a.targetId}`
+                    formatTarget(a.targetType, a.targetId)
                   )}
                 </TableCell>
                 <TableCell>

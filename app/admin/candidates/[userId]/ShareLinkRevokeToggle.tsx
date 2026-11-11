@@ -24,10 +24,10 @@ export default function ShareLinkRevokeToggle({ token, revoked }: { token: strin
         showToast("success", revoked ? "Share link restored." : "Share link revoked.");
         router.refresh();
       } else {
-        showToast("error", "Something went wrong — try again.");
+        showToast("error", "Something went wrong, try again.");
       }
     } catch {
-      showToast("error", "Something went wrong — try again.");
+      showToast("error", "Something went wrong, try again.");
     } finally {
       setSaving(false);
       setConfirmOpen(false);

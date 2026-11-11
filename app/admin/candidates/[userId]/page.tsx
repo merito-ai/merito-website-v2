@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getCandidateDetail, listCandidateNotifications } from "@/lib/adminCandidates";
+import { getCandidateDetail, isCandidateBanned, listCandidateNotifications } from "@/lib/adminCandidates";
 import { listPaymentsForCandidate } from "@/lib/adminPayments";
 import { recordCandidateView } from "@/lib/adminRecentViews";
 import { requireAdmin } from "@/lib/adminAuth";
@@ -46,9 +46,10 @@ export default async function AdminCandidateDetailPage({
     console.error("Failed to record candidate view", { userId, error });
   }
 
-  const [notifications, payments] = await Promise.all([
+  const [notifications, payments, banned] = await Promise.all([
     listCandidateNotifications(candidate.userId),
     listPaymentsForCandidate(candidate.userId),
+    isCandidateBanned(candidate.userId),
   ]);
 
   const allActivityRaw: AdminActionRow[] = [
@@ -71,19 +72,12 @@ export default async function AdminCandidateDetailPage({
         <div>
           <section style={{ marginBottom: 32 }}>
             <h3 className="font-[family-name:var(--font-gabarito)] font-semibold text-black" style={sectionHeading}>
-              Account
-            </h3>
-            <AccountActions userId={candidate.userId} email={candidate.email} pendingDeletion={candidate.pendingDeletion} />
-          </section>
-
-          <section style={{ marginBottom: 32 }}>
-            <h3 className="font-[family-name:var(--font-gabarito)] font-semibold text-black" style={sectionHeading}>
               Send notification
             </h3>
             <SendNotificationAction userId={candidate.userId} />
           </section>
 
-          <section>
+          <section style={{ marginBottom: 32 }}>
             <h3 className="font-[family-name:var(--font-gabarito)] font-semibold text-black" style={sectionHeading}>
               Profile
             </h3>
@@ -96,6 +90,13 @@ export default async function AdminCandidateDetailPage({
               }
               overrideHistory={candidate.profileOverrideHistory}
             />
+          </section>
+
+          <section>
+            <h3 className="font-[family-name:var(--font-gabarito)] font-semibold text-black" style={sectionHeading}>
+              Account
+            </h3>
+            <AccountActions userId={candidate.userId} email={candidate.email} banned={banned} pendingDeletion={candidate.pendingDeletion} />
           </section>
         </div>
       ),

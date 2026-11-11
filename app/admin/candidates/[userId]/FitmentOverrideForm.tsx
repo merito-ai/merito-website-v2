@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/app/admin/_components/Button";
 import Badge from "@/app/admin/_components/Badge";
+import ConfirmDialog from "@/app/admin/_components/ConfirmDialog";
 import { useToast } from "@/app/admin/_components/Toast";
 import type { AdminActionRow } from "@/lib/adminAuditLog";
 
@@ -34,6 +35,7 @@ export default function FitmentOverrideForm({
   const [reason, setReason] = useState("");
   const [busy, setBusy] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [confirmingClear, setConfirmingClear] = useState(false);
 
   async function save() {
     const parsed = Number(score);
@@ -47,20 +49,21 @@ export default function FitmentOverrideForm({
       });
       const data = await response.json().catch(() => null);
       if (!response.ok) {
-        showToast("error", data?.error || "Something went wrong — try again.");
+        showToast("error", data?.error || "Something went wrong, try again.");
         return;
       }
       setReason("");
       showToast("success", "Saved.");
       router.refresh();
     } catch {
-      showToast("error", "Something went wrong — try again.");
+      showToast("error", "Something went wrong, try again.");
     } finally {
       setBusy(false);
     }
   }
 
   async function clearOverride() {
+    setConfirmingClear(false);
     if (!reason.trim()) return;
     setBusy(true);
     try {
@@ -71,14 +74,14 @@ export default function FitmentOverrideForm({
       });
       const data = await response.json().catch(() => null);
       if (!response.ok) {
-        showToast("error", data?.error || "Something went wrong — try again.");
+        showToast("error", data?.error || "Something went wrong, try again.");
         return;
       }
       setReason("");
-      showToast("success", "Override cleared — retry is available again.");
+      showToast("success", "Override cleared. Retry is available again.");
       router.refresh();
     } catch {
-      showToast("error", "Something went wrong — try again.");
+      showToast("error", "Something went wrong, try again.");
     } finally {
       setBusy(false);
     }
@@ -119,10 +122,20 @@ export default function FitmentOverrideForm({
               Save override
             </Button>
             {overridden && (
-              <Button variant="danger" onClick={clearOverride} disabled={busy || !reason.trim()}>
+              <Button variant="danger" onClick={() => setConfirmingClear(true)} disabled={busy || !reason.trim()}>
                 Clear override
               </Button>
             )}
+            <ConfirmDialog
+              open={confirmingClear}
+              title="Clear this override?"
+              message="Removes the admin-set score and summary and puts back the original fitment result."
+              confirmLabel="Clear override"
+              danger
+              busy={busy}
+              onConfirm={clearOverride}
+              onCancel={() => setConfirmingClear(false)}
+            />
           </div>
         </div>
       )}
@@ -147,8 +160,8 @@ export default function FitmentOverrideForm({
                     </p>
                     <p className="font-[family-name:var(--font-poppins)] text-[#9c9c9c]" style={{ margin: 0 }}>
                       {row.action === "candidate.fitment_override_cleared"
-                        ? `Cleared override — ${nv?.reason}`
-                        : `Set overallScore=${nv?.overallScore}, summary="${nv?.summary}" — ${nv?.reason}`}
+                        ? `Cleared override. Reason: ${nv?.reason}`
+                        : `Score set to ${nv?.overallScore}, summary "${nv?.summary}". Reason: ${nv?.reason}`}
                     </p>
                   </div>
                 );

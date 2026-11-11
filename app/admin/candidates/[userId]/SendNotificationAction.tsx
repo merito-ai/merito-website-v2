@@ -34,7 +34,7 @@ export default function SendNotificationAction({ userId }: { userId: string }) {
       });
       const data = await response.json().catch(() => null);
       if (!response.ok) {
-        showToast("error", data?.error || "Something went wrong — try again.");
+        showToast("error", data?.error || "Something went wrong, try again.");
         return;
       }
       setMessage("");
@@ -42,7 +42,7 @@ export default function SendNotificationAction({ userId }: { userId: string }) {
       showToast("success", "Notification sent.");
       router.refresh();
     } catch {
-      showToast("error", "Something went wrong — try again.");
+      showToast("error", "Something went wrong, try again.");
     } finally {
       setBusy(false);
     }
@@ -70,7 +70,7 @@ export default function SendNotificationAction({ userId }: { userId: string }) {
         ))}
       </select>
       <div>
-        <Button variant="danger" onClick={send} disabled={busy || !message.trim()} loading={busy}>
+        <Button variant="secondary" onClick={send} disabled={busy || !message.trim()} loading={busy}>
           Send notification
         </Button>
       </div>

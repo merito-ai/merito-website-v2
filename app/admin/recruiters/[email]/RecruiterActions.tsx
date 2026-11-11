@@ -30,9 +30,11 @@ export default function RecruiterActions({
   const [companyInput, setCompanyInput] = useState(companyName ?? "");
   const [pendingBanReason, setPendingBanReason] = useState<string | null>(null);
   const [showHistory, setShowHistory] = useState(false);
+  const [confirming, setConfirming] = useState<"unban" | "unverify" | null>(null);
 
   async function callAction(action: "ban" | "unban" | "unverify", body?: unknown) {
     setPendingBanReason(null);
+    setConfirming(null);
     setBusy(action);
     try {
       const response = await fetch(`/api/admin/recruiters/${encodeURIComponent(email)}/${action}`, {
@@ -42,13 +44,13 @@ export default function RecruiterActions({
       });
       const data = await response.json().catch(() => null);
       if (!response.ok) {
-        showToast("error", data?.error || "Something went wrong — try again.");
+        showToast("error", data?.error || "Something went wrong, try again.");
         return;
       }
       showToast("success", "Done.");
       router.refresh();
     } catch {
-      showToast("error", "Something went wrong — try again.");
+      showToast("error", "Something went wrong, try again.");
     } finally {
       setBusy(null);
     }
@@ -64,13 +66,13 @@ export default function RecruiterActions({
       });
       const data = await response.json().catch(() => null);
       if (!response.ok) {
-        showToast("error", data?.error || "Something went wrong — try again.");
+        showToast("error", data?.error || "Something went wrong, try again.");
         return;
       }
       showToast("success", "Company saved.");
       router.refresh();
     } catch {
-      showToast("error", "Something went wrong — try again.");
+      showToast("error", "Something went wrong, try again.");
     } finally {
       setBusy(null);
     }
@@ -86,7 +88,7 @@ export default function RecruiterActions({
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
         {banned ? (
-          <Button variant="secondary" onClick={() => callAction("unban")} disabled={busy !== null} loading={busy === "unban"}>
+          <Button variant="secondary" onClick={() => setConfirming("unban")} disabled={busy !== null} loading={busy === "unban"}>
             Unban
           </Button>
         ) : (
@@ -95,7 +97,7 @@ export default function RecruiterActions({
           </Button>
         )}
         {verified && (
-          <Button variant="secondary" onClick={() => callAction("unverify")} disabled={busy !== null} loading={busy === "unverify"}>
+          <Button variant="secondary" onClick={() => setConfirming("unverify")} disabled={busy !== null} loading={busy === "unverify"}>
             Unverify
           </Button>
         )}
@@ -132,7 +134,7 @@ export default function RecruiterActions({
                       {row.adminEmail} · {formatDateTime(row.createdAt)}
                     </p>
                     <p className="font-[family-name:var(--font-poppins)] text-[#9c9c9c]" style={{ margin: 0 }}>
-                      Set companyName={nv?.companyName ?? "—"}
+                      Company set to {nv?.companyName || "none"}
                     </p>
                     {pv && (
                       <button
@@ -160,6 +162,20 @@ export default function RecruiterActions({
         busy={busy === "ban"}
         onConfirm={() => pendingBanReason && callAction("ban", { reason: pendingBanReason })}
         onCancel={() => setPendingBanReason(null)}
+      />
+      <ConfirmDialog
+        open={confirming !== null}
+        title={confirming === "unban" ? "Unban this recruiter?" : "Unverify this recruiter?"}
+        message={
+          confirming === "unban"
+            ? "They can use recruiter features again."
+            : "They lose access to gated recruiter pages until they verify their work email again."
+        }
+        confirmLabel={confirming === "unban" ? "Unban" : "Unverify"}
+        danger={confirming === "unverify"}
+        busy={busy === confirming}
+        onConfirm={() => confirming && callAction(confirming)}
+        onCancel={() => setConfirming(null)}
       />
     </div>
   );

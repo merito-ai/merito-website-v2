@@ -8,6 +8,7 @@ import { useToast } from "@/app/admin/_components/Toast";
 
 type PendingAction =
   | { type: "ban"; reason: string }
+  | { type: "unban" }
   | { type: "delete" }
   | { type: "merge"; target: string };
 
@@ -21,10 +22,12 @@ function formatDate(iso: string): string {
 export default function AccountActions({
   userId,
   email,
+  banned,
   pendingDeletion,
 }: {
   userId: string;
   email: string;
+  banned: boolean;
   pendingDeletion: { purgeAfter: string } | null;
 }) {
   const router = useRouter();
@@ -41,7 +44,7 @@ export default function AccountActions({
   }
 
   function handleUnban() {
-    run("unban", `/api/admin/candidates/${userId}/unban`);
+    setPending({ type: "unban" });
   }
 
   async function handleMagicLink() {
@@ -55,12 +58,12 @@ export default function AccountActions({
       });
       const data = await response.json().catch(() => null);
       if (!response.ok) {
-        showToast("error", data?.error || "Something went wrong — try again.");
+        showToast("error", data?.error || "Something went wrong, try again.");
         return;
       }
       setMagicLink(data.link);
     } catch {
-      showToast("error", "Something went wrong — try again.");
+      showToast("error", "Something went wrong, try again.");
     } finally {
       setBusy(null);
     }
@@ -77,13 +80,13 @@ export default function AccountActions({
       });
       const data = await response.json().catch(() => null);
       if (!response.ok) {
-        showToast("error", data?.error || "Something went wrong — try again.");
+        showToast("error", data?.error || "Something went wrong, try again.");
         return;
       }
       showToast("success", "Done.");
       router.refresh();
     } catch {
-      showToast("error", "Something went wrong — try again.");
+      showToast("error", "Something went wrong, try again.");
     } finally {
       setBusy(null);
     }
@@ -98,6 +101,15 @@ export default function AccountActions({
         confirmLabel: "Ban",
         danger: true,
         onConfirm: () => run("ban", `/api/admin/candidates/${userId}/ban`, { reason: pending.reason }),
+      };
+    }
+    if (pending.type === "unban") {
+      return {
+        title: "Unban this candidate?",
+        message: "They can sign in again.",
+        confirmLabel: "Unban",
+        danger: false,
+        onConfirm: () => run("unban", `/api/admin/candidates/${userId}/unban`),
       };
     }
     if (pending.type === "delete") {
@@ -126,7 +138,7 @@ export default function AccountActions({
       {pendingDeletion && (
         <div className="bg-white border border-black/[0.08]" style={{ borderRadius: 10, padding: "12px 16px", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
           <span className="font-[family-name:var(--font-poppins)] font-semibold text-[#ed1a24]" style={{ fontSize: 13 }}>
-            Pending deletion — erased on {formatDate(pendingDeletion.purgeAfter)}
+            Pending deletion, erased on {formatDate(pendingDeletion.purgeAfter)}
           </span>
           <Button variant="secondary" onClick={() => run("restore", `/api/admin/candidates/${userId}/restore`)} disabled={busy !== null} loading={busy === "restore"}>
             Restore
@@ -134,12 +146,15 @@ export default function AccountActions({
         </div>
       )}
       <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-        <Button variant="danger" onClick={handleBanClick} disabled={busy !== null || pendingDeletion !== null} loading={busy === "ban"}>
-          Ban
-        </Button>
-        <Button variant="secondary" onClick={handleUnban} disabled={busy !== null || pendingDeletion !== null} loading={busy === "unban"}>
-          Unban
-        </Button>
+        {banned ? (
+          <Button variant="secondary" onClick={handleUnban} disabled={busy !== null || pendingDeletion !== null} loading={busy === "unban"}>
+            Unban
+          </Button>
+        ) : (
+          <Button variant="danger" onClick={handleBanClick} disabled={busy !== null || pendingDeletion !== null} loading={busy === "ban"}>
+            Ban
+          </Button>
+        )}
         <Button variant="danger" onClick={() => setPending({ type: "delete" })} disabled={busy !== null || pendingDeletion !== null} loading={busy === "delete"}>
           Delete account
         </Button>

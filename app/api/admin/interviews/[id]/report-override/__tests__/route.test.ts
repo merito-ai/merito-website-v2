@@ -49,7 +49,7 @@ describe("POST /api/admin/interviews/[id]/report-override", () => {
   it("returns 400 for an out-of-range score", async () => {
     const { POST } = await import("../route");
 
-    const response = await POST(buildRequest({ overallScore: 15, overallSummary: "x", reason: "x" }), {
+    const response = await POST(buildRequest({ overallScore: 150, overallSummary: "x", reason: "x" }), {
       params: Promise.resolve({ id: "row-1" }),
     });
 
