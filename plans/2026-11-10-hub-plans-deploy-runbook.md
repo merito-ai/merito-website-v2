@@ -29,6 +29,14 @@ Do these steps in this order. Do not skip ahead.
    - Allowlisted user: the pricing page shows only the plans.
    - Plan 1 holder: Plan 2 column reads "Upgrade for ₹2,999"; dashboard mentoring/assistance rows read "Upgrade to unlock for ₹2,999".
 
+7. **Email templates (fixes the old "first signup email doesn't sign in" bug).** New users get Supabase's "Confirm signup" email first. Its default link uses `{{ .ConfirmationURL }}` (`?code=`), which `/hub/auth/callback` rejects (it needs `token_hash` + `type`), so they land on `/hub/login?error=expired`.
+   - In prod Supabase dashboard: Authentication > Email Templates.
+   - **First back up** the CURRENT "Magic link" template (subject + body) into a text file outside the repo.
+   - "Confirm signup": subject `Confirm your email to sign in to Merito`, body = paste `supabase/templates/confirmation.html`.
+   - "Magic link": subject `Your Merito sign-in link`, body = paste `supabase/templates/magic_link.html`.
+   - Both say the link expires in 1 hour: check Auth > Providers > Email "Email OTP expiration" is 3600, or edit the copy.
+   - Test with a brand-new email on prod: send link from `/hub/login`, the email is titled "Confirm your email to sign in to Merito", clicking "Confirm and sign in" lands signed in on `/hub/account`. Then sign out and sign in again with the same email: the "Your Merito sign-in link" email also lands on `/hub/account`.
+
 ## Before launch (not code)
 
 - **GTM:** marketing must map the new `plan_prepare_purchase` and `plan_mentor_purchase` events.

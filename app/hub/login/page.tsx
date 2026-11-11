@@ -63,7 +63,7 @@ export default function LoginPage({
           Sign in to Merito HUB
         </h1>
         <p className="font-[family-name:var(--font-poppins)] text-[#4b4b4d]" style={{ fontSize: 14, lineHeight: 1.6, margin: "10px 0 24px" }}>
-          Enter your email and we&apos;ll send you a link to sign in — no password needed.
+          Enter your email and we&apos;ll send you a link to sign in. No password needed.
         </p>
 
         {status === "sent" ? (
@@ -79,12 +79,26 @@ export default function LoginPage({
                 </svg>
               </div>
               <p className="font-[family-name:var(--font-poppins)] font-semibold text-black" style={{ fontSize: 15, margin: 0 }}>
-                Check your inbox
+                Link sent
               </p>
             </div>
             <p className="font-[family-name:var(--font-poppins)] text-[#4b4b4d]" style={{ fontSize: 13.5, lineHeight: 1.6, margin: 0 }}>
-              We&apos;ve sent a sign-in link to {email.trim()}.
+              Check your inbox at <strong className="text-black">{email.trim()}</strong>.
             </p>
+            <p className="font-[family-name:var(--font-poppins)] text-[#4b4b4d]" style={{ fontSize: 13.5, lineHeight: 1.6, margin: 0 }}>
+              New to Merito? Your first email is titled &ldquo;Confirm your email to sign in to Merito&rdquo;. Click the button in it to confirm and sign in.
+            </p>
+            <p className="font-[family-name:var(--font-poppins)] text-[#9c9c9c]" style={{ fontSize: 12.5, lineHeight: 1.6, margin: 0 }}>
+              Can&apos;t find it? Check spam or promotions, or request a new link in a minute.
+            </p>
+            <button
+              type="button"
+              onClick={() => setStatus("idle")}
+              className="self-start font-[family-name:var(--font-poppins)] font-semibold text-[#ed1a24] underline"
+              style={{ fontSize: 12.5, background: "none", border: "none", padding: 0, cursor: "pointer" }}
+            >
+              Request a new link
+            </button>
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
@@ -114,7 +128,7 @@ export default function LoginPage({
             </button>
             {status === "error" && (
               <p style={{ fontSize: 12.5, color: "#ed1a24", marginTop: 10, textAlign: "center" }}>
-                Something went wrong — please try again.
+                Something went wrong. Please try again.
               </p>
             )}
             <p className="font-[family-name:var(--font-poppins)] text-[#9c9c9c] text-center" style={{ fontSize: 11.5, marginTop: 16 }}>

@@ -94,3 +94,4 @@ Upgrade + welcome email (2026-11-11):
 - (Low) Em-dash sweep changed IM_FLAG copy; v2 personality results already stored keep the old flag string with the em-dash.
 - (Low) Pre-existing em-dash not on this branch: app/hub/account/combined-report/CombinedReportActions.tsx "Caption copied — paste it..." (rule says sweep branch changes only).
 - (Low) Upgrade refund path verified by unit tests only, not on the local stack.
+- (Ops) Seminar attendee message (team WhatsApp/email) should say the first email from Merito is titled "Confirm your email to sign in to Merito" and they must click its button to sign in.

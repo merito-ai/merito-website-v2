@@ -39,6 +39,38 @@ describe("GET /hub/auth/callback", () => {
     expect(response.headers.get("location")).toContain("/hub/account");
   });
 
+  it("signs in from the Confirm signup email link (type=signup, empty next)", async () => {
+    verifyOtpMock.mockResolvedValue({
+      data: { user: { id: "user-new", email: "new@example.com" } },
+      error: null,
+    });
+    claimFitmentLeadsMock.mockResolvedValue({ claimedCount: 0 });
+
+    const { GET } = await importRoute();
+    // Shape produced by supabase/templates/confirmation.html: {{ .RedirectTo }}&token_hash=...&type=signup
+    const request = new Request("http://localhost/hub/auth/callback?next=&token_hash=signup-hash&type=signup");
+    const response = await GET(request);
+
+    expect(verifyOtpMock).toHaveBeenCalledWith({ token_hash: "signup-hash", type: "signup" });
+    expect(claimFitmentLeadsMock).toHaveBeenCalledWith("user-new", "new@example.com");
+    expect(response.headers.get("location")).toBe("http://localhost/hub/account");
+  });
+
+  it("signs in from the Magic link email link (type=magiclink, empty next)", async () => {
+    verifyOtpMock.mockResolvedValue({
+      data: { user: { id: "user-123", email: "candidate@example.com" } },
+      error: null,
+    });
+    claimFitmentLeadsMock.mockResolvedValue({ claimedCount: 0 });
+
+    const { GET } = await importRoute();
+    const request = new Request("http://localhost/hub/auth/callback?next=&token_hash=ml-hash&type=magiclink");
+    const response = await GET(request);
+
+    expect(verifyOtpMock).toHaveBeenCalledWith({ token_hash: "ml-hash", type: "magiclink" });
+    expect(response.headers.get("location")).toBe("http://localhost/hub/account");
+  });
+
   it("redirects to /hub/login?error=expired on an invalid token_hash, without claiming", async () => {
     verifyOtpMock.mockResolvedValue({
       data: { user: null },

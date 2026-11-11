@@ -246,6 +246,16 @@ otp_expiry = 3600
 # admin_email = "admin@email.com"
 # sender_name = "Admin"
 
+# Hub sign-in links must carry token_hash (see app/hub/auth/callback/route.ts).
+# Prod templates are pasted by hand in the dashboard; see plans/2026-11-10-hub-plans-deploy-runbook.md.
+[auth.email.template.confirmation]
+subject = "Confirm your email to sign in to Merito"
+content_path = "./supabase/templates/confirmation.html"
+
+[auth.email.template.magic_link]
+subject = "Your Merito sign-in link"
+content_path = "./supabase/templates/magic_link.html"
+
 # Uncomment to customize email template
 # [auth.email.template.invite]
 # subject = "You have been invited"
