@@ -18,7 +18,7 @@ describe("buildPlanCards", () => {
         "Personality + culture assessment",
         "Mock AI interview (45 min)",
         "References module",
-        "1-hour mentoring session",
+        "Mentoring: 1 hour as two 30-min sessions",
         "Application assistance (3 companies, via Merito's network)",
         "Shareable consolidated profile",
       ]);
@@ -29,7 +29,7 @@ describe("buildPlanCards", () => {
 
   it("offline/composite rows carry a helper, and nothing promises a guaranteed outcome", () => {
     expect(cards[1].lines.filter((l) => l.helper).map((l) => l.label)).toEqual([
-      "1-hour mentoring session",
+      "Mentoring: 1 hour as two 30-min sessions",
       "Application assistance (3 companies, via Merito's network)",
       "Shareable consolidated profile",
     ]);

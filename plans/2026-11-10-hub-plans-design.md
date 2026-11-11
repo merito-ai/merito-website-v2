@@ -25,7 +25,7 @@ Sell two fixed-price plans to **selected users only** (e.g. Merito Hub seminar a
 | Personality + culture assessment | ₹499 | ✓ | ✓ |
 | Mock AI interview (45 min) | ₹1,499 | ✓ | ✓ |
 | References module | ₹499 | ✓ | ✓ |
-| 1-hour mentoring session | ₹2,999 | — | ✓ |
+| Mentoring: 1 hour as two 30-min sessions | ₹2,999 | — | ✓ |
 | Application assistance (3 companies) | — | — | ✓ (manual, offline) |
 | Shareable profile | — | ✓ | ✓ |
 
@@ -33,7 +33,7 @@ Plan prices are flat (no level split). After buying a plan, extras: 4th+ role re
 
 ## Entitlements
 
-- Plans never expire. Each feature single-use: 1 interview, 3 role reports, 1 personality test, 1 reference round, 1 mentoring session (Plan 2).
+- Plans never expire. Each feature single-use: 1 interview, 3 role reports, 1 personality test, 1 reference round, 1 mentoring hour as two 30-min sessions (Plan 2).
 - 3 role reports = 3 report credits spent on any 3 roles the candidate checks.
 - Plan 2 mentoring uses the existing counselling flow (`counselling_requests` row + Calendly + admin queue).
 - Application assistance: **not built.** Plan 2 card line only. Merito team refers the candidate to 3 dream companies through its own network, by phone/email. Ops finds Plan 2 buyers via the existing admin payments page. Copy says "we refer you" — no interview/offer guarantee.
@@ -120,15 +120,26 @@ Pricing: `app/hub/account/pricing/pricingCatalog.ts`, `BundlePromoCard.tsx`, `Pr
 - Allowlist expiry / per-seminar batches.
 - Expert validation of culture items and org-type mapping.
 
+## Mentoring (2026-11-11)
+
+PM decision: Plan 2's "1-hour mentoring" is delivered as TWO 30-minute sessions on the existing 30-min Calendly event: a first session, then a follow-up.
+
+- Model: `counselling_requests.session` (1 = first, 2 = follow-up), unique `(order_id, session)` (migration 0072). Plan 2 purchase, upgrade and admin plan grant all go through `applyPlanGrants`, which upserts both rows with `ignoreDuplicates` (idempotent across verify/webhook/reconcile). Standalone counselling stays one row (session 1); its finalize insert is now an upsert too, so a verify/webhook race can't double-insert.
+- Gating (`mentoringSessions`, lib/planPanel.ts): session 1 bookable while `requested`; the follow-up becomes bookable once session 1 is `scheduled` or `completed` (admin sets both in the existing queue). Only the open session shows the Calendly link on `/hub/account/expert`.
+- Panel step 5 "Mentoring (two 30-min sessions)": "Session 1: <state>" / "Follow-up: <state>", action Book session 1 / Book follow-up / View. Mentoring is done (and loses the "Next step" marker) only when BOTH are completed.
+- Admin queue: "Session" column ("Session 1 of 2" / "Follow-up (2 of 2)") for plan orders; standalone counselling unlabelled.
+- Refund (Plan 2 or upgrade): every `requested` or `scheduled` session of the order is cancelled; a `completed` one is kept as history. Scheduled is cancelled (entitlement gone); ops contacts the user about the booked Calendly slot.
+- Legacy: orders from before 0072 had one row. 0072 backfills the follow-up for successful `plan_mentor` / `plan_upgrade_mentor` orders, a plan-grant replay adds it too, and the reader treats a missing row as `requested` (gated on session 1).
+
 ## Upgrade (2026-11-11)
 
 PM decision (user-approved): Plan 1 holders can self-serve upgrade to Plan 2 for ₹2,999 (the difference). No downgrade.
 
 - Product `plan_upgrade_mentor` (migration 0071), flat ₹2,999. Not a plan of its own (`isPlanProduct` false): it carries no interview, report or reference credit.
 - Initiate: allowlisted AND effective plan is `plan_prepare`, else 403 (not allowlisted) / 409 (no plan, or already Plan 2). Fails closed (500) on lookup errors.
-- Effective plan: `getPlanOrder` returns `plan_mentor` when a successful upgrade was paid at or after the live Plan 1 order. `orderId` stays the Plan 1 order (report credits, interview credit unchanged); `upgradeOrderId` holds the mentoring request. Everything keyed on the effective plan (table, panel, expert page, assistance row) follows.
-- Finalize grants only the extras: a `counselling_requests` row on the upgrade order. Application assistance is derived from the effective plan. Idempotent like other plan grants.
-- Refund of the upgrade: cancels its mentoring request (if not yet completed); effective plan reverts to Plan 1.
+- Effective plan: `getPlanOrder` returns `plan_mentor` when a successful upgrade was paid at or after the live Plan 1 order. `orderId` stays the Plan 1 order (report credits, interview credit unchanged); `upgradeOrderId` holds the mentoring sessions. Everything keyed on the effective plan (table, panel, expert page, assistance row) follows.
+- Finalize grants only the extras: both mentoring sessions (`counselling_requests` session 1 + 2) on the upgrade order. Application assistance is derived from the effective plan. Idempotent like other plan grants.
+- Refund of the upgrade: cancels its open mentoring sessions (completed ones kept); effective plan reverts to Plan 1.
 - Refund of Plan 1 while the upgrade is still paid: Plan 1 grants are reversed as usual and the user has no plan (an upgrade needs a live base). The upgrade's mentoring request is kept (paid separately) and a `console.error` asks ops to refund the upgrade too if intended. Nothing is auto-refunded.
 - Admin grant accepts `plan_upgrade_mentor` (needs an active Plan 1); admin payments label "Plan upgrade".
 - UI: Plan 1 holder sees "Upgrade for ₹2,999" in the Plan 2 column; dashboard panel Plan-2-only rows say "Upgrade to unlock for ₹2,999" (links to pricing). GTM event `plan_upgrade_purchase`.

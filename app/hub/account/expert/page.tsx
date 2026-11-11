@@ -18,6 +18,8 @@ import ExpertBookingCard from "./ExpertBookingCard";
 import ExpertBookingButton from "./ExpertBookingButton";
 import { getPlanOrder } from "@/lib/plans";
 import PlanFeatureNote from "@/app/hub/account/PlanFeatureNote";
+import PlanMentoringCard from "./PlanMentoringCard";
+import { mentoringSessions } from "@/lib/planPanel";
 
 // Static bio + section content, verbatim from mockups/merito-dashboard-v34.html's
 // expert-guidance page (minified component `fz`). No live data for the bio itself --
@@ -164,7 +166,7 @@ export default async function ExpertBioPage({
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
-  // Plan 2 covers the (1-hour) mentoring session: never show it a price.
+  // Plan 2 covers the mentoring hour (two 30-min sessions): never show it a price.
   const planOrder = await getPlanOrder(user.id);
   const mentorPlan = planOrder?.product === "plan_mentor";
 
@@ -184,6 +186,12 @@ export default async function ExpertBioPage({
     .neq("status", "cancelled")
     .limit(1)
     .maybeSingle();
+
+  const sessions = mentorPlan
+    ? mentoringSessions(
+        (await supabase.from("counselling_requests").select("session, status, scheduled_at").eq("order_id", planOrder.upgradeOrderId ?? planOrder.orderId)).data ?? []
+      )
+    : null;
 
   const firstName = NAME.split(" ")[0];
 
@@ -275,7 +283,11 @@ export default async function ExpertBioPage({
             </div>
           </div>
 
-          <ExpertBookingCard firstName={firstName} priceLabel={priceLabel} initialRequested={Boolean(counsellingRequest)} />
+          {sessions ? (
+            <PlanMentoringCard firstName={firstName} sessions={sessions} />
+          ) : (
+            <ExpertBookingCard firstName={firstName} priceLabel={priceLabel} initialRequested={Boolean(counsellingRequest)} />
+          )}
         </div>
 
         {/* Why his perspective is different */}
@@ -434,9 +446,11 @@ export default async function ExpertBioPage({
           <p className="font-[family-name:var(--font-poppins)] text-white/55" style={{ fontSize: 13.5, margin: "0 0 20px" }}>
             30 minutes, video call, personalised guidance.
           </p>
-          <ExpertBookingButton priceLabel={priceLabel} initialRequested={Boolean(counsellingRequest)} />
+          {(!sessions || sessions.some((x) => x.bookable)) && (
+            <ExpertBookingButton priceLabel={priceLabel} initialRequested={Boolean(sessions) || Boolean(counsellingRequest)} />
+          )}
           <p className="font-[family-name:var(--font-poppins)] text-white/40" style={{ fontSize: 11.5, margin: "12px 0 0" }}>
-            {mentorPlan ? "1-hour" : "30-minute"} 1:1 session · {priceLabel}
+            {mentorPlan ? "Two 30-minute 1:1 sessions" : "30-minute 1:1 session"} · {priceLabel}
           </p>
         </div>
       </div>

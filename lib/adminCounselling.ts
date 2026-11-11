@@ -14,7 +14,19 @@ export type CounsellingRequestRow = {
   scheduledAt: string | null;
   completedAt: string | null;
   notes: string | null;
+  sessionLabel: string | null;
 };
+
+// Plan 2 mentoring is two rows per order (session 1 + follow-up); standalone counselling is one, unlabelled.
+export function mentoringSessionLabel(product: string | null | undefined, session: number): string | null {
+  if (product !== "plan_mentor" && product !== "plan_upgrade_mentor") return null;
+  return session === 2 ? "Follow-up (2 of 2)" : "Session 1 of 2";
+}
+
+// Many-to-one embed: PostgREST returns an object, the generated types say array; accept both.
+const productOf = (t: { product: string } | { product: string }[] | null) => (Array.isArray(t) ? t[0] : t)?.product;
+
+const COLUMNS = "id, user_id, order_id, status, requested_at, scheduled_at, completed_at, notes, session, razorpay_transactions(product)";
 
 const ACTIVE_STATUSES: CounsellingStatus[] = ["requested", "scheduled"];
 
@@ -56,7 +68,7 @@ export async function listCounsellingRequests(includeAll = false): Promise<Couns
 
   let query = supabase
     .from("counselling_requests")
-    .select("id, user_id, order_id, status, requested_at, scheduled_at, completed_at, notes")
+    .select(COLUMNS)
     .order("requested_at", { ascending: true });
 
   if (!includeAll) {
@@ -76,6 +88,7 @@ export async function listCounsellingRequests(includeAll = false): Promise<Couns
     scheduledAt: r.scheduled_at,
     completedAt: r.completed_at,
     notes: r.notes,
+    sessionLabel: mentoringSessionLabel(productOf(r.razorpay_transactions), r.session),
   }));
 }
 
@@ -84,7 +97,7 @@ export async function getCounsellingRequest(id: string): Promise<CounsellingRequ
 
   const { data: row } = await supabase
     .from("counselling_requests")
-    .select("id, user_id, order_id, status, requested_at, scheduled_at, completed_at, notes")
+    .select(COLUMNS)
     .eq("id", id)
     .maybeSingle();
 
@@ -102,6 +115,7 @@ export async function getCounsellingRequest(id: string): Promise<CounsellingRequ
     scheduledAt: row.scheduled_at,
     completedAt: row.completed_at,
     notes: row.notes,
+    sessionLabel: mentoringSessionLabel(productOf(row.razorpay_transactions), row.session),
   };
 }
 

@@ -35,9 +35,9 @@ describe("paymentEmails", () => {
       expect(msg.from).toBe("admin@merito.ai");
       expect(msg.subject).toBe("Your Merito plan is active: Assess + Mentor + Apply");
       expect(msg.text).toContain("CV analysis with detailed report (3 roles)");
-      expect(msg.text).toContain("1-hour mentoring session");
+      expect(msg.text).toContain("Mentoring: 1 hour as two 30-min sessions");
       expect(msg.text).toContain("1. Check a role (CV report)");
-      expect(msg.text).toContain("5. Book mentoring (1 hour)");
+      expect(msg.text).toContain("5. Mentoring (two 30-min sessions)");
       expect(msg.text).toMatch(/Start with step 1: check a role\s*\S+\/hub\/account/);
       expect(msg.html).toContain('/hub/account">Start with step 1: check a role</a>');
     });

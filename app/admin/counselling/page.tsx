@@ -40,7 +40,7 @@ export default async function AdminCounsellingPage({
       </div>
 
       <Table>
-        <TableHeadRow columns={["Candidate", "Order", "Status", "Requested", "Scheduled"]} />
+        <TableHeadRow columns={["Candidate", "Session", "Order", "Status", "Requested", "Scheduled"]} />
         <tbody>
           {requests.map((r) => (
             <TableRow key={r.id}>
@@ -49,6 +49,7 @@ export default async function AdminCounsellingPage({
                   {r.email}
                 </Link>
               </TableCell>
+              <TableCell>{r.sessionLabel ?? "—"}</TableCell>
               <TableCell>{r.orderId}</TableCell>
               <TableCell>
                 <Badge variant={STATUS_VARIANT[r.status]}>{r.status}</Badge>
@@ -58,7 +59,7 @@ export default async function AdminCounsellingPage({
             </TableRow>
           ))}
           {requests.length === 0 && (
-            <TableEmptyRow colSpan={5} message={includeAll ? "No counselling requests yet." : "Queue is empty — nothing to schedule."} />
+            <TableEmptyRow colSpan={6} message={includeAll ? "No counselling requests yet." : "Queue is empty — nothing to schedule."} />
           )}
         </tbody>
       </Table>

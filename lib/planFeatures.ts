@@ -12,9 +12,12 @@ export const PLAN_FEATURE_DETAILS = {
   personality: `${QUESTIONS} questions in two parts. Report on your traits and the work cultures that suit you.`,
   interview: `Mock interview on up to ${PLAN_INTERVIEW_SKILLS} skills from your target role, with a scored report.`,
   references: `Invite up to ${MAX_REFEREES} referees; ${MIN_REFERENCES} responses give you a verified reference report. Re-reference ${formatPrice(PLAN_REFERENCE_REFRESH_PRICE_PAISE)}.`,
-  mentoring: "1:1 video call with a Merito expert, booked on Calendly.",
+  mentoring: "A first session and a follow-up with a Merito expert",
   assistance: "Our team refers you to 3 companies you choose.",
   share: "One report combining all your results, shareable by link.",
 } as const;
+
+// Plan 2 comparison-table row (also the welcome email benefit line).
+export const PLAN_MENTORING_LABEL = "Mentoring: 1 hour as two 30-min sessions";
 
 export type PlanFeatureKey = keyof typeof PLAN_FEATURE_DETAILS;

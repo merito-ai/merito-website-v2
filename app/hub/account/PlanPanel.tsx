@@ -13,7 +13,7 @@ export default async function PlanPanel({ userId, plan, hasRole = true }: { user
     db.from("personality_tests").select("version, culture_scores").eq("user_id", userId).maybeSingle(),
     db.from("fitment_interviews").select("status").eq("user_id", userId).order("updated_at", { ascending: false }).limit(1).maybeSingle(),
     getReferenceCheckStatus(userId),
-    db.from("counselling_requests").select("status, scheduled_at").eq("order_id", plan.upgradeOrderId ?? plan.orderId).maybeSingle(),
+    db.from("counselling_requests").select("session, status, scheduled_at").eq("order_id", plan.upgradeOrderId ?? plan.orderId),
   ]);
 
   const input: PlanPanelInput = {
@@ -22,7 +22,7 @@ export default async function PlanPanel({ userId, plan, hasRole = true }: { user
     personality: !personality ? "none" : personality.version === 2 && personality.culture_scores == null ? "part2" : "done",
     interview: !plan.interviewUsed ? "unused" : interview?.status === "ready" ? "ready" : "in_progress",
     references: !refs ? "none" : refs.status === "completed" ? "completed" : "in_progress",
-    mentoring: mentoring ? { status: mentoring.status, scheduledAt: mentoring.scheduled_at } : null,
+    mentoring: mentoring ?? [],
     hasRole,
   };
   const rows = buildPlanPanelRows(input);
@@ -59,7 +59,7 @@ export default async function PlanPanel({ userId, plan, hasRole = true }: { user
                 </span>
               )}
               <span className="block text-white/45" style={{ fontSize: 12, lineHeight: 1.45, margin: "1px 0 2px" }}>{r.detail}</span>
-              <span className="block text-white/55" style={{ fontSize: 12.5 }}>{!r.done ? r.status : r.status === "Completed" ? "Done" : `Done · ${r.status}`}</span>
+              <span className="block text-white/55" style={{ fontSize: 12.5, whiteSpace: "pre-line" }}>{!r.done ? r.status : r.status === "Completed" ? "Done" : `Done · ${r.status}`}</span>
             </span>
             {r.action &&
               (!r.action.href.startsWith("/") ? (

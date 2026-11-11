@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { nextCounsellingState } from "../adminCounselling";
+import { nextCounsellingState, mentoringSessionLabel } from "../adminCounselling";
 
 const NOW = "2026-08-05T12:00:00Z";
 
@@ -46,5 +46,16 @@ describe("nextCounsellingState", () => {
   it("throws on no-op transitions (same status)", () => {
     expect(() => nextCounsellingState("requested", "requested", NOW)).toThrow(/invalid transition/i);
     expect(() => nextCounsellingState("scheduled", "scheduled", NOW)).toThrow(/invalid transition/i);
+  });
+});
+
+describe("mentoringSessionLabel", () => {
+  it("Plan 2 and upgrade orders label session 1 and the follow-up", () => {
+    expect(mentoringSessionLabel("plan_mentor", 1)).toBe("Session 1 of 2");
+    expect(mentoringSessionLabel("plan_upgrade_mentor", 2)).toBe("Follow-up (2 of 2)");
+  });
+  it("standalone counselling has no session label", () => {
+    expect(mentoringSessionLabel("counselling", 1)).toBeNull();
+    expect(mentoringSessionLabel(undefined, 1)).toBeNull();
   });
 });

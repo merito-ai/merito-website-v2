@@ -8,9 +8,33 @@ export type PlanPanelInput = {
   personality: "none" | "part2" | "done";
   interview: "unused" | "in_progress" | "ready";
   references: "none" | "in_progress" | "completed";
-  mentoring: { status: string; scheduledAt: string | null } | null;
+  mentoring: MentoringRow[]; // Plan 2 counselling_requests rows (session 1 + follow-up)
   hasRole?: boolean; // default true; false = bought a plan before checking any role
 };
+
+export type MentoringRow = { session: number; status: string; scheduled_at: string | null };
+export type MentoringSession = { status: string; scheduledAt: string | null; bookable: boolean; state: string };
+
+const date = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kolkata" });
+
+// [session 1, follow-up]. A missing row (legacy single-row order) reads as "requested" so the session stays visible.
+// The follow-up opens once session 1 is scheduled or completed (admin sets both in the counselling queue).
+export function mentoringSessions(rows: MentoringRow[]): [MentoringSession, MentoringSession] {
+  const at = (n: number) => rows.find((r) => r.session === n) ?? { status: "requested", scheduled_at: null };
+  const [a, b] = [at(1), at(2)];
+  const firstBooked = a.status === "scheduled" || a.status === "completed";
+  const view = (r: typeof a, open: boolean): MentoringSession => ({
+    status: r.status,
+    scheduledAt: r.scheduled_at,
+    bookable: open && r.status === "requested",
+    state:
+      r.status === "completed" ? "Completed"
+      : r.status === "scheduled" ? (r.scheduled_at ? `Scheduled ${date(r.scheduled_at)}` : "Scheduled")
+      : r.status === "cancelled" ? "Cancelled"
+      : open ? "Not booked yet" : "Book after session 1",
+  });
+  return [view(a, true), view(b, firstBooked)];
+}
 
 export type PlanPanelRow = {
   key: string;
@@ -32,8 +56,6 @@ export function planDashboardView(s: { allowlisted: boolean; plan: unknown }): "
 const REPORT_CREDITS = 3; // mirrors PLAN_REPORT_CREDITS in lib/plans.ts
 export const CONTACT_HREF = "mailto:admin@merito.ai"; // the support address the legal/contact pages already use
 
-const date = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kolkata" });
-
 export function buildPlanPanelRows(i: PlanPanelInput): PlanPanelRow[] {
   const mentor = i.product === "plan_mentor";
   const personality: Record<PlanPanelInput["personality"], Pick<PlanPanelRow, "status" | "action">> = {
@@ -51,16 +73,20 @@ export function buildPlanPanelRows(i: PlanPanelInput): PlanPanelRow[] {
     in_progress: { status: "Waiting on referees", action: { label: "View", href: "/hub/account/references" } },
     completed: { status: "Completed", action: { label: "View", href: "/hub/account/references" } },
   };
-  const m = i.mentoring;
+  const [s1, s2] = mentoringSessions(i.mentoring);
+  const mentoringDone = s1.status === "completed" && s2.status === "completed";
+  const expert = "/hub/account/expert";
   // Plan 1's Plan-2-only rows sell the upgrade; the pricing table carries the checkout.
   const upgrade = { label: `Upgrade to unlock for ${PLAN_UPGRADE_PRICE_LABEL}`, href: "/hub/account/pricing" };
   const mentoring: Pick<PlanPanelRow, "status" | "action"> = !mentor
     ? { status: "Not in your plan", action: upgrade }
-    : m?.status === "completed"
-      ? { status: "Completed", action: null }
-      : m?.status === "scheduled"
-        ? { status: m.scheduledAt ? `Scheduled ${date(m.scheduledAt)}` : "Scheduled", action: { label: "View", href: "/hub/account/expert" } }
-        : { status: "Not booked yet", action: { label: "Book session", href: "/hub/account/expert" } };
+    : {
+        status: mentoringDone ? "Both sessions completed" : `Session 1: ${s1.state}\nFollow-up: ${s2.state}`,
+        action: s1.bookable ? { label: "Book session 1", href: expert }
+          : s2.bookable ? { label: "Book follow-up", href: expert }
+          : s1.status === "scheduled" || s2.status === "scheduled" ? { label: "View", href: expert }
+          : null,
+      };
 
   type Base = Omit<PlanPanelRow, "step" | "done" | "marker" | "detail"> & { key: PlanFeatureKey; done: boolean };
   const base: Base[] = [
@@ -75,7 +101,7 @@ export function buildPlanPanelRows(i: PlanPanelInput): PlanPanelRow[] {
     { key: "personality", label: "Personality + culture", included: true, done: i.personality === "done", ...personality[i.personality] },
     { key: "references", label: "Invite referees", included: true, done: i.references !== "none", ...references[i.references] },
     { key: "interview", label: "AI interview (45 min)", included: true, done: i.interview === "ready", ...interview[i.interview] },
-    { key: "mentoring", label: "Book mentoring (1 hour)", included: mentor, done: mentor && (m?.status === "scheduled" || m?.status === "completed"), ...mentoring },
+    { key: "mentoring", label: "Mentoring (two 30-min sessions)", included: mentor, done: mentor && mentoringDone, ...mentoring },
     {
       key: "assistance",
       label: "Application assistance (3 companies)",

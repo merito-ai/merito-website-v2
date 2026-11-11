@@ -49,7 +49,7 @@ export async function sendPlanWelcomeEmail(userId: string, product: PlanProduct)
   if (!to) return;
   const name = PRODUCT_LABELS[product];
   const benefits = buildPlanCards().find((c) => c.product === product)!.lines.filter((l) => l.included).map((l) => l.label);
-  const steps = buildPlanPanelRows({ product, reportCreditsLeft: 3, personality: "none", interview: "unused", references: "none", mentoring: null })
+  const steps = buildPlanPanelRows({ product, reportCreditsLeft: 3, personality: "none", interview: "unused", references: "none", mentoring: [] })
     .filter((r) => r.included)
     .map((r) => r.label);
   const url = getAbsoluteUrl("/hub/account");

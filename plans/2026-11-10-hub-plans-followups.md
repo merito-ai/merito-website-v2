@@ -8,7 +8,7 @@ Open:
 - **Interview credit race (pre-existing):** `start-ai-interview` consumes a credit select-then-update without `.is("consumed_at", null)` on the update; two concurrent starts can share one credit (now also a plan's 45-min credit). Fix: guard the update and require a returned row.
 - **Lead lookup after consume (pre-existing):** `start-ai-interview` returns 400 on a missing lead after the credit is consumed, without un-consuming it.
 - **Double plan purchase race:** the 409 one-plan check in `initiate` only sees `success` rows; two concurrent checkouts can both be paid. `getPlanOrder` then returns only the newest plan, so the older plan's report credits are unreachable. Fix: refund by hand if seen, or a DB guard.
-- **Duplicate plan mentoring row:** `applyPlanGrants` dedupes `counselling_requests` read-then-insert; concurrent webhook + verify finalize could insert two rows (same pre-existing pattern as the `counselling` product). Fix: unique `counselling_requests(order_id)` or insert + swallow 23505.
+- **Duplicate plan mentoring row:** `applyPlanGrants` dedupes `counselling_requests` read-then-insert; concurrent webhook + verify finalize could insert two rows (same pre-existing pattern as the `counselling` product). Fix: unique `counselling_requests(order_id)` or insert + swallow 23505. RESOLVED 2026-11-11: unique `(order_id, session)` (migration 0072) + upsert ignoreDuplicates in applyPlanGrants and the counselling finalize.
 - **Report refund on a plan-spent lead:** `revokeReportForLead` deletes by (user, lead) regardless of `order_id`; refunding a standalone report on a lead unlocked by a plan credit would hand the credit back. Should not happen in normal flow (a plan credit means no report order). Fix: scope the delete to `order_id is null`.
 - **Plan bought after fitment check:** leads created before allowlisting/plan purchase keep 7 skills but get a 45-min interview (PM decision 1, accepted).
 - **Allowlisted user who never buys a plan** gets 10 skills on a 30-min individual interview (vendor only analyses 7). Harmless; revisit if it matters.
@@ -61,7 +61,7 @@ Low:
 - Pricing card CTA on an included report still reads "Get this now →"; "Use a plan report →" would be clearer.
 - 4th-report modal shows ₹299 with no "You've used your 3 plan reports" line.
 - Admin payments shows a level ("entry") on plan rows; plans are flat.
-- Expert page step list + booking card ("30 minutes, video call") still say 30 min for Plan 2 (1-hour).
+- Expert page step list + booking card ("30 minutes, video call") still say 30 min for Plan 2 (1-hour). RESOLVED 2026-11-11: Plan 2 mentoring = two 30-min sessions (first + follow-up) on the 30-min Calendly event; see design doc "Mentoring (2026-11-11)".
 - If a Plan 2 counselling request is ever cancelled, the expert button would read "Book my expert call for Included in your plan".
 - Panel "Shareable consolidated profile" status is static (no "link created" state).
 - Not browser-checked this pass: actual interview start (vendor call), PDF export, share page culture section, personality two-part flow (progress/resume/validation/errors), flat/unreliable culture states (unit-tested only), real Razorpay iframe completion (plan purchases finalized via signed local `payment.captured` webhook).
@@ -81,7 +81,7 @@ Seminar pay-first flow (2026-11-11): allowlisted users without a plan see "Plans
 - (Medium) A successful plan purchase sends the buyer NO confirmation email: lib/paymentEmails.ts only sends ops alerts (failed/mismatch/refund/stuck). Only Razorpay's own receipt (if enabled in its dashboard, unverified) reaches the buyer. Add a "Welcome to <plan>" email with the step list.
 - (Low) Allowlisted no-plan user WITH a role (offer above the greeting cards) not browser-checked; QA user had no role.
 - (Low) No-role offer page has an h2 ("Plans unlocked for you") but no h1.
-- (Low) Steps "done" rules: references done once referees are invited; mentoring done once scheduled; share never shows done (no share state).
+- (Low) Steps "done" rules: references done once referees are invited; mentoring done once scheduled; share never shows done (no share state). UPDATED 2026-11-11: mentoring is now done only when both sessions are completed.
 
 Upgrade + welcome email (2026-11-11):
 - FIXED: the (Medium) "no confirmation email" item above: plan purchases and upgrades now send a welcome email.
@@ -98,6 +98,10 @@ Upgrade + welcome email (2026-11-11):
 
 ## Feature details copy follow-ups (2026-11-11, PM call needed)
 
-- Mentoring length: plan copy says 1 hour, but the Calendly fallback (`lib/hub/calendlyUrl.ts`) is the `30min` event and `/hub/account/expert` still says "30 minutes" / "Your 30-minute session" for Plan 2 holders. Detail line omits the duration until a 60-min event exists. Confirm prod `NEXT_PUBLIC_CALENDLY_URL`.
+- Mentoring length: plan copy says 1 hour, but the Calendly fallback (`lib/hub/calendlyUrl.ts`) is the `30min` event and `/hub/account/expert` still says "30 minutes" / "Your 30-minute session" for Plan 2 holders. Detail line omits the duration until a 60-min event exists. Confirm prod `NEXT_PUBLIC_CALENDLY_URL`. RESOLVED 2026-11-11: Plan 2 mentoring = two 30-min sessions (first + follow-up) on the 30-min Calendly event; see design doc "Mentoring (2026-11-11)".
 - Application assistance "3 companies you choose" is an offline promise; no code backs it (copy kept per PM spec).
 - Normal-user re-reference price still ₹149 (awaiting user answer); change `REFERENCE_REFRESH_PRICE_PAISE` in `lib/razorpay/pricing.ts`.
+
+
+- (Minor, 2026-11-11) Admin counselling queue sorts by requested_at only, so legacy follow-up rows backfilled by 0072 list after all first sessions. Could sort by order then session if ops finds it confusing.
+- (Minor, 2026-11-11) Calendly booking does not tell us which session the user booked; admin marks session 1 / follow-up scheduled by hand. A Calendly webhook could automate it.

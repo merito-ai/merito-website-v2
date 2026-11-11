@@ -88,7 +88,7 @@ export async function finalizeRazorpayOrder(
     } else if (product === "counselling") {
       const { error: insertError } = await supabase
         .from("counselling_requests")
-        .insert({ user_id: txn.user_id, order_id: orderId });
+        .upsert({ user_id: txn.user_id, order_id: orderId }, { onConflict: "order_id,session", ignoreDuplicates: true });
       if (insertError) {
         throw new Error(`Failed to record counselling request: ${insertError.message}`);
       }
@@ -173,19 +173,19 @@ async function revokeReportForLead(
   }
 }
 
+// Cancels every still-open session of the order (Plan 2 has two). Completed sessions stay as history;
+// scheduled ones are cancelled too (the entitlement is gone), ops contacts the user about the booked slot.
 async function revokeCounsellingForOrder(
   supabase: ReturnType<typeof getSupabaseServerClient>,
   orderId: string
 ): Promise<void> {
-  const { data: request } = await supabase
-    .from("counselling_requests")
-    .select("id, status")
-    .eq("order_id", orderId)
-    .maybeSingle();
-  if (!request) return;
-  if (request.status !== "requested" && request.status !== "scheduled") return;
-  const patch = nextCounsellingState(request.status as CounsellingStatus, "cancelled", new Date().toISOString());
-  await updateCounsellingStatus(request.id, patch);
+  const { data: requests, error } = await supabase.from("counselling_requests").select("id, status").eq("order_id", orderId);
+  if (error) throw new Error(`Failed to load counselling requests for refund: ${error.message}`);
+  for (const request of requests ?? []) {
+    if (request.status !== "requested" && request.status !== "scheduled") continue;
+    const patch = nextCounsellingState(request.status as CounsellingStatus, "cancelled", new Date().toISOString());
+    await updateCounsellingStatus(request.id, patch);
+  }
 }
 
 export async function markRazorpayRefunded(orderId: string): Promise<MarkRefundedResult> {

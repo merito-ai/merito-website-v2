@@ -1,16 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-const { unlockProductMock, existingMock, insertMock, fromMock } = vi.hoisted(() => {
-  const existingMock = vi.fn();
-  const insertMock = vi.fn();
+const { unlockProductMock, upsertMock, fromMock } = vi.hoisted(() => {
+  const upsertMock = vi.fn();
   return {
     unlockProductMock: vi.fn(),
-    existingMock,
-    insertMock,
-    fromMock: vi.fn((_table: string) => ({
-      select: () => ({ eq: () => ({ maybeSingle: existingMock }) }),
-      insert: insertMock,
-    })),
+    upsertMock,
+    fromMock: vi.fn((_table: string) => ({ upsert: upsertMock })),
   };
 });
 vi.mock("@/lib/productUnlocks", () => ({ unlockProduct: unlockProductMock }));
@@ -18,14 +13,18 @@ vi.mock("@/lib/supabase", () => ({ getSupabaseServerClient: () => ({ from: fromM
 
 import { applyPlanGrants } from "@/lib/planGrants";
 
+const twoSessions = (orderId: string) => [
+  { user_id: "u1", order_id: orderId, session: 1 },
+  { user_id: "u1", order_id: orderId, session: 2 },
+];
+const IDEMPOTENT = { onConflict: "order_id,session", ignoreDuplicates: true };
+
 describe("applyPlanGrants", () => {
   beforeEach(() => {
     unlockProductMock.mockReset();
     unlockProductMock.mockResolvedValue(undefined);
-    existingMock.mockReset();
-    existingMock.mockResolvedValue({ data: null, error: null });
-    insertMock.mockReset();
-    insertMock.mockResolvedValue({ error: null });
+    upsertMock.mockReset();
+    upsertMock.mockResolvedValue({ error: null });
     fromMock.mockClear();
   });
 
@@ -36,27 +35,27 @@ describe("applyPlanGrants", () => {
     expect(fromMock).not.toHaveBeenCalledWith("counselling_requests");
   });
 
-  it("plan_mentor also records a mentoring request", async () => {
+  it("plan_mentor grants two mentoring sessions (first + follow-up)", async () => {
     await applyPlanGrants("u1", "o1", "plan_mentor");
     expect(unlockProductMock).toHaveBeenCalledTimes(2);
     expect(fromMock).toHaveBeenCalledWith("counselling_requests");
-    expect(insertMock).toHaveBeenCalledWith({ user_id: "u1", order_id: "o1" });
+    expect(upsertMock).toHaveBeenCalledWith(twoSessions("o1"), IDEMPOTENT);
   });
 
-  it("the upgrade records only the mentoring request, on the upgrade order (no re-grant of Plan 1 items)", async () => {
+  it("the upgrade grants both sessions on the upgrade order (no re-grant of Plan 1 items)", async () => {
     await applyPlanGrants("u1", "up1", "plan_upgrade_mentor");
     expect(unlockProductMock).not.toHaveBeenCalled();
-    expect(insertMock).toHaveBeenCalledWith({ user_id: "u1", order_id: "up1" });
+    expect(upsertMock).toHaveBeenCalledWith(twoSessions("up1"), IDEMPOTENT);
   });
 
-  it("does not insert a second mentoring request on retry", async () => {
-    existingMock.mockResolvedValue({ data: { id: "c1" }, error: null });
+  it("replays are idempotent: upsert ignores existing (order_id, session) rows, so a legacy 1-row order only gains the follow-up", async () => {
     await applyPlanGrants("u1", "o1", "plan_mentor");
-    expect(insertMock).not.toHaveBeenCalled();
+    await applyPlanGrants("u1", "o1", "plan_mentor");
+    for (const call of upsertMock.mock.calls) expect(call[1]).toEqual(IDEMPOTENT);
   });
 
-  it("throws when the insert fails", async () => {
-    insertMock.mockResolvedValue({ error: { message: "boom" } });
+  it("throws when the write fails", async () => {
+    upsertMock.mockResolvedValue({ error: { message: "boom" } });
     await expect(applyPlanGrants("u1", "o1", "plan_mentor")).rejects.toThrow("boom");
   });
 });

@@ -181,6 +181,7 @@ export type Database = {
           order_id: string
           requested_at: string
           scheduled_at: string | null
+          session: number
           status: string
           user_id: string
         }
@@ -191,6 +192,7 @@ export type Database = {
           order_id: string
           requested_at?: string
           scheduled_at?: string | null
+          session?: number
           status?: string
           user_id: string
         }
@@ -201,6 +203,7 @@ export type Database = {
           order_id?: string
           requested_at?: string
           scheduled_at?: string | null
+          session?: number
           status?: string
           user_id?: string
         }

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildPlanPanelRows, planDashboardView, type PlanPanelInput } from "../planPanel";
+import { buildPlanPanelRows, mentoringSessions, planDashboardView, type PlanPanelInput } from "../planPanel";
 
 const base: PlanPanelInput = {
   product: "plan_prepare",
@@ -7,8 +7,9 @@ const base: PlanPanelInput = {
   personality: "none",
   interview: "unused",
   references: "none",
-  mentoring: null,
+  mentoring: [],
 };
+const s = (session: number, status: string, scheduled_at: string | null = null) => ({ session, status, scheduled_at });
 const row = (input: PlanPanelInput, key: string) => buildPlanPanelRows(input).find((r) => r.key === key)!;
 
 describe("buildPlanPanelRows", () => {
@@ -49,11 +50,15 @@ describe("buildPlanPanelRows", () => {
     expect(row(base, "assistance")).toMatchObject({ included: false, action: upgrade });
   });
 
-  it("Plan 2: mentoring book / scheduled / completed; assistance contact", () => {
+  it("Plan 2: session 1 bookable first; follow-up waits for session 1; assistance contact", () => {
     const p2 = { ...base, product: "plan_mentor" as const };
-    expect(row({ ...p2, mentoring: { status: "requested", scheduledAt: null } }, "mentoring")).toMatchObject({ included: true, action: { label: "Book session" } });
-    expect(row({ ...p2, mentoring: { status: "scheduled", scheduledAt: "2026-11-20T10:00:00Z" } }, "mentoring").status).toBe("Scheduled 20 Nov 2026");
-    expect(row({ ...p2, mentoring: { status: "completed", scheduledAt: null } }, "mentoring")).toMatchObject({ status: "Completed", action: null });
+    const fresh = row({ ...p2, mentoring: [s(1, "requested"), s(2, "requested")] }, "mentoring");
+    expect(fresh).toMatchObject({ included: true, done: false, status: "Session 1: Not booked yet\nFollow-up: Book after session 1", action: { label: "Book session 1", href: "/hub/account/expert" } });
+    const s1Sched = row({ ...p2, mentoring: [s(1, "scheduled", "2026-11-20T10:00:00Z"), s(2, "requested")] }, "mentoring");
+    expect(s1Sched).toMatchObject({ done: false, status: "Session 1: Scheduled 20 Nov 2026\nFollow-up: Not booked yet", action: { label: "Book follow-up" } });
+    const bothSched = row({ ...p2, mentoring: [s(1, "completed"), s(2, "scheduled")] }, "mentoring");
+    expect(bothSched).toMatchObject({ done: false, status: "Session 1: Completed\nFollow-up: Scheduled", action: { label: "View" } });
+    expect(row({ ...p2, mentoring: [s(1, "completed"), s(2, "completed")] }, "mentoring")).toMatchObject({ done: true, status: "Both sessions completed", action: null });
     expect(row(p2, "assistance")).toMatchObject({ included: true, action: { href: "mailto:admin@merito.ai" } });
   });
 
@@ -102,8 +107,14 @@ describe("plan steps", () => {
     expect(marked(d)[0].key).toBe("mentoring");
   });
 
-  it("assistance is informational: never marked, never done; booked mentoring skips to share", () => {
-    const all = { ...p2, personality: "done" as const, references: "completed" as const, interview: "ready" as const, mentoring: { status: "scheduled", scheduledAt: null } };
+  it("mentoring keeps the marker until BOTH sessions are completed", () => {
+    const all = { ...p2, personality: "done" as const, references: "completed" as const, interview: "ready" as const };
+    expect(marked({ ...all, mentoring: [s(1, "completed"), s(2, "scheduled")] })[0].key).toBe("mentoring");
+    expect(marked({ ...all, mentoring: [s(1, "scheduled"), s(2, "requested")] })[0].key).toBe("mentoring");
+  });
+
+  it("assistance is informational: never marked, never done; completed mentoring skips to share", () => {
+    const all = { ...p2, personality: "done" as const, references: "completed" as const, interview: "ready" as const, mentoring: [s(1, "completed"), s(2, "completed")] };
     expect(row(all, "mentoring").done).toBe(true);
     expect(row(all, "assistance")).toMatchObject({ done: false, marker: null, status: "Our team will call you about your 3 dream companies" });
     expect(marked(all)).toEqual([expect.objectContaining({ key: "share", marker: "Next step" })]);
@@ -112,6 +123,23 @@ describe("plan steps", () => {
   it("Plan 1 skips not-included mentoring for the marker", () => {
     const all = { ...base, personality: "done" as const, references: "completed" as const, interview: "ready" as const };
     expect(marked(all)[0].key).toBe("share");
+  });
+});
+
+describe("mentoringSessions", () => {
+  it("follow-up is bookable only once session 1 is scheduled or completed", () => {
+    expect(mentoringSessions([s(1, "requested"), s(2, "requested")]).map((x) => x.bookable)).toEqual([true, false]);
+    expect(mentoringSessions([s(1, "scheduled"), s(2, "requested")]).map((x) => x.bookable)).toEqual([false, true]);
+    expect(mentoringSessions([s(1, "completed"), s(2, "requested")]).map((x) => x.bookable)).toEqual([false, true]);
+    expect(mentoringSessions([s(1, "completed"), s(2, "scheduled")]).map((x) => x.bookable)).toEqual([false, false]);
+  });
+  it("legacy order with only the first-session row: follow-up reads as not booked (gated on session 1)", () => {
+    expect(mentoringSessions([s(1, "scheduled")])[1]).toMatchObject({ status: "requested", bookable: true, state: "Not booked yet" });
+    expect(mentoringSessions([s(1, "requested")])[1]).toMatchObject({ bookable: false, state: "Book after session 1" });
+  });
+  it("row order does not matter; cancelled sessions are not bookable", () => {
+    expect(mentoringSessions([s(2, "requested"), s(1, "completed")]).map((x) => x.status)).toEqual(["completed", "requested"]);
+    expect(mentoringSessions([s(1, "cancelled"), s(2, "cancelled")]).map((x) => [x.bookable, x.state])).toEqual([[false, "Cancelled"], [false, "Cancelled"]]);
   });
 });
 
