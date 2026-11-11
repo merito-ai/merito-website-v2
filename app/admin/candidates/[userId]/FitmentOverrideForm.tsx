@@ -88,7 +88,7 @@ export default function FitmentOverrideForm({
   }
 
   return (
-    <div style={{ marginTop: 10 }}>
+    <div>
       <div className="flex items-center" style={{ gap: 10 }}>
         {overridden && <Badge variant="warning">Admin-overridden</Badge>}
         <button

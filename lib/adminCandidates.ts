@@ -166,8 +166,11 @@ export async function resolveBroadcastAudience(filters: BroadcastFilters): Promi
   });
 }
 
-export async function listCandidates(page: number = 1): Promise<PaginatedCandidates> {
-  const all = await fetchAllCandidates();
+export async function listCandidates(page: number = 1, filters: { stage?: FunnelStage; q?: string } = {}): Promise<PaginatedCandidates> {
+  const q = filters.q?.trim().toLowerCase();
+  const all = (await fetchAllCandidates()).filter(
+    (c) => (!filters.stage || c.funnelStage === filters.stage) && (!q || c.email.toLowerCase().includes(q) || (c.name ?? "").toLowerCase().includes(q))
+  );
   const total = all.length;
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const clampedPage = Math.min(Math.max(1, page), totalPages);

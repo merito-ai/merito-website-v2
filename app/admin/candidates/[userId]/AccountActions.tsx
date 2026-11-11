@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/app/admin/_components/Button";
 import ConfirmDialog from "@/app/admin/_components/ConfirmDialog";
@@ -10,7 +10,9 @@ type PendingAction =
   | { type: "ban"; reason: string }
   | { type: "unban" }
   | { type: "delete" }
-  | { type: "merge"; target: string };
+  | { type: "merge"; target: string; label: string };
+
+type SearchResult = { userId: string; email: string; name: string | null; roleTitle: string };
 
 const inputStyle = { fontSize: 13, padding: "8px 12px", border: "1px solid #dcdcdc", borderRadius: 7 } as const;
 const DELETION_PURGE_WINDOW_DAYS = 30; // must match lib/adminCandidates.ts
@@ -34,7 +36,29 @@ export default function AccountActions({
   const { showToast } = useToast();
   const [busy, setBusy] = useState<"ban" | "unban" | "delete" | "restore" | "magic-link" | "merge" | null>(null);
   const [magicLink, setMagicLink] = useState<string | null>(null);
-  const [mergeTarget, setMergeTarget] = useState("");
+  const [mergeQuery, setMergeQuery] = useState("");
+  const [mergeResults, setMergeResults] = useState<SearchResult[]>([]);
+
+  useEffect(() => {
+    const q = mergeQuery.trim();
+    if (q.length < 2) {
+      setMergeResults([]);
+      return;
+    }
+    let cancelled = false;
+    const timer = setTimeout(() => {
+      fetch(`/api/admin/candidates/search?q=${encodeURIComponent(q)}`)
+        .then((res) => (res.ok ? res.json() : { results: [] }))
+        .then((data: { results: SearchResult[] }) => {
+          if (!cancelled) setMergeResults(data.results.filter((r) => r.userId !== userId));
+        })
+        .catch(() => !cancelled && setMergeResults([]));
+    }, 250);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [mergeQuery, userId]);
   const [pending, setPending] = useState<PendingAction | null>(null);
 
   function handleBanClick() {
@@ -124,7 +148,7 @@ export default function AccountActions({
     }
     return {
       title: "Merge accounts?",
-      message: `Merges account ${pending.target} into ${email}. The merged-away account will be banned.`,
+      message: `Moves ${pending.label} into ${email}. The other account is then banned.`,
       confirmLabel: "Merge",
       danger: false,
       onConfirm: () => run("merge", "/api/admin/candidates/merge", { keepUserId: userId, mergeUserId: pending.target }),
@@ -165,22 +189,37 @@ export default function AccountActions({
       {magicLink && (
         <input readOnly value={magicLink} onFocus={(e) => e.target.select()} className="font-[family-name:var(--font-poppins)]" style={{ ...inputStyle, width: "100%", boxSizing: "border-box" }} />
       )}
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+      <div>
+        <p className="font-[family-name:var(--font-poppins)] text-[#4b4b4d]" style={{ fontSize: 13, margin: "0 0 6px" }}>
+          Merge another account into this one
+        </p>
         <input
-          placeholder="Other account's user ID to merge in"
-          value={mergeTarget}
-          onChange={(e) => setMergeTarget(e.target.value)}
+          placeholder="Search the other account by name or email"
+          value={mergeQuery}
+          onChange={(e) => setMergeQuery(e.target.value)}
+          disabled={busy !== null}
           className="font-[family-name:var(--font-poppins)]"
-          style={{ ...inputStyle, minWidth: 280 }}
+          style={{ ...inputStyle, minWidth: 320 }}
         />
-        <Button
-          variant="secondary"
-          onClick={() => mergeTarget.trim() && setPending({ type: "merge", target: mergeTarget.trim() })}
-          disabled={busy !== null || !mergeTarget.trim()}
-          loading={busy === "merge"}
-        >
-          Merge into this account
-        </Button>
+        {mergeResults.length > 0 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 8, maxWidth: 520 }}>
+            {mergeResults.map((r) => (
+              <div key={r.userId} className="bg-white border border-black/[0.08]" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, borderRadius: 8, padding: "6px 10px" }}>
+                <span className="font-[family-name:var(--font-poppins)]" style={{ fontSize: 12.5 }}>
+                  {r.name || r.email} <span className="text-[#9c9c9c]">· {r.email} · {r.roleTitle}</span>
+                </span>
+                <Button
+                  variant="secondary"
+                  onClick={() => setPending({ type: "merge", target: r.userId, label: r.email })}
+                  disabled={busy !== null}
+                  loading={busy === "merge"}
+                >
+                  Merge in
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <ConfirmDialog

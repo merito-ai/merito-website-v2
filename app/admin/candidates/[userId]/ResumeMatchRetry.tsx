@@ -32,7 +32,7 @@ export default function ResumeMatchRetry({ leadId }: { leadId: string }) {
   }
 
   return (
-    <div style={{ marginTop: 6 }}>
+    <div>
       <Button variant="secondary" onClick={() => setConfirming(true)} disabled={busy} loading={busy}>
         Retry fitment scoring
       </Button>
