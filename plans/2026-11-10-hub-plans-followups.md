@@ -68,4 +68,6 @@ Low:
 
 FIXED 2026-11-11: Plan 2 holder with no role was redirected off /hub/account/expert (page required a lead); now only users with neither a role nor Plan 2 are redirected. Note: dashboard shows no "Your plan" panel without a role; panel is still reachable via Pricing.
 
+FIXED 2026-11-11: dashboard (no role) now shows the "Your plan" panel for plan holders; role-bound rows (personality, interview, references, Plan 1 mentoring) say "Check a role first" and open the new-role modal (#check-role). Same on Pricing. Non-plan no-role dashboard unchanged.
+
 PM decision 2026-11-11: Plan 1 holders see the real individual expert call price (₹1,999 entry/mid, ₹2,999 senior, 30 min) — no ₹2,999 1-hour mentoring add-on product; revisit if seminar buyers ask for upgrades.

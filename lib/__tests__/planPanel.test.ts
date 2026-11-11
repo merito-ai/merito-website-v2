@@ -56,4 +56,14 @@ describe("buildPlanPanelRows", () => {
     expect(row({ ...p2, mentoring: { status: "completed", scheduledAt: null } }, "mentoring")).toMatchObject({ status: "Completed", action: null });
     expect(row(p2, "assistance")).toMatchObject({ included: true, action: { href: "mailto:admin@merito.ai" } });
   });
+
+  it("no role yet: role-bound rows point to check-a-role; Plan 2 mentoring + share keep their pages", () => {
+    const noRole = { ...base, hasRole: false };
+    for (const k of ["reports", "personality", "interview", "references", "mentoring"]) {
+      expect(row(noRole, k).action!.href).toBe("#check-role");
+    }
+    expect(row({ ...noRole, product: "plan_mentor" }, "mentoring").action!.href).toBe("/hub/account/expert");
+    expect(row(noRole, "share").action!.href).toBe("/hub/account/combined-report");
+    expect(row(base, "interview").action!.href).toBe("/hub/account/interview");
+  });
 });

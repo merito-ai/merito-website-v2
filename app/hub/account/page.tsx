@@ -42,6 +42,8 @@ export default async function AccountPage({
     .order("created_at", { ascending: false });
 
   if (!leads || leads.length === 0) {
+    // Seminar buyers often pay before checking a role: still show what they bought.
+    const { plan } = await getPlanState(user.id, user.email);
     return (
       <main style={{ padding: "48px 20px", maxWidth: 640, margin: "0 auto" }}>
         <h1 className="font-[family-name:var(--font-gabarito)] font-semibold text-white" style={{ fontSize: "1.6rem" }}>
@@ -50,6 +52,11 @@ export default async function AccountPage({
         <p className="font-[family-name:var(--font-poppins)] text-white/50" style={{ fontSize: 14 }}>
           Head back to the HUB to check your fit for a role.
         </p>
+        {plan && (
+          <div style={{ margin: "20px 0" }}>
+            <PlanPanel userId={user.id} plan={plan} level={DEFAULT_LEVEL} hasRole={false} />
+          </div>
+        )}
         <AuthenticatedFitmentChecker />
       </main>
     );

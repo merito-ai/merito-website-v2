@@ -52,7 +52,7 @@ export default async function PricingPage({
 
   const banner = planState.plan && (
     <div className="mx-auto" style={{ maxWidth: 1040, padding: "28px 24px 0" }}>
-      <PlanPanel userId={user.id} plan={planState.plan} level={level} />
+      <PlanPanel userId={user.id} plan={planState.plan} level={level} hasRole={!!lead} />
     </div>
   );
   const cards = applyPlanToCards(buildPricingCards(level), planState.plan);

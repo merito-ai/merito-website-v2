@@ -7,7 +7,7 @@ import type { PlanState } from "@/lib/plans";
 import { buildPlanPanelRows, type PlanPanelInput } from "@/lib/planPanel";
 
 // "Your plan": one row per benefit with live state + next action (dashboard, and pricing in place of the old banner).
-export default async function PlanPanel({ userId, plan, level }: { userId: string; plan: NonNullable<PlanState["plan"]>; level: CandidateLevel }) {
+export default async function PlanPanel({ userId, plan, level, hasRole = true }: { userId: string; plan: NonNullable<PlanState["plan"]>; level: CandidateLevel; hasRole?: boolean }) {
   const db = getSupabaseServerClient();
   const [{ data: personality }, { data: interview }, refs, { data: mentoring }] = await Promise.all([
     db.from("personality_tests").select("version, culture_scores").eq("user_id", userId).maybeSingle(),
@@ -24,6 +24,7 @@ export default async function PlanPanel({ userId, plan, level }: { userId: strin
     references: !refs ? "none" : refs.status === "completed" ? "completed" : "in_progress",
     mentoring: mentoring ? { status: mentoring.status, scheduledAt: mentoring.scheduled_at } : null,
     mentoringPriceLabel: formatPrice(PRODUCT_PRICING.counselling[level]),
+    hasRole,
   };
   const rows = buildPlanPanelRows(input);
 

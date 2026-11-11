@@ -7,6 +7,7 @@ export type PlanPanelInput = {
   references: "none" | "in_progress" | "completed";
   mentoring: { status: string; scheduledAt: string | null } | null;
   mentoringPriceLabel: string;
+  hasRole?: boolean; // default true; false = bought a plan before checking any role
 };
 
 export type PlanPanelRow = {
@@ -48,7 +49,7 @@ export function buildPlanPanelRows(i: PlanPanelInput): PlanPanelRow[] {
         ? { status: m.scheduledAt ? `Scheduled ${date(m.scheduledAt)}` : "Scheduled", action: { label: "View", href: "/hub/account/expert" } }
         : { status: "Not booked yet", action: { label: "Book session", href: "/hub/account/expert" } };
 
-  return [
+  const rows: PlanPanelRow[] = [
     {
       key: "reports",
       label: "CV reports (3 roles)",
@@ -70,4 +71,8 @@ export function buildPlanPanelRows(i: PlanPanelInput): PlanPanelRow[] {
     // The existing consolidated report + its share link; no separate profile feature.
     { key: "share", label: "Shareable consolidated profile", included: true, status: "One report combining all your results", action: { label: "View & share", href: "/hub/account/combined-report" } },
   ];
+  if (i.hasRole !== false) return rows;
+  // These pages redirect away without a role (expert too, unless Plan 2): send to the new-role modal instead.
+  const needsRole = new Set(["personality", "interview", "references", ...(mentor ? [] : ["mentoring"])]);
+  return rows.map((r) => (needsRole.has(r.key) ? { ...r, action: { label: "Check a role first", href: "#check-role" } } : r));
 }
