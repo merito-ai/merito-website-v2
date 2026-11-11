@@ -28,7 +28,7 @@ export default function AllowlistForm() {
       });
       const data = await response.json().catch(() => null);
       if (!response.ok) {
-        showToast("error", data?.error || "Something went wrong — try again.");
+        showToast("error", data?.error || "Something went wrong. Try again.");
         return;
       }
       const invalid: string[] = data?.invalid ?? [];
@@ -37,7 +37,7 @@ export default function AllowlistForm() {
       setNote("");
       router.refresh();
     } catch {
-      showToast("error", "Something went wrong — try again.");
+      showToast("error", "Something went wrong. Try again.");
     } finally {
       setBusy(false);
     }

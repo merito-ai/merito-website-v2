@@ -20,7 +20,7 @@ export default async function PlanAllowlistPage() {
           {rows.map((r) => (
             <TableRow key={r.email}>
               <TableCell>{r.email}</TableCell>
-              <TableCell>{r.note ?? "—"}</TableCell>
+              <TableCell>{r.note ?? "None"}</TableCell>
               <TableCell>{r.added_by}</TableCell>
               <TableCell>{new Date(r.added_at).toLocaleDateString("en-IN")}</TableCell>
               <TableCell align="right">

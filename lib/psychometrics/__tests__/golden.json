@@ -485,7 +485,7 @@
     "reverse_keyed": false,
     "is_attention_check": false,
     "attention_direction": null,
-    "text": "When a colleague is struggling, I instinctively step in to offer help — even when it falls outside my own scope of work."
+    "text": "When a colleague is struggling, I instinctively step in to offer help, even when it falls outside my own scope of work."
    },
    {
     "id": "c3",
@@ -557,7 +557,7 @@
     "reverse_keyed": false,
     "is_attention_check": false,
     "attention_direction": null,
-    "text": "I feel most energized when I have real freedom to experiment — even when the outcome is genuinely uncertain."
+    "text": "I feel most energized when I have real freedom to experiment, even when the outcome is genuinely uncertain."
    },
    {
     "id": "a3",
@@ -589,7 +589,7 @@
     "reverse_keyed": false,
     "is_attention_check": false,
     "attention_direction": null,
-    "text": "I believe workplaces that genuinely reward bold experimentation — and learn from failure — outperform those that avoid risk."
+    "text": "I believe workplaces that genuinely reward bold experimentation, and learn from failure, outperform those that avoid risk."
    },
    {
     "id": "a7",
@@ -613,7 +613,7 @@
     "reverse_keyed": true,
     "is_attention_check": false,
     "attention_direction": null,
-    "text": "I work best when my role and scope are stable and clearly defined — constant reinvention makes it hard for me to perform."
+    "text": "I work best when my role and scope are stable and clearly defined, constant reinvention makes it hard for me to perform."
    },
    {
     "id": "m1",
@@ -629,7 +629,7 @@
     "reverse_keyed": false,
     "is_attention_check": false,
     "attention_direction": null,
-    "text": "When I fall short of a target, my instinct is to immediately analyze what went wrong and course-correct — not rationalize."
+    "text": "When I fall short of a target, my instinct is to immediately analyze what went wrong and course-correct, not rationalize."
    },
    {
     "id": "m3",
@@ -645,7 +645,7 @@
     "reverse_keyed": false,
     "is_attention_check": false,
     "attention_direction": null,
-    "text": "Competing against benchmarks or rivals genuinely motivates me — knowing the bar makes me want to clear it decisively."
+    "text": "Competing against benchmarks or rivals genuinely motivates me, knowing the bar makes me want to clear it decisively."
    },
    {
     "id": "m5",
@@ -717,7 +717,7 @@
     "reverse_keyed": false,
     "is_attention_check": false,
     "attention_direction": null,
-    "text": "I find well-designed processes and standardized procedures genuinely helpful — they free me to focus on quality execution."
+    "text": "I find well-designed processes and standardized procedures genuinely helpful, they free me to focus on quality execution."
    },
    {
     "id": "h5",
@@ -741,7 +741,7 @@
     "reverse_keyed": true,
     "is_attention_check": false,
     "attention_direction": null,
-    "text": "I find formal hierarchies and multi-step approval chains frustrating and bureaucratic — they slow me down more than they help."
+    "text": "I find formal hierarchies and multi-step approval chains frustrating and bureaucratic, they slow me down more than they help."
    },
    {
     "id": "h8",
@@ -965,7 +965,7 @@
      "flags": [
       "agreement (yea-saying) bias",
       "the same answer given to 60 statements in a row (possible straight-lining)",
-      "very favourable self-description — interpret with care"
+      "very favourable self-description (interpret with care)"
      ],
      "answered": 65,
      "total": 65,
@@ -1151,7 +1151,7 @@
      "longstring": 3,
      "flags": [
       "inconsistent / careless responding",
-      "very favourable self-description — interpret with care"
+      "very favourable self-description (interpret with care)"
      ],
      "answered": 65,
      "total": 65,

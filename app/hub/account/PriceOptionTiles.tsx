@@ -44,7 +44,7 @@ export default function PriceOptionTiles({
           {submittingProp
             ? "Redirecting…"
             : freeReports > 0
-              ? `Use 1 of your ${freeReports} plan reports — free`
+              ? `Use 1 of your ${freeReports} plan reports, free`
               : `Continue to payment for ${formatPrice(soloPrice)}`}
         </button>
         {freeReports === 0 && (
@@ -89,7 +89,7 @@ export default function PriceOptionTiles({
           className="font-[family-name:var(--font-poppins)]"
           style={{ fontSize: 12, color: "#ed1a24", textDecoration: "underline", cursor: submitting ? "default" : "pointer" }}
         >
-          {freeReports > 0 ? `Use 1 of your ${freeReports} plan reports — free` : `${soloLabel} for ${formatPrice(soloPrice)} instead →`}
+          {freeReports > 0 ? `Use 1 of your ${freeReports} plan reports, free` : `${soloLabel} for ${formatPrice(soloPrice)} instead →`}
         </span>
       </p>
 

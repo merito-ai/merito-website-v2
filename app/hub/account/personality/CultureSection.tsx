@@ -19,7 +19,7 @@ export default function CultureSection({ scores, reliable, light = false }: { sc
   const fitRow = (f: Fit, withBasis: boolean) => (
     <li key={f.key} style={{ marginBottom: 6 }}>
       <span className={`${font} font-semibold`} style={{ fontSize: 14, color: c.title }}>
-        {f.label} — {f.fit}% fit
+        {f.label}: {f.fit}% fit
       </span>
       {withBasis && (
         <span className={font} style={{ display: "block", fontSize: 12, color: c.muted }}>

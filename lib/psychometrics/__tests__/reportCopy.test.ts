@@ -20,7 +20,7 @@ describe("report copy", () => {
   it("has the 5 spec caveats", () => {
     expect(CULTURE_CAVEATS).toHaveLength(5);
     const all = CULTURE_CAVEATS.join(" ");
-    for (const phrase of ["teams inside one company", "modestly predicts", "Merito estimates", "not a hiring screen", "Clan"]) {
+    for (const phrase of ["Teams inside one company", "modestly predicts", "Merito estimates", "not a hiring screen", "Clan"]) {
       expect(all).toContain(phrase);
     }
   });

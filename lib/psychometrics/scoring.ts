@@ -9,7 +9,7 @@ export type { CultureKey } from "./cultureItems";
 export const ATTN_LOW_FLAG = 6;
 export const ATTN_HIGH_FLAG = 2;
 export const SD_FLAG = 4.8;
-export const IM_FLAG = "very favourable self-description — interpret with care";
+export const IM_FLAG = "very favourable self-description (interpret with care)";
 export const LONGSTRING_FLAG = 10;
 export const MIN_ITEMS_PER_TRAIT = 6;
 export const MIN_ITEMS_PER_CULTURE = 5;
