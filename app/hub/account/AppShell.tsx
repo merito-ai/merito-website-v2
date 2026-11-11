@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TopBar from "./TopBar";
 import Sidebar from "./Sidebar";
 import ChangeRoleModal from "./ChangeRoleModal";
@@ -25,6 +25,18 @@ export default function AppShell({
   children: React.ReactNode;
 }) {
   const [showChangeRole, setShowChangeRole] = useState(false);
+
+  // "#check-role" links (Your plan panel, any Hub page) open the new-role modal from anywhere in the Hub.
+  useEffect(() => {
+    const open = () => {
+      if (window.location.hash !== "#check-role") return;
+      setShowChangeRole(true);
+      history.replaceState(null, "", window.location.pathname + window.location.search);
+    };
+    open();
+    window.addEventListener("hashchange", open);
+    return () => window.removeEventListener("hashchange", open);
+  }, []);
 
   return (
     <div

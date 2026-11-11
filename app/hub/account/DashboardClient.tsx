@@ -33,6 +33,7 @@ export default function DashboardClient({
   counsellingPriceLabel,
   initialCounsellingRequested,
   applications,
+  planPanel,
   recruiterActivity,
 }: {
   leadId: string;
@@ -52,6 +53,7 @@ export default function DashboardClient({
   counsellingPriceLabel: string;
   initialCounsellingRequested: boolean;
   applications: Application[];
+  planPanel: React.ReactNode;
   recruiterActivity: React.ReactNode;
 }) {
   const [modal, setModal] = useState<"none" | "report" | "generate" | "counselling" | "tour">("none");
@@ -129,6 +131,8 @@ export default function DashboardClient({
         <QuickTipsCard onStartTour={() => setModal("tour")} />
 
         <ScoreCard roleTitle={roleTitle} score={score} verdict={verdict} />
+
+        {planPanel}
 
         <ProgressRail
           reportUnlocked={reportUnlocked}

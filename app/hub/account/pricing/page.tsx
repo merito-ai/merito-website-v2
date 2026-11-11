@@ -11,7 +11,7 @@ import { resolveActiveLead } from "@/lib/activeLead";
 import { getPlanState } from "@/lib/plans";
 import { buildPlanCards, applyPlanToCards } from "./pricingCatalog";
 import PlanCardsClient from "./PlanCardsClient";
-import PlanStatusBanner from "./PlanStatusBanner";
+import PlanPanel from "../PlanPanel";
 
 export default async function PricingPage({
   searchParams,
@@ -33,7 +33,6 @@ export default async function PricingPage({
   if (planState.allowlisted && !planState.plan) {
     return <PlanCardsClient plans={buildPlanCards()} />;
   }
-  const banner = planState.plan && <PlanStatusBanner plan={planState.plan} />;
 
   // Honour ?lead= (same resolution as app/hub/account/page.tsx) so arriving
   // from the role switcher prices and unlock-gates the role being viewed, not
@@ -51,6 +50,11 @@ export default async function PricingPage({
 
   const level = (lead?.candidate_level as CandidateLevel | null) ?? DEFAULT_LEVEL;
 
+  const banner = planState.plan && (
+    <div className="mx-auto" style={{ maxWidth: 1040, padding: "28px 24px 0" }}>
+      <PlanPanel userId={user.id} plan={planState.plan} level={level} />
+    </div>
+  );
   const cards = applyPlanToCards(buildPricingCards(level), planState.plan);
   const bundle = buildBundleSummary(level);
 

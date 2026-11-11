@@ -18,6 +18,8 @@ import AuthenticatedFitmentChecker from "./AuthenticatedFitmentChecker";
 import { resolveActiveLead } from "@/lib/activeLead";
 import { leadIdOrRoleTitleFilter } from "@/lib/postgrestIdentityFilter";
 import { isPersonalityComplete } from "@/lib/psychometrics/testFlow";
+import { getPlanState } from "@/lib/plans";
+import PlanPanel from "./PlanPanel";
 
 export default async function AccountPage({
   searchParams,
@@ -184,6 +186,7 @@ export default async function AccountPage({
     { data: counsellingRequest },
     recruiterViewCount,
     [personalityUnlocked, referencesUnlocked],
+    planState,
   ] = await Promise.all([
     resolveReport(),
     resolveInterview(),
@@ -192,6 +195,7 @@ export default async function AccountPage({
     supabase.from("counselling_requests").select("id").eq("user_id", user.id).neq("status", "cancelled").limit(1).maybeSingle(),
     getRecruiterViewCount(user.id),
     Promise.all([isProductUnlocked(user.id, "personality"), isProductUnlocked(user.id, "references")]),
+    getPlanState(user.id, user.email),
   ]);
 
   const report: ResumeMatchReportReady | null =
@@ -229,6 +233,7 @@ export default async function AccountPage({
       counsellingPriceLabel={counsellingPriceLabel}
       initialCounsellingRequested={Boolean(counsellingRequest)}
       applications={leads.map((l) => ({ id: l.id, roleTitle: l.role_title, score: l.score, createdAt: l.created_at }))}
+      planPanel={planState.plan ? <PlanPanel userId={user.id} plan={planState.plan} level={level} /> : null}
       recruiterActivity={RECRUITER_PREVIEW_ENABLED ? <RecruiterActivityPanel viewCount={recruiterViewCount} /> : null}
     />
   );
