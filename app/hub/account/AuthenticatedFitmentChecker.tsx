@@ -116,7 +116,7 @@ export default function AuthenticatedFitmentChecker() {
       {open && (
         <div
           onClick={() => !checking && setOpen(false)}
-          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", backdropFilter: "blur(4px)", zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}
+          role="dialog" aria-modal="true" style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", backdropFilter: "blur(4px)", zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}
         >
           <div
             onClick={(e) => e.stopPropagation()}

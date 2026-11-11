@@ -23,6 +23,8 @@ export default function ExportPreviewModal({
 
   return (
     <div
+      role="dialog"
+      aria-modal="true"
       onClick={onClose}
       style={{
         position: "fixed",

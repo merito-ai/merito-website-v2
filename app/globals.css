@@ -82,3 +82,12 @@
     display: none !important;
   }
 }
+
+/* SalesIQ sits at the max z-index, above every Hub modal overlay (and its
+   bubble covers modal buttons on phones). Hide it while a modal is open. */
+body:has([aria-modal="true"]) .zsiq_theme1,
+body:has([aria-modal="true"]) #zsiq_float,
+body:has([aria-modal="true"]) [id^="zsiq"],
+body:has([aria-modal="true"]) iframe[id*="siq"] {
+  display: none !important;
+}
