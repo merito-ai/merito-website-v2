@@ -6,7 +6,7 @@ import { FileText, Brain, Users, Mic } from "lucide-react";
 import type { InterviewStatus } from "./interviewProgress";
 
 export type { InterviewStatus };
-export type PersonalityStatus = "not_started" | "ready";
+export type PersonalityStatus = "not_started" | "ready" | "update"; // update = old v1 result, viewable, updated test not taken
 
 type PillState = "done" | "active" | "locked";
 
@@ -58,8 +58,8 @@ export default function ProgressRail({
       key: "personality",
       label: "Personality test",
       icon: Brain,
-      state: personalityStatus === "ready" ? "done" : personalityUnlocked ? "active" : "locked",
-      statusText: personalityStatus === "ready" ? "Ready" : personalityUnlocked ? "Start test" : "Not started",
+      state: personalityStatus === "ready" ? "done" : personalityUnlocked || personalityStatus === "update" ? "active" : "locked",
+      statusText: personalityStatus === "ready" ? "Ready" : personalityStatus === "update" ? "Take updated test" : personalityUnlocked ? "Start test" : "Not started",
       href: `/hub/account/personality?role=${encodeURIComponent(roleTitle)}`,
     },
     {

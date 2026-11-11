@@ -5,6 +5,7 @@ import { getReferenceCheckStatus } from "@/lib/referenceChecks";
 import { PRODUCT_LABELS } from "@/lib/razorpay/pricing";
 import type { PlanState } from "@/lib/plans";
 import { buildPlanPanelRows, type PlanPanelInput } from "@/lib/planPanel";
+import { needsUpdatedTest } from "@/lib/psychometrics/testFlow";
 
 // "Your plan": numbered steps with live state, next action and a single next-step marker (dashboard).
 export default async function PlanPanel({ userId, plan, hasRole = true, reportLocked = false }: { userId: string; plan: NonNullable<PlanState["plan"]>; hasRole?: boolean; reportLocked?: boolean }) {
@@ -19,7 +20,7 @@ export default async function PlanPanel({ userId, plan, hasRole = true, reportLo
   const input: PlanPanelInput = {
     product: plan.product,
     reportCreditsLeft: plan.reportCreditsLeft,
-    personality: !personality ? "none" : personality.version === 2 && personality.culture_scores == null ? "part2" : "done",
+    personality: !personality ? "none" : needsUpdatedTest(personality) ? "update" : personality.version === 2 && personality.culture_scores == null ? "part2" : "done",
     interview: !plan.interviewUsed ? "unused" : interview?.status === "ready" ? "ready" : "in_progress",
     references: !refs ? "none" : refs.status === "completed" ? "completed" : "in_progress",
     mentoring: mentoring ?? [],

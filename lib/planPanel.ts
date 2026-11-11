@@ -5,7 +5,7 @@ import { PLAN_FEATURE_DETAILS, type PlanFeatureKey } from "@/lib/planFeatures";
 export type PlanPanelInput = {
   product: "plan_prepare" | "plan_mentor";
   reportCreditsLeft: number;
-  personality: "none" | "part2" | "done";
+  personality: "none" | "part2" | "update" | "done"; // update = old v1 result, culture part not taken
   interview: "unused" | "in_progress" | "ready";
   references: "none" | "in_progress" | "completed";
   mentoring: MentoringRow[]; // Plan 2 counselling_requests rows (session 1 + follow-up)
@@ -62,6 +62,7 @@ export function buildPlanPanelRows(i: PlanPanelInput): PlanPanelRow[] {
   const personality: Record<PlanPanelInput["personality"], Pick<PlanPanelRow, "status" | "action">> = {
     none: { status: "Not started", action: { label: "Start", href: "/hub/account/personality" } },
     part2: { status: "Part 1 done", action: { label: "Continue part 2", href: "/hub/account/personality" } },
+    update: { status: "Culture part pending", action: { label: "Take the updated test", href: "/hub/account/personality" } },
     done: { status: "Completed", action: { label: "View report", href: "/hub/account/personality" } },
   };
   const interview: Record<PlanPanelInput["interview"], Pick<PlanPanelRow, "status" | "action">> = {

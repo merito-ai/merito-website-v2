@@ -26,6 +26,8 @@ describe("buildPlanPanelRows", () => {
     expect(row(base, "personality").action!.label).toBe("Start");
     expect(row({ ...base, personality: "part2" }, "personality").action!.label).toBe("Continue part 2");
     expect(row({ ...base, personality: "done" }, "personality")).toMatchObject({ status: "Completed", action: { label: "View report" } });
+    // old v1 result: not done, prompts the culture part
+    expect(row({ ...base, personality: "update" }, "personality")).toMatchObject({ done: false, status: "Culture part pending", action: { label: "Take the updated test" } });
   });
 
   it("interview: start / in progress / view report", () => {

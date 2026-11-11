@@ -1,5 +1,5 @@
 import { it, expect } from "vitest";
-import { initialPhase, isPersonalityComplete } from "../testFlow";
+import { initialPhase, isPersonalityComplete, needsUpdatedTest } from "../testFlow";
 
 it.each([
   [null, "intro"],
@@ -16,3 +16,10 @@ it.each([
   [{ version: 2, culture_scores: null }, false], // part 1 only: not a completed test anywhere
   [{ version: 2, culture_scores: { Clan: 1 } }, true],
 ])("isPersonalityComplete(%j) -> %s", (row, want) => expect(isPersonalityComplete(row as never)).toBe(want));
+
+it.each([
+  [null, false],
+  [{ version: 1, culture_scores: null }, true], // old result: prompt the updated test
+  [{ version: 2, culture_scores: null }, false],
+  [{ version: 2, culture_scores: { Clan: 1 } }, false],
+])("needsUpdatedTest(%j) -> %s", (row, want) => expect(needsUpdatedTest(row as never)).toBe(want));

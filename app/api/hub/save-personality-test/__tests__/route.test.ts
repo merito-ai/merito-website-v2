@@ -226,6 +226,7 @@ describe("POST /api/hub/save-personality-test — v2 two-part flow", () => {
 
   it.each([
     ["complete v1, no plan", { version: 1, culture_scores: null }, null],
+    ["complete v1 with a plan (retake goes through part 2)", { version: 1, culture_scores: null }, { orderId: "o1" }],
     ["complete v2", { version: 2, culture_scores: { Clan: 50 } }, { orderId: "o1" }],
   ])("part 1 over a %s row -> 409, row untouched", async (_label, row, plan) => {
     maybeSingleMock.mockResolvedValue({ data: row, error: null });
@@ -236,12 +237,32 @@ describe("POST /api/hub/save-personality-test — v2 two-part flow", () => {
   });
 
   it.each([
-    ["v1 row with a plan (retake-eligible)", { version: 1, culture_scores: null }, { orderId: "o1" }],
     ["incomplete v2 row", { version: 2, culture_scores: null }, null],
   ])("part 1 over a %s -> 200", async (_label, row, plan) => {
     maybeSingleMock.mockResolvedValue({ data: row, error: null });
     getPlanOrderMock.mockResolvedValue(plan);
     expect((await post({ roleTitle: "X", part: "personality", answers: completeAnswers() })).status).toBe(200);
     expect(upsertMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("v1 retake: part 2 with personalityAnswers replaces v1 with a full v2 row in one write, no plan needed", async () => {
+    maybeSingleMock.mockResolvedValue({ data: { version: 1 }, error: null });
+    getPlanOrderMock.mockResolvedValue(null);
+    const res = await post({ roleTitle: "X", part: "culture", answers: cultureAnswers(), personalityAnswers: completeAnswers() });
+    expect(res.status).toBe(200);
+    expect(Object.keys(await res.json()).sort()).toEqual(["culture", "scores", "validity"]);
+    expect(upsertMock).toHaveBeenCalledWith(
+      expect.objectContaining({ user_id: "user-1", version: 2, scores: expect.any(Object), culture_scores: expect.any(Object), culture_completed_at: expect.any(String) }),
+      { onConflict: "user_id" }
+    );
+    expect(updateMock).not.toHaveBeenCalled();
+  });
+
+  it("v1 retake with incomplete personalityAnswers -> 409, v1 untouched", async () => {
+    maybeSingleMock.mockResolvedValue({ data: { version: 1 }, error: null });
+    const res = await post({ roleTitle: "X", part: "culture", answers: cultureAnswers(), personalityAnswers: { 1: 3 } });
+    expect(res.status).toBe(409);
+    expect(upsertMock).not.toHaveBeenCalled();
+    expect(updateMock).not.toHaveBeenCalled();
   });
 });

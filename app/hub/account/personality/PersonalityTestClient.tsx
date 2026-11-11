@@ -37,14 +37,14 @@ export default function PersonalityTestClient({
   candidateName,
   initialRow,
   initialResult,
-  canRetakeV2,
 }: {
   roleTitle: string;
   candidateName: string;
   initialRow: { version: number; culture_scores: unknown } | null;
   initialResult: Result | null;
-  canRetakeV2: boolean;
 }) {
+  // Old v1 result: the updated test saves both parts together at the end, so v1 stays until then.
+  const retakingV1 = initialRow?.version === 1;
   const [phase, setPhase] = useState<TestPhase>(() => (initialResult ? initialPhase(initialRow) : "intro"));
   const [result, setResult] = useState<Result | null>(initialResult);
   const [order] = useState(() => shuffle(ALL));
@@ -117,9 +117,10 @@ export default function PersonalityTestClient({
         setHint("Please answer every statement before seeing your results.");
         return;
       }
-      const data = await save({ roleTitle, part: "culture", answers: cultureAnswers });
+      const data = await save({ roleTitle, part: "culture", answers: cultureAnswers, ...(retakingV1 && { personalityAnswers: answers }) });
       if (!data) return;
-      setResult((r) => (r ? { ...r, culture: data.culture as CultureResult } : r));
+      if (retakingV1) setResult({ scores: data.scores as Scores, validity: data.validity as Validity, culture: data.culture as CultureResult });
+      else setResult((r) => (r ? { ...r, culture: data.culture as CultureResult } : r));
       setPhase("report");
       window.scrollTo(0, 0);
       return;
@@ -128,9 +129,11 @@ export default function PersonalityTestClient({
       setHint("Please answer every statement before seeing your results.");
       return;
     }
-    const data = await save({ roleTitle, part: "personality", answers });
-    if (!data) return;
-    setResult({ scores: data.scores as Scores, validity: data.validity as Validity, culture: null });
+    if (!retakingV1) {
+      const data = await save({ roleTitle, part: "personality", answers });
+      if (!data) return;
+      setResult({ scores: data.scores as Scores, validity: data.validity as Validity, culture: null });
+    }
     setPage(0);
     setPhase("culture-intro");
     window.scrollTo(0, 0);
@@ -147,17 +150,17 @@ export default function PersonalityTestClient({
   if (phase === "report" && result) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-        {canRetakeV2 && initialRow?.version === 1 && (
+        {retakingV1 && !result.culture && (
           <div style={{ background: "rgb(29,25,31)", border: "1px solid rgb(49,47,55)", borderRadius: 14, padding: 20 }}>
             <p className="font-[family-name:var(--font-poppins)] text-white/70" style={{ fontSize: 14, margin: "0 0 12px" }}>
-              This is your earlier personality result. Your plan includes the new version: personality plus work-culture preferences.
+              This is your earlier personality result. Take the updated test to add your work-culture preferences. Your earlier result stays until you finish both parts.
             </p>
             <button
               onClick={startNewVersion}
               className="font-[family-name:var(--font-poppins)] font-semibold text-white bg-[#ed1a24] hover:bg-[#c8151e] transition-colors"
               style={{ height: 42, padding: "0 20px", borderRadius: 8, fontSize: 14, border: "none", cursor: "pointer" }}
             >
-              Take the new test
+              Take the updated test
             </button>
           </div>
         )}
@@ -182,7 +185,7 @@ export default function PersonalityTestClient({
           </span>
         </div>
         <p className="font-[family-name:var(--font-poppins)] text-white/55" style={{ fontSize: 14, lineHeight: 1.65, margin: "0 0 20px" }}>
-          {CULTURE_ITEMS.length} statements, about 6 minutes. Your Part 1 answers are saved. Rate how much you agree with
+          {CULTURE_ITEMS.length} statements, about 6 minutes. {retakingV1 ? "Finish Part 2 to save both parts; until then your earlier result stays." : "Your Part 1 answers are saved."} Rate how much you agree with
           each statement, from 1 (strongly disagree) to 7 (strongly agree).
         </p>
         <button
@@ -225,7 +228,7 @@ export default function PersonalityTestClient({
           ))}
         </div>
         <div className="font-[family-name:var(--font-poppins)] text-white/55" style={{ fontSize: 13, lineHeight: 1.65, margin: "0 0 20px", display: "flex", flexDirection: "column", gap: 6 }}>
-          <p style={{ margin: 0 }}>Part 1 is about your personality, Part 2 about the work culture you prefer. Your progress is saved after Part 1.</p>
+          <p style={{ margin: 0 }}>Part 1 is about your personality, Part 2 about the work culture you prefer. {retakingV1 ? "Both parts are saved when you finish; your earlier result stays until then." : "Your progress is saved after Part 1."}</p>
           <p style={{ margin: 0 }}>In Part 1, rate how accurately each statement describes you, from 1 (very inaccurate) to 5 (very accurate).</p>
           <p style={{ margin: 0 }}>Answer for how you actually are &mdash; not how you think you should be.</p>
           <p style={{ margin: 0 }}>Try not to sit on the fence: pick the side that fits you better.</p>
@@ -359,7 +362,7 @@ export default function PersonalityTestClient({
             }
             style={{ height: 46, padding: "0 24px", borderRadius: 8, fontSize: 14, border: "none", cursor: saving ? "default" : "pointer", boxShadow: saving ? "none" : "0 4px 6px rgba(236,34,40,0.3)" }}
           >
-            {saving ? "Saving…" : page !== pages - 1 ? "Next" : isCulture ? "Finish test" : "Save Part 1"}
+            {saving ? "Saving…" : page !== pages - 1 ? "Next" : isCulture ? "Finish test" : retakingV1 ? "Continue to Part 2" : "Save Part 1"}
           </button>
         </div>
       </div>

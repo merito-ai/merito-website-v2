@@ -27,7 +27,7 @@ export default function ReportSectionPicker({
 
   const availability: Record<ReportType, boolean> = {
     fitment: reportUnlocked,
-    personality: personalityStatus === "ready",
+    personality: personalityStatus !== "not_started", // a v1 result stays exportable until v2 is done
     interview: interviewStatus === "ready",
     references: referenceCheckStatus === "completed",
   };

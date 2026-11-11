@@ -6,9 +6,22 @@ import { scorePersonality, scoreCulture, type RawAnswers } from "@/lib/psychomet
 import { CULTURE_ITEMS } from "@/lib/psychometrics/cultureItems";
 import { arePaymentsBypassed } from "@/lib/paymentsBypass";
 import { isPersonalityComplete } from "@/lib/psychometrics/testFlow";
-import { getPlanOrder } from "@/lib/plans";
 
 export const runtime = "nodejs";
+
+// Part 1 answers (item id -> 1-5) to stored scores, or null when invalid/incomplete.
+function scorePart1(rawAnswers: Record<string, unknown>) {
+  const answers: Answers = {};
+  for (const [key, value] of Object.entries(rawAnswers)) {
+    const id = Number(key);
+    if (!Number.isInteger(id) || typeof value !== "number") return null;
+    answers[id] = value;
+  }
+  if (!isCompleteAnswerSet(answers)) return null;
+  const result = scorePersonality(answers as unknown as RawAnswers);
+  if (!result.trait_scores) return null;
+  return { answers, scores: toStoredScores(result.trait_scores, answers), validity: toStoredValidity(result.validity) };
+}
 
 export async function POST(request: Request) {
   const supabase = await createSupabaseServerClient();
@@ -27,7 +40,7 @@ export async function POST(request: Request) {
     );
   }
 
-  let body: { roleTitle?: string; part?: string; answers?: Record<string, unknown> };
+  let body: { roleTitle?: string; part?: string; answers?: Record<string, unknown>; personalityAnswers?: Record<string, unknown> };
   try {
     body = await request.json();
   } catch {
@@ -49,26 +62,14 @@ export async function POST(request: Request) {
   const admin = getSupabaseServerClient();
 
   if (part === "personality") {
-    const answers: Answers = {};
-    for (const [key, value] of Object.entries(rawAnswers)) {
-      const id = Number(key);
-      if (!Number.isInteger(id) || typeof value !== "number") {
-        return Response.json({ error: "answers must map item id to a 1-5 rating." }, { status: 400 });
-      }
-      answers[id] = value;
+    const part1 = scorePart1(rawAnswers);
+    if (!part1) {
+      return Response.json({ error: "All statements must be answered with a 1-5 rating before scoring." }, { status: 400 });
     }
-    if (!isCompleteAnswerSet(answers)) {
-      return Response.json({ error: "All statements must be answered before scoring." }, { status: 400 });
-    }
-    const result = scorePersonality(answers as unknown as RawAnswers);
-    if (!result.trait_scores) {
-      return Response.json({ error: "All statements must be answered before scoring." }, { status: 400 });
-    }
-    const scores = toStoredScores(result.trait_scores, answers);
-    const validity = toStoredValidity(result.validity);
+    const { answers, scores, validity } = part1;
 
-    // Part 1 must not overwrite a finished result: only an incomplete v2 may be redone, and a v1
-    // result only by a plan holder (same rule as the page's canRetakeV2).
+    // Part 1 must not overwrite a finished result: only an incomplete v2 may be redone. A v1 result
+    // is retaken by sending both parts with part 2 (personalityAnswers), so it stays until v2 is done.
     const { data: existing, error: existingError } = await admin
       .from("personality_tests")
       .select("version, culture_scores")
@@ -78,7 +79,7 @@ export async function POST(request: Request) {
       console.error("personality_tests read failed", { user_id: user.id, error: existingError });
       return Response.json({ error: "Something went wrong saving your results. Please try again." }, { status: 500 });
     }
-    if (isPersonalityComplete(existing) && !(existing?.version === 1 && (await getPlanOrder(user.id)))) {
+    if (isPersonalityComplete(existing)) {
       return Response.json({ error: "You have already completed this test." }, { status: 409 });
     }
 
@@ -127,11 +128,40 @@ export async function POST(request: Request) {
     console.error("personality_tests read failed", { user_id: user.id, error: readError });
     return Response.json({ error: "Something went wrong saving your results. Please try again." }, { status: 500 });
   }
-  if (!row || row.version !== 2) {
+  // Retake over an old v1 result: part 1 arrives here, so both parts replace v1 in one write.
+  const part1 = row?.version === 1 && body.personalityAnswers && typeof body.personalityAnswers === "object" ? scorePart1(body.personalityAnswers) : null;
+  if (!row || (row.version !== 2 && !part1)) {
     return Response.json({ error: "Finish part 1 first." }, { status: 409 });
   }
 
   const culture = scoreCulture(cultureAnswers);
+  if (part1) {
+    const { error: upsertError } = await admin.from("personality_tests").upsert(
+      {
+        user_id: user.id,
+        role_title: roleTitle,
+        version: 2,
+        scores: part1.scores,
+        validity: part1.validity,
+        answers: part1.answers,
+        completed_at: new Date().toISOString(),
+        culture_scores: culture.culture_scores,
+        culture_reliable: culture.reliable,
+        culture_answers: cultureAnswers,
+        culture_completed_at: new Date().toISOString(),
+      },
+      { onConflict: "user_id" }
+    );
+    if (upsertError) {
+      console.error("personality_tests v1 retake upsert failed", { user_id: user.id, error: upsertError });
+      return Response.json({ error: "Something went wrong saving your results. Please try again." }, { status: 500 });
+    }
+    return Response.json({
+      scores: part1.scores,
+      validity: part1.validity,
+      culture: { scores: culture.culture_scores, reliable: culture.reliable },
+    });
+  }
   const { error: updateError } = await admin
     .from("personality_tests")
     .update({

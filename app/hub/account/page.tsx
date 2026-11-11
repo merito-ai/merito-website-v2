@@ -17,7 +17,7 @@ import { RECRUITER_PREVIEW_ENABLED } from "@/lib/featureFlags";
 import AuthenticatedFitmentChecker from "./AuthenticatedFitmentChecker";
 import { resolveActiveLead } from "@/lib/activeLead";
 import { leadIdOrRoleTitleFilter } from "@/lib/postgrestIdentityFilter";
-import { isPersonalityComplete } from "@/lib/psychometrics/testFlow";
+import { isPersonalityComplete, needsUpdatedTest } from "@/lib/psychometrics/testFlow";
 import { getPlanState } from "@/lib/plans";
 import PlanPanel from "./PlanPanel";
 import PlanCardsClient from "./pricing/PlanCardsClient";
@@ -226,7 +226,7 @@ export default async function AccountPage({
     !referenceCheck ? "none" : referenceCheck.status === "completed" ? "completed" : "in_progress";
 
   // A v2 row with only Part 1 saved is not done; the personality page resumes it at Part 2.
-  const personalityStatus: PersonalityStatus = isPersonalityComplete(personalityRow) ? "ready" : "not_started";
+  const personalityStatus: PersonalityStatus = needsUpdatedTest(personalityRow) ? "update" : isPersonalityComplete(personalityRow) ? "ready" : "not_started";
 
   const level = (current.candidate_level as CandidateLevel | null) ?? DEFAULT_LEVEL;
   const counsellingPriceLabel = formatPrice(PRODUCT_PRICING.counselling[level]);

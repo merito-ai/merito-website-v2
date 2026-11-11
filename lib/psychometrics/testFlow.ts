@@ -14,3 +14,9 @@ export function isPersonalityComplete(row: { version?: number | null; culture_sc
   if (!row) return false;
   return row.version !== 2 || row.culture_scores != null;
 }
+
+// v2 replaces v1 for everyone: an old v1 result stays viewable (it is "complete" above) but the
+// dashboard and plan panel prompt the updated test, which the personality unlock already covers.
+export function needsUpdatedTest(row: { version?: number | null } | null | undefined): boolean {
+  return row?.version === 1;
+}
