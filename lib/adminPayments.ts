@@ -41,12 +41,15 @@ export function findUnpaidUnlocks(input: {
   productUnlocks: ProductUnlockInput[];
   successfulTransactions: SuccessfulTransactionInput[];
 }): UnpaidUnlock[] {
-  // shortcut: a plan covers all of a user's report unlocks (like bundle does), not just its 3 credits.
+  // Account-level products (personality, references) are covered by any bundle or plan.
   const bundleCoveredUsers = new Set(
     input.successfulTransactions.filter((t) => t.product === "bundle" || isPlanProduct(t.product)).map((t) => t.userId)
   );
+  // shortcut: a plan covers all of a user's report unlocks, not just its 3 credits.
+  const planCoveredUsers = new Set(input.successfulTransactions.filter((t) => isPlanProduct(t.product)).map((t) => t.userId));
+  // A bundle unlocks only its own lead's report (lib/razorpay/finalize.ts), like a single report purchase.
   const reportCoveredPairs = new Set(
-    input.successfulTransactions.filter((t) => t.product === "report").map((t) => `${t.userId}:${t.leadId}`)
+    input.successfulTransactions.filter((t) => t.product === "report" || t.product === "bundle").map((t) => `${t.userId}:${t.leadId}`)
   );
   const personalityCoveredUsers = new Set(input.successfulTransactions.filter((t) => t.product === "personality").map((t) => t.userId));
   const referencesCoveredUsers = new Set(input.successfulTransactions.filter((t) => t.product === "references").map((t) => t.userId));
@@ -54,7 +57,7 @@ export function findUnpaidUnlocks(input: {
   const unpaid: UnpaidUnlock[] = [];
 
   for (const r of input.reportUnlocks) {
-    const covered = bundleCoveredUsers.has(r.userId) || reportCoveredPairs.has(`${r.userId}:${r.leadId}`);
+    const covered = planCoveredUsers.has(r.userId) || reportCoveredPairs.has(`${r.userId}:${r.leadId}`);
     if (!covered) {
       unpaid.push({ userId: r.userId, kind: "report", leadId: r.leadId, roleTitle: r.roleTitle, unlockedAt: r.unlockedAt });
     }

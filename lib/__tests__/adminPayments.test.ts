@@ -67,6 +67,34 @@ describe("findUnpaidUnlocks", () => {
     expect(result).toEqual([]);
   });
 
+  it("flags a report unlock on another role even when the user bought a bundle for one role", () => {
+    const result = findUnpaidUnlocks({
+      reportUnlocks: [
+        { userId: "u1", leadId: "lead-1", roleTitle: "PM", unlockedAt: "2026-08-01T00:00:00Z" },
+        { userId: "u1", leadId: "lead-2", roleTitle: "SDE", unlockedAt: "2026-08-02T00:00:00Z" },
+      ],
+      productUnlocks: [],
+      successfulTransactions: [{ userId: "u1", product: "bundle", leadId: "lead-1" }],
+    });
+
+    expect(result).toEqual([
+      { userId: "u1", kind: "report", leadId: "lead-2", roleTitle: "SDE", unlockedAt: "2026-08-02T00:00:00Z" },
+    ]);
+  });
+
+  it("a plan still covers report unlocks on every role", () => {
+    const result = findUnpaidUnlocks({
+      reportUnlocks: [
+        { userId: "u1", leadId: "lead-1", roleTitle: "PM", unlockedAt: "2026-11-10T00:00:00Z" },
+        { userId: "u1", leadId: "lead-2", roleTitle: "SDE", unlockedAt: "2026-11-10T00:00:00Z" },
+      ],
+      productUnlocks: [],
+      successfulTransactions: [{ userId: "u1", product: "plan_mentor", leadId: null }],
+    });
+
+    expect(result).toEqual([]);
+  });
+
   it("still flags a report unlock when a report transaction exists for a different lead", () => {
     const result = findUnpaidUnlocks({
       reportUnlocks: [{ userId: "u1", leadId: "lead-1", roleTitle: "PM", unlockedAt: "2026-08-01T00:00:00Z" }],
