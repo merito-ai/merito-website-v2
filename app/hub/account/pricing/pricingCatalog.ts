@@ -102,16 +102,16 @@ export function buildBundleSummary(level: CandidateLevel): BundleSummary {
   };
 }
 
-type PlanLine = { label: string; valuePaise: number | null; prepare: boolean; mentor: boolean };
-// Seminar value table (spec "Pricing"). Values are shown for context only, never charged.
+type PlanLine = { label: string; helper: string | null; prepare: boolean; mentor: boolean };
+// Plan comparison rows, in the order the PM set (2026-11-11). Offline rows carry a one-line helper.
 const PLAN_LINES: PlanLine[] = [
-  { label: "CV analysis with detailed report (3 roles)", valuePaise: 49900, prepare: true, mentor: true },
-  { label: "Personality + culture assessment", valuePaise: 49900, prepare: true, mentor: true },
-  { label: "Mock AI interview (45 min)", valuePaise: 149900, prepare: true, mentor: true },
-  { label: "References module", valuePaise: 49900, prepare: true, mentor: true },
-  { label: "1-hour mentoring session", valuePaise: 299900, prepare: false, mentor: true },
-  { label: "Application assistance (3 companies)", valuePaise: null, prepare: false, mentor: true },
-  { label: "Shareable profile", valuePaise: null, prepare: true, mentor: true },
+  { label: "CV analysis with detailed report (3 roles)", helper: null, prepare: true, mentor: true },
+  { label: "Personality + culture assessment", helper: null, prepare: true, mentor: true },
+  { label: "Mock AI interview (45 min)", helper: null, prepare: true, mentor: true },
+  { label: "References module", helper: null, prepare: true, mentor: true },
+  { label: "1-hour mentoring session", helper: "1:1 with a Merito expert, booked via calendar", prepare: false, mentor: true },
+  { label: "Application assistance (3 dream companies, via Merito's network)", helper: "Our team refers you to 3 companies you choose", prepare: false, mentor: true },
+  { label: "Shareable consolidated profile", helper: "One report combining all your results, shareable by link", prepare: true, mentor: true },
 ];
 
 export type PlanCard = {
@@ -119,24 +119,18 @@ export type PlanCard = {
   title: string;
   price: number;
   priceLabel: string;
-  lines: { label: string; valueLabel: string; included: boolean }[];
-  footnote: string | null;
+  lines: { label: string; helper: string | null; included: boolean }[];
 };
 
 export function buildPlanCards(): PlanCard[] {
-  return (["plan_prepare", "plan_mentor"] as const).map((product) => ({
-    product,
-    title: PRODUCT_LABELS[product],
-    price: PRODUCT_PRICING[product].entry, // flat across levels
-    priceLabel: formatPrice(PRODUCT_PRICING[product].entry),
-    lines: PLAN_LINES.map((l) => ({
-      label: l.label,
-      valueLabel: l.valuePaise === null ? "—" : formatPrice(l.valuePaise),
-      included: product === "plan_mentor" ? l.mentor : l.prepare,
-    })),
-    footnote:
-      product === "plan_mentor"
-        ? "Application assistance: our team refers you to 3 companies you choose, through our own network. We refer you; we can't guarantee interviews or offers."
-        : null,
-  }));
+  return (["plan_prepare", "plan_mentor"] as const).map((product) => {
+    const price = PRODUCT_PRICING[product].entry; // flat across levels
+    return {
+      product,
+      title: PRODUCT_LABELS[product],
+      price,
+      priceLabel: `₹${(price / 100).toLocaleString("en-IN")}`,
+      lines: PLAN_LINES.map((l) => ({ label: l.label, helper: l.helper, included: product === "plan_mentor" ? l.mentor : l.prepare })),
+    };
+  });
 }

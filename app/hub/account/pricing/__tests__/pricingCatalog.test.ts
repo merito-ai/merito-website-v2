@@ -4,14 +4,14 @@ import { buildPricingCards, buildBundleSummary, getPersonalityBundleRate, buildP
 describe("buildPlanCards", () => {
   const cards = buildPlanCards();
 
-  it("returns both plans at flat prices", () => {
+  it("returns both plans at flat, comma-grouped prices", () => {
     expect(cards.map((c) => [c.product, c.priceLabel])).toEqual([
-      ["plan_prepare", "₹2996"],
-      ["plan_mentor", "₹5995"],
+      ["plan_prepare", "₹2,996"],
+      ["plan_mentor", "₹5,995"],
     ]);
   });
 
-  it("lists the seminar value table in spec order", () => {
+  it("lists the comparison rows in PM order with ticks per plan", () => {
     for (const c of cards) {
       expect(c.lines.map((l) => l.label)).toEqual([
         "CV analysis with detailed report (3 roles)",
@@ -19,18 +19,20 @@ describe("buildPlanCards", () => {
         "Mock AI interview (45 min)",
         "References module",
         "1-hour mentoring session",
-        "Application assistance (3 companies)",
-        "Shareable profile",
+        "Application assistance (3 dream companies, via Merito's network)",
+        "Shareable consolidated profile",
       ]);
-      expect(c.lines.map((l) => l.valueLabel)).toEqual(["₹499", "₹499", "₹1499", "₹499", "₹2999", "—", "—"]);
     }
     expect(cards[0].lines.map((l) => l.included)).toEqual([true, true, true, true, false, false, true]);
     expect(cards[1].lines.map((l) => l.included)).toEqual([true, true, true, true, true, true, true]);
   });
 
-  it("only the mentor plan has the referral footnote, and nothing promises a guaranteed outcome", () => {
-    expect(cards[0].footnote).toBeNull();
-    expect(cards[1].footnote).toMatch(/we refer you/i);
+  it("offline/composite rows carry a helper, and nothing promises a guaranteed outcome", () => {
+    expect(cards[1].lines.filter((l) => l.helper).map((l) => l.label)).toEqual([
+      "1-hour mentoring session",
+      "Application assistance (3 dream companies, via Merito's network)",
+      "Shareable consolidated profile",
+    ]);
     expect(JSON.stringify(cards)).not.toMatch(/guaranteed/i);
   });
 });
