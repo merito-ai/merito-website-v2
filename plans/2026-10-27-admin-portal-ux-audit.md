@@ -124,3 +124,28 @@ Pipeline failures count also surfaces on Home, so moving it under System loses n
 | 5 | Merge recruiter pages into tabs (M6, M7, M9); payments tabs + links (M3); counselling columns (M8); lows | Medium |
 
 Not checked: live UI in browser, real data volumes, mobile rendering. Run a browser pass on Phase 1 output before Phase 2.
+
+## Second pass status (2026-11-11, branch feat/admin-simplify)
+
+Done: sidebar groups, page titles, Home to-do list, Insights page, readable logs, confirm dialogs, 0-100 interview score chart, internal-account exclusion (`ADMIN_INTERNAL_EMAILS`).
+
+Left for the A+D pass (blocked while the hub-plans session was editing payments, initiate route and pricing):
+- T1 interview double-pay: shared `lib/interviewCredits.ts`, initiate route refuses a new interview order while a credit is unused, paywall shows "use credit"
+- Candidate page: header strip, entitlements table (`getCandidateEntitlements`), Billing tab (grant/refund/reconcile pre-filled), report admin action bar, merge search picker, list columns (paid, credits, roles), stage filter, search box
+- T8 `findUnpaidUnlocks`: bundle covers only its own `lead_id` (lib/adminPayments.ts)
+- Payments page: title, abandoned label for old `initiated` rows, product filter
+- Plan allowlist page: title + one sentence
+
+## Deferred / nice to have
+
+- Partial refunds (refund is full amount only)
+- Application-assistance tracker for Plan 2 buyers (needs a product decision; Home shows new Plan 2 buyers for 30 days as a stopgap)
+- Reinvite after an interview report exists
+- Contact-request actions
+- Sidebar on mobile (fixed 240px, no collapse)
+- Minor: "—" is still used as an empty-cell placeholder in many admin tables, and some older admin copy still has em-dashes (only toasts and touched pages were cleaned)
+- Minor: recruiter engagement and data checks on Insights do not apply the team-account filter
+- Minor: stuck interviews and unused credits have no list page; Home shows up to 5 candidate links per card
+- Minor: Revenue counts all `success` rows; prod still runs on Razorpay test keys, so Insights revenue is test money until the live key swap
+- Minor: Recruiters list still lacks lookups count, last active and reveals (M7); recruiter pages not merged into tabs (M6)
+- Minor: Email templates list shows the internal template key, not a human name (L2)
