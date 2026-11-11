@@ -19,7 +19,7 @@ async function getRoleTitleForLead(
 
 export type FinalizeResult =
   | { ok: true; product: RazorpayProduct; userId: string; leadId: string | null }
-  | { ok: false; reason: "unknown_order" | "unsupported_product" | "guard_mismatch" };
+  | { ok: false; reason: "unknown_order" | "unsupported_product" | "guard_mismatch" | "refunded" };
 
 // Optional cross-check: the caller (webhook / client-verify / reconcile cron)
 // asks Razorpay itself what the payment actually is, then hands the answer here.
@@ -51,6 +51,8 @@ export async function finalizeRazorpayOrder(
   }
 
   const product = txn.product as RazorpayProduct;
+  // A refunded order must never be granted again (webhooks are at-least-once; a late payment.captured carries a stale "captured").
+  if (txn.status === "refunded") return { ok: false, reason: "refunded" };
 
   if (txn.status !== "success") {
     if (guards) {

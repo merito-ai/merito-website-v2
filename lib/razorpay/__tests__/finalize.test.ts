@@ -693,6 +693,16 @@ describe("plan orders", () => {
     expect(sendPlanWelcomeEmailMock).not.toHaveBeenCalled();
   });
 
+  it("does not re-grant or re-email a refunded order (late payment.captured redelivery)", async () => {
+    txnRow = { user_id: "user-1", product: "plan_mentor", lead_id: null, status: "refunded", amount_paise: 499900 };
+    const { finalizeRazorpayOrder } = await import("../finalize");
+    const result = await finalizeRazorpayOrder("order_p", "pay_1", { amountPaise: 499900, status: "captured", orderId: "order_p" });
+    expect(result).toEqual({ ok: false, reason: "refunded" });
+    expect(applyPlanGrantsMock).not.toHaveBeenCalled();
+    expect(updateMock).not.toHaveBeenCalled();
+    expect(sendPlanWelcomeEmailMock).not.toHaveBeenCalled();
+  });
+
   it("does not email on a replay of an already-successful order", async () => {
     txnRow = { user_id: "user-1", product: "plan_mentor", lead_id: null, status: "success" };
     const { finalizeRazorpayOrder } = await import("../finalize");
