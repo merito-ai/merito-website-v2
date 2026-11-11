@@ -41,7 +41,7 @@ export default async function AdminCounsellingPage({
       </PageHeader>
 
       <Table>
-        <TableHeadRow columns={["Candidate", "Session", "Order", "Status", "Requested", "Scheduled"]} />
+        <TableHeadRow columns={["Candidate", "Session", "Status", "Requested", "Scheduled"]} />
         <tbody>
           {requests.map((r) => (
             <TableRow key={r.id}>
@@ -51,7 +51,6 @@ export default async function AdminCounsellingPage({
                 </Link>
               </TableCell>
               <TableCell>{r.sessionLabel ?? "—"}</TableCell>
-              <TableCell>{r.orderId}</TableCell>
               <TableCell>
                 <Badge variant={STATUS_VARIANT[r.status]}>{r.status}</Badge>
               </TableCell>
@@ -60,7 +59,7 @@ export default async function AdminCounsellingPage({
             </TableRow>
           ))}
           {requests.length === 0 && (
-            <TableEmptyRow colSpan={6} message={includeAll ? "No counselling requests yet." : "Nothing to schedule."} />
+            <TableEmptyRow colSpan={5} message={includeAll ? "No counselling requests yet." : "Nothing to schedule."} />
           )}
         </tbody>
       </Table>
