@@ -79,17 +79,28 @@ export default function LoginPage({
                 </svg>
               </div>
               <p className="font-[family-name:var(--font-poppins)] font-semibold text-black" style={{ fontSize: 15, margin: 0 }}>
-                Link sent
+                Check your email
               </p>
             </div>
             <p className="font-[family-name:var(--font-poppins)] text-[#4b4b4d]" style={{ fontSize: 13.5, lineHeight: 1.6, margin: 0 }}>
-              Check your inbox at <strong className="text-black">{email.trim()}</strong>.
+              We sent a sign-in link to
+              <br />
+              <strong className="text-black" style={{ wordBreak: "break-all" }}>{email.trim()}</strong>
             </p>
-            <p className="font-[family-name:var(--font-poppins)] text-[#4b4b4d]" style={{ fontSize: 13.5, lineHeight: 1.6, margin: 0 }}>
-              New to Merito? Your first email is titled &ldquo;Confirm your email to sign in to Merito&rdquo;. Click the button in it to confirm and sign in.
-            </p>
+            <div
+              className="font-[family-name:var(--font-poppins)] bg-[#f6f6f7] border border-[#ececec]"
+              style={{ borderRadius: 10, padding: "12px 14px", fontSize: 13, lineHeight: 1.6, color: "#4b4b4d" }}
+            >
+              <p className="font-semibold text-black" style={{ margin: "0 0 4px 0", fontSize: 13 }}>
+                First time on Merito?
+              </p>
+              <p style={{ margin: 0 }}>
+                Look for the email titled <strong className="text-black">Confirm your email to sign in to Merito</strong> and click{" "}
+                <strong className="text-black">Confirm email and go to my dashboard</strong>.
+              </p>
+            </div>
             <p className="font-[family-name:var(--font-poppins)] text-[#9c9c9c]" style={{ fontSize: 12.5, lineHeight: 1.6, margin: 0 }}>
-              Can&apos;t find it? Check spam or promotions, or request a new link in a minute.
+              Can&apos;t see it? Check Spam or Promotions. It can take a minute to arrive.
             </p>
             <button
               type="button"
@@ -97,7 +108,7 @@ export default function LoginPage({
               className="self-start font-[family-name:var(--font-poppins)] font-semibold text-[#ed1a24] underline"
               style={{ fontSize: 12.5, background: "none", border: "none", padding: 0, cursor: "pointer" }}
             >
-              Request a new link
+              Send a new link
             </button>
           </div>
         ) : (
