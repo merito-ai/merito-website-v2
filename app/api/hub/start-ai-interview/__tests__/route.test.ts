@@ -34,7 +34,8 @@ const adminReselectSelectMock = vi.fn().mockReturnValue({ eq: adminReselectEq1Mo
 
 const creditMaybeSingleMock = vi.fn();
 const creditLimitMock = vi.fn().mockReturnValue({ maybeSingle: creditMaybeSingleMock });
-const creditOrderMock = vi.fn().mockReturnValue({ limit: creditLimitMock });
+// chained: findOldestUnusedInterviewCredit orders by product (plan credits first), then created_at
+const creditOrderMock: ReturnType<typeof vi.fn> = vi.fn(() => ({ limit: creditLimitMock, order: creditOrderMock }));
 const creditIsMock = vi.fn().mockReturnValue({ order: creditOrderMock });
 const creditEq3Mock = vi.fn().mockReturnValue({ is: creditIsMock });
 const creditEq2Mock = vi.fn().mockReturnValue({ eq: creditEq3Mock });
