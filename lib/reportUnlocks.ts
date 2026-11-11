@@ -45,3 +45,12 @@ export async function isReportUnlocked(userId: string, leadId: string, roleTitle
   if (legacy.error) throw new Error(`Failed to check report unlock status: ${legacy.error.message}`);
   return Boolean(legacy.data);
 }
+
+export async function countReportUnlocks(userId: string): Promise<number> {
+  const { count, error } = await getSupabaseServerClient()
+    .from("report_unlocks")
+    .select("user_id", { count: "exact", head: true })
+    .eq("user_id", userId);
+  if (error) throw new Error(`Failed to count report unlocks: ${error.message}`);
+  return count ?? 0;
+}

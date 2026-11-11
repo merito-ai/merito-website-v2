@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import type { PlanState as BasePlanState } from "@/lib/plans";
+import type { OwnedIndividually } from "./pricing/pricingCatalog";
 
-// interviewCredits: unused paid or plan interviews (lib/interviewCredits), added by /api/hub/plan-state.
-export type PlanState = BasePlanState & { interviewCredits?: number };
+// interviewCredits: unused paid or plan interviews (lib/interviewCredits); ownedIndividually: non-holders only. Both added by /api/hub/plan-state.
+export type PlanState = BasePlanState & { interviewCredits?: number; ownedIndividually?: OwnedIndividually | null };
 
 // state === null (error / signed out) means "normal user": callers show today's pricing.
 export function usePlanState(): { loading: boolean; state: PlanState | null } {

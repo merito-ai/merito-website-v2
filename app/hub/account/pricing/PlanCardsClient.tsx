@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import { Check, X } from "lucide-react";
 import { trackPurchase } from "@/lib/analytics";
 import { fetchWithTimeout, networkErrorMessage } from "@/lib/hub/fetchWithTimeout";
-import { planCta, type PlanCard } from "./pricingCatalog";
+import { planCta, planConfirmContent, type PlanCard } from "./pricingCatalog";
+import PlanConfirmDialog from "./PlanConfirmDialog";
+import { usePlanState } from "../usePlanState";
 import { PLAN_REFERENCE_REFRESH_PRICE_PAISE, formatPrice } from "@/lib/razorpay/pricing";
 import type { PlanProduct } from "@/lib/plans";
 
@@ -58,6 +60,9 @@ export default function PlanCardsClient({ plans, owned = null, embedded = false 
   const router = useRouter();
   const [paying, setPaying] = useState<string | null>(null);
   const [error, setError] = useState<{ product: string; message: string } | null>(null);
+  // Confirm before Razorpay opens; planState feeds the "you already have" note.
+  const [confirming, setConfirming] = useState<PlanProduct | "plan_upgrade_mentor" | null>(null);
+  const { state: planState } = usePlanState();
 
   const runCheckout = async (product: string) => {
     const initiateBody = { product };
@@ -158,7 +163,7 @@ export default function PlanCardsClient({ plans, owned = null, embedded = false 
     return (
       <>
         <button
-          onClick={() => runCheckout(buy)}
+          onClick={() => setConfirming(buy)}
           disabled={paying !== null}
           className={`${base} text-white bg-[#ed1a24] hover:bg-[#c8151e] transition-colors disabled:opacity-60`}
           style={{ ...box, border: "none", cursor: paying ? "default" : "pointer" }}
@@ -273,6 +278,17 @@ export default function PlanCardsClient({ plans, owned = null, embedded = false 
             </tbody>
           </table>
         </div>
+
+        {confirming && (
+          <PlanConfirmDialog
+            content={planConfirmContent(plans, confirming, planState?.ownedIndividually ?? null)}
+            onCancel={() => setConfirming(null)}
+            onConfirm={() => {
+              setConfirming(null);
+              runCheckout(confirming);
+            }}
+          />
+        )}
 
         <p className="font-[family-name:var(--font-poppins)] text-white/50" style={{ fontSize: 12, lineHeight: 1.6, maxWidth: 640, margin: 0 }}>
           One-time payment · features never expire · application assistance and mentoring are delivered by the Merito team. Extra role reports are ₹299

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildPricingCards, buildBundleSummary, getPersonalityBundleRate, buildPlanCards, applyPlanToCards, planCta } from "../pricingCatalog";
+import { buildPricingCards, buildBundleSummary, getPersonalityBundleRate, buildPlanCards, applyPlanToCards, planCta, planConfirmContent } from "../pricingCatalog";
 
 describe("buildPlanCards", () => {
   const cards = buildPlanCards();
@@ -157,5 +157,31 @@ describe("applyPlanToCards", () => {
   it("spent credits and used interview fall back to the normal price; Plan 2 includes mentoring", () => {
     const cs = applyPlanToCards(base, plan({ product: "plan_mentor", reportCreditsLeft: 0, interviewUsed: true }));
     expect(labels(cs)).toMatchObject({ report: "₹299", interview: "₹999", counselling: "Included in your plan" });
+  });
+});
+
+describe("planConfirmContent", () => {
+  const plans = buildPlanCards();
+  const none = { personality: false, references: false, reportUnlocks: 0, interviewCredits: 0 };
+
+  it("a plan lists its included rows, price and no note when nothing is owned", () => {
+    const c = planConfirmContent(plans, "plan_prepare", none);
+    expect([c.title, c.name, c.priceLabel]).toEqual(["Confirm your plan", "Assess + Prepare", "₹2,996"]);
+    expect(c.rows.map((r) => r.label)).toEqual(plans[0].lines.filter((l) => l.included).map((l) => l.label));
+    expect(c.alreadyOwned).toBeNull();
+  });
+
+  it("the upgrade lists only what it adds, at the upgrade price, with no owned note", () => {
+    const c = planConfirmContent(plans, "plan_upgrade_mentor", { ...none, personality: true });
+    expect([c.title, c.priceLabel]).toEqual(["Confirm your upgrade", "₹2,999"]);
+    expect(c.rows.map((r) => r.label)).toEqual(["Mentoring: 1 hour as two 30-min sessions", "Application assistance (3 companies, via Merito's network)"]);
+    expect(c.alreadyOwned).toBeNull();
+  });
+
+  it("lists features already bought individually; unknown ownership shows no note", () => {
+    const c = planConfirmContent(plans, "plan_mentor", { personality: true, references: true, reportUnlocks: 2, interviewCredits: 1 });
+    expect(c.alreadyOwned).toBe("2 role reports, the personality assessment, an unused mock interview, the references module");
+    expect(planConfirmContent(plans, "plan_mentor", { ...none, reportUnlocks: 1 }).alreadyOwned).toBe("1 role report");
+    expect(planConfirmContent(plans, "plan_mentor", null).alreadyOwned).toBeNull();
   });
 });

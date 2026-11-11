@@ -144,3 +144,31 @@ export function planCta(product: PlanProduct, owned: PlanProduct | null): PlanCt
   if (product === owned) return { kind: "active" };
   return owned === "plan_prepare" ? { kind: "upgrade", priceLabel: PLAN_UPGRADE_PRICE_LABEL } : { kind: "contact", href: CONTACT_HREF };
 }
+
+// Individually bought features a plan would also cover (from /api/hub/plan-state; null while unknown or for plan holders).
+export type OwnedIndividually = { personality: boolean; references: boolean; reportUnlocks: number; interviewCredits: number };
+export type PlanConfirm = { title: string; name: string; priceLabel: string; rows: { label: string; helper: string | null }[]; alreadyOwned: string | null };
+
+// Confirm-before-checkout dialog content. The upgrade lists only what Plan 2 adds; earlier purchases are never credited (PM 2026-11-11).
+export function planConfirmContent(plans: PlanCard[], buy: PlanProduct | "plan_upgrade_mentor", owned: OwnedIndividually | null): PlanConfirm {
+  const [prepare, mentor] = plans;
+  if (buy === "plan_upgrade_mentor") {
+    const rows = mentor.lines.filter((l, i) => l.included && !prepare.lines[i].included);
+    return { title: "Confirm your upgrade", name: `Upgrade to ${mentor.title}`, priceLabel: PLAN_UPGRADE_PRICE_LABEL, rows, alreadyOwned: null };
+  }
+  const plan = buy === "plan_prepare" ? prepare : mentor;
+  const n = owned?.reportUnlocks ?? 0;
+  const list = [
+    n > 0 && `${n} role report${n === 1 ? "" : "s"}`,
+    owned?.personality && "the personality assessment",
+    (owned?.interviewCredits ?? 0) > 0 && "an unused mock interview",
+    owned?.references && "the references module",
+  ].filter(Boolean);
+  return {
+    title: "Confirm your plan",
+    name: plan.title,
+    priceLabel: plan.priceLabel,
+    rows: plan.lines.filter((l) => l.included),
+    alreadyOwned: list.length ? list.join(", ") : null,
+  };
+}
