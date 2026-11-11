@@ -61,6 +61,7 @@ export default function AppShell({
         <ChangeRoleModal
           onClose={() => setShowChangeRole(false)}
           onRoleChanged={() => setShowChangeRole(false)}
+          firstRole={leads.length === 0}
         />
       )}
     </div>

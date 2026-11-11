@@ -4,16 +4,22 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { usePlanState, isPlanOnly, freePlanReports } from "./usePlanState";
 
+// firstRole: the user has no role yet (e.g. a plan bought before any fitment check), so there is no
+// saved name/phone for rescore-role to reuse; ask for them here or the check fails with "Full name is required".
 export default function ChangeRoleModal({
   onClose,
   onRoleChanged,
+  firstRole = false,
 }: {
   onClose: () => void;
   onRoleChanged: (roleTitle: string) => void;
+  firstRole?: boolean;
 }) {
   const router = useRouter();
   const { state: planState } = usePlanState();
   const freeReports = freePlanReports(planState, "report");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [role, setRole] = useState("");
   const [candidateLevel, setCandidateLevel] = useState<"" | "entry" | "mid" | "senior">("");
   const [jdText, setJdText] = useState("");
@@ -22,7 +28,7 @@ export default function ChangeRoleModal({
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const canSubmit = role.trim() && candidateLevel && jdText.trim() && cvFile && !busy;
+  const canSubmit = role.trim() && candidateLevel && jdText.trim() && cvFile && !busy && (!firstRole || (name.trim() && phone.trim()));
 
   const handleSubmit = async () => {
     if (!canSubmit || !cvFile) return;
@@ -30,6 +36,10 @@ export default function ChangeRoleModal({
     setError(null);
 
     const form = new FormData();
+    if (firstRole) {
+      form.set("name", name.trim());
+      form.set("phone", phone.trim());
+    }
     form.set("role", role.trim());
     form.set("candidateLevel", candidateLevel);
     form.set("jdText", jdText.trim());
@@ -64,10 +74,10 @@ export default function ChangeRoleModal({
         style={{ maxWidth: 480, width: "100%", borderRadius: 24, padding: 28, maxHeight: "92vh", overflowY: "auto" }}
       >
         <h2 className="font-[family-name:var(--font-gabarito)] font-semibold text-black" style={{ fontSize: "1.4rem", margin: "0 0 6px" }}>
-          Change target role
+          {firstRole ? "Check your first role" : "Change target role"}
         </h2>
         <p className="text-[#9c9c9c]" style={{ fontSize: 12.5, lineHeight: 1.6, margin: "0 0 18px" }}>
-          Your completed steps carry over.{" "}
+          {firstRole ? "Upload your CV and the job you want. " : "Your completed steps carry over. "}
           {freeReports > 0
             ? `The detailed report for the new role is included in your plan (${freeReports} left).`
             : isPlanOnly(planState)
@@ -75,6 +85,29 @@ export default function ChangeRoleModal({
               : "The detailed report re-locks for the new role (₹299)."}
         </p>
 
+        {firstRole && (
+          <>
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Your full name"
+              aria-label="Your full name"
+              autoComplete="name"
+              className="w-full box-border bg-white font-[family-name:var(--font-poppins)] text-black outline-none border border-[#dcdcdc] focus:border-[#ed1a24]"
+              style={{ padding: "13px 14px", borderRadius: 8, fontSize: 14, marginBottom: 12 }}
+            />
+            <input
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="Phone, e.g. +91 98765 43210"
+              aria-label="Phone number"
+              type="tel"
+              autoComplete="tel"
+              className="w-full box-border bg-white font-[family-name:var(--font-poppins)] text-black outline-none border border-[#dcdcdc] focus:border-[#ed1a24]"
+              style={{ padding: "13px 14px", borderRadius: 8, fontSize: 14, marginBottom: 12 }}
+            />
+          </>
+        )}
         <input
           value={role}
           onChange={(e) => setRole(e.target.value)}
@@ -131,7 +164,7 @@ export default function ChangeRoleModal({
           className="w-full font-[family-name:var(--font-poppins)] font-semibold text-white"
           style={{ height: 48, borderRadius: 8, fontSize: 14, background: canSubmit ? "#ed1a24" : "#dcdcdc", border: "none", cursor: canSubmit ? "pointer" : "default" }}
         >
-          {busy ? "Re-evaluating your fitment…" : "Re-evaluate my fitment"}
+          {busy ? "Checking your fitment…" : firstRole ? "Check my fitment" : "Re-evaluate my fitment"}
         </button>
 
         {error && <p style={{ fontSize: 12.5, color: "#ed1a24", marginTop: 10, textAlign: "center" }}>{error}</p>}
