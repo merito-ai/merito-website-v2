@@ -34,7 +34,8 @@ export function cultureFit(scores: CultureScores, reliable: boolean | null): Fit
   const fits = CULTURE_BENCHMARKS.map((b) => {
     const y = centred(CULTURES.map((c) => b.profile[c]));
     const r = dot(x, y) / Math.sqrt(dot(x, x) * dot(y, y));
-    return { key: b.key, label: b.label, basis: b.basis, fit: Math.round(50 + 50 * r) };
+    // Clamp to 1-99: a rough estimate-based benchmark must never read as a certain 100% (or 0%) match.
+    return { key: b.key, label: b.label, basis: b.basis, fit: Math.min(99, Math.max(1, Math.round(50 + 50 * r))) };
   }).sort((a, b) => b.fit - a.fit);
   return { kind: "fit", fits };
 }
