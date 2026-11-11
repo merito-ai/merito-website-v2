@@ -16,6 +16,7 @@ import { createSupabaseServerClient } from "@/lib/supabaseAuthServer";
 import { DEFAULT_LEVEL, PRODUCT_PRICING, formatPrice, type CandidateLevel } from "@/lib/razorpay/pricing";
 import ExpertBookingCard from "./ExpertBookingCard";
 import ExpertBookingButton from "./ExpertBookingButton";
+import { getPlanOrder } from "@/lib/plans";
 
 // Static bio + section content, verbatim from mockups/merito-dashboard-v34.html's
 // expert-guidance page (minified component `fz`). No live data for the bio itself --
@@ -170,7 +171,10 @@ export default async function ExpertBioPage({
     : leads[0];
 
   const level = (activeLead.candidate_level as CandidateLevel | null) ?? DEFAULT_LEVEL;
-  const priceLabel = formatPrice(PRODUCT_PRICING.counselling[level]);
+  // Plan 2 covers the (1-hour) mentoring session: never show it a price.
+  const planOrder = await getPlanOrder(user.id);
+  const mentorPlan = planOrder?.product === "plan_mentor";
+  const priceLabel = mentorPlan ? "Included in your plan" : formatPrice(PRODUCT_PRICING.counselling[level]);
 
   const { data: counsellingRequest } = await supabase
     .from("counselling_requests")
@@ -430,7 +434,7 @@ export default async function ExpertBioPage({
           </p>
           <ExpertBookingButton priceLabel={priceLabel} initialRequested={Boolean(counsellingRequest)} />
           <p className="font-[family-name:var(--font-poppins)] text-white/40" style={{ fontSize: 11.5, margin: "12px 0 0" }}>
-            30-minute 1:1 session · {priceLabel}
+            {mentorPlan ? "1-hour" : "30-minute"} 1:1 session · {priceLabel}
           </p>
         </div>
       </div>
