@@ -49,5 +49,6 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/hub/account", "/api/hub/recruiter-preview/:path*", "/api/public/recruiter-preview/:path*"],
+  // :path* also covers /hub/account itself; server components can't save a refreshed session cookie, so the proxy must.
+  matcher: ["/hub/account/:path*", "/api/hub/recruiter-preview/:path*", "/api/public/recruiter-preview/:path*"],
 };
