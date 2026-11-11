@@ -1,6 +1,7 @@
 import { PRODUCT_PRICING, PRODUCT_LABELS, formatPrice, type CandidateLevel } from "@/lib/razorpay/pricing";
 import { MIN_REFERENCES } from "@/lib/referenceChecks";
 import type { PlanProduct, PlanState } from "@/lib/plans";
+import { CONTACT_HREF } from "@/lib/planPanel";
 
 export type PricingCardKey = "report" | "personality" | "references" | "interview" | "counselling";
 
@@ -110,7 +111,7 @@ const PLAN_LINES: PlanLine[] = [
   { label: "Mock AI interview (45 min)", helper: null, prepare: true, mentor: true },
   { label: "References module", helper: null, prepare: true, mentor: true },
   { label: "1-hour mentoring session", helper: "1:1 with a Merito expert, booked via calendar", prepare: false, mentor: true },
-  { label: "Application assistance (3 dream companies, via Merito's network)", helper: "Our team refers you to 3 companies you choose", prepare: false, mentor: true },
+  { label: "Application assistance (3 companies, via Merito's network)", helper: "Our team refers you to 3 companies you choose", prepare: false, mentor: true },
   { label: "Shareable consolidated profile", helper: "One report combining all your results, shareable by link", prepare: true, mentor: true },
 ];
 
@@ -133,4 +134,11 @@ export function buildPlanCards(): PlanCard[] {
       lines: PLAN_LINES.map((l) => ({ label: l.label, helper: l.helper, included: product === "plan_mentor" ? l.mentor : l.prepare })),
     };
   });
+}
+
+export type PlanCta = { kind: "buy" } | { kind: "active" } | { kind: "contact"; href: string };
+// No upgrade/switch product exists, so a holder's other plan routes to support.
+export function planCta(product: PlanProduct, owned: PlanProduct | null): PlanCta {
+  if (!owned) return { kind: "buy" };
+  return product === owned ? { kind: "active" } : { kind: "contact", href: CONTACT_HREF };
 }

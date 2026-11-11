@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildPricingCards, buildBundleSummary, getPersonalityBundleRate, buildPlanCards, applyPlanToCards } from "../pricingCatalog";
+import { buildPricingCards, buildBundleSummary, getPersonalityBundleRate, buildPlanCards, applyPlanToCards, planCta } from "../pricingCatalog";
 
 describe("buildPlanCards", () => {
   const cards = buildPlanCards();
@@ -19,7 +19,7 @@ describe("buildPlanCards", () => {
         "Mock AI interview (45 min)",
         "References module",
         "1-hour mentoring session",
-        "Application assistance (3 dream companies, via Merito's network)",
+        "Application assistance (3 companies, via Merito's network)",
         "Shareable consolidated profile",
       ]);
     }
@@ -30,10 +30,24 @@ describe("buildPlanCards", () => {
   it("offline/composite rows carry a helper, and nothing promises a guaranteed outcome", () => {
     expect(cards[1].lines.filter((l) => l.helper).map((l) => l.label)).toEqual([
       "1-hour mentoring session",
-      "Application assistance (3 dream companies, via Merito's network)",
+      "Application assistance (3 companies, via Merito's network)",
       "Shareable consolidated profile",
     ]);
     expect(JSON.stringify(cards)).not.toMatch(/guaranteed/i);
+  });
+});
+
+describe("planCta", () => {
+  it("no plan: both plans are buyable", () => {
+    expect(planCta("plan_prepare", null)).toEqual({ kind: "buy" });
+    expect(planCta("plan_mentor", null)).toEqual({ kind: "buy" });
+  });
+
+  it("plan holder: own plan is active, the other is talk-to-us (no upgrade product)", () => {
+    expect(planCta("plan_prepare", "plan_prepare")).toEqual({ kind: "active" });
+    expect(planCta("plan_mentor", "plan_prepare")).toEqual({ kind: "contact", href: "mailto:admin@merito.ai" });
+    expect(planCta("plan_mentor", "plan_mentor")).toEqual({ kind: "active" });
+    expect(planCta("plan_prepare", "plan_mentor")).toEqual({ kind: "contact", href: "mailto:admin@merito.ai" });
   });
 });
 

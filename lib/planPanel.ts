@@ -19,7 +19,7 @@ export type PlanPanelRow = {
 };
 
 const REPORT_CREDITS = 3; // mirrors PLAN_REPORT_CREDITS in lib/plans.ts
-const CONTACT_HREF = "mailto:admin@merito.ai"; // the support address the legal/contact pages already use
+export const CONTACT_HREF = "mailto:admin@merito.ai"; // the support address the legal/contact pages already use
 
 const date = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kolkata" });
 

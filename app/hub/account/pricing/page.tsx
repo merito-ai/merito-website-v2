@@ -11,7 +11,6 @@ import { resolveActiveLead } from "@/lib/activeLead";
 import { getPlanState } from "@/lib/plans";
 import { buildPlanCards, applyPlanToCards } from "./pricingCatalog";
 import PlanCardsClient from "./PlanCardsClient";
-import PlanPanel from "../PlanPanel";
 
 export default async function PricingPage({
   searchParams,
@@ -28,10 +27,10 @@ export default async function PricingPage({
     redirect("/hub/login");
   }
 
-  // Allowlisted users see only the plans until they buy one (plans are account-level, no lead needed).
+  // Allowlisted users always see the plan comparison; a holder's column shows Active (plans are account-level, no lead needed).
   const planState = await getPlanState(user.id, user.email);
-  if (planState.allowlisted && !planState.plan) {
-    return <PlanCardsClient plans={buildPlanCards()} />;
+  if (planState.allowlisted) {
+    return <PlanCardsClient plans={buildPlanCards()} owned={planState.plan?.product ?? null} />;
   }
 
   // Honour ?lead= (same resolution as app/hub/account/page.tsx) so arriving
@@ -50,11 +49,6 @@ export default async function PricingPage({
 
   const level = (lead?.candidate_level as CandidateLevel | null) ?? DEFAULT_LEVEL;
 
-  const banner = planState.plan && (
-    <div className="mx-auto" style={{ maxWidth: 1040, padding: "28px 24px 0" }}>
-      <PlanPanel userId={user.id} plan={planState.plan} level={level} hasRole={!!lead} />
-    </div>
-  );
   const cards = applyPlanToCards(buildPricingCards(level), planState.plan);
   const bundle = buildBundleSummary(level);
 
@@ -65,7 +59,6 @@ export default async function PricingPage({
   if (!lead) {
     return (
       <>
-        {banner}
         <PricingCardsClient
           cards={cards}
           bundle={bundle}
@@ -117,7 +110,6 @@ export default async function PricingPage({
 
   return (
     <>
-      {banner}
       <PricingCardsClient
         cards={cards}
         bundle={bundle}

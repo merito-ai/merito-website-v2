@@ -74,3 +74,5 @@ PM decision 2026-11-11: Plan 1 holders see the real individual expert call price
 
 - (Low, PM 2026-11-11) Dashboard for a plan holder with no role still leads with "No fitment scores yet / Head back to the HUB" above the Your plan panel; for a paid user this should welcome them to their plan and point to "Check a role" as step 1. Copy-only.
 - (Low) Plan 1 holder with no role not browser-checked.
+- (Medium, 2026-11-11) Pricing now shows only the plan comparison table to allowlisted users, plan holders included, so plan holders no longer see the per-product cards (extra ₹299 role report, ₹149 reference refresh, expert call) on /hub/account/pricing. The footer only lists the prices. Check whether those extras can still be bought from their feature pages, or add an "Extras" section under the table.
+- (Low, 2026-11-11) The "Talk to us" CTA on the other plan is a mailto link (admin@merito.ai). Replace it with a real upgrade product if seminar buyers ask to switch plans.
