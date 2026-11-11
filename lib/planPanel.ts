@@ -10,6 +10,7 @@ export type PlanPanelInput = {
   references: "none" | "in_progress" | "completed";
   mentoring: MentoringRow[]; // Plan 2 counselling_requests rows (session 1 + follow-up)
   hasRole?: boolean; // default true; false = bought a plan before checking any role
+  reportLocked?: boolean; // the current role's detailed report is not unlocked yet
 };
 
 export type MentoringRow = { session: number; status: string; scheduled_at: string | null };
@@ -90,14 +91,24 @@ export function buildPlanPanelRows(i: PlanPanelInput): PlanPanelRow[] {
 
   type Base = Omit<PlanPanelRow, "step" | "done" | "marker" | "detail"> & { key: PlanFeatureKey; done: boolean };
   const base: Base[] = [
-    {
-      key: "reports",
-      label: "Check a role (CV report)",
-      included: true,
-      done: i.hasRole !== false,
-      status: i.reportCreditsLeft > 0 ? `${i.reportCreditsLeft} of ${REPORT_CREDITS} left` : `All ${REPORT_CREDITS} used · extra reports ₹299`,
-      action: { label: "Check a role", href: "#check-role" },
-    },
+    // A checked role's detailed report still needs one click to spend a credit; until then step 1 sends them there.
+    i.hasRole !== false && i.reportLocked && i.reportCreditsLeft > 0
+      ? {
+          key: "reports",
+          label: "Check a role (CV report)",
+          included: true,
+          done: false,
+          status: `Your report is ready · ${i.reportCreditsLeft} of ${REPORT_CREDITS} left`,
+          action: { label: "Open my report", href: "/hub/account/report" },
+        }
+      : {
+          key: "reports",
+          label: "Check a role (CV report)",
+          included: true,
+          done: i.hasRole !== false,
+          status: i.reportCreditsLeft > 0 ? `${i.reportCreditsLeft} of ${REPORT_CREDITS} left` : `All ${REPORT_CREDITS} used · extra reports ₹299`,
+          action: { label: "Check a role", href: "#check-role" },
+        },
     { key: "personality", label: "Personality + culture", included: true, done: i.personality === "done", ...personality[i.personality] },
     { key: "references", label: "Invite referees", included: true, done: i.references !== "none", ...references[i.references] },
     { key: "interview", label: "AI interview (45 min)", included: true, done: i.interview === "ready", ...interview[i.interview] },
@@ -119,7 +130,7 @@ export function buildPlanPanelRows(i: PlanPanelInput): PlanPanelRow[] {
     ...r,
     detail: PLAN_FEATURE_DETAILS[r.key],
     step: r.included ? ++n : null,
-    marker: r.key === nextKey ? (r.key === "reports" ? "Start here" : "Next step") : null,
+    marker: r.key === nextKey ? (r.key === "reports" && i.hasRole === false ? "Start here" : "Next step") : null,
   }));
   if (i.hasRole !== false) return rows;
   // These pages redirect away without a role: send to the new-role modal instead (expert/pricing don't need one).

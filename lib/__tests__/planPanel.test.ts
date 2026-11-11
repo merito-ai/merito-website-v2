@@ -90,6 +90,14 @@ describe("plan steps", () => {
     expect(marked({ ...base, hasRole: false })).toEqual([expect.objectContaining({ key: "reports", marker: "Start here", done: false })]);
   });
 
+  it("role checked but its report not opened yet: step 1 points to the report and keeps the marker", () => {
+    const r = row({ ...base, reportLocked: true }, "reports");
+    expect(r).toMatchObject({ done: false, status: "Your report is ready · 3 of 3 left", action: { label: "Open my report", href: "/hub/account/report" } });
+    expect(marked({ ...base, reportLocked: true })).toEqual([expect.objectContaining({ key: "reports", marker: "Next step" })]);
+    // no credits left: the ₹299 report is optional, so step 1 still counts as done
+    expect(row({ ...base, reportLocked: true, reportCreditsLeft: 0 }, "reports").done).toBe(true);
+  });
+
   it("role checked: step 1 done, Next step on personality", () => {
     expect(row(base, "reports").done).toBe(true);
     expect(marked(base)).toEqual([expect.objectContaining({ key: "personality", marker: "Next step" })]);

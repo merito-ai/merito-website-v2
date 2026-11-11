@@ -7,7 +7,7 @@ import type { PlanState } from "@/lib/plans";
 import { buildPlanPanelRows, type PlanPanelInput } from "@/lib/planPanel";
 
 // "Your plan": numbered steps with live state, next action and a single next-step marker (dashboard).
-export default async function PlanPanel({ userId, plan, hasRole = true }: { userId: string; plan: NonNullable<PlanState["plan"]>; hasRole?: boolean }) {
+export default async function PlanPanel({ userId, plan, hasRole = true, reportLocked = false }: { userId: string; plan: NonNullable<PlanState["plan"]>; hasRole?: boolean; reportLocked?: boolean }) {
   const db = getSupabaseServerClient();
   const [{ data: personality }, { data: interview }, refs, { data: mentoring }] = await Promise.all([
     db.from("personality_tests").select("version, culture_scores").eq("user_id", userId).maybeSingle(),
@@ -24,6 +24,7 @@ export default async function PlanPanel({ userId, plan, hasRole = true }: { user
     references: !refs ? "none" : refs.status === "completed" ? "completed" : "in_progress",
     mentoring: mentoring ?? [],
     hasRole,
+    reportLocked,
   };
   const rows = buildPlanPanelRows(input);
 

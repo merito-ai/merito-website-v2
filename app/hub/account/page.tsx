@@ -252,7 +252,7 @@ export default async function AccountPage({
       counsellingPriceLabel={counsellingPriceLabel}
       initialCounsellingRequested={Boolean(counsellingRequest)}
       applications={leads.map((l) => ({ id: l.id, roleTitle: l.role_title, score: l.score, createdAt: l.created_at }))}
-      planPanel={planState.plan ? <PlanPanel userId={user.id} plan={planState.plan} /> : null}
+      planPanel={planState.plan ? <PlanPanel userId={user.id} plan={planState.plan} reportLocked={!reportUnlocked} /> : null}
       planOffer={planDashboardView(planState) === "offer" ? <PlanCardsClient plans={buildPlanCards()} embedded /> : null}
       recruiterActivity={RECRUITER_PREVIEW_ENABLED ? <RecruiterActivityPanel viewCount={recruiterViewCount} /> : null}
     />
