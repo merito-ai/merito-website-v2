@@ -105,3 +105,38 @@ Upgrade + welcome email (2026-11-11):
 
 - (Minor, 2026-11-11) Admin counselling queue sorts by requested_at only, so legacy follow-up rows backfilled by 0072 list after all first sessions. Could sort by order then session if ops finds it confusing.
 - (Minor, 2026-11-11) Calendly booking does not tell us which session the user booked; admin marks session 1 / follow-up scheduled by hand. A Calendly webhook could automate it.
+## Fresh-user journey QA + edge cases (2026-11-11, local stack, Razorpay test)
+
+Fixed in this pass (Critical/High): refunded order re-granted by a late `payment.captured` (finalize now no-ops on `refunded`); solo interview credit spent before the plan's 45-min credit; plan holder with no role could not check a first role ("Full name is required": modal now asks name + phone); step 1 read "Done" while the role's report was still locked (now "Open my report"); reused sign-in link while signed in landed on the login form, and `?error=expired` showed no message; allowlist paste stored `<a@b.com>` / quoted / trailing-dot addresses that never match a login (and DELETE couldn't remove them); admin allowlist toasted success on an expired session (redirect HTML read as 200); proxy only refreshed the session on `/hub/account`, not its subpages; SalesIQ bubble above every Hub modal; 375px top bar overflow with a role selected.
+
+Medium:
+- **Share page fitment uses the latest lead**, not the share link's role (`lib/combinedReportData.ts`): share role A, check role B, and the link shows B's fitment beside A's interview. Look up the lead by the link's `role_title`.
+- **v1 personality + plan:** panel shows personality "Completed" for an old v1 result, so the plan's culture part is never prompted (`PlanPanel.tsx` maps any non-part2 row to done). Map `version === 1` to "Retake for culture".
+- **v1 retake overwrite:** part 1 of a plan retake overwrites the v1 result at once; abandoning part 2 leaves personality incomplete everywhere (`save-personality-test`).
+- **finalize CAS error ignored:** the success-flip update's `error` isn't checked, so a DB error returns `ok` (verify says unlocked, webhook 200) while the row stays `initiated` until reconcile.
+- **Upgrade paid after Plan 1 refunded:** grants 2 mentoring rows + "Plan 2 active" email but `getPlanOrder` returns null. Skip email + alert ops when the upgrade has no Plan 1.
+- **Double-plan race worse than above:** `getPlanOrder` picks newest by `created_at` (checkout start), so Plan 2 started first + Plan 1 second, both paid, shows Plan 1 and offers a third (upgrade) payment. Prefer `plan_mentor` when both are `success`.
+- **Logged-out deep link:** `/hub/account/pricing` redirects to `/hub/login` with no `next`, and the callback only allows `/admin`; user lands on the dashboard after login.
+- **Session expiry on the client:** `usePlanState` treats 401 as "no plan", so an allowlisted user sees normal ₹ prices; Pay then says "Not signed in." with no sign-in link.
+- **Mail scanners** (Outlook Safe Links) can consume the one-time `token_hash` on GET before the user clicks; the user now sees "expired or already used", but a confirm-page POST would avoid it.
+- **Interview paywall (plan) copy:** modal says "You'll be able to launch your AI interview ... from your dashboard, whenever you're ready" above a button that starts it now.
+
+Low:
+- Personality part 2 can be resubmitted without limit (no `culture_scores != null` 409).
+- Mid-part personality answers live in memory only; a refresh mid-part loses that part (resume works at the part boundary, any device: verified).
+- `unlock-report` on an already-unlocked lead with 0 credits creates a ₹299 order (no UI path).
+- 409 copy "You already have Plan 2." uses internal naming; say "Assess + Mentor + Apply".
+- Allowlist toast lists the words of a pasted display name ("skipped invalid: Asha, Rao").
+- Welcome email after an upgrade still says "Start with step 1: check a role".
+- Admin refund is always full with no warning after credits were spent.
+- React dev warning: missing `key` in a list `DashboardClient` renders from `AccountPage` (allowlisted user with a role).
+- Pre-existing em-dashes in Hub copy: personality page ("Part of your profile — done once", "Answer for how you actually are — not..."), report "Strongest — Education Match".
+- Fitment-checker labels have no `htmlFor` (inputs unlabeled for screen readers); "Just the Report for ₹299 instead →" is a `span` (keyboard, already listed).
+- Closing the Razorpay window leaves an `initiated` order; reconcile alerts ops at 24h (noise).
+
+Not testable locally:
+- Local Supabase isn't running the repo's email templates (subject "Your sign-in link", PKCE `token=` link, no confirmation step), so the real "Confirm your email" email and its `token_hash` link were simulated with `generate_link`. Check the prod templates + Redirect URLs allow-list.
+- Welcome email: sent via real Resend locally but not found in the connected Gmail; delivery unconfirmed.
+- Live IntervueBox interview start (local env points at the live vendor): stopped at the confirm modal.
+- `/hub/share/[token]` (and every dynamic route: `/hub/references/feedback/[token]`, `/insights/[slug]`) returns 500 in the shared :3005 dev server: its static-paths jest-worker crashed ("Jest worker encountered 2 child process exceptions"). Dev-server state, not route code: `npm run build` passes. Share link with partial results + revoked link verified by code/unit test only; re-check after a dev-server restart.
+- Razorpay mobile (375px) checkout popup flow; desktop netbanking test flow verified for Plan 2, Plan 1, upgrade, ₹299 report.
