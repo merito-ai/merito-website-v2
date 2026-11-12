@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ClipboardList, Play } from "lucide-react";
 import { ITEMS, IMPRESSION_ITEMS } from "@/lib/personality";
+import { CULTURE_ITEMS } from "@/lib/psychometrics/cultureItems";
 import { PRODUCT_PRICING, formatPrice, type CandidateLevel } from "@/lib/razorpay/pricing";
 import PersonalityPaywallModal from "../PersonalityPaywallModal";
 import LockedFeatureLayout from "../LockedFeatureLayout";
@@ -11,7 +12,7 @@ import SamplePreviewFrame from "../SamplePreviewFrame";
 import SamplePersonalityReport from "./SamplePersonalityReport";
 import { usePlanState, planCardLabel } from "../usePlanState";
 
-const TOTAL_STATEMENTS = ITEMS.length + IMPRESSION_ITEMS.length;
+const TOTAL_STATEMENTS = ITEMS.length + IMPRESSION_ITEMS.length + CULTURE_ITEMS.length;
 
 const IMPACT_POINTS = [
   "Behavioural rounds decide most offers, and they test something a CV physically cannot show.",
@@ -22,13 +23,14 @@ const IMPACT_POINTS = [
 const STEPS = [
   `Rate ${TOTAL_STATEMENTS} short statements, 1 (inaccurate) to 5 (accurate)`,
   "Get your Extroversion, Agreeableness, Conscientiousness, Emotional Stability and Openness scores instantly",
-  "Read what each score suggests about how you'll show up at work",
+  "Read what each score suggests about how you'll show up at work, plus your work-culture preferences",
 ];
 
 const ALSO_INCLUDED = [
   "All five trait cards: what each measures and what it means at work",
   "Your watch-outs and best-fit environments per trait",
   "Response-quality and validity checks on your answers",
+  "Your work-culture mix and closest organisation types (Merito estimate)",
 ];
 
 export default function PersonalityLockedState({
@@ -69,7 +71,7 @@ export default function PersonalityLockedState({
       impactPoints={IMPACT_POINTS}
       steps={STEPS}
       preview={
-        <SamplePreviewFrame cropHeight={430} alsoIncluded={ALSO_INCLUDED} cta={cta}>
+        <SamplePreviewFrame cropHeight={560} alsoIncluded={ALSO_INCLUDED} cta={cta}>
           <SamplePersonalityReport />
         </SamplePreviewFrame>
       }
