@@ -186,3 +186,15 @@ describe("planDashboardView", () => {
     expect(planDashboardView({ allowlisted: false, plan: null })).toBe("none");
   });
 });
+
+describe("E11 everything done", () => {
+  const done: PlanPanelInput = { product: "plan_prepare", reportCreditsLeft: 2, personality: "done", interview: "ready", references: "completed", mentoring: [] };
+  it("share row becomes the next action: Share my profile", () => {
+    const share = buildPlanPanelRows(done).find((r) => r.key === "share")!;
+    expect(share).toMatchObject({ marker: "Next step", status: "Everything is done. Your profile is ready to share.", action: { label: "Share my profile", href: "/hub/account/combined-report" } });
+  });
+  it("not before then", () => {
+    const share = buildPlanPanelRows({ ...done, references: "none" }).find((r) => r.key === "share")!;
+    expect(share.action?.label).toBe("View & share");
+  });
+});

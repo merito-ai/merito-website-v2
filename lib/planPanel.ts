@@ -142,6 +142,11 @@ export function buildPlanPanelRows(i: PlanPanelInput): PlanPanelRow[] {
     { key: "share", label: "Share consolidated profile", included: true, done: false, status: "Updates as you complete steps", action: { label: "View & share", href: "/hub/account/combined-report" } },
   ];
   let n = 0;
+  // E11: every step done -> the profile is the one thing left, and sharing it is the next action.
+  const share = base.find((r) => r.key === "share")!;
+  if (base.every((r) => !r.included || r.done || r.key === "share" || r.key === "assistance")) {
+    Object.assign(share, { status: "Everything is done. Your profile is ready to share.", action: { label: "Share my profile", href: share.action!.href } });
+  }
   const nextKey = base.find((r) => r.included && !r.done && r.key !== "assistance")?.key;
   const rows: PlanPanelRow[] = base.map((r) => ({
     ...r,
