@@ -63,7 +63,7 @@ describe("buildPlanPanelRows", () => {
     const fresh = row({ ...p2, mentoring: [s(1, "requested"), s(2, "requested")] }, "mentoring");
     expect(fresh).toMatchObject({ included: true, done: false, status: "Session 1: Not booked yet\nFollow-up: Book after session 1", action: { label: "Book session 1", href: "/hub/account/expert" } });
     const s1Sched = row({ ...p2, mentoring: [s(1, "scheduled", "2026-11-20T10:00:00Z"), s(2, "requested")] }, "mentoring");
-    expect(s1Sched).toMatchObject({ done: false, status: "Session 1: Scheduled 20 Nov 2026\nFollow-up: Not booked yet", action: { label: "Book follow-up" } });
+    expect(s1Sched).toMatchObject({ done: false, status: "Session 1: Scheduled 20 Nov 2026\nFollow-up: Unlocked, not booked yet", action: { label: "Book follow-up" } });
     const bothSched = row({ ...p2, mentoring: [s(1, "completed"), s(2, "scheduled")] }, "mentoring");
     expect(bothSched).toMatchObject({ done: false, status: "Session 1: Completed\nFollow-up: Scheduled", action: { label: "View" } });
     expect(row({ ...p2, mentoring: [s(1, "completed"), s(2, "completed")] }, "mentoring")).toMatchObject({ done: true, status: "Both sessions completed", action: null });
@@ -136,7 +136,7 @@ describe("plan steps", () => {
   it("assistance is informational: never marked, never done; completed mentoring skips to share", () => {
     const all = { ...p2, personality: "done" as const, references: "completed" as const, interview: "ready" as const, mentoring: [s(1, "completed"), s(2, "completed")] };
     expect(row(all, "mentoring").done).toBe(true);
-    expect(row(all, "assistance")).toMatchObject({ done: false, marker: null, status: ASSISTANCE_NEXT_STEP, action: { label: "Email us", href: CONTACT_HREF } });
+    expect(row(all, "assistance")).toMatchObject({ done: false, marker: null, status: `Not contacted yet. ${ASSISTANCE_NEXT_STEP}`, action: { label: "Email us", href: CONTACT_HREF } });
     expect(marked(all)).toEqual([expect.objectContaining({ key: "share", marker: "Next step" })]);
   });
 
@@ -169,7 +169,7 @@ describe("mentoringSessions", () => {
     expect(mentoringSessions([s(1, "completed"), s(2, "scheduled")]).map((x) => x.bookable)).toEqual([false, false]);
   });
   it("legacy order with only the first-session row: follow-up reads as not booked (gated on session 1)", () => {
-    expect(mentoringSessions([s(1, "scheduled")])[1]).toMatchObject({ status: "requested", bookable: true, state: "Not booked yet" });
+    expect(mentoringSessions([s(1, "scheduled")])[1]).toMatchObject({ status: "requested", bookable: true, state: "Unlocked, not booked yet" });
     expect(mentoringSessions([s(1, "requested")])[1]).toMatchObject({ bookable: false, state: "Book after session 1" });
   });
   it("row order does not matter; cancelled sessions are not bookable", () => {

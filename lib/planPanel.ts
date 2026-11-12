@@ -29,7 +29,8 @@ export function mentoringSessions(rows: MentoringRow[]): [MentoringSession, Ment
   const at = (n: number) => rows.find((r) => r.session === n) ?? { status: "requested", scheduled_at: null };
   const [a, b] = [at(1), at(2)];
   const firstBooked = a.status === "scheduled" || a.status === "completed";
-  const view = (r: typeof a, open: boolean): MentoringSession => ({
+  // E16: session 1 first; the follow-up says when it unlocks.
+  const view = (r: typeof a, open: boolean, n: number): MentoringSession => ({
     status: r.status,
     scheduledAt: r.scheduled_at,
     bookable: open && r.status === "requested",
@@ -37,9 +38,10 @@ export function mentoringSessions(rows: MentoringRow[]): [MentoringSession, Ment
       r.status === "completed" ? "Completed"
       : r.status === "scheduled" ? (r.scheduled_at ? `Scheduled ${date(r.scheduled_at)}` : "Scheduled")
       : r.status === "cancelled" ? "Cancelled"
-      : open ? "Not booked yet" : "Book after session 1",
+      : !open ? "Book after session 1"
+      : n === 2 ? "Unlocked, not booked yet" : "Not booked yet",
   });
-  return [view(a, true), view(b, firstBooked)];
+  return [view(a, true, 1), view(b, firstBooked, 2)];
 }
 
 export type PlanPanelRow = {
@@ -135,7 +137,7 @@ export function buildPlanPanelRows(i: PlanPanelInput): PlanPanelRow[] {
       status: !mentor ? "Not in your plan"
         : i.assistance === "done" ? "Our team has referred you to your 3 companies"
         : i.assistance === "in_progress" ? "In progress: our team is working on your 3 companies"
-        : ASSISTANCE_NEXT_STEP,
+        : `Not contacted yet. ${ASSISTANCE_NEXT_STEP}`,
       action: mentor ? { label: "Email us", href: CONTACT_HREF } : upgrade,
     },
     // The existing consolidated report + its share link; no separate profile feature.
