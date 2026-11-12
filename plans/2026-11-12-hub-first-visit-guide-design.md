@@ -73,3 +73,23 @@ The plan includes 1 interview, for any one of the 3 roles; it cannot move to ano
 - Score shown once (ring); timeline rows show the role name, not the score again.
 - Locked rows show a "Needs a role" tag only, no extra "Check a role" buttons.
 - One shared plans popup and one shared confirm dialog, reused by every entry point.
+
+### Edge cases (checked 2026-11-12)
+| # | Case | Behaviour |
+|---|---|---|
+| E1 | Normal user who bought items one by one (report, interview, personality, references, old bundle) | Normal timeline reflects ownership per step: "Done" / "Unlocked" / "In progress" instead of "Paid". Paid tag only on steps not owned. |
+| E2 | Allowlisted user who already owns items from earlier purchases | Plans popup as normal; the existing confirm dialog keeps its "You already have: ... not credited" note. |
+| E3 | Plan refunded | Plan no longer active: allowlisted users go back to S1/S2, others to N1/N2. Already-completed results stay visible. |
+| E4 | Removed from allowlist before buying | Normal view (N1/N2). After buying: keeps the plan view. |
+| E5 | Upgrade bought (Assess + Prepare to Assess + Mentor + Apply) | Plan badge and timeline switch to the top plan; mentoring + assistance rows become active. |
+| E6 | Interview link expired (past 10 days, not finished) | Interview row and page: "Your interview link expired" + "Email us" (admin can reinvite). No dead Start button. |
+| E7 | Fitment report pending or failed | Locked preview: pending text; failed: "We couldn't prepare this report. Try checking the role again or email us." No unlock button while failed. |
+| E8 | Plan holder used all 3 role reports | Step 1 row: "All 3 used · extra roles ₹299"; checking a 4th role uses the existing ₹299 flow. |
+| E9 | Several roles | Timeline step 1: "N roles checked · X left". Current role comes from the existing role switcher. Interview row after use: "Interview used for <role>" even when another role is selected. |
+| E10 | Personality: part 1 done / old v1 result | Row shows "Continue part 2" / "Take the updated test" (existing states). |
+| E11 | Everything done | Timeline all Done; primary action becomes "Share my profile" (consolidated report). |
+| E12 | Name unknown | "Welcome to Merito HUB" (no name). |
+| E13 | Low score / weak verdict | Use the existing verdict label; lead copy stays encouraging ("Here's what to work on"), never "you failed". |
+| E14 | Payment window closed or failed | Nothing granted; same screen; the existing error/cancel handling. |
+| E15 | Phone, primary action is a popup (Unlock plans / Start interview) | Sticky button opens the same popup; popup is a bottom sheet. |
+| E16 | Mentoring / assistance progress | Existing states (session 1 then follow-up; Not contacted / In progress / Done) in the restyled rows. |
