@@ -9,7 +9,7 @@ import { getAssistanceStatus } from "@/lib/planAssistance";
 import PlanSteps from "./PlanSteps";
 
 // "Your plan": numbered steps with live state, next action and a single next-step marker (dashboard).
-export default async function PlanPanel({ userId, plan, hasRole = true, reportLocked = false }: { userId: string; plan: NonNullable<PlanState["plan"]>; hasRole?: boolean; reportLocked?: boolean }) {
+export default async function PlanPanel({ userId, plan, hasRole = true, reportLocked = false, rolesChecked }: { userId: string; plan: NonNullable<PlanState["plan"]>; hasRole?: boolean; reportLocked?: boolean; rolesChecked?: number }) {
   const db = getSupabaseServerClient();
   const [{ data: personality }, { data: interview }, refs, { data: mentoring }, assistance] = await Promise.all([
     db.from("personality_tests").select("version, culture_scores").eq("user_id", userId).maybeSingle(),
@@ -33,6 +33,7 @@ export default async function PlanPanel({ userId, plan, hasRole = true, reportLo
     reportLocked,
     // Only an invite not yet opened has a "complete by" date (same rule as the interview page's invited state).
     interviewDueBy: dueBy,
+    rolesChecked,
     interviewExpired: isPastDeadline(dueBy),
     assistance,
     interviewRole: interview?.role_title ?? null,

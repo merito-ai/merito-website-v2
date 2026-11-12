@@ -21,6 +21,10 @@ describe("buildPlanPanelRows", () => {
   it("reports: remaining count, check-a-role action; spent shows ₹299 extras", () => {
     expect(row(base, "reports")).toMatchObject({ status: "3 of 3 left", action: { label: "Check my fit for a role", href: "#check-role" } });
     expect(row({ ...base, reportCreditsLeft: 0 }, "reports").status).toBe("All 3 used · extra roles ₹299");
+    // E9: several roles
+    expect(row({ ...base, reportCreditsLeft: 1, rolesChecked: 2 }, "reports").status).toBe("2 roles checked · 1 left");
+    expect(row({ ...base, reportCreditsLeft: 2, rolesChecked: 1 }, "reports").status).toBe("1 role checked · 2 left");
+    expect(row({ ...base, reportCreditsLeft: 0, rolesChecked: 4 }, "reports").status).toBe("All 3 used · extra roles ₹299");
   });
 
   it("personality: start / continue part 2 / view report", () => {

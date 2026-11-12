@@ -295,7 +295,7 @@ export default async function AccountPage({
       counsellingPriceLabel={counsellingPriceLabel}
       initialCounsellingRequested={Boolean(counsellingRequest)}
       applications={leads.map((l) => ({ id: l.id, roleTitle: l.role_title, score: l.score, createdAt: l.created_at }))}
-      planPanel={planState.plan ? <PlanPanel userId={user.id} plan={planState.plan} reportLocked={!reportUnlocked && reportState !== "failed"} /> : null}
+      planPanel={planState.plan ? <PlanPanel userId={user.id} plan={planState.plan} reportLocked={!reportUnlocked && reportState !== "failed"} rolesChecked={new Set(leads.map((l) => l.role_title)).size} /> : null}
       planOffer={planDashboardView(planState) === "offer" ? <PlanOfferBanner /> : null}
       recruiterActivity={RECRUITER_PREVIEW_ENABLED ? <RecruiterActivityPanel viewCount={recruiterViewCount} /> : null}
       mentoringInPlan={planState.plan?.product === "plan_mentor"}

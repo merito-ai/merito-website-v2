@@ -88,7 +88,7 @@ for (const vp of VIEWPORTS) {
       await unlockReport(u.id, lead, "Product Analyst", order);
       for (const [n, role] of [[2, "Role B"], [1, "Role C"]] as const) {
         await page.reload();
-        await expect(panel(page)).toContainText(`${n} of 3 left`);
+        await expect(panel(page)).toContainText(`${3 - n} ${n === 2 ? "role" : "roles"} checked · ${n} left`); // E9
         const l = await seedLead(u, { role, createdAt: "2026-01-01T00:00:00Z" });
         await unlockReport(u.id, l, role, order);
       }

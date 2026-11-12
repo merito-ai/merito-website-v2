@@ -14,6 +14,7 @@ export type PlanPanelInput = {
   interviewDueBy?: Date | null; // invited but not started: vendor link expiry, else invited_at + INTERVIEW_VALIDITY_DAYS
   assistance?: AssistanceStatus; // Plan 2, set by the team in /admin/assistance
   interviewRole?: string | null; // role the plan's one interview was used for
+  rolesChecked?: number; // E9: distinct roles checked so far
   interviewExpired?: boolean; // E6: invited, never started, link past its 10 days
 };
 
@@ -117,7 +118,9 @@ export function buildPlanPanelRows(i: PlanPanelInput): PlanPanelRow[] {
           label: "Check a role (CV report)",
           included: true,
           done: i.hasRole !== false,
-          status: i.reportCreditsLeft > 0 ? `${i.reportCreditsLeft} of ${REPORT_CREDITS} left` : `All ${REPORT_CREDITS} used · extra roles ₹299`,
+          status: i.reportCreditsLeft === 0 ? `All ${REPORT_CREDITS} used · extra roles ₹299`
+            : i.rolesChecked ? `${i.rolesChecked} ${i.rolesChecked === 1 ? "role" : "roles"} checked · ${i.reportCreditsLeft} left`
+            : `${i.reportCreditsLeft} of ${REPORT_CREDITS} left`,
           action: { label: CHECK_FIT_LABEL, href: "#check-role" },
         },
     { key: "personality", label: "Personality + culture", included: true, done: i.personality === "done", ...personality[i.personality] },
