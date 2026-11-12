@@ -36,9 +36,8 @@ export default function Navbar() {
     return null;
   }
 
-  // Hub visitors are candidates: the header CTA is their way back in, not the recruiter "Talk to an expert".
+  // Hub visitors are candidates: they also get a prominent way back into the Hub.
   const isHub = pathname === "/hub" || pathname.startsWith("/hub/");
-  const cta = isHub ? { href: "/hub/login", label: "Log in" } : { href: "/contact", label: "Talk to an expert" };
 
   return (
     <header className="sticky top-0 z-50 flex justify-center bg-transparent px-4 py-4">
@@ -165,11 +164,19 @@ export default function Navbar() {
 
         {/* CTA */}
         <Link
-          href={cta.href}
-          className={`relative ${isHub ? "ml-auto mr-2 flex h-[44px] px-4 text-[15px] md:ml-0 md:mr-0 md:h-[50px] md:px-6 md:text-[16px]" : "hidden h-[50px] px-6 text-[16px] md:flex"} items-center justify-center overflow-hidden whitespace-nowrap rounded-[8px] bg-[#ed1a24] font-[family-name:var(--font-poppins)] font-semibold text-white transition-all duration-200 hover:bg-black hover:text-white hover:scale-[1.03] active:scale-[0.97]`}
+          href="/contact"
+          className={`relative hidden h-[50px] items-center justify-center overflow-hidden whitespace-nowrap rounded-[8px] px-6 font-[family-name:var(--font-poppins)] text-[16px] font-semibold transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] md:flex ${isHub ? "border-2 border-[#141416] bg-white text-[#141416] hover:bg-[#141416] hover:text-white" : "bg-[#ed1a24] text-white hover:bg-black hover:text-white"}`}
         >
-          <span className="relative z-10">{cta.label}</span>
+          <span className="relative z-10">Talk to an expert</span>
         </Link>
+        {isHub && (
+          <Link
+            href="/hub/login"
+            className="relative ml-auto mr-2 flex h-[44px] items-center justify-center overflow-hidden whitespace-nowrap rounded-[8px] bg-[#ed1a24] px-4 font-[family-name:var(--font-poppins)] text-[15px] font-semibold text-white transition-all duration-200 hover:bg-black hover:scale-[1.03] active:scale-[0.97] md:ml-3 md:mr-0 md:h-[50px] md:px-6 md:text-[16px]"
+          >
+            <span className="relative z-10">Log in</span>
+          </Link>
+        )}
 
         {/* Mobile hamburger */}
         <button
@@ -224,11 +231,11 @@ export default function Navbar() {
             );
           })}
           <Link
-            href={cta.href}
+            href="/contact"
             onClick={() => setOpen(false)}
             className="flex items-center justify-center bg-[#ed1a24] text-white font-semibold text-[16px] px-6 h-[50px] rounded-[8px] mt-2"
           >
-            {cta.label}
+            Talk to an expert
           </Link>
         </div>
       )}
