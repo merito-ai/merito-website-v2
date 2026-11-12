@@ -52,7 +52,7 @@ export async function sendPlanWelcomeEmail(userId: string, product: PlanProduct,
   const benefits = buildPlanCards().find((c) => c.product === product)!.lines.filter((l) => l.included).map((l) => l.label);
   const steps = buildPlanPanelRows({ product, reportCreditsLeft: 3, personality: "none", interview: "unused", references: "none", mentoring: [] })
     .filter((r) => r.included)
-    .map((r) => r.label);
+    .map((r) => r.title);
   // An upgrade already did step 1 on Plan 1: point at the new part (mentoring) instead.
   const [cta, url] = upgraded ? ["Book your first mentoring session", getAbsoluteUrl("/hub/account/expert")] : ["Start with step 1: check a role", getAbsoluteUrl("/hub/account")];
   const notes = [`Mock AI interview: ${INTERVIEW_VALIDITY_NOTE}`, ...(product === "plan_mentor" ? [`Application assistance: ${ASSISTANCE_NEXT_STEP}`] : [])];

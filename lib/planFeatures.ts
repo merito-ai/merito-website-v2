@@ -5,7 +5,7 @@ import { MIN_REFERENCES, MAX_REFEREES } from "@/lib/referenceChecks";
 
 // One-line "what it is / what you get" per plan feature: dashboard panel, feature pages, comparison table. Client-safe.
 const QUESTIONS = ITEMS.length + IMPRESSION_ITEMS.length + CULTURE_ITEMS.length;
-const PLAN_INTERVIEW_SKILLS = 10; // = MAX_SKILLS_BY_DURATION[PLAN_INTERVIEW_MINUTES]; jobs.ts is server-only, test pins it
+export const PLAN_INTERVIEW_SKILLS = 10; // = MAX_SKILLS_BY_DURATION[PLAN_INTERVIEW_MINUTES]; jobs.ts is server-only, test pins it
 
 // Days a candidate has to finish an interview once started (PM 2026-11-12). The real cutoff is the vendor's magic-link expiry.
 export const INTERVIEW_VALIDITY_DAYS = 10;
@@ -38,3 +38,17 @@ export const PLAN_FEATURE_DETAILS = {
 export const PLAN_MENTORING_LABEL = "Mentoring: 1 hour as two 30-min sessions";
 
 export type PlanFeatureKey = keyof typeof PLAN_FEATURE_DETAILS;
+
+// Short one-liners for the Hub dashboard guide (timeline rows, plans popup). Same facts as PLAN_FEATURE_DETAILS.
+export const PLAN_REPORT_COUNT = 3; // = PLAN_REPORT_CREDITS (lib/plans.ts is server-only)
+export const PLAN_INTERVIEW_ONE_ROLE = "45-min AI interview for one of your roles";
+export const GUIDE_COPY = {
+  report: "Strengths, gaps and what to fix",
+  reports: `Detailed fitment report for ${PLAN_REPORT_COUNT} roles`,
+  personality: "Your traits and the cultures that suit you",
+  interview: `Scored report, ${INTERVIEW_VALIDITY_DAYS} days to complete`,
+  interviewNormal: "Practise with a scored report",
+  references: "One link with all your results",
+  mentoring: "Two 30-min sessions with an expert",
+  assistance: "We refer you to 3 companies you choose",
+} as const;
