@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hub First Visit Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Gabarito:wght@500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<style>
+  :root { --bg:#151317; --raise:#1c1a1f; --raise2:#232027; --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.14); --red:#ed1a24; --redsoft:#ff7a80; --text:#fff; --mute:rgba(255,255,255,.70); --dim:rgba(255,255,255,.50); --green:#3ecf8e; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#0b0a0d; color:var(--text); font-family:Poppins,sans-serif; -webkit-font-smoothing:antialiased; }
+  button { font-family:inherit; cursor:pointer; }
+  :focus-visible { outline:2px solid #fff; outline-offset:2px; }
+  svg { width:16px; height:16px; flex-shrink:0; }
+  @media (prefers-reduced-motion: no-preference) {
+    .scene.on .fx { animation:up .5s cubic-bezier(.2,.7,.2,1) both; }
+    .scene.on .fx:nth-child(2) { animation-delay:.06s; } .scene.on .fx:nth-child(3) { animation-delay:.12s; }
+    .scene.on .row { animation:up .45s cubic-bezier(.2,.7,.2,1) both; }
+    .scene.on .row:nth-child(4){animation-delay:.08s}.scene.on .row:nth-child(5){animation-delay:.14s}.scene.on .row:nth-child(6){animation-delay:.2s}.scene.on .row:nth-child(7){animation-delay:.26s}.scene.on .row:nth-child(8){animation-delay:.32s}.scene.on .row:nth-child(9){animation-delay:.38s}
+    .scrim.open .modal { animation:pop .28s cubic-bezier(.2,.8,.2,1) both; }
+    body.phone .scrim.open .modal { animation:sheet .3s cubic-bezier(.2,.8,.2,1) both; }
+  }
+  @keyframes up { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+  @keyframes pop { from { opacity:0; transform:scale(.97) translateY(6px); } to { opacity:1; transform:none; } }
+  @keyframes sheet { from { transform:translateY(100%); } to { transform:none; } }
+
+  /* mockup chrome */
+  .bar { position:sticky; top:0; z-index:30; display:flex; gap:8px; flex-wrap:wrap; align-items:center; padding:12px 16px; background:#0b0a0df2; border-bottom:1px solid var(--line); }
+  .bar b { font-family:Gabarito; font-size:17px; margin-right:10px; }
+  .tab { background:transparent; border:1px solid var(--line2); color:#fff; padding:8px 12px; border-radius:8px; font-size:13px; }
+  .tab.on { background:var(--red); border-color:var(--red); }
+  .grow { flex:1; }
+  .scene { display:none; padding:20px 16px 60px; } .scene.on { display:block; }
+  .note { max-width:1120px; margin:0 auto 14px; font-size:13px; color:var(--mute); border:1px dashed var(--line2); border-radius:10px; padding:10px 14px; line-height:1.6; }
+  .note strong { color:#fff; }
+
+  /* app frame */
+  .frame { position:relative; margin:0 auto; max-width:1120px; background:var(--bg); border:1px solid var(--line); border-radius:16px; overflow:hidden; transition:max-width .25s; }
+  body.phone .frame { max-width:375px; }
+  .top { display:flex; align-items:center; gap:10px; padding:12px 16px; border-bottom:1px solid var(--line); }
+  .logo { font-family:Gabarito; font-weight:700; font-size:18px; } .logo i { color:var(--red); font-style:normal; }
+  .hub { background:var(--red); font-size:10px; font-weight:600; padding:2px 7px; border-radius:6px; }
+  .search { margin:0 auto; width:260px; height:30px; border-radius:8px; border:1px solid var(--line); background:#ffffff06; }
+  body.phone .search { display:none; }
+  .av { width:30px; height:30px; border-radius:50%; border:1px solid var(--red); display:grid; place-items:center; font-size:12px; margin-left:auto; }
+  .main { display:grid; grid-template-columns:200px 1fr; min-height:620px; }
+  body.phone .main { grid-template-columns:1fr; }
+  .side { border-right:1px solid var(--line); padding:18px 12px; font-size:12.5px; color:var(--mute); }
+  body.phone .side { display:none; }
+  .side div { padding:8px 10px; border-radius:8px; display:flex; gap:9px; align-items:center; }
+  .side div.on { background:#ed1a2418; color:#fff; box-shadow:inset 2px 0 var(--red); }
+  .side svg { width:14px; height:14px; }
+  .content { position:relative; padding:40px 44px 48px; overflow:hidden; }
+  .content::before { content:""; position:absolute; top:-180px; left:-120px; width:520px; height:420px; background:radial-gradient(closest-side, rgba(237,26,36,.14), transparent); pointer-events:none; }
+  body.phone .content { padding:24px 16px 96px; }
+
+  /* hero */
+  .hero { position:relative; display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:44px; align-items:start; }
+  body.phone .hero { grid-template-columns:1fr; gap:28px; }
+  .kicker { display:inline-flex; align-items:center; gap:7px; font-size:12px; font-weight:600; color:var(--redsoft); background:#ed1a241a; border:1px solid #ed1a2440; border-radius:20px; padding:5px 12px; margin-bottom:16px; }
+  .kicker svg { width:13px; height:13px; }
+  h1 { font-family:Gabarito; font-weight:600; font-size:36px; line-height:1.12; margin:0 0 12px; letter-spacing:-.015em; text-wrap:balance; }
+  h1 em { font-style:normal; color:var(--redsoft); }
+  body.phone h1 { font-size:27px; }
+  .lead { color:var(--mute); font-size:15px; line-height:1.65; margin:0 0 22px; max-width:460px; }
+  .prep { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:24px; }
+  .prep span { display:flex; gap:8px; align-items:center; font-size:12.5px; color:var(--mute); background:#ffffff07; border:1px solid var(--line); border-radius:10px; padding:8px 12px; }
+  .prep svg { color:#fff; }
+  .actions { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .btn { height:50px; padding:0 22px; border-radius:12px; border:0; background:var(--red); color:#fff; font-weight:600; font-size:15px; display:inline-flex; align-items:center; gap:9px; box-shadow:0 8px 20px -6px rgba(237,26,36,.55), inset 0 1px 0 rgba(255,255,255,.18); transition:transform .15s, box-shadow .15s, background .15s; }
+  .btn:hover { transform:translateY(-1px); background:#f32a33; }
+  .btn:active { transform:translateY(0) scale(.98); }
+  .ghost { height:50px; padding:0 18px; border-radius:12px; border:1px solid var(--line2); background:#ffffff05; color:#fff; font-size:14px; display:inline-flex; align-items:center; gap:8px; transition:background .15s; }
+  .ghost:hover { background:#ffffff0d; }
+  body.phone .actions .btn, body.phone .actions .ghost { width:100%; justify-content:center; }
+  .fine { font-size:12.5px; color:var(--dim); margin:14px 0 0; display:flex; gap:7px; align-items:center; }
+  .fine svg { width:14px; height:14px; }
+
+  /* sample score teaser */
+  .teaser { margin-top:28px; display:flex; gap:14px; align-items:center; background:linear-gradient(135deg,#ffffff08,#ffffff03); border:1px solid var(--line); border-radius:14px; padding:14px 16px; max-width:460px; }
+  .teaser .mini { width:52px; height:52px; border-radius:50%; background:conic-gradient(var(--red) 0 78%, #ffffff14 78% 100%); display:grid; place-items:center; flex-shrink:0; }
+  .teaser .mini span { width:42px; height:42px; border-radius:50%; background:var(--bg); display:grid; place-items:center; font:700 15px Gabarito; }
+  .teaser b { display:block; font-size:13px; font-weight:600; }
+  .teaser small { color:var(--dim); font-size:12px; }
+  .teaser .lbl { margin-left:auto; font-size:10.5px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--dim); border:1px solid var(--line2); border-radius:6px; padding:3px 7px; }
+
+  /* timeline */
+  .tl { position:relative; background:linear-gradient(180deg,var(--raise2),var(--raise)); border:1px solid var(--line); border-radius:18px; padding:22px 22px 10px; box-shadow:0 20px 40px -24px rgba(0,0,0,.7); }
+  .tl h3 { margin:0 0 4px; font:600 15.5px Poppins; }
+  .tl .sub { margin:0 0 18px; font-size:12.5px; color:var(--dim); }
+  .prog { height:4px; border-radius:4px; background:#ffffff12; margin:-8px 0 18px; overflow:hidden; }
+  .prog i { display:block; height:100%; background:var(--green); border-radius:4px; }
+  .row { display:grid; grid-template-columns:36px 1fr auto; gap:12px; align-items:start; position:relative; padding-bottom:16px; }
+  .row:not(:last-of-type)::before { content:""; position:absolute; left:17px; top:38px; bottom:2px; width:2px; background:var(--line); border-radius:2px; }
+  .row .dot { width:36px; height:36px; border-radius:11px; display:grid; place-items:center; background:#ffffff08; border:1px solid var(--line); color:var(--mute); }
+  .row .t { font-size:14px; font-weight:600; line-height:1.3; padding-top:2px; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .row .d { font-size:12.5px; color:var(--dim); line-height:1.5; margin-top:2px; }
+  .row.done .dot { background:#3ecf8e1a; border-color:#3ecf8e55; color:var(--green); }
+  .row.done::before { background:#3ecf8e66 !important; }
+  .row.now .dot { background:var(--red); border-color:var(--red); color:#fff; box-shadow:0 0 0 5px #ed1a2422; }
+  .here { font-size:10.5px; font-weight:600; letter-spacing:.04em; color:var(--redsoft); }
+  .pill { font-size:11px; font-weight:600; padding:3px 9px; border-radius:20px; white-space:nowrap; margin-top:5px; }
+  .free { background:#3ecf8e1a; color:var(--green); }
+  .paid { background:#ffffff0e; color:var(--mute); }
+  .incl { background:#ffffff0e; color:#fff; }
+  .p2 { background:#ed1a2422; color:var(--redsoft); }
+  .ok { background:#3ecf8e1a; color:var(--green); }
+  .tl .more { display:flex; align-items:center; gap:6px; font-size:13px; color:#fff; opacity:.85; padding:4px 0 12px; text-decoration:underline; text-underline-offset:3px; min-height:44px; }
+
+  /* form-first */
+  .hello { display:flex; align-items:center; gap:10px; font-size:13.5px; color:var(--mute); background:#ffffff07; border:1px solid var(--line); border-radius:12px; padding:4px 4px 4px 14px; margin-bottom:26px; position:relative; }
+  .hello svg { color:var(--redsoft); }
+  .hello .x { margin-left:auto; width:44px; height:44px; border:0; background:transparent; color:var(--dim); display:grid; place-items:center; border-radius:10px; }
+  .hello .x:hover { background:#ffffff0d; }
+  .score { display:flex; gap:18px; align-items:center; margin-bottom:18px; }
+  .ring { width:96px; height:96px; border-radius:50%; background:conic-gradient(var(--red) 0 72%, #ffffff14 72% 100%); display:grid; place-items:center; flex-shrink:0; box-shadow:0 0 40px -10px rgba(237,26,36,.5); }
+  .ring span { width:80px; height:80px; border-radius:50%; background:var(--bg); display:grid; place-items:center; font:700 28px Gabarito; }
+  .ring span small { font:500 11px Poppins; color:var(--dim); display:block; margin-top:-8px; }
+  .score .role { font-size:12.5px; color:var(--dim); margin:0 0 2px; display:flex; gap:6px; align-items:center; }
+  .score h1 { margin:0; font-size:30px; }
+  .locked { position:relative; border:1px solid var(--line); border-radius:14px; overflow:hidden; margin-bottom:22px; max-width:480px; }
+  .locked .blur { padding:14px 16px; filter:blur(4px); opacity:.55; display:grid; gap:9px; user-select:none; }
+  .locked .ln { display:flex; gap:10px; align-items:center; font-size:12.5px; }
+  .locked .ln i { width:8px; height:8px; border-radius:50%; display:inline-block; }
+  .locked .ov { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; gap:8px; font-size:13px; font-weight:600; background:linear-gradient(90deg,#151317cc,#15131799); }
+  .locked .ov svg { color:var(--redsoft); }
+
+  .states { display:flex; gap:6px; flex-wrap:wrap; align-items:center; margin:-12px 0 20px; font-size:11.5px; color:var(--dim); }
+  .states button { background:transparent; border:1px dashed var(--line2); color:var(--mute); border-radius:6px; padding:4px 8px; font-size:11.5px; }
+
+  /* phone sticky CTA */
+  .sticky { display:none; }
+  body.phone .sticky { display:block; position:absolute; left:0; right:0; bottom:0; padding:12px 16px 16px; background:linear-gradient(0deg,var(--bg) 70%,transparent); z-index:5; }
+  body.phone .sticky .btn { width:100%; justify-content:center; }
+  body.phone .hide-phone { display:none; }
+
+  /* plans modal */
+  .scrim { position:absolute; inset:0; background:rgba(7,6,9,.74); backdrop-filter:blur(4px); display:none; align-items:center; justify-content:center; padding:28px; z-index:10; }
+  .scrim.open { display:flex; }
+  .modal { width:100%; max-width:780px; max-height:100%; overflow:auto; background:#fff; color:#141416; border-radius:20px; padding:28px; position:relative; box-shadow:0 30px 80px -20px rgba(0,0,0,.6); }
+  body.phone .scrim { padding:0; align-items:flex-end; }
+  body.phone .modal { border-radius:20px 20px 0 0; padding:22px 16px 24px; max-height:94%; }
+  .grab { display:none; } body.phone .grab { display:block; width:40px; height:4px; border-radius:4px; background:#d9d9dc; margin:-8px auto 14px; }
+  .modal .close { position:absolute; top:12px; right:12px; width:44px; height:44px; border-radius:12px; border:0; background:#f2f2f3; color:#141416; display:grid; place-items:center; }
+  .modal .close:hover { background:#e8e8ea; }
+  .modal h2 { font-family:Gabarito; font-weight:600; font-size:26px; margin:0 0 4px; padding-right:52px; letter-spacing:-.01em; }
+  .modal .msub { color:#57575c; font-size:13.5px; margin:0 0 20px; }
+  .pgrid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  body.phone .pgrid { grid-template-columns:1fr; }
+  .pc { border:1px solid #e6e6e8; border-radius:16px; padding:20px; display:flex; flex-direction:column; position:relative; transition:border-color .15s, box-shadow .15s; }
+  .pc:hover { border-color:#cfcfd3; box-shadow:0 10px 24px -14px rgba(0,0,0,.25); }
+  .pc.rec { border:2px solid var(--red); background:linear-gradient(180deg,#fff5f5,#fff 40%); }
+  .badge { position:absolute; top:-12px; left:18px; background:var(--red); color:#fff; font-size:11px; font-weight:600; padding:4px 10px; border-radius:20px; display:inline-flex; gap:5px; align-items:center; }
+  .badge svg { width:12px; height:12px; }
+  .pc h3 { margin:0; font:600 17px Gabarito; }
+  .pc .for { font-size:12.5px; color:#6b6b70; margin:2px 0 0; }
+  .pc .price { font:700 32px Gabarito; margin:12px 0 0; letter-spacing:-.01em; }
+  .pc .once { font-size:12px; color:#7a7a80; margin-bottom:16px; }
+  .pc ul { list-style:none; margin:0 0 20px; padding:16px 0 0; border-top:1px solid #eeeef0; display:grid; gap:10px; font-size:13px; color:#2c2c30; flex:1; }
+  .pc li { display:flex; gap:10px; align-items:flex-start; line-height:1.4; }
+  .pc li .ic { width:22px; height:22px; border-radius:6px; display:grid; place-items:center; background:#f1f1f3; flex-shrink:0; }
+  .pc li .ic svg { width:13px; height:13px; }
+  .pc li.n { color:#a3a3a8; } .pc li.n .ic { background:#f7f7f8; color:#c4c4c8; }
+  .pc li.plus .ic { background:#ffe8e9; color:var(--red); }
+  .pc .btn { width:100%; justify-content:center; height:48px; font-size:14.5px; }
+  .pc .alt { background:#141416; box-shadow:none; } .pc .alt:hover { background:#2a2a2e; }
+  .mfoot { margin:18px 0 0; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; font-size:12.5px; color:#6b6b70; }
+  .mfoot span { display:inline-flex; gap:6px; align-items:center; }
+  .mfoot svg { width:14px; height:14px; color:#16a34a; }
+  .mfoot a { color:#141416; text-underline-offset:3px; }
+</style>
+</head>
+<body>
+<div class="bar">
+  <b>Hub first visit · mockup v3</b>
+  <button class="tab on" data-s="n1">Normal · login first</button>
+  <button class="tab" data-s="n2">Normal · form first</button>
+  <button class="tab" data-s="s1">Plan user · login first</button>
+  <button class="tab" data-s="s2">Plan user · form first</button>
+  <span class="grow"></span>
+  <button class="tab" id="dev">Phone (375px)</button>
+</div>
+
+<!-- N1 -->
+<section class="scene on" id="n1">
+  <p class="note"><strong>Normal visitor, signed in first, no role.</strong> One job: start the free fit check. The small sample card shows what they'll get. Shows until their first role is checked.</p>
+  <div class="frame"><div class="top"><span class="logo"><i>M</i>erito</span><span class="hub">HUB</span><span class="search"></span><span class="av">S</span></div>
+  <div class="main"><nav class="side"></nav><div class="content">
+    <div class="hero">
+      <div>
+        <h1 class="fx">Welcome, Sneha. See how well you <em>fit your next role.</em></h1>
+        <p class="lead fx">Upload your CV and the job you want. You get a fitment score in about 2 minutes, free.</p>
+        <div class="fx">
+          <div class="prep"><span><i data-lucide="file-user"></i>Your CV (PDF or Word)</span><span><i data-lucide="clipboard-list"></i>The job description</span></div>
+          <div class="actions"><button class="btn hide-phone"><i data-lucide="target"></i>Check my fit for a role</button><button class="ghost"><i data-lucide="eye"></i>See a sample report</button></div>
+          <div class="teaser"><span class="mini"><span>78</span></span><div><b>Product Analyst · Strong fit</b><small>This is what your score looks like</small></div><span class="lbl">Sample</span></div>
+        </div>
+      </div>
+      <div class="tl">
+        <h3>How Merito works</h3><p class="sub">Build a profile recruiters trust, one step at a time.</p>
+        <div class="row now"><span class="dot"><i data-lucide="gauge"></i></span><div><div class="t">Fitment score <span class="here">START HERE</span></div><div class="d">How well your CV fits the role</div></div><span class="pill free">Free</span></div>
+        <div class="row"><span class="dot"><i data-lucide="file-bar-chart"></i></span><div><div class="t">Detailed report</div><div class="d">Strengths, gaps and what to fix</div></div><span class="pill paid">Paid</span></div>
+        <div class="row"><span class="dot"><i data-lucide="brain"></i></span><div><div class="t">Personality + culture</div><div class="d">Your traits and the cultures that suit you</div></div><span class="pill paid">Paid</span></div>
+        <div class="row"><span class="dot"><i data-lucide="mic"></i></span><div><div class="t">Mock AI interview</div><div class="d">Practice with a scored report</div></div><span class="pill paid">Paid</span></div>
+        <div class="row"><span class="dot"><i data-lucide="share-2"></i></span><div><div class="t">References + shareable profile</div><div class="d">One link with all your results</div></div><span class="pill paid">Paid</span></div>
+        <a class="more"><i data-lucide="tag"></i>See prices</a>
+      </div>
+    </div>
+  </div></div>
+  <div class="sticky"><button class="btn"><i data-lucide="target"></i>Check my fit for a role</button></div>
+  </div>
+</section>
+
+<!-- N2 -->
+<section class="scene" id="n2">
+  <p class="note"><strong>Normal visitor, used the public form, then signed in.</strong> Score first. Slim welcome line closes for good with ✕. A blurred report preview shows what unlocking gives. Blurred lines are always fake placeholders (no real report text or counts on the page). Dashed buttons preview the two states. Today's dashboard continues below.</p>
+  <div class="frame"><div class="top"><span class="logo"><i>M</i>erito</span><span class="hub">HUB</span><span class="search"></span><span class="av">S</span></div>
+  <div class="main"><nav class="side"></nav><div class="content">
+    <div class="hello fx"><i data-lucide="sparkles"></i>Welcome to Merito HUB, Sneha. Your score is ready.<button class="x" aria-label="Dismiss"><i data-lucide="x"></i></button></div>
+    <div class="hero">
+      <div>
+        <div class="score fx"><div class="ring"><span>72</span></div><div><p class="role"><i data-lucide="briefcase" style="width:13px;height:13px"></i>Product Analyst</p><h1>Good fit</h1></div></div>
+        <div class="locked fx"><div class="blur"><div class="ln"><i style="background:var(--green)"></i>Placeholder strength line, not real data</div><div class="ln"><i style="background:var(--green)"></i>Placeholder strength line, not real data</div><div class="ln"><i style="background:var(--red)"></i>Placeholder gap line, not real data</div></div><div class="ov"><i data-lucide="lock"></i><span class="ovt">Your strengths, gaps and what to fix are ready</span></div></div><div class="states"><span>Preview state:</span><button data-t="Your strengths, gaps and what to fix are ready">Ready</button><button data-t="Your detailed report is being prepared">Preparing</button></div>
+        <div class="actions fx"><button class="btn hide-phone"><i data-lucide="lock-open"></i>Unlock detailed report</button><button class="ghost"><i data-lucide="plus"></i>Check another role</button></div>
+      </div>
+      <div class="tl">
+        <h3>Your progress</h3><p class="sub">1 of 5 steps done</p>
+        <div class="prog"><i style="width:20%"></i></div>
+        <div class="row done"><span class="dot"><i data-lucide="check"></i></span><div><div class="t">Fitment score</div><div class="d">72 / 100 for Product Analyst</div></div><span class="pill ok">Done</span></div>
+        <div class="row now"><span class="dot"><i data-lucide="file-bar-chart"></i></span><div><div class="t">Detailed report <span class="here">NEXT</span></div><div class="d">Strengths, gaps and what to fix</div></div><span class="pill paid">Paid</span></div>
+        <div class="row"><span class="dot"><i data-lucide="brain"></i></span><div><div class="t">Personality + culture</div><div class="d">Traits and work cultures</div></div><span class="pill paid">Paid</span></div>
+        <div class="row"><span class="dot"><i data-lucide="mic"></i></span><div><div class="t">Mock AI interview</div><div class="d">Scored practice interview</div></div><span class="pill paid">Paid</span></div>
+        <div class="row"><span class="dot"><i data-lucide="share-2"></i></span><div><div class="t">References + shareable profile</div><div class="d">One link with all your results</div></div><span class="pill paid">Paid</span></div>
+      </div>
+    </div>
+  </div></div>
+  <div class="sticky"><button class="btn"><i data-lucide="lock-open"></i>Unlock detailed report</button></div>
+  </div>
+</section>
+
+<!-- S1 -->
+<section class="scene" id="s1">
+  <p class="note"><strong>Plan user (allowlisted), signed in first, no plan, no role.</strong> Welcome + what plans cover. "Unlock plans" opens the plans popup (try it). Secondary: check a role first, free.</p>
+  <div class="frame"><div class="top"><span class="logo"><i>M</i>erito</span><span class="hub">HUB</span><span class="search"></span><span class="av">S</span></div>
+  <div class="main"><nav class="side"></nav><div class="content">
+    <div class="hero">
+      <div>
+        <span class="kicker fx"><i data-lucide="gift"></i>Exclusive plans unlocked for you</span>
+        <h1 class="fx">Welcome, Sneha. Everything you need to <em>land your next role.</em></h1>
+        <div class="fx">
+          <p class="lead">One payment unlocks reports for 3 roles, a personality and culture test, a 45-min AI interview, references and a shareable profile.</p>
+          <div class="actions"><button class="btn hide-phone" data-open><i data-lucide="lock-open"></i>Unlock plans</button><button class="ghost"><i data-lucide="target"></i>Check a role first, free</button></div>
+          <p class="fine"><i data-lucide="shield-check"></i>One-time payment. Features never expire.</p>
+        </div>
+      </div>
+      <div class="tl">
+        <h3>What your plan includes</h3><p class="sub">Assess + Mentor + Apply adds mentoring and application help.</p>
+        <div class="row"><span class="dot"><i data-lucide="file-bar-chart"></i></span><div><div class="t">3 role reports</div><div class="d">Detailed fitment report for 3 roles</div></div><span class="pill incl">All plans</span></div>
+        <div class="row"><span class="dot"><i data-lucide="brain"></i></span><div><div class="t">Personality + culture</div><div class="d">Traits and the cultures that suit you</div></div><span class="pill incl">All plans</span></div>
+        <div class="row"><span class="dot"><i data-lucide="mic"></i></span><div><div class="t">45-min AI interview</div><div class="d">Scored report, 10 days to complete</div></div><span class="pill incl">All plans</span></div>
+        <div class="row"><span class="dot"><i data-lucide="share-2"></i></span><div><div class="t">References + shareable profile</div><div class="d">One link with all your results</div></div><span class="pill incl">All plans</span></div>
+        <div class="row"><span class="dot"><i data-lucide="user-check"></i></span><div><div class="t">Mentoring</div><div class="d">Two 30-min sessions with an expert</div></div><span class="pill p2">Mentor + Apply</span></div>
+        <div class="row"><span class="dot"><i data-lucide="briefcase"></i></span><div><div class="t">Application assistance</div><div class="d">We refer you to 3 companies you choose</div></div><span class="pill p2">Mentor + Apply</span></div>
+      </div>
+    </div>
+  </div></div>
+  <div class="sticky"><button class="btn" data-open><i data-lucide="lock-open"></i>Unlock plans</button></div>
+  <div class="scrim"></div>
+  </div>
+</section>
+
+<!-- S2 -->
+<section class="scene" id="s2">
+  <p class="note"><strong>Plan user (allowlisted), used the public form, then signed in, no plan.</strong> Score first, step 1 done. "Unlock plans" opens the popup; this role's report counts as 1 of the 3 included.</p>
+  <div class="frame"><div class="top"><span class="logo"><i>M</i>erito</span><span class="hub">HUB</span><span class="search"></span><span class="av">S</span></div>
+  <div class="main"><nav class="side"></nav><div class="content">
+    <div class="hello fx"><i data-lucide="gift"></i>Welcome, Sneha. Exclusive plans are unlocked for your account.<button class="x" aria-label="Dismiss"><i data-lucide="x"></i></button></div>
+    <div class="hero">
+      <div>
+        <div class="score fx"><div class="ring"><span>72</span></div><div><p class="role"><i data-lucide="briefcase" style="width:13px;height:13px"></i>Product Analyst</p><h1>Good fit</h1></div></div>
+        <div class="locked fx"><div class="blur"><div class="ln"><i style="background:var(--green)"></i>Placeholder strength line, not real data</div><div class="ln"><i style="background:var(--green)"></i>Placeholder strength line, not real data</div><div class="ln"><i style="background:var(--red)"></i>Placeholder gap line, not real data</div></div><div class="ov"><i data-lucide="lock"></i><span class="ovt">Your strengths, gaps and what to fix are ready</span></div></div><div class="states"><span>Preview state:</span><button data-t="Your strengths, gaps and what to fix are ready">Ready</button><button data-t="Your detailed report is being prepared">Preparing</button></div>
+        <div class="fx">
+          <div class="actions"><button class="btn hide-phone" data-open><i data-lucide="lock-open"></i>Unlock plans</button></div>
+          <p class="fine"><i data-lucide="shield-check"></i>This report is 1 of the 3 included in every plan.</p>
+        </div>
+      </div>
+      <div class="tl">
+        <h3>Your progress</h3><p class="sub">1 step done. A plan unlocks the rest.</p>
+        <div class="prog"><i style="width:17%"></i></div>
+        <div class="row done"><span class="dot"><i data-lucide="check"></i></span><div><div class="t">Fitment score</div><div class="d">72 / 100 for Product Analyst</div></div><span class="pill ok">Done</span></div>
+        <div class="row now"><span class="dot"><i data-lucide="file-bar-chart"></i></span><div><div class="t">3 role reports <span class="here">NEXT</span></div><div class="d">This role + 2 more</div></div><span class="pill incl">All plans</span></div>
+        <div class="row"><span class="dot"><i data-lucide="brain"></i></span><div><div class="t">Personality + culture</div><div class="d">Traits and work cultures</div></div><span class="pill incl">All plans</span></div>
+        <div class="row"><span class="dot"><i data-lucide="mic"></i></span><div><div class="t">45-min AI interview</div><div class="d">10 days to complete</div></div><span class="pill incl">All plans</span></div>
+        <div class="row"><span class="dot"><i data-lucide="share-2"></i></span><div><div class="t">References + shareable profile</div><div class="d">One link with all your results</div></div><span class="pill incl">All plans</span></div>
+        <div class="row"><span class="dot"><i data-lucide="user-check"></i></span><div><div class="t">Mentoring + application help</div><div class="d">2 sessions, 3 company referrals</div></div><span class="pill p2">Mentor + Apply</span></div>
+      </div>
+    </div>
+  </div></div>
+  <div class="sticky"><button class="btn" data-open><i data-lucide="lock-open"></i>Unlock plans</button></div>
+  <div class="scrim"></div>
+  </div>
+</section>
+
+<template id="plans">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="pt">
+    <div class="grab"></div>
+    <button class="close" aria-label="Close"><i data-lucide="x"></i></button>
+    <h2 id="pt">Choose your plan</h2>
+    <p class="msub">One-time payment. Start with Assess + Prepare and upgrade to Assess + Mentor + Apply anytime for ₹2,999.</p>
+    <div class="pgrid">
+      <div class="pc"><h3>Assess + Prepare</h3><p class="for">Know where you stand and practise</p><div class="price">₹2,996</div><div class="once">one-time payment</div>
+        <ul>
+          <li><span class="ic"><i data-lucide="file-bar-chart"></i></span>Detailed reports for 3 roles</li>
+          <li><span class="ic"><i data-lucide="brain"></i></span>Personality + culture test</li>
+          <li><span class="ic"><i data-lucide="mic"></i></span>45-min AI interview</li>
+          <li><span class="ic"><i data-lucide="share-2"></i></span>References + shareable profile</li>
+          <li class="n"><span class="ic"><i data-lucide="minus"></i></span>Mentoring</li>
+          <li class="n"><span class="ic"><i data-lucide="minus"></i></span>Application assistance</li>
+        </ul>
+        <button class="btn alt">Choose Assess + Prepare</button></div>
+      <div class="pc rec"><span class="badge"><i data-lucide="star"></i>Most complete</span><h3>Assess + Mentor + Apply</h3><p class="for">Everything, plus expert help to apply</p><div class="price">₹5,995</div><div class="once">one-time payment</div>
+        <ul>
+          <li><span class="ic"><i data-lucide="check"></i></span>Everything in Assess + Prepare</li>
+          <li class="plus"><span class="ic"><i data-lucide="user-check"></i></span>Mentoring, two 30-min sessions</li>
+          <li class="plus"><span class="ic"><i data-lucide="briefcase"></i></span>Application assistance, 3 companies</li>
+        </ul>
+        <button class="btn">Choose Assess + Mentor + Apply</button></div>
+    </div>
+    <div class="mfoot"><span><i data-lucide="shield-check"></i>Secure payment by Razorpay. You confirm before paying.</span><a href="#">Compare all features</a></div>
+  </div>
+</template>
+
+<script>
+  const side = `<div class="on"><i data-lucide="layout-grid"></i>Overview</div><div><i data-lucide="file-text"></i>Fitment report</div><div><i data-lucide="brain"></i>Personality test</div><div><i data-lucide="mic"></i>Mock interview</div><div><i data-lucide="users"></i>Reference checks</div><div><i data-lucide="files"></i>Consolidated report</div><div><i data-lucide="user-check"></i>Expert guidance</div><div style="margin-top:10px"><i data-lucide="tag"></i>Pricing</div><div><i data-lucide="receipt"></i>Order history</div>`;
+  document.querySelectorAll('.side').forEach(s => s.innerHTML = side);
+  document.querySelectorAll('.scrim').forEach(s => s.innerHTML = document.getElementById('plans').innerHTML);
+  document.querySelectorAll('[data-open]').forEach(b => b.onclick = () => {
+    const s = b.closest('.frame').querySelector('.scrim'); s.classList.add('open'); s.querySelector('.close').focus();
+  });
+  document.querySelectorAll('.scrim').forEach(s => { s.onclick = e => { if (e.target === s || e.target.closest('.close')) s.classList.remove('open'); }; });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.scrim.open').forEach(s => s.classList.remove('open')); });
+  document.querySelectorAll('.tab[data-s]').forEach(t => t.onclick = () => {
+    document.querySelectorAll('.tab[data-s]').forEach(x => x.classList.toggle('on', x === t));
+    document.querySelectorAll('.scene').forEach(s => s.classList.toggle('on', s.id === t.dataset.s));
+  });
+  const dev = document.getElementById('dev');
+  dev.onclick = () => { const p = document.body.classList.toggle('phone'); dev.textContent = p ? 'Desktop' : 'Phone (375px)'; };
+  document.querySelectorAll('.states button').forEach(b => b.onclick = () => { b.closest('div').previousElementSibling.querySelector('.ovt').textContent = b.dataset.t; });
+  try { lucide.createIcons(); } catch (e) {}
+</script>
+</body>
+</html>
