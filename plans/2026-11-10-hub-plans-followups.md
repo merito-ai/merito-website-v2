@@ -156,5 +156,7 @@ Minor / not fixed:
 - Browser QA 2026-11-12 (local stack): Hub personality report checked for v2 fit (98% startup, top 3 + Show all 7, desktop), v2 flat/adaptable (375), unreliable (mix + explanation, desktop + 375), v1 (update prompt, no culture, 375, no overflow). Personality PDFs checked for v2 / v1 / unreliable.
 - FIXED 2026-11-12: single-page PDF export dropped its last line when the page height was fractional (scrollHeight rounded down, remainder went to dropped page 2); v2 personality PDF lost its footer. Affects every single-page export, fixed in `renderPageToPdf`.
 - FIXED 2026-11-12: em-dashes in personality page header, test intro, Part 2 heading and PDF validity line.
-- Not browser-checked (Docker Desktop went down again): admin ReportsTab culture section, locked personality sample preview (430px crop may hide part of the new culture block). Local QA users: roshanrk2014+qa-cult-{v2,v1,unrel}@gmail.com, password QaCulture!2026, local DB only; qa-cult-v2 culture was set to the sample mix for the fit check.
+- Browser QA 2026-11-12 (second pass): admin ReportsTab shows the full culture section (98% startup, top 3 + Show all 7, same numbers as Hub). Locked personality sample checked desktop + 375.
+- FIXED 2026-11-12: locked sample crop (430px) hid half the new culture block at 375; crop now 560. Locked-state copy said 65 statements (Big Five only); now counts culture items (104) and lists culture in steps and "Also included".
+- (Minor, tooling) Vitest on Windows fails every file ("Cannot read properties of undefined (reading 'config')") when started from a lowercase `d:` path; run from `D:`.
 - (Minor) Desktop emulation in the devtools browser reports a 5120px viewport unless `mobile` is set; use `1280x900x1,mobile` for desktop checks.
