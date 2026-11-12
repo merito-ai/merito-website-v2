@@ -21,6 +21,7 @@ import { getPlanState } from "@/lib/plans";
 import PlanPanel from "./PlanPanel";
 import PlanOfferBanner from "./guide/PlanOfferBanner";
 import { planDashboardView } from "@/lib/planPanel";
+import { interviewDeadline, isPastDeadline } from "@/lib/planFeatures";
 import { firstVisitView, firstName, howMeritoWorksRows, planIncludesRows, isSeminarUser, leadReportState } from "@/lib/firstVisit";
 import NoRoleDashboard from "./guide/NoRoleDashboard";
 import WelcomeLine from "./guide/WelcomeLine";
@@ -166,7 +167,7 @@ export default async function AccountPage({
   const resolveInterview = async () => {
     const { data: interviewRow } = await supabase
       .from("fitment_interviews")
-      .select("id, status, ib_agent_id, ib_candidate_id, ib_interview_status, invited_at, stuck_at")
+      .select("id, status, ib_agent_id, ib_candidate_id, ib_interview_status, invited_at, stuck_at, magic_link_expires_at")
       .eq("user_id", user.id)
       .or(leadIdOrRoleTitleFilter(current.id, current.role_title))
       .order("updated_at", { ascending: false })
@@ -221,12 +222,14 @@ export default async function AccountPage({
       }
     }
 
-    return { interviewStatus };
+    const interviewExpired =
+      interviewStatus === "invited" && !!interviewRow && isPastDeadline(interviewDeadline(interviewRow.magic_link_expires_at, interviewRow.invited_at));
+    return { interviewStatus, interviewExpired };
   };
 
   const [
     { reportUnlocked, score, verdict, resumeMatchStatus, resumeMatchRaw },
-    { interviewStatus },
+    { interviewStatus, interviewExpired },
     referenceCheck,
     { data: personalityRow },
     { data: counsellingRequest },
@@ -292,6 +295,7 @@ export default async function AccountPage({
       initialReportUnlocked={reportUnlocked}
       initialReport={report}
       initialInterviewStatus={interviewStatus}
+      interviewExpired={isSeminarUser(planState) && interviewExpired}
       referenceCheckStatus={referenceCheckStatus}
       personalityStatus={personalityStatus}
       counsellingPriceLabel={counsellingPriceLabel}
@@ -300,7 +304,8 @@ export default async function AccountPage({
       planPanel={planState.plan ? <PlanPanel userId={user.id} plan={planState.plan} reportLocked={!reportUnlocked && reportState !== "failed"} rolesChecked={new Set(leads.map((l) => l.role_title)).size} /> : null}
       planOffer={planDashboardView(planState) === "offer" ? <PlanOfferBanner /> : null}
       recruiterActivity={RECRUITER_PREVIEW_ENABLED ? <RecruiterActivityPanel viewCount={recruiterViewCount} /> : null}
-      mentoringInPlan={planState.plan?.product === "plan_mentor"}
+      // Seminar users without a plan get mentoring via the plans, so no single-price expert card.
+      mentoringInPlan={planState.plan?.product === "plan_mentor" || (planState.allowlisted && !planState.plan)}
       welcome={welcome}
       scoreNote={scoreNote}
     />

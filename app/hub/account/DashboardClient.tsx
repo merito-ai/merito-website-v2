@@ -28,6 +28,7 @@ export default function DashboardClient({
   initialReportUnlocked,
   initialReport,
   initialInterviewStatus,
+  interviewExpired = false,
   referenceCheckStatus,
   personalityStatus,
   counsellingPriceLabel,
@@ -52,6 +53,7 @@ export default function DashboardClient({
   initialReportUnlocked: boolean;
   initialReport: ResumeMatchReportReady | null;
   initialInterviewStatus: InterviewStatus;
+  interviewExpired?: boolean; // seminar users: vendor link past its deadline (E6)
   referenceCheckStatus: "none" | "in_progress" | "completed";
   personalityStatus: PersonalityStatus;
   counsellingPriceLabel: string;
@@ -147,6 +149,7 @@ export default function DashboardClient({
         <ProgressRail
           reportUnlocked={reportUnlocked}
           interviewStatus={interviewStatus}
+          interviewExpired={interviewExpired}
           referenceCheckStatus={referenceCheckStatus}
           personalityStatus={personalityStatus}
           personalityUnlocked={personalityUnlockedState}

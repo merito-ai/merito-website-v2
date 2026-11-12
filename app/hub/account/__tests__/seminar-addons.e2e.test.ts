@@ -160,7 +160,7 @@ for (const vp of VIEWPORTS) {
       await login(page, u.email);
       await expect(welcome(page)).toContainText("Thanks for joining. Your Assess + Prepare plan is active.");
       await expect(page.getByText("Assess + Prepare · active")).toHaveCount(0);
-      await expect(panel(page)).toContainText("Check a role (CV report)");
+      await expect(panel(page)).toContainText("Check my fit for a role");
       await guards(page);
       await shot(page, `p1-welcome-${vp.name}`);
       await welcome(page).getByRole("button", { name: "Dismiss welcome message" }).click();

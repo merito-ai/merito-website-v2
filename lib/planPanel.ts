@@ -109,7 +109,7 @@ export function buildPlanPanelRows(i: PlanPanelInput): PlanPanelRow[] {
     i.hasRole !== false && i.reportLocked && i.reportCreditsLeft > 0
       ? {
           key: "reports",
-          label: "Check a role (CV report)",
+          label: "Check my fit for a role",
           included: true,
           done: false,
           status: `Your report is ready · ${i.reportCreditsLeft} of ${REPORT_CREDITS} left`,
@@ -117,7 +117,7 @@ export function buildPlanPanelRows(i: PlanPanelInput): PlanPanelRow[] {
         }
       : {
           key: "reports",
-          label: "Check a role (CV report)",
+          label: "Check my fit for a role",
           included: true,
           done: i.hasRole !== false,
           status: i.reportCreditsLeft === 0 ? `All ${REPORT_CREDITS} used · extra roles ₹299`

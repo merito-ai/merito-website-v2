@@ -27,6 +27,7 @@ type Pill = {
 export default function ProgressRail({
   reportUnlocked,
   interviewStatus,
+  interviewExpired = false,
   referenceCheckStatus,
   personalityStatus,
   personalityUnlocked,
@@ -36,6 +37,7 @@ export default function ProgressRail({
 }: {
   reportUnlocked: boolean;
   interviewStatus: InterviewStatus;
+  interviewExpired?: boolean;
   referenceCheckStatus: "none" | "in_progress" | "completed";
   personalityStatus: PersonalityStatus;
   personalityUnlocked: boolean;
@@ -90,12 +92,12 @@ export default function ProgressRail({
               : interviewStatus === "processing"
                 ? "Scoring…"
                 : interviewStatus === "invited"
-                  ? "Invited"
+                  ? (interviewExpired ? "Expired" : "Invited")
                   : "Not started",
       // No pulse for "stuck" -- unlike invited/processing/terminated, nothing
       // is pending on the vendor side; the row won't self-resolve without an
       // admin, so an animated "waiting" dot would be misleading.
-      pulse: interviewStatus === "invited" || interviewStatus === "processing" || interviewStatus === "terminated",
+      pulse: (interviewStatus === "invited" && !interviewExpired) || interviewStatus === "processing" || interviewStatus === "terminated",
       href: `/hub/account/interview?lead=${encodeURIComponent(leadId)}`,
     },
   ];
