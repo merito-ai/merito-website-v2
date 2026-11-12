@@ -17,6 +17,8 @@ import InterviewStatusPoller from "./InterviewStatusPoller";
 import { resolveInterviewViewState } from "./resolveInterviewViewState";
 import ExportPreviewButton from "../ExportPreviewButton";
 import PlanFeatureNote from "@/app/hub/account/PlanFeatureNote";
+import NoRoleNotice, { NEEDS_ROLE_TAIL } from "@/app/hub/account/NoRoleNotice";
+import { Mic } from "lucide-react";
 
 const EYEBROW = "font-[family-name:var(--font-poppins)] font-bold uppercase text-white/40";
 
@@ -61,7 +63,14 @@ export default async function InterviewReportPage({
     .order("created_at", { ascending: false });
 
   if (!leads?.length) {
-    redirect("/hub/account");
+    return (
+      <NoRoleNotice
+        icon={Mic}
+        title="Mock AI interview"
+        sub="Role-matched questions with a scored breakdown afterward."
+        message={`Your interview is built around a role you're aiming for. ${NEEDS_ROLE_TAIL}`}
+      />
+    );
   }
   const activeLead = leadIdParam
     ? leads.find(l => l.id === leadIdParam) || leads[0]

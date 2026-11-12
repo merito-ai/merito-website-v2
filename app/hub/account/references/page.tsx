@@ -9,6 +9,8 @@ import { getPlanOrder } from "@/lib/plans";
 import ReferencesClient from "./ReferencesClient";
 import ReferencesLockedState from "./ReferencesLockedState";
 import PlanFeatureNote from "@/app/hub/account/PlanFeatureNote";
+import NoRoleNotice, { NEEDS_ROLE_TAIL } from "@/app/hub/account/NoRoleNotice";
+import { Users } from "lucide-react";
 
 export default async function ReferencesPage({
   searchParams,
@@ -37,7 +39,14 @@ export default async function ReferencesPage({
 
   const current = leads?.[0];
   if (!current) {
-    redirect("/hub/account");
+    return (
+      <NoRoleNotice
+        icon={Users}
+        title="Reference checks"
+        sub="Part of your profile. Applies to every application."
+        message={`Referees vouch for you for a role you're aiming for. ${NEEDS_ROLE_TAIL}`}
+      />
+    );
   }
 
   const level = (current.candidate_level as CandidateLevel | null) ?? DEFAULT_LEVEL;

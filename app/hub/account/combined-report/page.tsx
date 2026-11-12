@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import type { ComponentType } from "react";
-import { FileText, Brain, Mic, Users, Lock, ArrowRight } from "lucide-react";
+import { FileText, Brain, Mic, Users, Lock, ArrowRight, FileStack } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabaseAuthServer";
 import { loadCombinedReportData } from "@/lib/combinedReportData";
 import { getMatchBand } from "../report/ResumeMatchGauge";
@@ -12,6 +12,7 @@ import { cultureFitLine } from "@/lib/psychometrics/reportCopy";
 import CombinedGauge from "./CombinedGauge";
 import CombinedReportActions from "./CombinedReportActions";
 import PlanFeatureNote from "@/app/hub/account/PlanFeatureNote";
+import NoRoleNotice, { NEEDS_ROLE_TAIL } from "@/app/hub/account/NoRoleNotice";
 
 const EYEBROW = "font-[family-name:var(--font-poppins)] font-bold uppercase text-white/40";
 
@@ -80,6 +81,19 @@ export default async function CombinedReportPage({
 
   if (!user) {
     redirect("/hub/login");
+  }
+
+  // No role yet: nothing to combine. Say so instead of a page of locked cards.
+  const { data: anyLead } = await supabase.from("fitment_leads").select("id").eq("user_id", user.id).limit(1).maybeSingle();
+  if (!anyLead) {
+    return (
+      <NoRoleNotice
+        icon={FileStack}
+        title="Consolidated report"
+        sub="One report combining all your results, shareable by link."
+        message={`Your shareable profile starts with a role you're aiming for. ${NEEDS_ROLE_TAIL}`}
+      />
+    );
   }
 
   const params = await searchParams;
