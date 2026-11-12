@@ -42,6 +42,7 @@ export default function RoleSwitcherMenu({
       <div className="relative">
         <button
           ref={triggerRef}
+          data-role-switcher
           onClick={() => setOpen((v) => !v)}
           aria-haspopup="menu"
           aria-expanded={open}
@@ -88,6 +89,7 @@ export default function RoleSwitcherMenu({
     <div className="relative">
       <button
         ref={triggerRef}
+        data-role-switcher
         data-testid="role-switcher-trigger"
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="menu"

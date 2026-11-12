@@ -1,13 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import type { InterviewStatus } from "./ProgressRail";
+import { useRef, useState } from "react";
+import { Briefcase, AlertTriangle, Clock, Calendar, FileChartColumn, Mic } from "lucide-react";
+import type { InterviewStatus } from "./interviewProgress";
 import { PRODUCT_PRICING, formatPrice, type CandidateLevel } from "@/lib/razorpay/pricing";
 import { trackPurchase } from "@/lib/analytics";
 import { fetchWithTimeout, networkErrorMessage } from "@/lib/hub/fetchWithTimeout";
 import { usePlanState, isPlanOnly, hasUnusedPlanInterview, hasUnusedInterviewCredit, hasPlanInterviewLength } from "./usePlanState";
-import { INTERVIEW_VALIDITY_DAYS, INTERVIEW_VALIDITY_NOTE } from "@/lib/planFeatures";
+import { INTERVIEW_VALIDITY_DAYS, INTERVIEW_VALIDITY_NOTE, PLAN_INTERVIEW_SKILLS } from "@/lib/planFeatures";
 import PlanOnlyNotice from "./PlanOnlyNotice";
+import { useModalFocus } from "./guide/useModalFocus";
+import { openRoleSwitcher } from "./guide/ui";
 
 type RazorpayHandlerResponse = {
   razorpay_order_id: string;
@@ -106,6 +109,15 @@ export default function InterviewPaywallModal({
     }
   };
 
+  const panel = useRef<HTMLDivElement>(null);
+  const onKeyDown = useModalFocus(panel, handleDismiss);
+  // One interview per plan, for one role: confirm the role before the credit is spent.
+  const planConfirm = !invitedStatus && hasUnusedPlanInterview(planState);
+  const switchRole = () => {
+    onClose();
+    setTimeout(openRoleSwitcher, 0); // after focus returns to the opener
+  };
+
   const handlePay = async () => {
     setPaying(true);
     setError(null);
@@ -181,12 +193,19 @@ export default function InterviewPaywallModal({
   return (
     <div
       onClick={handleDismiss}
-      role="dialog" aria-modal="true" style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", backdropFilter: "blur(4px)", zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}
+      className="flex items-end sm:items-center justify-center sm:p-5"
+      style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", backdropFilter: "blur(4px)", zIndex: 50 }}
     >
       <div
+        ref={panel}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="interview-modal-title"
+        tabIndex={-1}
+        onKeyDown={onKeyDown}
         onClick={(e) => e.stopPropagation()}
-        className="bg-white"
-        style={{ maxWidth: 480, width: "100%", borderRadius: 24, padding: 28, position: "relative" }}
+        className="fv-pop bg-white rounded-t-[24px] sm:rounded-[24px] outline-none"
+        style={{ maxWidth: 480, width: "100%", padding: 28, position: "relative", maxHeight: "92vh", overflowY: "auto" }}
       >
         <button
           onClick={handleDismiss}
@@ -204,7 +223,7 @@ export default function InterviewPaywallModal({
             >
               <span style={{ color: "#16803c", fontSize: 20, fontWeight: 700 }}>✓</span>
             </div>
-            <h2 className="font-[family-name:var(--font-gabarito)] font-semibold text-black" style={{ fontSize: "1.4rem", margin: "0 0 10px" }}>
+            <h2 id="interview-modal-title" className="font-[family-name:var(--font-gabarito)] font-semibold text-black" style={{ fontSize: "1.4rem", margin: "0 0 10px" }}>
               You&apos;re all set
             </h2>
             <p className="font-[family-name:var(--font-poppins)] text-[#4b4b4d]" style={{ fontSize: 13.5, lineHeight: 1.6, margin: "0 0 20px" }}>
@@ -218,9 +237,54 @@ export default function InterviewPaywallModal({
               Got it
             </button>
           </>
+        ) : planConfirm ? (
+          <>
+            <h2 id="interview-modal-title" className="font-[family-name:var(--font-gabarito)] font-semibold text-black" style={{ fontSize: "1.4rem", margin: "0 44px 6px 0" }}>
+              Start your interview?
+            </h2>
+            <p className="font-[family-name:var(--font-poppins)] text-[#4b4b4d]" style={{ fontSize: 13.5, lineHeight: 1.6, margin: "0 0 14px" }}>
+              This uses your plan&apos;s interview for {roleTitle}.
+            </p>
+            <div className="flex items-center bg-[#f4f4f5] font-[family-name:var(--font-poppins)]" style={{ gap: 10, borderRadius: 12, padding: "6px 6px 6px 12px", marginBottom: 10 }}>
+              <Briefcase size={16} strokeWidth={2} className="text-[#4b4b4d] shrink-0" aria-hidden="true" />
+              <span style={{ flex: 1, minWidth: 0 }}>
+                <b className="block text-black truncate" style={{ fontSize: 14 }}>{roleTitle}</b>
+                <small className="block text-[#5b5b5d]" style={{ fontSize: 12 }}>Interview role</small>
+              </span>
+              <button type="button" onClick={switchRole} className="font-semibold text-[#b3121a] hover:underline rounded-md focus-visible:outline-2 focus-visible:outline-black" style={{ fontSize: 13, minHeight: 44, padding: "0 10px", background: "none", border: "none", cursor: "pointer" }}>
+                Switch role
+              </button>
+            </div>
+            <p className="flex items-start bg-[#fff4e5] text-[#6b4300] font-[family-name:var(--font-poppins)]" style={{ gap: 8, borderRadius: 12, padding: "10px 12px", fontSize: 13, lineHeight: 1.5, margin: "0 0 14px" }}>
+              <AlertTriangle size={16} strokeWidth={2} className="shrink-0" style={{ marginTop: 1 }} aria-hidden="true" />
+              <span>You can&apos;t switch it to another role later. Want a different role? Switch roles first.</span>
+            </p>
+            <ul className="font-[family-name:var(--font-poppins)] text-[#2b2b2d]" style={{ listStyle: "none", padding: 0, margin: "0 0 18px", display: "flex", flexDirection: "column", gap: 8, fontSize: 13 }}>
+              <li className="flex items-center" style={{ gap: 8 }}><Clock size={15} strokeWidth={2} aria-hidden="true" />45 minutes, about {PLAN_INTERVIEW_SKILLS} skills from this role</li>
+              <li className="flex items-center" style={{ gap: 8 }}><Calendar size={15} strokeWidth={2} aria-hidden="true" />You have {INTERVIEW_VALIDITY_DAYS} days to finish, starting now</li>
+              <li className="flex items-center" style={{ gap: 8 }}><FileChartColumn size={15} strokeWidth={2} aria-hidden="true" />Scored report when you finish</li>
+            </ul>
+            <button
+              type="button"
+              onClick={() => {
+                setPaying(true);
+                setError(null);
+                void startInterview("Couldn't start your interview. Please try again or contact support.");
+              }}
+              disabled={paying}
+              className="w-full inline-flex items-center justify-center font-[family-name:var(--font-poppins)] font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+              style={{ gap: 8, minHeight: 50, borderRadius: 8, fontSize: 15, background: paying ? "#9c9c9c" : "#d9161f", border: "none", cursor: paying ? "default" : "pointer", padding: "0 16px" }}
+            >
+              <Mic size={16} strokeWidth={2} aria-hidden="true" />
+              {paying ? "Starting…" : `Start interview for ${roleTitle}`}
+            </button>
+            <button type="button" onClick={onClose} className="w-full font-[family-name:var(--font-poppins)] font-semibold text-[#4b4b4d] hover:text-black" style={{ minHeight: 44, marginTop: 6, background: "none", border: "none", cursor: "pointer", fontSize: 14 }}>
+              Not now
+            </button>
+          </>
         ) : (
           <>
-            <h2 className="font-[family-name:var(--font-gabarito)] font-semibold text-black" style={{ fontSize: "1.4rem", margin: "0 0 10px" }}>
+            <h2 id="interview-modal-title" className="font-[family-name:var(--font-gabarito)] font-semibold text-black" style={{ fontSize: "1.4rem", margin: "0 0 10px" }}>
               Ready for a real AI interview?
             </h2>
             <p className="font-[family-name:var(--font-poppins)] text-[#4b4b4d]" style={{ fontSize: 13.5, lineHeight: 1.6, margin: "0 0 8px" }}>
