@@ -48,7 +48,7 @@ export default function CondensedPersonalitySection({
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) minmax(0,1fr)", gap: 16 }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: 16 }}>
         {TRAITS.map((t, i) => {
           const s = scores[t];
           const level = traitLevel(s.pct);

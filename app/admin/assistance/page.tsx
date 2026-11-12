@@ -15,10 +15,10 @@ export default async function AdminAssistancePage() {
     <div>
       <PageHeader
         title="Application assistance"
-        description="Plan 2 holders. Call or email each within 7 working days of purchase to pick their 3 companies. The candidate sees In progress and Done on their dashboard."
+        description="Assess + Mentor + Apply holders. Call or email each within 7 working days of purchase to pick their 3 companies. The candidate sees In progress and Done on their dashboard."
       />
       <Table>
-        <TableHeadRow columns={["Candidate", "Plan 2 since", "Status", "Update"]} />
+        <TableHeadRow columns={["Candidate", "Plan since", "Status", "Update"]} />
         <tbody>
           {rows.map((r) => (
             <TableRow key={r.userId}>
@@ -32,7 +32,7 @@ export default async function AdminAssistancePage() {
               </TableCell>
             </TableRow>
           ))}
-          {rows.length === 0 && <TableEmptyRow colSpan={4} message="No Plan 2 holders yet." />}
+          {rows.length === 0 && <TableEmptyRow colSpan={4} message="No Assess + Mentor + Apply holders yet." />}
         </tbody>
       </Table>
     </div>

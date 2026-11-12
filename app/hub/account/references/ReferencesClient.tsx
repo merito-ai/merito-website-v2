@@ -298,7 +298,7 @@ export default function ReferencesClient({
               >
                 <TrendingUp size={15} strokeWidth={2} style={{ color: "#3FCB8C", flexShrink: 0 }} />
                 <span className="font-[family-name:var(--font-poppins)] text-white/80" style={{ fontSize: 12.5 }}>
-                  <span style={{ fontWeight: 700, color: "#3FCB8C" }}>Strongest &mdash;</span> {strongest.label} ({strongest.value.toFixed(1)})
+                  <span style={{ fontWeight: 700, color: "#3FCB8C" }}>Strongest:</span> {strongest.label} ({strongest.value.toFixed(1)})
                 </span>
               </div>
             )}
@@ -312,7 +312,7 @@ export default function ReferencesClient({
                   >
                     <TrendingDown size={15} strokeWidth={2} style={{ color: band.textColor, flexShrink: 0 }} />
                     <span className="font-[family-name:var(--font-poppins)] text-white/80" style={{ fontSize: 12.5 }}>
-                      <span style={{ fontWeight: 700, color: band.textColor }}>Growth area &mdash;</span> {growth.label} ({growth.value.toFixed(1)})
+                      <span style={{ fontWeight: 700, color: band.textColor }}>Growth area:</span> {growth.label} ({growth.value.toFixed(1)})
                     </span>
                   </div>
                 );

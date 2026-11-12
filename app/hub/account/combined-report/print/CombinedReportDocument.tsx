@@ -186,7 +186,7 @@ export default function CombinedReportDocument({
             Four independent assessments (role fitment, personality, a proctored AI interview and peer references) consolidated by Merito HUB into one verifiable, shareable profile.
           </p>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0,1fr))", gap: 14 }}>
+          <div className="grid grid-cols-2 sm:grid-cols-4" style={{ gap: 14 }}>
             {fitment && fitmentBand && fitmentBandDark && (
               <div className="bg-white/[0.04] border border-white/[0.1]" style={{ borderRadius: 16, padding: "18px 14px 16px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 10 }}>
                 <CombinedGauge value={fitment.report.overallScore} max={100} displayValue={`${Math.round(fitment.report.overallScore)}%`} diameter={96} band={fitmentBandDark} numberColor="#fff" />
@@ -260,7 +260,7 @@ export default function CombinedReportDocument({
 
       <div style={{ background: "#fff", borderBottom: "1px solid #E6E1ED" }}>
         <div className="mx-auto" style={{ maxWidth: 860, padding: "26px 20px" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0,1fr))", gap: 24 }}>
+          <div className="grid grid-cols-2 sm:grid-cols-4" style={{ gap: 24 }}>
             <div>
               <p className="font-[family-name:var(--font-ibm-plex-mono)] uppercase text-[#6C6779]" style={{ fontSize: 10.5, letterSpacing: "0.08em", margin: "0 0 6px" }}>Candidate</p>
               <p className="font-[family-name:var(--font-fraunces)] font-semibold text-black" style={{ fontSize: 17, margin: 0 }}>{displayName}</p>
@@ -288,7 +288,7 @@ export default function CombinedReportDocument({
           </p>
           <div style={{ borderTop: "1px solid #E6E1ED" }}>
             {sections.map((s, i) => (
-              <div key={s.key} style={{ display: "grid", gridTemplateColumns: "40px 1fr 2fr", gap: 18, alignItems: "baseline", padding: "16px 4px", borderBottom: "1px solid #E6E1ED" }}>
+              <div key={s.key} style={{ display: "grid", gridTemplateColumns: "40px minmax(0,1fr) minmax(0,2fr)", gap: 18, alignItems: "baseline", padding: "16px 4px", borderBottom: "1px solid #E6E1ED" }}>
                 <span className="font-[family-name:var(--font-ibm-plex-mono)] font-semibold text-[#DE3A2C]" style={{ fontSize: 12 }}>
                   {String(i + 1).padStart(2, "0")}
                 </span>
@@ -315,7 +315,7 @@ export default function CombinedReportDocument({
               title="Dimension scores"
               rows={sortedFitmentCategories.map((c) => ({ label: c.label, value: c.score, max: 100, color: remapBand(getMatchBand(c.score)).textColor }))}
             />
-            <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) minmax(0,1fr)", gap: 16, marginBottom: 22 }}>
+            <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: 16, marginBottom: 22 }}>
               {sortedFitmentCategories.map((category) => (
                 <CombinedCategoryCard key={category.key} category={category} />
               ))}
@@ -439,7 +439,7 @@ export default function CombinedReportDocument({
 
             {((interviewSections.has("strengths") && interview.report.strengths) ||
               (interviewSections.has("integrity") && interview.report.integrityCheck)) && (
-              <div style={{ display: "grid", gridTemplateColumns: "minmax(0,2fr) minmax(0,1fr)", gap: 16, marginBottom: 22 }}>
+              <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]" style={{ gap: 16, marginBottom: 22 }}>
                 {interviewSections.has("strengths") && interview.report.strengths && (
                   <div className="bg-[#E7F5EE] border" style={{ borderColor: "#CFEBDC", borderRadius: 16, padding: "22px 24px" }}>
                     <p className="font-[family-name:var(--font-ibm-plex-mono)] uppercase" style={{ fontSize: 11, letterSpacing: "0.08em", color: "#1E8F5E", margin: "0 0 12px" }}>
@@ -548,7 +548,7 @@ export default function CombinedReportDocument({
                 .map((cat) => ({ label: cat.label, value: cat.value, max: 5, color: cat.value >= 4 ? "#1E8F5E" : cat.value >= 3 ? "#BD7E12" : "#95324B" }))}
             />
             {references.referees.some((r) => r.overallFeedback?.trim()) && (
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0,1fr))", gap: 10, marginBottom: 22 }}>
+              <div className="grid grid-cols-1 sm:grid-cols-3" style={{ gap: 10, marginBottom: 22 }}>
                 {references.referees
                   .filter((r) => r.overallFeedback?.trim())
                   .map((r, i) => (
@@ -570,7 +570,7 @@ export default function CombinedReportDocument({
           <p className="font-[family-name:var(--font-ibm-plex-mono)] uppercase text-[#6C6779]" style={{ fontSize: 11, letterSpacing: "0.08em", margin: "0 0 20px" }}>
             How to read this report
           </p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0,1fr))", gap: 16, marginBottom: 30 }}>
+          <div className="grid grid-cols-2 sm:grid-cols-4" style={{ gap: 16, marginBottom: 30 }}>
             {[
               { label: "Role Fitment", color: "#1E8F5E", body: "AI comparison of the CV against a specific job description, scored across six dimensions. Measures documented alignment, not potential." },
               { label: "Personality", color: "#4B4894", body: "A Big Five (OCEAN) questionnaire measuring five stable dimensions of working style. Scores describe tendencies, not ability." },
