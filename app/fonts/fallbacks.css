@@ -1,0 +1,7 @@
+/* Metric-matched fallbacks, values copied from next/font/google's getFallbackFontOverrideMetrics
+   so pre-load text and glyphs missing from the web fonts render exactly as they did with the Google loader. */
+@font-face { font-family: "Manrope Fallback"; src: local("Arial"); ascent-override: 103.31%; descent-override: 29.07%; line-gap-override: 0.00%; size-adjust: 103.19%; }
+@font-face { font-family: "Space Grotesk Fallback"; src: local("Arial"); ascent-override: 89.71%; descent-override: 26.62%; line-gap-override: 0.00%; size-adjust: 109.69%; }
+@font-face { font-family: "Fraunces Fallback"; src: local("Times New Roman"); ascent-override: 84.71%; descent-override: 22.09%; line-gap-override: 0.00%; size-adjust: 115.45%; }
+@font-face { font-family: "Inter Fallback"; src: local("Arial"); ascent-override: 90.44%; descent-override: 22.52%; line-gap-override: 0.00%; size-adjust: 107.12%; }
+@font-face { font-family: "IBM Plex Mono Fallback"; src: local("Arial"); ascent-override: 76.16%; descent-override: 20.43%; line-gap-override: 0.00%; size-adjust: 134.59%; }

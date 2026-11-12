@@ -13,8 +13,8 @@ export default function CombinedGauge({
   band,
   numberColor = "#0a0a0a",
   // print/page.tsx renders this component inside its own subtree, which
-  // registers --font-fraunces/--font-ibm-plex-mono (see that file's Fraunces/
-  // IBM_Plex_Mono next/font imports) for its light-theme editorial PDF look —
+  // registers --font-fraunces/--font-ibm-plex-mono (app/fonts, via
+  // CombinedReportDocument) for its light-theme editorial PDF look —
   // so those stay the default here. The dark in-app combined-report/page.tsx
   // has no such fonts registered (root layout only exposes --font-gabarito/
   // --font-poppins), so it overrides these to match every other gauge on the

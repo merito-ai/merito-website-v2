@@ -1,15 +1,13 @@
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Manrope } from "next/font/google";
+import { manrope } from "@/app/fonts";
 import { Phone, Mail, MapPin, Sparkles, ShieldCheck, ShieldAlert, ListChecks, ThumbsUp, TrendingDown, TrendingUp, AlertTriangle, Compass, CheckCircle2 } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabaseAuthServer";
 import { getCandidateResumeDetails } from "@/lib/intervuebox/reports";
 import { parseRoadmap } from "@/lib/intervuebox/parseRoadmap";
 import { parseEvaluatorNotes, parseInlineBold } from "@/lib/intervuebox/markdownNotes";
 import { readReportRaw } from "@/lib/intervuebox/reportRaw";
-
-const manrope = Manrope({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-manrope" });
 
 export const metadata: Metadata = { title: "Mock interview" };
 

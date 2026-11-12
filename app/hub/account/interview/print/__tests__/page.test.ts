@@ -27,7 +27,7 @@ const fromMock = vi.fn((table: string) => {
 vi.mock("@/lib/supabaseAuthServer", () => ({
   createSupabaseServerClient: async () => ({ auth: { getUser: getUserMock }, from: fromMock }),
 }));
-vi.mock("next/font/google", () => ({ Manrope: () => ({ variable: "manrope-var", className: "manrope" }) }));
+vi.mock("next/font/local", () => ({ default: () => ({ variable: "font-var", className: "font" }) }));
 vi.mock("next/image", () => ({ __esModule: true, default: () => null }));
 vi.mock("next/navigation", () => ({
   redirect: (url: string) => {

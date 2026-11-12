@@ -246,3 +246,9 @@ Not fixed (Medium/Low):
 - Welcome line "hides once the next step is done" for plan holders = any plan step started (report unlocked, personality done, references or interview started). Low, PM may want a different trigger.
 - The S1 secondary button is now "Check my fit for a role" (was "Check a role first, free"); the "free" is still in the lead line above it. Low.
 - Report/personality/references paywall modals have no Esc handling of their own (pre-existing); Esc in the plans popup on top closes only the popup. Low.
+
+## Self-hosted fonts (app/fonts, replaces next/font/google)
+
+Not fixed (Low):
+- Font files cover Google's "latin" subset + Latin Extended-A + U+20A0-20C0 (₹). The Google loader also served latin-ext (Ext-B, Ext Additional), vietnamese, greek and cyrillic faces; those characters now render in the metric-matched Arial/Times fallback. Re-run the download (Google css2 `text=` per family) with more ranges if names or copy need them.
+- Before/after screenshots match by eye but are not pixel-identical: sub-pixel anti-aliasing differs on some text (Inter/IBM Plex Mono pages most). The same residual appears with Google's own byte-identical latin files under next/font/local, so it comes from the loader, not the font data.

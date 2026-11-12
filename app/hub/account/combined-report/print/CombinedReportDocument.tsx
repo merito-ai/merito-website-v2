@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Fraunces, Inter, IBM_Plex_Mono } from "next/font/google";
+import { fraunces, inter, ibmPlexMono } from "@/app/fonts";
 import { getMatchBand } from "../../report/ResumeMatchGauge";
 import { getScoreBand } from "../../interview/InterviewScoreGauge";
 import { remapBand, remapBandDark } from "../combinedBandColors";
@@ -26,10 +26,6 @@ import type { CombinedReportData } from "@/lib/combinedReportData";
 // themed dashboard. It was split out of ../page.tsx (which now hosts the
 // dark, mockup-matching summary panel instead) with no change to the
 // rendered output or data-fetching logic.
-
-const fraunces = Fraunces({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-fraunces" });
-const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-inter" });
-const ibmPlexMono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-ibm-plex-mono" });
 
 function splitBullets(text: string): string[] {
   return text

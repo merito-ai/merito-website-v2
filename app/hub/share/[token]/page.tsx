@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Fraunces, Inter, IBM_Plex_Mono } from "next/font/google";
+import { fraunces, inter, ibmPlexMono } from "@/app/fonts";
 import { getSupabaseServerClient } from "@/lib/supabase";
 import { validateShareToken, recordShareLinkView } from "@/lib/reportShareTokens";
 import { loadCombinedReportData } from "@/lib/combinedReportData";
@@ -22,10 +22,6 @@ import PublicReportRail from "./PublicReportRail";
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
-
-const fraunces = Fraunces({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-fraunces" });
-const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-inter" });
-const ibmPlexMono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-ibm-plex-mono" });
 
 function splitBullets(text: string): string[] {
   return text

@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Manrope } from "next/font/google";
+import { manrope } from "@/app/fonts";
 import { ShieldCheck } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabaseAuthServer";
 import { isProductUnlocked } from "@/lib/productUnlocks";
@@ -23,8 +23,6 @@ import { isPersonalityComplete } from "@/lib/psychometrics/testFlow";
 import { SELF_DEV_NOTE } from "@/lib/psychometrics/reportCopy";
 import StrengthsSection from "../StrengthsSection";
 import CultureSection from "../CultureSection";
-
-const manrope = Manrope({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-manrope" });
 
 export const metadata: Metadata = { title: "Personality test" };
 
