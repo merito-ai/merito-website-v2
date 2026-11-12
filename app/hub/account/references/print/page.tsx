@@ -174,7 +174,7 @@ export default async function ReferencesPrintPage({
                 <div className="flex items-center justify-between" style={{ marginBottom: 4, fontSize: 14 }}>
                   <span style={{ color: "#374151" }}>{category.label}</span>
                   <span className="font-bold" style={{ color }}>
-                    {category.value > 0 ? category.value.toFixed(1) : "—"}
+                    {category.value > 0 ? category.value.toFixed(1) : "Not provided"}
                     {refereeScores.length > 0 && (
                       <span className="font-normal" style={{ color: "#9CA3AF" }}>
                         {" "}
