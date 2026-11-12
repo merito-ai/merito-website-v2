@@ -140,3 +140,17 @@ Not testable locally:
 - Live IntervueBox interview start (local env points at the live vendor): stopped at the confirm modal.
 - `/hub/share/[token]` (and every dynamic route: `/hub/references/feedback/[token]`, `/insights/[slug]`) returns 500 in the shared :3005 dev server: its static-paths jest-worker crashed ("Jest worker encountered 2 child process exceptions"). Dev-server state, not route code: `npm run build` passes. Share link with partial results + revoked link verified by code/unit test only; re-check after a dev-server restart.
 - Razorpay mobile (375px) checkout popup flow; desktop netbanking test flow verified for Plan 2, Plan 1, upgrade, ₹299 report.
+
+## Personality culture surfaces (2026-11-12, branch feat/personality-culture-surfaces)
+
+Already done on main before this pass: Hub personality report + personality PDF (print page) render `CultureSection` (mix, fit %, adaptable/unreliable states); v1 result shows "Take the updated test" prompt and no culture section.
+
+Fixed: admin ReportsTab personality had no culture section; combined-report page "Personality" card summary ignored culture; personality sample + public sample report had no culture. Shared one-line fit copy is now `cultureFitLine()` (reportCopy.ts).
+
+Minor / not fixed:
+- (Minor, pre-existing) `CondensedPersonalitySection` radar card uses `gridTemplateColumns: "320px 1fr"`; at 375px it overflows (page scrollWidth 518) on `/hub/sample-report` and likely `/hub/share/[token]`. Stack to one column below ~640px.
+- (Minor) Recruiter-facing compact culture (combined, share link, admin uses candidate copy) shows mix only for unreliable results with no note why. Consider a short neutral line ("Fit not shown: some check answers suggest low attention").
+- (Minor) `#ed1a24` 12-12.5px value text on the dark Hub cards is about 3.3:1 (under 4.5:1). Hub-wide pattern, incl. the new sample culture block.
+- (Minor) v1 personality PDF has no culture and no "take the updated test" line (PDF is a record, prompt lives in the Hub).
+- (Minor) Share-summary and share-link section blurbs still say only "Big Five (OCEAN) traits"; could mention work-culture preferences for v2 results.
+- Not browser-checked: Docker Desktop engine hung (500 on API) mid-QA, so local Supabase was unreachable. Hub personality report + PDF for v2 / v1 / unreliable users, admin ReportsTab and the locked sample preview (430px crop) still need a desktop + 375px look. Local QA users exist: roshanrk2014+qa-cult-{v2,v1,unrel}@gmail.com (local DB only).
