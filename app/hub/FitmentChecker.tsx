@@ -218,8 +218,8 @@ export default function FitmentChecker() {
         </span>
         <Link
           href="/hub/login"
-          className="font-[family-name:var(--font-poppins)] font-semibold text-[#9c9c9c] hover:text-[#ed1a24] transition-colors"
-          style={{ fontSize: 12, marginLeft: "auto", textDecoration: "underline" }}
+          className="font-[family-name:var(--font-poppins)] font-semibold text-white bg-[#d9161f] hover:bg-[#b8121a] transition-colors inline-flex items-center justify-center"
+          style={{ fontSize: 13, marginLeft: "auto", minHeight: 36, padding: "0 16px", borderRadius: 8, textDecoration: "none" }}
         >
           Log in
         </Link>
