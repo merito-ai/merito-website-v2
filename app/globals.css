@@ -125,3 +125,25 @@ body:has(.plan-panel) #zs-fl-tip {
     grid-row: 2;
   }
 }
+
+/* Hub first-visit guide: short fade-up on load, sheet slide on phones. Off under reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .fv-up { animation: fv-up 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+  .fv-up-2 { animation-delay: 0.06s; }
+  .fv-up-3 { animation-delay: 0.12s; }
+  .fv-pop { animation: fv-pop 0.26s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+}
+@media (prefers-reduced-motion: no-preference) and (max-width: 639px) {
+  .fv-pop { animation: fv-sheet 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+}
+@keyframes fv-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes fv-pop { from { opacity: 0; transform: scale(0.97) translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes fv-sheet { from { transform: translateY(100%); } to { transform: none; } }
+
+/* No-role dashboard: on phones the sticky main button owns the bottom edge, so the chat bubble steps aside. */
+@media screen and (max-width: 767px) {
+  body:has(.fv-sticky) #zsiq_float,
+  body:has(.fv-sticky) .zsiq_theme1 {
+    display: none !important;
+  }
+}

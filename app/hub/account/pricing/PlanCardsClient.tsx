@@ -1,142 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Check, X } from "lucide-react";
-import { trackPurchase } from "@/lib/analytics";
-import { fetchWithTimeout, networkErrorMessage } from "@/lib/hub/fetchWithTimeout";
-import { planCta, planConfirmContent, type PlanCard } from "./pricingCatalog";
-import PlanConfirmDialog from "./PlanConfirmDialog";
-import { usePlanState } from "../usePlanState";
+import { planCta, type PlanCard } from "./pricingCatalog";
+import { usePlanCheckout } from "./usePlanCheckout";
 import { PLAN_REFERENCE_REFRESH_PRICE_PAISE, formatPrice } from "@/lib/razorpay/pricing";
 import type { PlanProduct } from "@/lib/plans";
-
-// Checkout copied verbatim from PersonalityPaywallModal.tsx (repo's per-modal pattern; see plan "Deferred").
-type RazorpayHandlerResponse = {
-  razorpay_order_id: string;
-  razorpay_payment_id: string;
-  razorpay_signature: string;
-};
-
-type RazorpayCheckoutOptions = {
-  key: string;
-  amount: number;
-  currency: string;
-  name: string;
-  description: string;
-  order_id: string;
-  prefill?: { name?: string; email?: string };
-  handler: (response: RazorpayHandlerResponse) => void;
-  modal?: { ondismiss?: () => void };
-};
-
-declare global {
-  interface Window {
-    Razorpay?: new (options: RazorpayCheckoutOptions) => { open: () => void };
-  }
-}
-
-const CHECKOUT_SCRIPT_SRC = "https://checkout.razorpay.com/v1/checkout.js";
-
-function loadRazorpayCheckoutScript(): Promise<void> {
-  if (window.Razorpay) return Promise.resolve();
-  const existing = document.querySelector(`script[src="${CHECKOUT_SCRIPT_SRC}"]`);
-  if (existing) {
-    return new Promise((resolve) => existing.addEventListener("load", () => resolve(), { once: true }));
-  }
-  return new Promise((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = CHECKOUT_SCRIPT_SRC;
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error("Failed to load Razorpay checkout script."));
-    document.body.appendChild(script);
-  });
-}
 
 const EYEBROW = "font-[family-name:var(--font-poppins)] font-bold uppercase text-white/40";
 
 // embedded: dashboard offer for allowlisted (seminar) users without a plan; section + h2 instead of a page.
 export default function PlanCardsClient({ plans, owned = null, embedded = false }: { plans: PlanCard[]; owned?: PlanProduct | null; embedded?: boolean }) {
-  const router = useRouter();
-  const [paying, setPaying] = useState<string | null>(null);
-  const [error, setError] = useState<{ product: string; message: string } | null>(null);
-  // Confirm before Razorpay opens; planState feeds the "you already have" note.
-  const [confirming, setConfirming] = useState<PlanProduct | "plan_upgrade_mentor" | null>(null);
-  const { state: planState } = usePlanState();
-
-  const runCheckout = async (product: string) => {
-    const initiateBody = { product };
-    const fail = (message: string) => {
-      setPaying(null);
-      setError({ product, message });
-    };
-    const onPaid = async () => router.refresh();
-    setPaying(product);
-    setError(null);
-    try {
-      const res = await fetchWithTimeout("/api/hub/razorpay/initiate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(initiateBody),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        fail(data.error || "Something went wrong. Please try again.");
-        return;
-      }
-      if (data.status !== "checkout") {
-        setPaying(null);
-        await onPaid();
-        return;
-      }
-      try {
-        await loadRazorpayCheckoutScript();
-      } catch {
-        fail("Could not load the payment form. Please try again.");
-        return;
-      }
-      if (!window.Razorpay) {
-        fail("Could not load the payment form. Please try again.");
-        return;
-      }
-      const rzp = new window.Razorpay({
-        key: data.keyId,
-        amount: data.amountPaise,
-        currency: data.currency,
-        name: data.name,
-        description: data.description,
-        order_id: data.orderId,
-        prefill: data.prefill,
-        handler: async (response) => {
-          try {
-            const verifyRes = await fetchWithTimeout("/api/hub/razorpay/verify", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                orderId: response.razorpay_order_id,
-                paymentId: response.razorpay_payment_id,
-                signature: response.razorpay_signature,
-              }),
-            });
-            const verifyData = await verifyRes.json();
-            setPaying(null);
-            if (!verifyRes.ok) {
-              setError({ product, message: verifyData.error || "Payment succeeded, but verification failed. Please contact support." });
-              return;
-            }
-            trackPurchase(product);
-            await onPaid();
-          } catch (err) {
-            fail(networkErrorMessage(err, "Payment succeeded, but verification failed. Please refresh."));
-          }
-        },
-        modal: { ondismiss: () => setPaying(null) },
-      });
-      rzp.open();
-    } catch (err) {
-      fail(networkErrorMessage(err, "Something went wrong. Please try again."));
-    }
-  };
+  const { paying, error, choose, dialog } = usePlanCheckout(plans);
 
   const cta = (plan: PlanCard) => {
     const c = planCta(plan.product, owned);
@@ -163,7 +37,7 @@ export default function PlanCardsClient({ plans, owned = null, embedded = false 
     return (
       <>
         <button
-          onClick={() => setConfirming(buy)}
+          onClick={() => choose(buy)}
           disabled={paying !== null}
           className={`${base} text-white bg-[#ed1a24] hover:bg-[#c8151e] transition-colors disabled:opacity-60`}
           style={{ ...box, border: "none", cursor: paying ? "default" : "pointer" }}
@@ -276,16 +150,7 @@ export default function PlanCardsClient({ plans, owned = null, embedded = false 
           </table>
         </div>
 
-        {confirming && (
-          <PlanConfirmDialog
-            content={planConfirmContent(plans, confirming, planState?.ownedIndividually ?? null)}
-            onCancel={() => setConfirming(null)}
-            onConfirm={() => {
-              setConfirming(null);
-              runCheckout(confirming);
-            }}
-          />
-        )}
+        {dialog}
 
         <p className="font-[family-name:var(--font-poppins)] text-white/50" style={{ fontSize: 12, lineHeight: 1.6, maxWidth: 640, margin: 0 }}>
           One-time payment · features never expire · application assistance and mentoring are delivered by the Merito team. Extra role reports are ₹299
