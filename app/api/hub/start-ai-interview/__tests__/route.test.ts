@@ -65,6 +65,12 @@ vi.mock("@/lib/intervuebox/agents", () => ({ createInterviewAgent: createIntervi
 const sendInterviewInvitationMock = vi.fn();
 vi.mock("@/lib/intervuebox/invitations", () => ({ sendInterviewInvitation: sendInterviewInvitationMock }));
 
+const getsPlanInterviewLengthMock = vi.fn().mockResolvedValue(false);
+vi.mock("@/lib/plans", async () => {
+  const actual = await vi.importActual<typeof import("@/lib/plans")>("@/lib/plans");
+  return { ...actual, getsPlanInterviewLength: getsPlanInterviewLengthMock };
+});
+
 async function importRoute() {
   return await import("../route");
 }
@@ -506,6 +512,26 @@ describe("POST /api/hub/start-ai-interview — plan interview credit", () => {
     const { POST } = await importRoute();
     await POST(buildRequest({ leadId: "lead-plan" }));
 
+    expect(createInterviewAgentMock).toHaveBeenCalledWith("JOB_P", "Sales Executive", "entry", undefined);
+  });
+
+  it("gives an allowlisted user / plan holder 45 minutes on a solo interview credit", async () => {
+    creditMaybeSingleMock.mockResolvedValue({ data: { order_id: "order_int", product: "interview" }, error: null });
+    getsPlanInterviewLengthMock.mockResolvedValueOnce(true);
+    const { POST } = await importRoute();
+    const response = await POST(buildRequest({ leadId: "lead-plan" }));
+
+    expect(response.status).toBe(200);
+    expect(createInterviewAgentMock).toHaveBeenCalledWith("JOB_P", "Sales Executive", "entry", 45);
+  });
+
+  it("falls back to the level duration when the allowlist lookup fails", async () => {
+    creditMaybeSingleMock.mockResolvedValue({ data: { order_id: "order_int", product: "interview" }, error: null });
+    getsPlanInterviewLengthMock.mockRejectedValueOnce(new Error("db down"));
+    const { POST } = await importRoute();
+    const response = await POST(buildRequest({ leadId: "lead-plan" }));
+
+    expect(response.status).toBe(200);
     expect(createInterviewAgentMock).toHaveBeenCalledWith("JOB_P", "Sales Executive", "entry", undefined);
   });
 

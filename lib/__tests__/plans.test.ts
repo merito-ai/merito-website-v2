@@ -15,7 +15,7 @@ function query(result: Record<string, unknown>) {
 const isEmailAllowlistedMock = vi.hoisted(() => vi.fn());
 vi.mock("@/lib/planAllowlist", () => ({ isEmailAllowlisted: isEmailAllowlistedMock }));
 
-import { isPlanProduct, getPlanOrder, planReportCreditsLeft, getPlanState, PLAN_UPGRADE } from "@/lib/plans";
+import { isPlanProduct, getPlanOrder, planReportCreditsLeft, getPlanState, getsPlanInterviewLength, PLAN_UPGRADE } from "@/lib/plans";
 import { PRODUCT_PRICING } from "@/lib/razorpay/pricing";
 
 describe("isPlanProduct", () => {
@@ -140,5 +140,30 @@ describe("getPlanState", () => {
       allowlisted: false,
       plan: { orderId: "o1", product: "plan_prepare", interviewUsed: false, reportCreditsLeft: 2 },
     });
+  });
+});
+
+describe("getsPlanInterviewLength", () => {
+  beforeEach(() => {
+    fromMock.mockReset();
+    isEmailAllowlistedMock.mockReset();
+  });
+
+  it("is true for an allowlisted user without a plan lookup", async () => {
+    isEmailAllowlistedMock.mockResolvedValue(true);
+    expect(await getsPlanInterviewLength("u1", "a@b.com")).toBe(true);
+    expect(fromMock).not.toHaveBeenCalled();
+  });
+
+  it("is true for a plan holder (used interview or not) who left the allowlist", async () => {
+    isEmailAllowlistedMock.mockResolvedValue(false);
+    fromMock.mockReturnValue(query({ data: { order_id: "o1", product: "plan_mentor", consumed_at: "2026-11-01" }, error: null }));
+    expect(await getsPlanInterviewLength("u1", "a@b.com")).toBe(true);
+  });
+
+  it("is false for a normal user", async () => {
+    isEmailAllowlistedMock.mockResolvedValue(false);
+    fromMock.mockReturnValue(query({ data: null, error: null }));
+    expect(await getsPlanInterviewLength("u1", "a@b.com")).toBe(false);
   });
 });

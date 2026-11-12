@@ -5,7 +5,7 @@ import { createInterviewAgent, type CandidateLevel } from "@/lib/intervuebox/age
 import { sendInterviewInvitation } from "@/lib/intervuebox/invitations";
 import { recordPipelineFailure } from "@/lib/pipelineFailures";
 import { arePaymentsBypassed } from "@/lib/paymentsBypass";
-import { isPlanProduct, PLAN_INTERVIEW_MINUTES } from "@/lib/plans";
+import { isPlanProduct, getsPlanInterviewLength, PLAN_INTERVIEW_MINUTES } from "@/lib/plans";
 import { findOldestUnusedInterviewCredit } from "@/lib/interviewCredits";
 
 export const runtime = "nodejs";
@@ -97,7 +97,7 @@ export async function POST(request: Request) {
   }
 
   let consumedOrderId: string | null = null;
-  // A plan's interview credit is always 45 min (spec); undefined keeps the level default.
+  // A plan's interview credit, or any interview by an allowlisted user / plan holder, is 45 min; undefined keeps the level default.
   let planMinutes: typeof PLAN_INTERVIEW_MINUTES | undefined;
   if (!arePaymentsBypassed()) {
     let credit: Awaited<ReturnType<typeof findOldestUnusedInterviewCredit>>;
@@ -121,6 +121,15 @@ export async function POST(request: Request) {
       .from("razorpay_transactions")
       .update({ consumed_at: new Date().toISOString() })
       .eq("order_id", credit.orderId);
+  }
+
+  if (!planMinutes) {
+    try {
+      if (await getsPlanInterviewLength(user.id, user.email)) planMinutes = PLAN_INTERVIEW_MINUTES;
+    } catch (error) {
+      // Non-blocking: a failed lookup only means the level-default length.
+      console.error("start-ai-interview: plan/allowlist lookup failed", { leadId, error });
+    }
   }
 
   const { data: lead, error: leadError } = await supabase

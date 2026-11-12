@@ -62,3 +62,8 @@ export async function getPlanState(userId: string, email: string | null | undefi
   const [allowlisted, plan] = await Promise.all([isEmailAllowlisted(email), getPlanOrder(userId)]);
   return { allowlisted, plan: plan ? { ...plan, reportCreditsLeft: await planReportCreditsLeft(plan.orderId) } : null };
 }
+
+// Allowlisted users and plan holders get every interview at PLAN_INTERVIEW_MINUTES, any level, any credit.
+export async function getsPlanInterviewLength(userId: string, email: string | null | undefined): Promise<boolean> {
+  return (await isEmailAllowlisted(email)) || (await getPlanOrder(userId)) !== null;
+}

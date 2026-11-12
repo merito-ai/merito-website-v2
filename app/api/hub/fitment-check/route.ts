@@ -3,8 +3,7 @@ import { isIP } from "node:net";
 import { verifyRecaptchaToken } from "@/lib/recaptcha";
 import { createRateLimiter } from "@/lib/rateLimit";
 import { createJob, MAX_SKILLS_BY_DURATION } from "@/lib/intervuebox/jobs";
-import { getPlanOrder, PLAN_INTERVIEW_MINUTES } from "@/lib/plans";
-import { isEmailAllowlisted } from "@/lib/planAllowlist";
+import { getsPlanInterviewLength, PLAN_INTERVIEW_MINUTES } from "@/lib/plans";
 import { uploadResume } from "@/lib/intervuebox/resumes";
 import { extractJdText } from "@/lib/jdFileText";
 import { addApplicant, listApplicantsForJob, isDuplicateApplicantError, type AddApplicantInput } from "@/lib/intervuebox/applicants";
@@ -314,15 +313,13 @@ export async function POST(request: Request) {
     resumeText = undefined;
   }
 
-  // PM decision 2026-11-10: allowlisted users (and holders of an unused plan interview)
-  // get the 45-min plan skill cap at fitment time, since the job's skills are fixed here.
+  // PM decision 2026-11-12: allowlisted users and plan holders get a 45-min interview for
+  // every role at any level (start-ai-interview), so their jobs get the 45-min skill cap here.
   // A lookup failure must never block a fitment check; the level default is harmless.
   let maxSkills: number | undefined;
   if (sessionUser) {
     try {
-      const plan = await getPlanOrder(sessionUser.id);
-      const wantsPlanCap = plan ? !plan.interviewUsed : await isEmailAllowlisted(sessionUser.email);
-      if (wantsPlanCap) maxSkills = MAX_SKILLS_BY_DURATION[PLAN_INTERVIEW_MINUTES];
+      if (await getsPlanInterviewLength(sessionUser.id, sessionUser.email)) maxSkills = MAX_SKILLS_BY_DURATION[PLAN_INTERVIEW_MINUTES];
     } catch {
       maxSkills = undefined;
     }
