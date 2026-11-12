@@ -12,7 +12,7 @@ A signed-in user with no role sees "No fitment scores yet / Head back to the HUB
 | N2 normal, form first | no | - | yes | Slim dismissible welcome line. Score (ring, role, verdict). Locked report preview. "Unlock detailed report" + "Check another role". Right: "Your progress" timeline with progress bar, step 1 Done, step 2 Next. Existing dashboard continues below. |
 | S1 allowlisted, login first | yes | no | no | Kicker "Exclusive plans unlocked for you". Hero "Welcome, {first name}. Everything you need to land your next role." "Unlock plans" (opens plans popup) + "Check a role first, free". Right: "What your plan includes" timeline, tags "All plans" / "Mentor + Apply". |
 | S2 allowlisted, form first | yes | no | yes | Slim dismissible welcome line. Score + locked preview. "Unlock plans" (popup). Note "This report is 1 of the 3 included in every plan." Right: "Your progress" timeline, step 1 Done. |
-| Plan holder | any | yes | any | Unchanged: today's "Welcome to <plan>" + plan panel. |
+| Plan holder | any | yes | any | New style (mockup tabs "Plan holder · no role yet" / "start interview"): plan badge + one primary next action + plan timeline (restyled plan panel). Existing dashboard content (score, reports, role switcher) continues below. Does not revert to the old look. |
 
 A user later added to the allowlist moves to S1/S2 on next load automatically.
 
