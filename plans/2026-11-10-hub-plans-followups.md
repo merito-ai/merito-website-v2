@@ -153,4 +153,8 @@ Minor / not fixed:
 - (Minor) `#ed1a24` 12-12.5px value text on the dark Hub cards is about 3.3:1 (under 4.5:1). Hub-wide pattern, incl. the new sample culture block.
 - (Minor) v1 personality PDF has no culture and no "take the updated test" line (PDF is a record, prompt lives in the Hub).
 - (Minor) Share-summary and share-link section blurbs still say only "Big Five (OCEAN) traits"; could mention work-culture preferences for v2 results.
-- Not browser-checked: Docker Desktop engine hung (500 on API) mid-QA, so local Supabase was unreachable. Hub personality report + PDF for v2 / v1 / unreliable users, admin ReportsTab and the locked sample preview (430px crop) still need a desktop + 375px look. Local QA users exist: roshanrk2014+qa-cult-{v2,v1,unrel}@gmail.com (local DB only).
+- Browser QA 2026-11-12 (local stack): Hub personality report checked for v2 fit (98% startup, top 3 + Show all 7, desktop), v2 flat/adaptable (375), unreliable (mix + explanation, desktop + 375), v1 (update prompt, no culture, 375, no overflow). Personality PDFs checked for v2 / v1 / unreliable.
+- FIXED 2026-11-12: single-page PDF export dropped its last line when the page height was fractional (scrollHeight rounded down, remainder went to dropped page 2); v2 personality PDF lost its footer. Affects every single-page export, fixed in `renderPageToPdf`.
+- FIXED 2026-11-12: em-dashes in personality page header, test intro, Part 2 heading and PDF validity line.
+- Not browser-checked (Docker Desktop went down again): admin ReportsTab culture section, locked personality sample preview (430px crop may hide part of the new culture block). Local QA users: roshanrk2014+qa-cult-{v2,v1,unrel}@gmail.com, password QaCulture!2026, local DB only; qa-cult-v2 culture was set to the sample mix for the fit check.
+- (Minor) Desktop emulation in the devtools browser reports a 5120px viewport unless `mobile` is set; use `1280x900x1,mobile` for desktop checks.
