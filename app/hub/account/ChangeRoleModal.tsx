@@ -3,6 +3,8 @@
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { usePlanState, isPlanOnly, freePlanReports } from "./usePlanState";
+import { isSeminarUser } from "@/lib/firstVisit";
+import { CHECK_FIT_LABEL } from "@/lib/planFeatures";
 
 // firstRole: the user has no role yet (e.g. a plan bought before any fitment check), so there is no
 // saved name/phone for rescore-role to reuse; ask for them here or the check fails with "Full name is required".
@@ -164,7 +166,7 @@ export default function ChangeRoleModal({
           className="w-full font-[family-name:var(--font-poppins)] font-semibold text-white"
           style={{ height: 48, borderRadius: 8, fontSize: 14, background: canSubmit ? "#ed1a24" : "#dcdcdc", border: "none", cursor: canSubmit ? "pointer" : "default" }}
         >
-          {busy ? "Checking your fitment…" : firstRole ? "Check my fitment" : "Re-evaluate my fitment"}
+          {busy ? "Checking your fitment…" : isSeminarUser(planState) ? CHECK_FIT_LABEL : firstRole ? "Check my fitment" : "Re-evaluate my fitment"}
         </button>
 
         {error && <p style={{ fontSize: 12.5, color: "#ed1a24", marginTop: 10, textAlign: "center" }}>{error}</p>}

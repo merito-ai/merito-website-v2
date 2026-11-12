@@ -130,7 +130,7 @@ export default function NoRoleDashboard({
                     renderTrigger={(open) => (
                       <button type="button" onClick={open} className={BTN_GHOST}>
                         <Target size={16} strokeWidth={2} aria-hidden="true" />
-                        Check a role first, free
+                        {CHECK_FIT_LABEL}
                       </button>
                     )}
                   />

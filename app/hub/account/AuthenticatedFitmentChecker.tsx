@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useModalFocus } from "./guide/useModalFocus";
 
-export const CHECK_FIT_LABEL = "Check my fit for a role";
+import { CHECK_FIT_LABEL } from "@/lib/planFeatures";
+export { CHECK_FIT_LABEL };
 
 // renderTrigger: the dashboard guide renders its own hero + sticky phone buttons that open this one modal.
 export default function AuthenticatedFitmentChecker({ renderTrigger }: { renderTrigger?: (open: () => void) => ReactNode } = {}) {

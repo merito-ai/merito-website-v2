@@ -40,6 +40,8 @@ export const PLAN_MENTORING_LABEL = "Mentoring: 1 hour as two 30-min sessions";
 export type PlanFeatureKey = keyof typeof PLAN_FEATURE_DETAILS;
 
 // Short one-liners for the Hub dashboard guide (timeline rows, plans popup). Same facts as PLAN_FEATURE_DETAILS.
+// The one name for the fitment check on seminar-user surfaces (and the no-role screens).
+export const CHECK_FIT_LABEL = "Check my fit for a role";
 export const PLAN_REPORT_COUNT = 3; // = PLAN_REPORT_CREDITS (lib/plans.ts is server-only)
 export const PLAN_INTERVIEW_ONE_ROLE = "45-min AI interview for one of your roles";
 export const GUIDE_COPY = {

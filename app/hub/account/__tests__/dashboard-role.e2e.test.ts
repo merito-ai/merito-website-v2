@@ -96,7 +96,7 @@ for (const vp of VIEWPORTS) {
       await expect(panel(page)).toContainText("All 3 used · extra reports ₹299");
       await guards(page);
       await page.getByTestId("role-switcher-trigger").filter({ visible: true }).first().click();
-      await page.getByRole("menuitem", { name: /Check a new role/ }).click();
+      await page.getByRole("menuitem", { name: /Check my fit for a role/ }).click();
       await expect(page.getByRole("dialog").filter({ hasText: "Change target role" })).toContainText("₹299");
     });
   });

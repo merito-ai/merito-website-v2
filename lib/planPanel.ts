@@ -1,5 +1,5 @@
 import { PLAN_UPGRADE_PRICE_LABEL } from "@/lib/razorpay/pricing";
-import { PLAN_FEATURE_DETAILS, ASSISTANCE_NEXT_STEP, INTERVIEW_VALIDITY_DAYS, type PlanFeatureKey, type AssistanceStatus } from "@/lib/planFeatures";
+import { PLAN_FEATURE_DETAILS, ASSISTANCE_NEXT_STEP, INTERVIEW_VALIDITY_DAYS, CHECK_FIT_LABEL, type PlanFeatureKey, type AssistanceStatus } from "@/lib/planFeatures";
 
 // "Your plan" panel rows (dashboard + pricing). Pure + client-safe: lib/plans.ts imports the service-role client.
 export type PlanPanelInput = {
@@ -114,7 +114,7 @@ export function buildPlanPanelRows(i: PlanPanelInput): PlanPanelRow[] {
           included: true,
           done: i.hasRole !== false,
           status: i.reportCreditsLeft > 0 ? `${i.reportCreditsLeft} of ${REPORT_CREDITS} left` : `All ${REPORT_CREDITS} used · extra reports ₹299`,
-          action: { label: "Check a role", href: "#check-role" },
+          action: { label: CHECK_FIT_LABEL, href: "#check-role" },
         },
     { key: "personality", label: "Personality + culture", included: true, done: i.personality === "done", ...personality[i.personality] },
     { key: "references", label: "Invite referees", included: true, done: i.references !== "none", ...references[i.references] },

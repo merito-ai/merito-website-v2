@@ -5,6 +5,9 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChevronDown, Check, Plus } from "lucide-react";
 import { resolveSwitcherState, type SwitcherLead } from "./roleSwitcher";
 import { useDismiss } from "./useDismiss";
+import { usePlanState } from "./usePlanState";
+import { isSeminarUser } from "@/lib/firstVisit";
+import { CHECK_FIT_LABEL } from "@/lib/planFeatures";
 
 // The visible role switcher in the hub TopBar. `?lead=<uuid>` is the single
 // source of truth for the active role (every hub page reads it), so switching
@@ -31,6 +34,8 @@ export default function RoleSwitcherMenu({
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   useDismiss(open, () => setOpen(false), [triggerRef, panelRef]);
+  // Seminar users see the fitment check under its one name; everyone else keeps today's label.
+  const newRoleLabel = isSeminarUser(usePlanState().state) ? CHECK_FIT_LABEL : "Check a new role";
 
   if (!showDropdown) {
     // Lead-less account: nothing to show (the Overview page owns that flow).
@@ -59,7 +64,7 @@ export default function RoleSwitcherMenu({
             ref={panelRef}
             id="role-newcheck-menu"
             role="menu"
-            aria-label="Check a new role"
+            aria-label={newRoleLabel}
             className="absolute right-0 bg-[#141416] border border-white/[0.1]"
             style={{ top: 46, width: 300, maxWidth: "calc(100vw - 24px)", borderRadius: 14, padding: 8, boxShadow: "0 24px 48px rgba(0,0,0,0.5)" }}
           >
@@ -72,7 +77,7 @@ export default function RoleSwitcherMenu({
               className="text-left flex items-center hover:bg-white/[0.06] transition-colors font-[family-name:var(--font-poppins)] font-semibold text-[#ed1a24]"
               style={{ width: "100%", background: "transparent", border: "none", cursor: "pointer", padding: "8px 10px", borderRadius: 8, fontSize: 12.5 }}
             >
-              + Check a new role
+              + {newRoleLabel}
             </button>
           </div>
         )}
@@ -153,7 +158,7 @@ export default function RoleSwitcherMenu({
             className="text-left flex items-center hover:bg-white/[0.06] transition-colors font-[family-name:var(--font-poppins)] font-semibold text-[#ed1a24]"
             style={{ width: "100%", background: "transparent", border: "none", cursor: "pointer", padding: "8px 10px", borderRadius: 8, fontSize: 12.5 }}
           >
-            + Check a new role
+            + {newRoleLabel}
           </button>
         </div>
       )}
