@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { interviewDeadline } from "../InterviewInProgressState";
+import { interviewDeadline } from "@/lib/planFeatures";
 
 describe("interviewDeadline", () => {
   it("prefers the vendor magic-link expiry", () => {

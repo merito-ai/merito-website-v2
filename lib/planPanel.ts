@@ -1,5 +1,5 @@
 import { PLAN_UPGRADE_PRICE_LABEL } from "@/lib/razorpay/pricing";
-import { PLAN_FEATURE_DETAILS, ASSISTANCE_NEXT_STEP, type PlanFeatureKey } from "@/lib/planFeatures";
+import { PLAN_FEATURE_DETAILS, ASSISTANCE_NEXT_STEP, type PlanFeatureKey, type AssistanceStatus } from "@/lib/planFeatures";
 
 // "Your plan" panel rows (dashboard + pricing). Pure + client-safe: lib/plans.ts imports the service-role client.
 export type PlanPanelInput = {
@@ -11,6 +11,8 @@ export type PlanPanelInput = {
   mentoring: MentoringRow[]; // Plan 2 counselling_requests rows (session 1 + follow-up)
   hasRole?: boolean; // default true; false = bought a plan before checking any role
   reportLocked?: boolean; // the current role's detailed report is not unlocked yet
+  interviewDueBy?: Date | null; // invited but not started: vendor link expiry, else invited_at + INTERVIEW_VALIDITY_DAYS
+  assistance?: AssistanceStatus; // Plan 2, set by the team in /admin/assistance
 };
 
 export type MentoringRow = { session: number; status: string; scheduled_at: string | null };
@@ -67,7 +69,7 @@ export function buildPlanPanelRows(i: PlanPanelInput): PlanPanelRow[] {
   };
   const interview: Record<PlanPanelInput["interview"], Pick<PlanPanelRow, "status" | "action">> = {
     unused: { status: "Ready to start", action: { label: "Start", href: "/hub/account/interview" } },
-    in_progress: { status: "In progress", action: { label: "Open", href: "/hub/account/interview" } },
+    in_progress: { status: i.interviewDueBy ? `In progress · complete by ${date(i.interviewDueBy.toISOString())}` : "In progress", action: { label: "Open", href: "/hub/account/interview" } },
     ready: { status: "Completed", action: { label: "View report", href: "/hub/account/interview" } },
   };
   const references: Record<PlanPanelInput["references"], Pick<PlanPanelRow, "status" | "action">> = {
@@ -118,8 +120,11 @@ export function buildPlanPanelRows(i: PlanPanelInput): PlanPanelRow[] {
       key: "assistance",
       label: "Application assistance (3 companies)",
       included: mentor,
-      done: false, // informational: the team calls, nothing for the user to finish
-      status: mentor ? ASSISTANCE_NEXT_STEP : "Not in your plan",
+      done: mentor && i.assistance === "done", // the team marks it in /admin/assistance; nothing for the user to finish
+      status: !mentor ? "Not in your plan"
+        : i.assistance === "done" ? "Our team has referred you to your 3 companies"
+        : i.assistance === "in_progress" ? "In progress: our team is working on your 3 companies"
+        : ASSISTANCE_NEXT_STEP,
       action: mentor ? { label: "Email us", href: CONTACT_HREF } : upgrade,
     },
     // The existing consolidated report + its share link; no separate profile feature.

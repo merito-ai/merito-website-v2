@@ -162,6 +162,7 @@ export const SCHEMA_CONTRACT: ReadonlyArray<ContractCheck> = [
   ),
   columnExists("report_unlocks", "order_id", "plan report credits count report_unlocks.order_id (migration 0069)"),
   columnExists("counselling_requests", "session", "applyPlanGrants upserts Plan 2 mentoring on (order_id, session); PlanPanel/expert/admin queue read it (migration 0072)"),
+  uniqueOn("plan_assistance", ["user_id"], 'admin assistance status upserts with onConflict:"user_id"; PlanPanel reads it for Plan 2 holders (migration 0073)'),
   functionExists("merge_candidate_accounts", 2, 'adminCandidates.rpc("merge_candidate_accounts") on the account-merge path'),
   functionExists("purge_candidate_data", 1, 'purgeCandidates.rpc("purge_candidate_data") on the candidate-purge cron'),
 

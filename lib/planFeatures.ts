@@ -11,7 +11,17 @@ const PLAN_INTERVIEW_SKILLS = 10; // = MAX_SKILLS_BY_DURATION[PLAN_INTERVIEW_MIN
 export const INTERVIEW_VALIDITY_DAYS = 10;
 export const INTERVIEW_VALIDITY_NOTE = `Once you start, you have ${INTERVIEW_VALIDITY_DAYS} days to complete it.`;
 
+// The vendor's magic-link expiry is the real cutoff; without one, show our stated validity from the invite.
+export function interviewDeadline(deadline: string | null | undefined, invitedAt: string | null | undefined): Date | null {
+  if (deadline) return new Date(deadline);
+  return invitedAt ? new Date(new Date(invitedAt).getTime() + INTERVIEW_VALIDITY_DAYS * 86_400_000) : null;
+}
+
 // Application assistance is offline (no workflow): what happens next. Turnaround is a PM default (2026-11-12), not yet confirmed.
+// Admin-set progress (table plan_assistance, migration 0073). Client-safe so the admin form can use it.
+export type AssistanceStatus = "not_contacted" | "in_progress" | "done";
+export const ASSISTANCE_LABEL: Record<AssistanceStatus, string> = { not_contacted: "Not contacted", in_progress: "In progress", done: "Done" };
+
 export const ASSISTANCE_NEXT_STEP = "Our team will call or email you within 7 working days of purchase to pick your 3 companies.";
 
 export const PLAN_FEATURE_DETAILS = {

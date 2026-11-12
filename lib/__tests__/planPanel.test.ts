@@ -131,6 +131,17 @@ describe("plan steps", () => {
     expect(marked(all)).toEqual([expect.objectContaining({ key: "share", marker: "Next step" })]);
   });
 
+  it("assistance shows the team's status from /admin/assistance; done only for Plan 2", () => {
+    expect(row({ ...p2, assistance: "in_progress" }, "assistance")).toMatchObject({ done: false, status: "In progress: our team is working on your 3 companies" });
+    expect(row({ ...p2, assistance: "done" }, "assistance")).toMatchObject({ done: true, status: "Our team has referred you to your 3 companies" });
+    expect(row({ ...base, assistance: "done" }, "assistance")).toMatchObject({ done: false, status: "Not in your plan" });
+  });
+
+  it("an opened-but-unstarted interview shows its complete-by date", () => {
+    expect(row({ ...base, interview: "in_progress", interviewDueBy: new Date("2026-11-22T06:00:00Z") }, "interview").status).toBe("In progress · complete by 22 Nov 2026");
+    expect(row({ ...base, interview: "in_progress" }, "interview").status).toBe("In progress");
+  });
+
   it("Plan 1 skips not-included mentoring for the marker", () => {
     const all = { ...base, personality: "done" as const, references: "completed" as const, interview: "ready" as const };
     expect(marked(all)[0].key).toBe("share");
