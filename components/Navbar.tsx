@@ -36,9 +36,6 @@ export default function Navbar() {
     return null;
   }
 
-  // Hub visitors are candidates: they also get a prominent way back into the Hub.
-  const isHub = pathname === "/hub" || pathname.startsWith("/hub/");
-
   return (
     <header className="sticky top-0 z-50 flex justify-center bg-transparent px-4 py-4">
       <nav className="flex h-[82px] w-full max-w-[1328px] items-center justify-between rounded-[40px] border border-black/12 bg-white px-4 shadow-[0_8px_22px_rgba(17,35,89,0.08)] sm:rounded-[8px] sm:px-5 lg:px-6">
@@ -165,18 +162,10 @@ export default function Navbar() {
         {/* CTA */}
         <Link
           href="/contact"
-          className={`relative hidden h-[50px] items-center justify-center overflow-hidden whitespace-nowrap rounded-[8px] px-6 font-[family-name:var(--font-poppins)] text-[16px] font-semibold transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] md:flex ${isHub ? "border-2 border-[#141416] bg-white text-[#141416] hover:bg-[#141416] hover:text-white" : "bg-[#ed1a24] text-white hover:bg-black hover:text-white"}`}
+          className="relative hidden h-[50px] items-center justify-center overflow-hidden whitespace-nowrap rounded-[8px] bg-[#ed1a24] px-6 font-[family-name:var(--font-poppins)] text-[16px] font-semibold text-white transition-all duration-200 hover:bg-black hover:text-white hover:scale-[1.03] active:scale-[0.97] md:flex"
         >
           <span className="relative z-10">Talk to an expert</span>
         </Link>
-        {isHub && (
-          <Link
-            href="/hub/login"
-            className="relative ml-auto mr-2 flex h-[44px] items-center justify-center overflow-hidden whitespace-nowrap rounded-[8px] bg-[#ed1a24] px-4 font-[family-name:var(--font-poppins)] text-[15px] font-semibold text-white transition-all duration-200 hover:bg-black hover:scale-[1.03] active:scale-[0.97] md:ml-3 md:mr-0 md:h-[50px] md:px-6 md:text-[16px]"
-          >
-            <span className="relative z-10">Log in</span>
-          </Link>
-        )}
 
         {/* Mobile hamburger */}
         <button
