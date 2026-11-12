@@ -273,7 +273,7 @@ export default async function InterviewReportPage({
             <InterviewScoreGauge score={report.overallScore} />
           </div>
           <div className={`grid grid-cols-2 ${report.tabChanges != null ? "sm:grid-cols-5" : "sm:grid-cols-4"}`} style={{ flex: 1, minWidth: 0, gap: 10, width: "100%" }}>
-            <StatTile icon={ListChecks} value={String(report.answers.length)} label="Questions" />
+            <StatTile icon={ListChecks} value={String(report.answers?.length ?? 0)} label="Questions" />
             <StatTile icon={ChartColumn} value={String(skillsAssessedCount)} label="Skills assessed" />
             {report.tabChanges != null && <StatTile icon={Activity} value={String(report.tabChanges)} label="Tab changes" />}
             <StatTile

@@ -215,3 +215,5 @@ Not covered / open (Low):
 - Upgrade ₹2,999 not visible to a no-plan account; label comes from `PLAN_UPGRADE_PRICE_LABEL` (299900 paise).
 - Root cause of the dropped JSX space not found (only that one spot in prod chunks). Watch for "{expr} word" text joining in new copy.
 - Optional: auto-open the plans popup once on first dashboard visit for allowlisted no-plan users.
+- FIXED 2026-11-12: `/hub/account/interview` crashed (Server Components error) for ready interviews whose July 2026 `report_raw` has no `answers` (4 such prod rows have `roadmap: null` too). Guarded `report.answers` in the page and `AnswerTranscript`.
+- Interview start confirm checked on prod (roshanrk2014, full stack developer, 1 paid credit): dialog opens, cancel closes, nothing started.

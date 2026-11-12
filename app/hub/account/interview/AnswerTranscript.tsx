@@ -20,7 +20,8 @@ function scoreDotColor(score: number | undefined): string {
 // one's detail. Each row is a native <button> with aria-expanded/aria-controls
 // wired to its panel, matching the disclosure pattern used elsewhere in this
 // hub (see TopBar's dropdowns) rather than inventing a new one.
-export default function AnswerTranscript({ answers }: { answers: AnswerDetail[] }) {
+// answers = []: July 2026 report_raw rows predate the answers field (crashed /hub/account/interview).
+export default function AnswerTranscript({ answers = [] }: { answers?: AnswerDetail[] }) {
   const [open, setOpen] = useState<Set<number>>(new Set());
 
   if (answers.length === 0) {
