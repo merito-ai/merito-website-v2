@@ -262,7 +262,9 @@ export default async function AccountPage({
 
   // Seminar users only (E7): say when the report is still being prepared or failed; a failed one is not offered for unlock.
   const reportState = isSeminarUser(planState) ? leadReportState(resumeMatchStatus, current.created_at) : "ready";
-  const scoreNote = reportState === "ready" ? null : <ScoreNote state={reportState} />;
+  // E13: a low score (getMatchBand's "Needs review" cut, under 5/10) gets an encouraging next step, never "you failed".
+  const lowScore = isSeminarUser(planState) && reportState === "ready" && score < 5;
+  const scoreNote = reportState !== "ready" ? <ScoreNote state={reportState} /> : lowScore ? <ScoreNote state="low" /> : null;
 
   // Seminar users only: a one-time welcome line; hidden once their next step is done (a plan bought / a plan step started).
   const welcome = !isSeminarUser(planState) ? null : planState.plan ? (

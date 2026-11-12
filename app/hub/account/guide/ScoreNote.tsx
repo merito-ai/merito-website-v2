@@ -1,11 +1,19 @@
-import { Clock, AlertTriangle, Target, Mail } from "lucide-react";
+import { Clock, AlertTriangle, Target, Mail, TrendingUp } from "lucide-react";
 import { CONTACT_HREF } from "@/lib/planPanel";
 import { CHECK_FIT_LABEL } from "@/lib/planFeatures";
 
 const LINK = "inline-flex items-center font-semibold text-[#ff7a80] hover:underline focus-visible:outline-2 focus-visible:outline-white";
 
-// Seminar users: one line under the score for a report that is still being prepared or failed (E7).
-export default function ScoreNote({ state }: { state: "pending" | "failed" }) {
+// Seminar users: one line under the score for a report that is still being prepared or failed (E7), or a low score (E13).
+export default function ScoreNote({ state }: { state: "pending" | "failed" | "low" }) {
+  if (state === "low") {
+    return (
+      <p className="inline-flex items-center text-white/80" style={{ gap: 6, fontSize: 13, margin: "10px 0 0" }}>
+        <TrendingUp size={14} strokeWidth={2} aria-hidden="true" className="text-[#3FCB8C]" />
+        Here&apos;s what to work on: your report shows the gaps to close for this role.
+      </p>
+    );
+  }
   if (state === "pending") {
     return (
       <p role="status" className="inline-flex items-center text-white/70" style={{ gap: 6, fontSize: 13, margin: "10px 0 0" }}>
