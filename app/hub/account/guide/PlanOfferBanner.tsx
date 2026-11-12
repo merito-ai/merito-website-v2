@@ -19,7 +19,7 @@ export default function PlanOfferBanner() {
           Unlock everything with one payment, from {prepare.priceLabel}.
         </p>
       </div>
-      <UnlockPlansButton label="See plans" />
+      <UnlockPlansButton />
     </section>
   );
 }
