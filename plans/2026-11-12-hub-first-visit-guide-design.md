@@ -39,3 +39,29 @@ A user later added to the allowlist moves to S1/S2 on next load automatically.
 
 ## Out of scope
 Video, guided tour overlay, per-feature prices on the dashboard, changes to the fitment check form, DB-stored dismissal.
+
+## Additions (2026-11-12, approved in conversation)
+
+### Ripple changes to existing UI (same build)
+1. The new timeline replaces the old dashboard progress list (ProgressRail) for everyone, every visit (one progress pattern).
+2. Plan panel (plan holders) restyled to the timeline look (icons, rows, tags, "Next" marker). Same data (`buildPlanPanelRows`).
+3. Dashboard with a role: inline plan cards for allowlisted no-plan users replaced by "Unlock plans" + the plans popup.
+4. Feature paywall modals (report, personality, interview, references): allowlisted no-plan users get "Unlock plans" opening the same popup (instead of the plain plan-only notice).
+5. Locked feature pages (personality, sample reports): allowlisted users see "Unlock plans", not single prices.
+6. Sidebar: small lock icon on features not yet unlocked.
+7. Empty feature pages with no role (interview, references, consolidated report): short guide + "Check my fit for a role" instead of a silent redirect to the dashboard.
+8. One name for the fitment check everywhere: "Check my fit for a role".
+
+### Paid but no role yet (gap found 2026-11-12)
+Interview and references pages need a role and currently redirect silently to /hub/account, so plan-panel "Start" / "Invite referees" look broken after a pay-first purchase.
+- Step 1 "Check a role", marker "Start here", line "Your interview and references are built around this role."
+- Interview, references, shareable profile rows: "Needs a role first" + lock icon; action "Check a role".
+- Personality row stays available: "You can do this anytime."
+- Interview row: "Your 10 days start when you begin."
+
+### One interview per plan, for one role
+The plan includes 1 interview, for any one of the 3 roles; it cannot move to another role once started.
+- Popup + timeline: "45-min AI interview for one of your roles".
+- Plan panel interview row: "1 interview, for any one of your roles. Pick the role you care most about."
+- Interview start confirmation: "This uses your plan's interview for <role>. You can't switch it to another role later. Want a different role? Switch roles first." + "Switch role" link (existing role switcher).
+- After use: "Interview used for <role>."
