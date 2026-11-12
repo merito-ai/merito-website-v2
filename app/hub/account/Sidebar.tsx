@@ -15,9 +15,12 @@ import {
   UserCheck,
   Tag,
   Receipt,
+  Lock,
 } from "lucide-react";
 import type { ComponentType } from "react";
 import { RECRUITER_PREVIEW_ENABLED } from "@/lib/featureFlags";
+import { usePlanState } from "./usePlanState";
+import { lockedNavHrefs } from "@/lib/firstVisit";
 
 type NavItem = {
   label: string;
@@ -56,6 +59,8 @@ const GROUPS: { title: string; items: NavItem[] }[] = [
 export default function Sidebar() {
   const pathname = usePathname();
   const leadHref = useLeadHref();
+  // Seminar users only (lockedNavHrefs is empty for everyone else): a lock on features not unlocked yet.
+  const locked = lockedNavHrefs(usePlanState().state);
 
   return (
     <nav
@@ -127,6 +132,12 @@ export default function Sidebar() {
                   )}
                   <Icon size={16} strokeWidth={2} />
                   <span className="font-[family-name:var(--font-poppins)]">{item.label}</span>
+                  {locked.includes(item.href) && (
+                    <>
+                      <Lock size={13} strokeWidth={2} aria-hidden="true" className="text-white/50" style={{ marginLeft: "auto" }} data-testid="nav-lock" />
+                      <span className="sr-only">, locked</span>
+                    </>
+                  )}
                 </Link>
               );
             })}
