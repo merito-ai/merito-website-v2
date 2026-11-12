@@ -8,6 +8,9 @@ import PersonalityTestClient from "./PersonalityTestClient";
 import PersonalityLockedState from "./PersonalityLockedState";
 import PlanFeatureNote from "@/app/hub/account/PlanFeatureNote";
 
+// Reads naturally in the test intro ("..., for your next role") and the report ("fit signal for your next role").
+const NO_ROLE_TITLE = "your next role";
+
 export default async function PersonalityTestPage({
   searchParams,
 }: {
@@ -41,19 +44,24 @@ export default async function PersonalityTestPage({
     roleTitle = current?.role_title ?? null;
   }
 
-  if (!roleTitle || !current) {
-    redirect("/hub/account");
-  }
-
-  const level = (current.candidate_level as CandidateLevel | null) ?? DEFAULT_LEVEL;
-
   const [personalityUnlocked, referencesUnlocked] = await Promise.all([
     isProductUnlocked(user.id, "personality"),
     isProductUnlocked(user.id, "references"),
   ]);
   const bundleEligible = !personalityUnlocked && !referencesUnlocked;
 
+  // Plan holders can take the test before checking any role (it is candidate-wide); the saved row needs a label.
+  if (!current && personalityUnlocked) {
+    roleTitle ??= NO_ROLE_TITLE;
+  }
+  if (!roleTitle) {
+    redirect("/hub/account");
+  }
+
+  const level = (current?.candidate_level as CandidateLevel | null | undefined) ?? DEFAULT_LEVEL;
+
   if (!personalityUnlocked) {
+    if (!current) redirect("/hub/account"); // locked and no role: nothing to buy against
     return (
       <main>
         <div className="mx-auto" style={{ maxWidth: 820, padding: "28px 24px 40px", display: "flex", flexDirection: "column", gap: 20 }}>
@@ -90,7 +98,7 @@ export default async function PersonalityTestPage({
       : null;
 
   // Real name from the fitment form; the email local-part is only a fallback.
-  const candidateName = current.name || nameFromEmail(user.email ?? "");
+  const candidateName = current?.name || nameFromEmail(user.email ?? "");
 
   return (
     <main>

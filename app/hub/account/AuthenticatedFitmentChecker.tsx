@@ -1,10 +1,14 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useModalFocus } from "./guide/useModalFocus";
 
-export default function AuthenticatedFitmentChecker() {
+export const CHECK_FIT_LABEL = "Check my fit for a role";
+
+// renderTrigger: the dashboard guide renders its own hero + sticky phone buttons that open this one modal.
+export default function AuthenticatedFitmentChecker({ renderTrigger }: { renderTrigger?: (open: () => void) => ReactNode } = {}) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
@@ -104,19 +108,23 @@ export default function AuthenticatedFitmentChecker() {
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="inline-block font-[family-name:var(--font-poppins)] font-semibold text-white text-center"
-        style={{ marginTop: 18, padding: "12px 22px", borderRadius: 8, fontSize: 14, background: "#ed1a24", border: "none", cursor: "pointer" }}
-      >
-        Check my fitment
-      </button>
+      {renderTrigger ? (
+        renderTrigger(() => setOpen(true))
+      ) : (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="inline-block font-[family-name:var(--font-poppins)] font-semibold text-white text-center"
+          style={{ marginTop: 18, padding: "12px 22px", borderRadius: 8, fontSize: 14, background: "#ed1a24", border: "none", cursor: "pointer" }}
+        >
+          {CHECK_FIT_LABEL}
+        </button>
+      )}
 
-      {open && (
+      {open && <CheckerDialog onClose={() => !checking && setOpen(false)}>
         <div
           onClick={() => !checking && setOpen(false)}
-          role="dialog" aria-modal="true" style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", backdropFilter: "blur(4px)", zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", backdropFilter: "blur(4px)", zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}
         >
           <div
             onClick={(e) => e.stopPropagation()}
@@ -126,13 +134,13 @@ export default function AuthenticatedFitmentChecker() {
             <button
               onClick={() => !checking && setOpen(false)}
               aria-label="Close"
-              style={{ position: "absolute", top: 16, right: 16, background: "none", border: "none", fontSize: 20, cursor: checking ? "default" : "pointer", color: "#9c9c9c" }}
+              style={{ position: "absolute", top: 6, right: 6, width: 44, height: 44, background: "none", border: "none", fontSize: 20, cursor: checking ? "default" : "pointer", color: "#9c9c9c" }}
             >
               ✕
             </button>
 
             <h2 className="font-[family-name:var(--font-gabarito)] font-semibold text-white" style={{ fontSize: "1.4rem", margin: "0 0 10px" }}>
-              Check my fitment
+              {CHECK_FIT_LABEL}
             </h2>
             <p className="font-[family-name:var(--font-poppins)] text-white/55" style={{ fontSize: 13.5, lineHeight: 1.6, margin: "0 0 20px" }}>
               Free, takes about 60 seconds. We&apos;ll use your Merito account email.
@@ -247,7 +255,7 @@ export default function AuthenticatedFitmentChecker() {
                 border: "none",
               }}
             >
-              {checking ? "Scoring your CV…" : "Check my fitment"}
+              {checking ? "Scoring your CV…" : CHECK_FIT_LABEL}
             </button>
 
             {errorMsg && (
@@ -265,7 +273,18 @@ export default function AuthenticatedFitmentChecker() {
             )}
           </div>
         </div>
-      )}
+      </CheckerDialog>}
     </>
   );
 }
+
+function CheckerDialog({ onClose, children }: { onClose: () => void; children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const onKeyDown = useModalFocus(ref, onClose);
+  return (
+    <div ref={ref} role="dialog" aria-modal="true" aria-label={CHECK_FIT_LABEL} tabIndex={-1} onKeyDown={onKeyDown} className="outline-none">
+      {children}
+    </div>
+  );
+}
+

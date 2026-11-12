@@ -14,7 +14,6 @@ import { isProductUnlocked } from "@/lib/productUnlocks";
 import { getRecruiterViewCount } from "@/lib/recruiterActivity";
 import RecruiterActivityPanel from "./RecruiterActivityPanel";
 import { RECRUITER_PREVIEW_ENABLED } from "@/lib/featureFlags";
-import AuthenticatedFitmentChecker from "./AuthenticatedFitmentChecker";
 import { resolveActiveLead } from "@/lib/activeLead";
 import { leadIdOrRoleTitleFilter } from "@/lib/postgrestIdentityFilter";
 import { isPersonalityComplete, needsUpdatedTest } from "@/lib/psychometrics/testFlow";
@@ -23,6 +22,10 @@ import PlanPanel from "./PlanPanel";
 import PlanCardsClient from "./pricing/PlanCardsClient";
 import { buildPlanCards } from "./pricing/pricingCatalog";
 import { planDashboardView } from "@/lib/planPanel";
+import { firstVisitView, firstName, howMeritoWorksRows, planIncludesRows } from "@/lib/firstVisit";
+import NoRoleDashboard from "./guide/NoRoleDashboard";
+import PlanSteps from "./PlanSteps";
+import Link from "next/link";
 
 export default async function AccountPage({
   searchParams,
@@ -45,32 +48,54 @@ export default async function AccountPage({
     .order("created_at", { ascending: false });
 
   if (!leads || leads.length === 0) {
-    // Seminar buyers often pay before checking a role: still show what they bought, or offer the plans (pay first).
+    // Signed in directly, no role yet (spec Scope): n1 normal, s1 allowlisted without a plan, plan holder.
+    // Plan buyers often pay before checking a role: they get their plan panel with role-bound steps marked.
     const planState = await getPlanState(user.id, user.email);
     const { plan } = planState;
+    const view = firstVisitView({ allowlisted: planState.allowlisted, plan, hasRole: false });
+    const meta = user.user_metadata as { full_name?: string; name?: string } | undefined;
+    const name = firstName(meta?.full_name ?? meta?.name);
+    if (plan) {
+      const { data: personalityRow } = await supabase.from("personality_tests").select("version, culture_scores").eq("user_id", user.id).maybeSingle();
+      const personality = !personalityRow
+        ? { label: "Start personality test", href: "/hub/account/personality" }
+        : needsUpdatedTest(personalityRow)
+          ? { label: "Take the updated test", href: "/hub/account/personality" }
+          : isPersonalityComplete(personalityRow)
+            ? null
+            : { label: "Continue part 2", href: "/hub/account/personality" };
+      return (
+        <NoRoleDashboard
+          view="plan"
+          name={name}
+          planLabel={PRODUCT_LABELS[plan.product]}
+          personality={personality}
+          panel={<PlanPanel userId={user.id} plan={plan} hasRole={false} />}
+        />
+      );
+    }
     return (
-      <main style={{ padding: "48px 20px", maxWidth: 640, margin: "0 auto" }}>
-        {planDashboardView(planState) === "offer" ? (
-          <div style={{ marginBottom: 24 }}>
-            <PlanCardsClient plans={buildPlanCards()} embedded />
-          </div>
-        ) : (
-          <>
-            <h1 className="font-[family-name:var(--font-gabarito)] font-semibold text-white" style={{ fontSize: "1.6rem" }}>
-              {plan ? `Welcome to ${PRODUCT_LABELS[plan.product]}` : "No fitment scores yet"}
-            </h1>
-            <p className="font-[family-name:var(--font-poppins)] text-white/50" style={{ fontSize: 14 }}>
-              {plan ? "Start with step 1: check a role." : "Head back to the HUB to check your fit for a role."}
-            </p>
-          </>
-        )}
-        {plan && (
-          <div style={{ margin: "20px 0" }}>
-            <PlanPanel userId={user.id} plan={plan} hasRole={false} />
-          </div>
-        )}
-        <AuthenticatedFitmentChecker />
-      </main>
+      <NoRoleDashboard
+        view={view === "s1" ? "s1" : "n1"}
+        name={name}
+        panel={
+          view === "s1" ? (
+            <PlanSteps id="plan-includes" title="What your plan includes" sub="Assess + Mentor + Apply adds mentoring and application help." rows={planIncludesRows()} />
+          ) : (
+            <PlanSteps
+              id="how-merito-works"
+              title="How Merito works"
+              sub="Build a profile recruiters trust, one step at a time."
+              rows={howMeritoWorksRows()}
+              footer={
+                <Link href="/hub/account/pricing" className="inline-flex items-center font-semibold text-[#ed1a24] hover:underline" style={{ fontSize: 13, minHeight: 44 }}>
+                  See prices →
+                </Link>
+              }
+            />
+          )
+        }
+      />
     );
   }
 
