@@ -67,7 +67,7 @@ export async function renderPageToPdf(
     // page.pdf() emulates print media internally right before rendering,
     // which collapses any print:hidden chrome (e.g. the dashboard's own
     // Sidebar/TopBar, still present in the DOM behind these print routes).
-    // Switching to print media before measuring scrollHeight too keeps the
+    // Switching to print media before measuring the height too keeps the
     // measurement and the actual render in the same layout state -- without
     // this, heightPx included the chrome's height, leaving a trailing blank
     // gap in the PDF once print media hid it during the real render.
@@ -75,7 +75,9 @@ export async function renderPageToPdf(
 
     let pdf: Uint8Array;
     if (options.singlePage) {
-      const heightPx = await page.evaluate(() => document.documentElement.scrollHeight);
+      // Ceil the real (fractional) height: scrollHeight rounds 3140.33 down to 3140, the last
+      // fraction spills onto page 2 and pageRanges "1" drops it (the footer line went missing).
+      const heightPx = await page.evaluate(() => Math.ceil(document.documentElement.getBoundingClientRect().height));
       pdf = await page.pdf({
         width: "900px",
         height: `${heightPx}px`,
