@@ -46,7 +46,7 @@ export const GUIDE_COPY = {
   report: "Strengths, gaps and what to fix",
   reports: `Detailed fitment report for ${PLAN_REPORT_COUNT} roles`,
   personality: "Your traits and the cultures that suit you",
-  interview: `Scored report, ${INTERVIEW_VALIDITY_DAYS} days to complete`,
+  interview: `For one of your roles. Scored report, ${INTERVIEW_VALIDITY_DAYS} days to complete`,
   interviewNormal: "Practise with a scored report",
   references: "One link with all your results",
   mentoring: "Two 30-min sessions with an expert",

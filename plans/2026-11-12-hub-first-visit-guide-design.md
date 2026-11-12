@@ -1,5 +1,18 @@
 # Hub first-visit guide (design)
 
+## Scope (2026-11-12, user)
+The new design applies ONLY to the empty dashboard when a user signs in directly and has NO role yet. Principle: "We are building on the gaps of existing UI UX": fill gaps in the current Hub with its existing components, tokens and patterns; no parallel new design.
+
+In scope:
+1. N1: normal user, no role: the mockup's "Normal · login first" screen (replaces "No fitment scores yet").
+2. S1: allowlisted user, no plan, no role: the "Plan user · login first" screen + the shared plans popup opened by "Unlock plans" (popup only used from this screen; choosing a plan goes into the existing confirm dialog + Razorpay flow).
+3. P1: plan holder, no role: the existing PlanPanel with its gaps fixed (no new timeline component): interview, references and shareable profile show a "Needs a role" state with no dead link; step 1 "Check a role" is the clear start ("Start here"); personality stays available ("You can do this anytime"); the heading explains that the interview and references are built around a role.
+4. Bug fix: interview, references and consolidated-report pages with no role show a short message + "Check my fit for a role" (existing empty-state pattern) instead of silently redirecting to /hub/account.
+5. One interview per plan: the existing InterviewPaywallModal confirm for plan users names the role, says it can't move to another role, offers "Switch role" (existing role switcher), says the 10 days start now. Plan-panel interview row copy "1 interview, for any one of your roles" and "Interview used for <role>" after use. The plan panel keeps its look otherwise.
+6. Edge cases E3/E4 (view switches correctly for the no-role screens), E5, E12, E14, E15; no-repetition rules on these screens.
+
+Out of scope (existing UI stays as is): N2/S2 form-first changes, welcome line, locked report preview, replacing ProgressRail with the timeline, restyling the plan panel for users with roles, replacing inline plan cards on the dashboard with a role, paywall modal changes, sidebar lock icons, renaming the fitment check everywhere, E1/E6-E11/E13/E16 UI changes.
+
 Approved 2026-11-12. Mockup: `mockups/2026-11-12-hub-first-visit-guide.html` (v3, 4 tabs + phone toggle).
 
 ## Problem

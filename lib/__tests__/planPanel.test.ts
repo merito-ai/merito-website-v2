@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildPlanPanelRows, mentoringSessions, CONTACT_HREF, type PlanPanelInput } from "../planPanel";
+import { buildPlanPanelRows, mentoringSessions, planDashboardView, CONTACT_HREF, type PlanPanelInput } from "../planPanel";
 import { ASSISTANCE_NEXT_STEP } from "../planFeatures";
 
 const base: PlanPanelInput = {
@@ -14,97 +14,141 @@ const s = (session: number, status: string, scheduled_at: string | null = null) 
 const row = (input: PlanPanelInput, key: string) => buildPlanPanelRows(input).find((r) => r.key === key)!;
 
 describe("buildPlanPanelRows", () => {
+  it("lists every benefit in step order", () => {
+    expect(buildPlanPanelRows(base).map((r) => r.key)).toEqual(["reports", "personality", "references", "interview", "mentoring", "assistance", "share"]);
+  });
+
+  it("reports: remaining count, check-a-role action; spent shows ₹299 extras", () => {
+    expect(row(base, "reports")).toMatchObject({ status: "3 of 3 left", action: { label: "Check a role", href: "#check-role" } });
+    expect(row({ ...base, reportCreditsLeft: 0 }, "reports").status).toBe("All 3 used · extra reports ₹299");
+  });
+
+  it("personality: start / continue part 2 / view report", () => {
+    expect(row(base, "personality").action!.label).toBe("Start");
+    expect(row({ ...base, personality: "part2" }, "personality").action!.label).toBe("Continue part 2");
+    expect(row({ ...base, personality: "done" }, "personality")).toMatchObject({ status: "Completed", action: { label: "View report" } });
+    // old v1 result: not done, prompts the culture part
+    expect(row({ ...base, personality: "update" }, "personality")).toMatchObject({ done: false, status: "Culture part pending", action: { label: "Take the updated test" } });
+  });
+
+  it("interview: one per plan, for one role; used-for-role after start", () => {
+    expect(row(base, "interview")).toMatchObject({ status: "1 interview, for any one of your roles. Pick the role you care most about.", action: { label: "Start" } });
+    expect(row({ ...base, interview: "in_progress", interviewRole: "Product Analyst" }, "interview")).toMatchObject({ status: "Interview used for Product Analyst", action: { label: "Open" } });
+    expect(row({ ...base, interview: "ready", interviewRole: "Product Analyst" }, "interview")).toMatchObject({ done: true, status: "Interview used for Product Analyst", action: { label: "View report" } });
+    expect(row({ ...base, interview: "ready" }, "interview").status).toBe("Interview used");
+  });
+
+  it("references: invite / in progress / completed", () => {
+    expect(row(base, "references").action!.label).toBe("Invite referees");
+    expect(row({ ...base, references: "in_progress" }, "references").status).toBe("Waiting on referees");
+    expect(row({ ...base, references: "completed" }, "references").status).toBe("Completed");
+  });
+
+  it("shareable profile is the existing consolidated report", () => {
+    expect(row(base, "share")).toMatchObject({ label: "Share consolidated profile", action: { label: "View & share", href: "/hub/account/combined-report" } });
+  });
+
+  it("Plan 1: mentoring + assistance not included, both offer the ₹2,999 upgrade", () => {
+    const upgrade = { label: "Upgrade to unlock for ₹2,999", href: "/hub/account/pricing" };
+    expect(row(base, "mentoring")).toMatchObject({ included: false, action: upgrade });
+    expect(row(base, "assistance")).toMatchObject({ included: false, action: upgrade });
+  });
+
+  it("Plan 2: session 1 bookable first; follow-up waits for session 1; assistance contact", () => {
+    const p2 = { ...base, product: "plan_mentor" as const };
+    const fresh = row({ ...p2, mentoring: [s(1, "requested"), s(2, "requested")] }, "mentoring");
+    expect(fresh).toMatchObject({ included: true, done: false, status: "Session 1: Not booked yet\nFollow-up: Book after session 1", action: { label: "Book session 1", href: "/hub/account/expert" } });
+    const s1Sched = row({ ...p2, mentoring: [s(1, "scheduled", "2026-11-20T10:00:00Z"), s(2, "requested")] }, "mentoring");
+    expect(s1Sched).toMatchObject({ done: false, status: "Session 1: Scheduled 20 Nov 2026\nFollow-up: Not booked yet", action: { label: "Book follow-up" } });
+    const bothSched = row({ ...p2, mentoring: [s(1, "completed"), s(2, "scheduled")] }, "mentoring");
+    expect(bothSched).toMatchObject({ done: false, status: "Session 1: Completed\nFollow-up: Scheduled", action: { label: "View" } });
+    expect(row({ ...p2, mentoring: [s(1, "completed"), s(2, "completed")] }, "mentoring")).toMatchObject({ done: true, status: "Both sessions completed", action: null });
+    expect(row(p2, "assistance")).toMatchObject({ included: true, action: { href: "mailto:admin@merito.ai" } });
+  });
+
+  it("no role yet: interview, references, share need a role (no link); personality stays open; step 1 has no second button", () => {
+    const noRole = { ...base, hasRole: false };
+    for (const k of ["interview", "references", "share"]) {
+      expect(row(noRole, k)).toMatchObject({ needsRole: true, action: null });
+    }
+    expect(row(noRole, "interview").status).toBe("1 interview, for any one of your roles. Your 10 days start when you begin.");
+    expect(row(noRole, "personality")).toMatchObject({ status: "You can do this anytime", action: { label: "Start", href: "/hub/account/personality" } });
+    expect(row({ ...noRole, personality: "part2" }, "personality").action!.label).toBe("Continue part 2");
+    expect(row(noRole, "reports")).toMatchObject({ marker: "Start here", action: null });
+    expect(row(noRole, "mentoring").action!.href).toBe("/hub/account/pricing");
+    expect(row({ ...noRole, product: "plan_mentor" }, "mentoring").action!.href).toBe("/hub/account/expert");
+    expect(row(base, "interview").action!.href).toBe("/hub/account/interview");
+    expect(row(base, "share").needsRole).toBeUndefined();
+  });
+});
+
+describe("plan steps", () => {
   const p2: PlanPanelInput = { ...base, product: "plan_mentor" };
   const marked = (input: PlanPanelInput) => buildPlanPanelRows(input).filter((r) => r.marker);
 
-  it("timeline order; Assess + Prepare merges both Mentor + Apply extras into one upsell row, last", () => {
-    expect(buildPlanPanelRows(p2).map((r) => r.key)).toEqual(["reports", "personality", "interview", "references", "mentoring", "assistance", "share"]);
-    expect(buildPlanPanelRows(base).map((r) => r.key)).toEqual(["reports", "personality", "interview", "references", "share", "mentoring"]);
-    expect(row(base, "mentoring")).toMatchObject({
-      included: false,
-      state: "locked",
-      title: "Mentoring + application help",
-      tag: { label: "Mentor + Apply" },
-      action: { label: "Upgrade for ₹2,999", href: "/hub/account/pricing" },
-    });
-  });
-
-  it("steps: included rows numbered, upsell row unnumbered", () => {
+  it("Plan 2 numbers all 7 steps 1-7", () => {
     expect(buildPlanPanelRows(p2).map((r) => r.step)).toEqual([1, 2, 3, 4, 5, 6, 7]);
-    expect(buildPlanPanelRows(base).map((r) => r.step)).toEqual([1, 2, 3, 4, 5, null]);
   });
 
-  it("reports: roles checked + left (E9); all used shows ₹299 extra roles (E8)", () => {
-    expect(row({ ...base, reportCreditsLeft: 1, rolesChecked: 2 }, "reports")).toMatchObject({ done: true, line: "2 roles checked · 1 left", action: { href: "#check-role" } });
-    expect(row({ ...base, reportCreditsLeft: 0, rolesChecked: 3 }, "reports").line).toBe("All 3 used · extra roles ₹299");
+  it("Plan 1: Plan-2-only rows have no number; share is step 5", () => {
+    expect(buildPlanPanelRows(base).map((r) => r.step)).toEqual([1, 2, 3, 4, null, null, 5]);
   });
 
-  it("role checked but its report not opened: step 1 points to the report and keeps the marker", () => {
-    expect(row({ ...base, reportLocked: true }, "reports")).toMatchObject({ done: false, line: "Your report is ready · 3 of 3 left", action: { label: "Open my report" } });
-    expect(marked({ ...base, reportLocked: true }).map((r) => [r.key, r.marker])).toEqual([["reports", "Next"]]);
+  it("no role: single Start here marker on step 1", () => {
+    expect(marked({ ...base, hasRole: false })).toEqual([expect.objectContaining({ key: "reports", marker: "Start here", done: false })]);
+  });
+
+  it("role checked but its report not opened yet: step 1 points to the report and keeps the marker", () => {
+    const r = row({ ...base, reportLocked: true }, "reports");
+    expect(r).toMatchObject({ done: false, status: "Your report is ready · 3 of 3 left", action: { label: "Open my report", href: "/hub/account/report" } });
+    expect(marked({ ...base, reportLocked: true })).toEqual([expect.objectContaining({ key: "reports", marker: "Next step" })]);
+    // no credits left: the ₹299 report is optional, so step 1 still counts as done
     expect(row({ ...base, reportLocked: true, reportCreditsLeft: 0 }, "reports").done).toBe(true);
   });
 
-  it("personality: available anytime, part 2 / updated test states (E10)", () => {
-    expect(row(base, "personality")).toMatchObject({ line: "You can do this anytime", action: { label: "Start" } });
-    expect(row({ ...base, hasRole: false }, "personality")).toMatchObject({ state: "todo", action: { href: "/hub/account/personality" } });
-    expect(row({ ...base, personality: "part2" }, "personality").action!.label).toBe("Continue part 2");
-    expect(row({ ...base, personality: "update" }, "personality")).toMatchObject({ done: false, action: { label: "Take the updated test" } });
-    expect(row({ ...base, personality: "done" }, "personality")).toMatchObject({ done: true, tag: { kind: "ok", label: "Done" } });
+  it("role checked: step 1 done, Next step on personality", () => {
+    expect(row(base, "reports").done).toBe(true);
+    expect(marked(base)).toEqual([expect.objectContaining({ key: "personality", marker: "Next step" })]);
   });
 
-  it("interview: one per plan, used-for-role after start, expired link (E6)", () => {
-    expect(row(base, "interview").line).toBe("1 interview, for any one of your roles. Pick the role you care most about.");
-    expect(row({ ...base, interview: "in_progress", interviewRole: "Product Analyst", interviewDueBy: new Date("2026-11-22T06:00:00Z") }, "interview").line).toBe(
-      "Interview used for Product Analyst · complete by 22 Nov 2026",
-    );
-    expect(row({ ...base, interview: "ready", interviewRole: "Product Analyst" }, "interview")).toMatchObject({ done: true, line: "Interview used for Product Analyst", action: { label: "View report" } });
-    expect(row({ ...base, interview: "expired" }, "interview")).toMatchObject({ done: false, line: "Your interview link expired", tag: { kind: "warn" }, action: { label: "Email us", href: CONTACT_HREF } });
-  });
-
-  it("no role yet (P1): Start here on step 1; interview, references, share locked with a tag only", () => {
-    const noRole = { ...p2, hasRole: false };
-    expect(marked(noRole).map((r) => [r.key, r.marker])).toEqual([["reports", "Start here"]]);
-    expect(row(noRole, "reports").line).toBe("3 roles included · 3 left");
-    for (const k of ["interview", "references", "share"]) {
-      expect(row(noRole, k)).toMatchObject({ state: "locked", action: null, tag: { kind: "need", label: "Needs a role" } });
-    }
-    expect(row(noRole, "interview").line).toBe("1 interview, for any one of your roles. Your 10 days start when you begin.");
-    expect(row(noRole, "mentoring").action!.href).toBe("/hub/account/expert");
-  });
-
-  it("walks the order: personality -> interview -> references -> mentoring (Mentor + Apply)", () => {
-    expect(marked(p2)[0].key).toBe("personality");
+  it("walks the order: personality done -> references; invited -> interview; interview ready -> mentoring (Plan 2)", () => {
     const a = { ...p2, personality: "done" as const };
-    expect(marked(a)[0].key).toBe("interview");
-    const b = { ...a, interview: "ready" as const };
-    expect(marked(b)[0].key).toBe("references");
-    expect(marked({ ...b, references: "in_progress" as const })[0].key).toBe("mentoring");
+    expect(marked(a)[0].key).toBe("references");
+    const b = { ...a, references: "in_progress" as const };
+    expect(row(b, "references").done).toBe(true);
+    expect(marked(b)[0].key).toBe("interview");
+    const c = { ...b, interview: "in_progress" as const };
+    expect(marked(c)[0].key).toBe("interview");
+    const d = { ...b, interview: "ready" as const };
+    expect(marked(d)[0].key).toBe("mentoring");
   });
 
-  it("mentoring keeps the marker until both sessions complete; session states unchanged (E16)", () => {
+  it("mentoring keeps the marker until BOTH sessions are completed", () => {
     const all = { ...p2, personality: "done" as const, references: "completed" as const, interview: "ready" as const };
-    expect(row({ ...all, mentoring: [s(1, "requested"), s(2, "requested")] }, "mentoring")).toMatchObject({ line: "Session 1: Not booked yet\nFollow-up: Book after session 1", action: { label: "Book session 1" } });
     expect(marked({ ...all, mentoring: [s(1, "completed"), s(2, "scheduled")] })[0].key).toBe("mentoring");
-    expect(row({ ...all, mentoring: [s(1, "completed"), s(2, "completed")] }, "mentoring")).toMatchObject({ done: true, action: null });
+    expect(marked({ ...all, mentoring: [s(1, "scheduled"), s(2, "requested")] })[0].key).toBe("mentoring");
   });
 
-  it("everything done (E11): share is the only Next, with Share my profile", () => {
+  it("assistance is informational: never marked, never done; completed mentoring skips to share", () => {
     const all = { ...p2, personality: "done" as const, references: "completed" as const, interview: "ready" as const, mentoring: [s(1, "completed"), s(2, "completed")] };
-    expect(marked(all)).toEqual([expect.objectContaining({ key: "share", marker: "Next", action: { label: "Share my profile", href: "/hub/account/combined-report" } })]);
-    expect(row(all, "assistance")).toMatchObject({ marker: null, line: ASSISTANCE_NEXT_STEP, tag: { label: "By our team" } });
+    expect(row(all, "mentoring").done).toBe(true);
+    expect(row(all, "assistance")).toMatchObject({ done: false, marker: null, status: ASSISTANCE_NEXT_STEP, action: { label: "Email us", href: CONTACT_HREF } });
+    expect(marked(all)).toEqual([expect.objectContaining({ key: "share", marker: "Next step" })]);
   });
 
-  it("assistance shows the team's status (E16)", () => {
-    expect(row({ ...p2, assistance: "in_progress" }, "assistance").line).toBe("In progress: our team is working on your 3 companies");
-    expect(row({ ...p2, assistance: "done" }, "assistance")).toMatchObject({ done: true, line: "Our team has referred you to your 3 companies" });
+  it("assistance shows the team's status from /admin/assistance; done only for Plan 2", () => {
+    expect(row({ ...p2, assistance: "in_progress" }, "assistance")).toMatchObject({ done: false, status: "In progress: our team is working on your 3 companies" });
+    expect(row({ ...p2, assistance: "done" }, "assistance")).toMatchObject({ done: true, status: "Our team has referred you to your 3 companies" });
+    expect(row({ ...base, assistance: "done" }, "assistance")).toMatchObject({ done: false, status: "Not in your plan" });
   });
 
-  it("copy: no em-dash, no Plan 1/2, no seminar", () => {
-    for (const input of [base, p2, { ...p2, hasRole: false }, { ...base, interview: "expired" as const }]) {
-      const text = JSON.stringify(buildPlanPanelRows(input));
-      expect(text).not.toMatch(/—|Plan [12]|seminar/i);
-    }
+  it("an opened-but-unstarted interview shows its complete-by date", () => {
+    expect(row({ ...base, interview: "in_progress", interviewRole: "PM", interviewDueBy: new Date("2026-11-22T06:00:00Z") }, "interview").status).toBe("Interview used for PM · complete by 22 Nov 2026");
+  });
+
+  it("Plan 1 skips not-included mentoring for the marker", () => {
+    const all = { ...base, personality: "done" as const, references: "completed" as const, interview: "ready" as const };
+    expect(marked(all)[0].key).toBe("share");
   });
 });
 
@@ -125,3 +169,11 @@ describe("mentoringSessions", () => {
   });
 });
 
+describe("planDashboardView", () => {
+  const plan = { orderId: "o", product: "plan_prepare" as const, interviewUsed: false, reportCreditsLeft: 3 };
+  it("plan holder -> panel; allowlisted without plan -> offer; everyone else -> none", () => {
+    expect(planDashboardView({ allowlisted: true, plan })).toBe("panel");
+    expect(planDashboardView({ allowlisted: true, plan: null })).toBe("offer");
+    expect(planDashboardView({ allowlisted: false, plan: null })).toBe("none");
+  });
+});

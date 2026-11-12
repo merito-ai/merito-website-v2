@@ -36,8 +36,8 @@ describe("paymentEmails", () => {
       expect(msg.subject).toBe("Your Merito plan is active: Assess + Mentor + Apply");
       expect(msg.text).toContain("CV analysis with detailed report (3 roles)");
       expect(msg.text).toContain("Mentoring: 1 hour as two 30-min sessions");
-      expect(msg.text).toContain("1. Check a role");
-      expect(msg.text).toContain("5. Mentoring");
+      expect(msg.text).toContain("1. Check a role (CV report)");
+      expect(msg.text).toContain("5. Mentoring (two 30-min sessions)");
       expect(msg.text).toMatch(/Start with step 1: check a role\s*\S+\/hub\/account/);
       expect(msg.html).toContain('/hub/account">Start with step 1: check a role</a>');
       expect(msg.text).toContain("Once you start, you have 10 days to complete it.");
@@ -50,7 +50,7 @@ describe("paymentEmails", () => {
       const msg = sendMock.mock.calls[0][0];
       expect(msg.subject).toBe("Your Merito plan is active: Assess + Prepare");
       expect(msg.text).not.toContain("mentoring");
-      expect(msg.text).toContain("5. Shareable profile");
+      expect(msg.text).toContain("5. Share consolidated profile");
       expect(msg.text).toContain("10 days to complete it");
       expect(msg.text).not.toContain("Application assistance");
     });
