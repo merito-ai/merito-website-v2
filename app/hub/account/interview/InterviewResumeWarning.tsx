@@ -20,7 +20,7 @@ export default function InterviewResumeWarning() {
     >
       <AlertTriangle size={15} strokeWidth={2} style={{ color: "#BD7E12", marginTop: 1 }} className="shrink-0" />
       <p className="font-[family-name:var(--font-poppins)]" style={{ color: "#BD7E12", fontSize: 12.5, lineHeight: 1.65, margin: 0 }}>
-        You can resume once if your session gets interrupted. A second interruption can&apos;t be recovered automatically — make sure
+        You can resume once if your session gets interrupted. A second interruption can&apos;t be recovered automatically, so make sure
         your network and power are stable before you begin.
       </p>
     </div>

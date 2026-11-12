@@ -176,7 +176,7 @@ export default async function PublicSharePage({ params }: { params: Promise<{ to
             Assessed for <strong style={{ color: "#fff", fontWeight: 600 }}>{primaryRole}</strong>
           </p>
           <p className="font-[family-name:var(--font-inter)]" style={{ maxWidth: "56ch", color: "#B8B3C8", fontSize: 14.5, lineHeight: 1.65, margin: "0 0 36px" }}>
-            Four independent assessments — role fitment, personality, a proctored AI interview and peer references — consolidated by Merito HUB into one verifiable, shareable profile.
+            Four independent assessments (role fitment, personality, a proctored AI interview and peer references) consolidated by Merito HUB into one verifiable, shareable profile.
           </p>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0,1fr))", gap: 14 }}>
@@ -339,7 +339,7 @@ export default async function PublicSharePage({ params }: { params: Promise<{ to
 
           {personality && (
             <div id="personality">
-              <SectionHeading index="02 · Personality" title="Big Five (OCEAN) working-style profile" blurb="Five research-backed traits describing working style, self-reported against a validated questionnaire. No score here is inherently good or bad — these describe tendencies, not ability." eyebrowColor="#4B4894" />
+              <SectionHeading index="02 · Personality" title="Big Five (OCEAN) working-style profile" blurb="Five research-backed traits describing working style, self-reported against a validated questionnaire. No score here is inherently good or bad: these describe tendencies, not ability." eyebrowColor="#4B4894" />
               <CondensedPersonalitySection candidateName={displayName} scores={personality.scores} culture={personality.culture} />
             </div>
           )}

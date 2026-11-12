@@ -33,7 +33,7 @@ export default function AuthenticatedFitmentChecker() {
   const pollForResult = (leadId: string, attempt = 0) => {
     if (attempt >= POLL_MAX_ATTEMPTS) {
       setChecking(false);
-      setErrorMsg("Your score is taking longer than usual — check back in a few minutes.");
+      setErrorMsg("Your score is taking longer than usual. Check back in a few minutes.");
       return;
     }
     setTimeout(async () => {
@@ -81,7 +81,7 @@ export default function AuthenticatedFitmentChecker() {
       if (!res.ok || !data.status) {
         setChecking(false);
         setIsDuplicate(Boolean(data.duplicate));
-        setErrorMsg(data.error || "Something went wrong — please try again.");
+        setErrorMsg(data.error || "Something went wrong. Please try again.");
         return;
       }
       if (data.status === "ready") {
@@ -95,10 +95,10 @@ export default function AuthenticatedFitmentChecker() {
         return;
       }
       setChecking(false);
-      setErrorMsg("Something went wrong — please try again.");
+      setErrorMsg("Something went wrong. Please try again.");
     } catch {
       setChecking(false);
-      setErrorMsg("Something went wrong — please try again.");
+      setErrorMsg("Something went wrong. Please try again.");
     }
   };
 
@@ -211,7 +211,7 @@ export default function AuthenticatedFitmentChecker() {
               onChange={(e) => {
                 const file = e.target.files?.[0] || null;
                 if (file && file.size > 5 * 1024 * 1024) {
-                  setErrorMsg("That file is too large — please upload a CV under 5MB.");
+                  setErrorMsg("That file is too large. Please upload a CV under 5MB.");
                   return;
                 }
                 setErrorMsg(null);

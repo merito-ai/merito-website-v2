@@ -160,3 +160,24 @@ Minor / not fixed:
 - FIXED 2026-11-12: locked sample crop (430px) hid half the new culture block at 375; crop now 560. Locked-state copy said 65 statements (Big Five only); now counts culture items (104) and lists culture in steps and "Also included".
 - (Minor, tooling) Vitest on Windows fails every file ("Cannot read properties of undefined (reading 'config')") when started from a lowercase `d:` path; run from `D:`.
 - (Minor) Desktop emulation in the devtools browser reports a 5120px viewport unless `mobile` is set; use `1280x900x1,mobile` for desktop checks.
+
+## Founder-test prep (2026-11-12, branch feat/personality-culture-surfaces)
+
+Done: combined/sample/share personality card and skill rows stack at 375px; interview validity (`INTERVIEW_VALIDITY_DAYS = 10`, `lib/planFeatures.ts`) shown in the paywall modal, locked-state steps, plan detail line, pricing table, welcome email, and in-progress card (falls back to invited_at + 10 days when the vendor gives no expiry); every interview by an allowlisted user or plan holder is 45 min with the 10-skill cap (`getsPlanInterviewLength`, `lib/plans.ts`); application assistance row says what happens next; mentoring card explains Scheduled/Completed; Hub em-dash sweep; login email label; report tile "Locked" instead of "Not started".
+
+PM to confirm:
+- **Interview validity is UI copy only.** The IntervueBox invite API (`POST /public/invitations/interviews/:id`, body `{candidateIds, accessMode}`) has no expiry/validity parameter in our code or the integration spec. Prod magic links so far expire 3.0 days after invite, so the vendor must be asked to set 10 days on their side, or the "10 days" copy is wrong for anyone who waits past day 3.
+- **Assistance turnaround:** "within 7 working days of purchase" is a conservative default (`ASSISTANCE_NEXT_STEP`). Ops must actually call; nothing reminds them.
+
+Medium:
+- **No admin tracking for application assistance:** ops can only find Plan 2 buyers in Payments; no "contacted / companies picked / referred" status, so the user's panel row can never change. Smallest fix: a status column on the plan order in admin, shown in the panel.
+- Dashboard header counts "N of 5 steps" while the plan panel shows 7 numbered steps.
+- Plan names differ: pricing columns "Prepare" / "Mentor + Apply" vs panel and emails "Assess + Prepare" / "Assess + Mentor + Apply".
+- Plan 2 dashboard still shows the generic "Talk to a Merito career expert / Schedule your call" guidance card next to the panel's "Book session 1" (two entry points, one says "Pick a slot in the next 48 hours").
+- Panel interview row shows "In progress" with no deadline; the date is only on the interview page.
+
+Low:
+- SalesIQ chat bubble covers the panel's right-hand action links at desktop widths (e.g. personality "Start").
+- Admin plan allowlist shows the literal "None" for an empty note.
+- Expert page header for Plan 2 says "A 1-1 session" (plan has two).
+- `/hub/share/[token]` not re-checked at 375 in this pass (same components as `/hub/sample-report`, which was).

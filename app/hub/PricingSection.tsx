@@ -138,7 +138,7 @@ export default function PricingSection() {
           >
             <div>
               <p className="font-[family-name:var(--font-gabarito)] font-semibold text-white" style={{ fontSize: "1.2rem", margin: 0 }}>
-                Full Profile Bundle — {formatPrice(BUNDLE_PRICE)}
+                Full Profile Bundle: {formatPrice(BUNDLE_PRICE)}
               </p>
               <p className="font-[family-name:var(--font-poppins)] text-[rgba(255,255,255,0.7)]" style={{ fontSize: 13, margin: "6px 0 0" }}>
                 Detailed report + personality assessment + reference checks. Save {formatPrice(BUNDLE_SAVING)} versus buying them separately ({formatPrice(BUNDLE_SOLO_TOTAL)}).

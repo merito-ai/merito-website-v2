@@ -106,7 +106,7 @@ export default function LoginPage({
               type="button"
               onClick={() => setStatus("idle")}
               className="self-start font-[family-name:var(--font-poppins)] font-semibold text-[#ed1a24] underline"
-              style={{ fontSize: 12.5, background: "none", border: "none", padding: 0, cursor: "pointer" }}
+              style={{ fontSize: 12.5, background: "none", border: "none", padding: 0, minHeight: 44, cursor: "pointer" }}
             >
               Send a new link
             </button>
@@ -122,8 +122,13 @@ export default function LoginPage({
                 That sign-in link has expired or was already used. Enter your email and we&apos;ll send a new one.
               </p>
             )}
+            <label htmlFor="login-email" className="block font-[family-name:var(--font-poppins)] font-semibold text-black" style={{ fontSize: 13, marginBottom: 6 }}>
+              Email
+            </label>
             <input
+              id="login-email"
               type="email"
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
@@ -147,7 +152,7 @@ export default function LoginPage({
               {status === "sending" ? "Sending…" : "Send link"}
             </button>
             {status === "error" && (
-              <p style={{ fontSize: 12.5, color: "#ed1a24", marginTop: 10, textAlign: "center" }}>
+              <p role="alert" style={{ fontSize: 12.5, color: "#c8151e", marginTop: 10, textAlign: "center" }}>
                 Something went wrong. Please try again.
               </p>
             )}

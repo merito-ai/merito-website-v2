@@ -24,7 +24,7 @@ export default function InterviewProcessingState({ roleTitle }: { roleTitle: str
         </span>
       </div>
       <p className="font-[family-name:var(--font-poppins)] text-white/60" style={{ fontSize: 13, lineHeight: 1.65, margin: 0 }}>
-        Thanks — we&apos;ve got your interview. It usually takes a few minutes to score. This page updates
+        Thanks, we&apos;ve got your interview. It usually takes a few minutes to score. This page updates
         itself the moment your report is ready, so you can wait here or close this and come back later.
       </p>
     </div>

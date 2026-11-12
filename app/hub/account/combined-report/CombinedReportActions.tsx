@@ -125,7 +125,7 @@ export default function CombinedReportActions({
       )}
       {captionCopied && (
         <span className="w-full font-[family-name:var(--font-poppins)] text-[#3FCB8C]" style={{ fontSize: 11.5 }}>
-          Caption copied — paste it into the LinkedIn post that just opened.
+          Caption copied. Paste it into the LinkedIn post that just opened.
         </span>
       )}
       {previewOpen && (

@@ -39,7 +39,7 @@ const HEROES: Record<HubSegment, HubHero> = {
     eyebrow: "Merito HUB · Senior & confidential",
     headlineLead: "Know where you stand",
     headlineAccent: "before your next conversation.",
-    sub: "A confidential fitment read for senior professionals weighing a move — no public profile, no noise. See exactly where you stand before it matters.",
+    sub: "A confidential fitment read for senior professionals weighing a move. No public profile, no noise. See exactly where you stand before it matters.",
     ctaLabel: "Check your fit privately - free",
     note: "Private by default · Nothing is visible to your employer or network unless you choose to share it",
   },

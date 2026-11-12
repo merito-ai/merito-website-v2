@@ -36,7 +36,7 @@ export default function InterviewAppearedState({ roleTitle, leadId }: { roleTitl
         </span>
       </div>
       <p className="font-[family-name:var(--font-poppins)] text-white/60" style={{ fontSize: 13, lineHeight: 1.65, margin: "0 0 16px" }}>
-        Your interview is in progress — this updates automatically once it&apos;s scored. Got disconnected? Pick it back up below.
+        Your interview is in progress. This updates automatically once it&apos;s scored. Got disconnected? Pick it back up below.
       </p>
       <button
         type="button"

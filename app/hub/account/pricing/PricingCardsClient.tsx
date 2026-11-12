@@ -256,7 +256,7 @@ export default function PricingCardsClient({
 
             {bundlePartiallyOwned ? (
               <p className="font-[family-name:var(--font-poppins)] text-white/50" style={{ fontSize: 12.5, lineHeight: 1.6, flex: 1, margin: 0 }}>
-                Not applicable — you already own at least one of these separately. Buy what's left individually above.
+                Not applicable: you already own at least one of these separately. Buy what's left individually above.
               </p>
             ) : (
               <>

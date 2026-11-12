@@ -56,7 +56,7 @@ export default function FeedbackForm({ token }: { token: string }) {
       setState({ kind: "submitted" });
     } catch {
       setBusy(false);
-      setError("Something went wrong — please try again.");
+      setError("Something went wrong. Please try again.");
     }
   }
 
@@ -83,7 +83,7 @@ export default function FeedbackForm({ token }: { token: string }) {
     };
     return <p>{messages[state.reason] || "This feedback link isn't valid."}</p>;
   }
-  if (state.kind === "submitted") return <p>Thanks — your feedback has been recorded.</p>;
+  if (state.kind === "submitted") return <p>Thanks, your feedback has been recorded.</p>;
 
   return (
     <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>

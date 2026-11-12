@@ -130,7 +130,7 @@ export default function FitmentChecker() {
       if (!res.ok || !data.status) {
         setChecking(false);
         setIsDuplicate(Boolean(data.duplicate));
-        setErrorMsg(data.error || "Something went wrong — please try again.");
+        setErrorMsg(data.error || "Something went wrong. Please try again.");
         track("score_error", { reason: data.duplicate ? "duplicate" : "submit_failed" });
         return;
       }
@@ -147,11 +147,11 @@ export default function FitmentChecker() {
         return;
       }
       setChecking(false);
-      setErrorMsg("Something went wrong — please try again.");
+      setErrorMsg("Something went wrong. Please try again.");
     } catch {
       window.grecaptcha?.reset?.(widgetIdRef.current ?? undefined);
       setChecking(false);
-      setErrorMsg("Something went wrong — please try again.");
+      setErrorMsg("Something went wrong. Please try again.");
       track("score_error", { reason: "network" });
     }
   };
@@ -162,7 +162,7 @@ export default function FitmentChecker() {
   const pollForResult = (leadId: string, attempt = 0) => {
     if (attempt >= POLL_MAX_ATTEMPTS) {
       setChecking(false);
-      setErrorMsg("Your score is taking longer than usual — check back in a few minutes.");
+      setErrorMsg("Your score is taking longer than usual. Check back in a few minutes.");
       track("score_error", { reason: "timeout" });
       return;
     }
@@ -230,7 +230,7 @@ export default function FitmentChecker() {
         style={{ fontSize: 12, lineHeight: 1.55, margin: "0 0 16px" }}
       >
         No sign-up for your first score. We&apos;ll ask for your CV, the role you&apos;re
-        targeting, and its job description — about 2 minutes.
+        targeting, and its job description. About 2 minutes.
       </p>
 
       <label className="block font-[family-name:var(--font-poppins)] font-semibold text-black" style={{ fontSize: 12, marginBottom: 6 }}>
@@ -257,7 +257,7 @@ export default function FitmentChecker() {
         style={{ padding: "13px 14px", borderRadius: 8, fontSize: 14, marginBottom: 4 }}
       />
       <p className="text-[#9c9c9c]" style={{ fontSize: 11, lineHeight: 1.4, margin: "0 0 12px" }}>
-        Use the same email address as on your CV — mismatched emails can break your account setup later.
+        Use the same email address as on your CV. Mismatched emails can break your account setup later.
       </p>
 
       <label className="block font-[family-name:var(--font-poppins)] font-semibold text-black" style={{ fontSize: 12, marginBottom: 6 }}>
@@ -321,7 +321,7 @@ export default function FitmentChecker() {
         onChange={(e) => {
           const file = e.target.files?.[0] || null;
           if (file && file.size > 5 * 1024 * 1024) {
-            setErrorMsg("That file is too large — please upload a CV under 5MB.");
+            setErrorMsg("That file is too large. Please upload a CV under 5MB.");
             return;
           }
           setErrorMsg(null);
@@ -351,7 +351,7 @@ export default function FitmentChecker() {
       </div>
 
       <p className="text-[#9c9c9c]" style={{ fontSize: 11, lineHeight: 1.5, margin: "8px 0 0" }}>
-        By uploading, you agree to Merito storing your CV to build your profile — see our{" "}
+        By uploading, you agree to Merito storing your CV to build your profile. See our{" "}
         <Link href="/privacy" className="text-[#9c9c9c] underline">
           Privacy Policy
         </Link>

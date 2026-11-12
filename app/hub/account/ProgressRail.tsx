@@ -51,7 +51,7 @@ export default function ProgressRail({
       label: "Fitment report",
       icon: FileText,
       state: reportUnlocked ? "done" : "locked",
-      statusText: reportUnlocked ? "Unlocked" : "Not started",
+      statusText: reportUnlocked ? "Unlocked" : "Locked",
       href: `/hub/account/report?lead=${encodeURIComponent(leadId)}`,
     },
     {

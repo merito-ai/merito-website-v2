@@ -231,7 +231,7 @@ export default async function FullReportPage({
                   return <StrongestIcon size={16} strokeWidth={2} className="shrink-0 text-[#3FCB8C]" />;
                 })()}
                 <span className="font-[family-name:var(--font-poppins)]" style={{ fontSize: 12 }}>
-                  <span className="font-semibold text-[#3FCB8C]">Strongest —</span>{" "}
+                  <span className="font-semibold text-[#3FCB8C]">Strongest:</span>{" "}
                   <span className="text-white/70">{strongest.label} ({strongest.score}%)</span>
                 </span>
               </div>
@@ -244,7 +244,7 @@ export default async function FullReportPage({
                   return <FocusIcon size={16} strokeWidth={2} className="shrink-0" style={{ color: weakestBand.textColor }} />;
                 })()}
                 <span className="font-[family-name:var(--font-poppins)]" style={{ fontSize: 12 }}>
-                  <span className="font-semibold" style={{ color: weakestBand.textColor }}>Focus area —</span>{" "}
+                  <span className="font-semibold" style={{ color: weakestBand.textColor }}>Focus area:</span>{" "}
                   <span className="text-white/70">{weakest.label} ({weakest.score}%)</span>
                 </span>
               </div>

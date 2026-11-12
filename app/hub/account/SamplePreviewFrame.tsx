@@ -31,7 +31,7 @@ export default function SamplePreviewFrame({
       <p className="font-[family-name:var(--font-poppins)] text-white/35" style={{ fontSize: 11.5, margin: "0 0 14px" }}>
         {isRealData
           ? "Generated from your CV. You're seeing the top of it."
-          : "Sample data — not your results."}
+          : "Sample data, not your results."}
       </p>
 
       <div style={{ position: "relative", overflow: "hidden" }}>
