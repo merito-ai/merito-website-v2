@@ -7,10 +7,17 @@ import { MIN_REFERENCES, MAX_REFEREES } from "@/lib/referenceChecks";
 const QUESTIONS = ITEMS.length + IMPRESSION_ITEMS.length + CULTURE_ITEMS.length;
 const PLAN_INTERVIEW_SKILLS = 10; // = MAX_SKILLS_BY_DURATION[PLAN_INTERVIEW_MINUTES]; jobs.ts is server-only, test pins it
 
+// Days a candidate has to finish an interview once started (PM 2026-11-12). The real cutoff is the vendor's magic-link expiry.
+export const INTERVIEW_VALIDITY_DAYS = 10;
+export const INTERVIEW_VALIDITY_NOTE = `Once you start, you have ${INTERVIEW_VALIDITY_DAYS} days to complete it.`;
+
+// Application assistance is offline (no workflow): what happens next. Turnaround is a PM default (2026-11-12), not yet confirmed.
+export const ASSISTANCE_NEXT_STEP = "Our team will call or email you within 7 working days of purchase to pick your 3 companies.";
+
 export const PLAN_FEATURE_DETAILS = {
   reports: `Detailed fitment report for each role you check. Extra roles ${formatPrice(PRODUCT_PRICING.report.entry)} each.`,
   personality: `${QUESTIONS} questions in two parts. Report on your traits and the work cultures that suit you.`,
-  interview: `Mock interview on up to ${PLAN_INTERVIEW_SKILLS} skills from your target role, with a scored report.`,
+  interview: `45-min mock interview on up to ${PLAN_INTERVIEW_SKILLS} skills from your target role, with a scored report. ${INTERVIEW_VALIDITY_NOTE}`,
   references: `Invite up to ${MAX_REFEREES} referees; ${MIN_REFERENCES} responses give you a verified reference report. Re-reference ${formatPrice(PLAN_REFERENCE_REFRESH_PRICE_PAISE)}.`,
   mentoring: "A first session and a follow-up with a Merito expert",
   assistance: "Our team refers you to 3 companies you choose.",

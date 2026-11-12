@@ -3,6 +3,7 @@ import { renderTemplate } from "@/lib/emailTemplates";
 import { getSupabaseServerClient } from "@/lib/supabase";
 import { PRODUCT_LABELS } from "@/lib/razorpay/pricing";
 import { buildPlanPanelRows } from "@/lib/planPanel";
+import { INTERVIEW_VALIDITY_NOTE, ASSISTANCE_NEXT_STEP } from "@/lib/planFeatures";
 import { buildPlanCards } from "@/app/hub/account/pricing/pricingCatalog";
 import { getAbsoluteUrl } from "@/lib/site";
 import type { PlanProduct } from "@/lib/plans";
@@ -53,6 +54,7 @@ export async function sendPlanWelcomeEmail(userId: string, product: PlanProduct)
     .filter((r) => r.included)
     .map((r) => r.label);
   const url = getAbsoluteUrl("/hub/account");
+  const notes = [`Mock AI interview: ${INTERVIEW_VALIDITY_NOTE}`, ...(product === "plan_mentor" ? [`Application assistance: ${ASSISTANCE_NEXT_STEP}`] : [])];
   const text = [
     `Your Merito plan "${name}" is active.`,
     "",
@@ -62,12 +64,16 @@ export async function sendPlanWelcomeEmail(userId: string, product: PlanProduct)
     "Your steps:",
     ...steps.map((st, i) => `${i + 1}. ${st}`),
     "",
+    "Good to know:",
+    ...notes.map((n) => `- ${n}`),
+    "",
     `Start with step 1: check a role\n${url}`,
   ].join("\n");
   const html =
     `<p>Your Merito plan <strong>${name}</strong> is active.</p>` +
     `<p><strong>What's included:</strong></p><ul>${benefits.map((b) => `<li>${b}</li>`).join("")}</ul>` +
     `<p><strong>Your steps:</strong></p><ol>${steps.map((st) => `<li>${st}</li>`).join("")}</ol>` +
+    `<p><strong>Good to know:</strong></p><ul>${notes.map((n) => `<li>${n}</li>`).join("")}</ul>` +
     `<p><a href="${url}">Start with step 1: check a role</a></p>`;
 
   await getResendClient().emails.send({ from: getFromEmail(), to: [to], subject: `Your Merito plan is active: ${name}`, text, html });

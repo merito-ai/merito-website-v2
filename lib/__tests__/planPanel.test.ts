@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { buildPlanPanelRows, mentoringSessions, planDashboardView, type PlanPanelInput } from "../planPanel";
+import { buildPlanPanelRows, mentoringSessions, planDashboardView, CONTACT_HREF, type PlanPanelInput } from "../planPanel";
+import { ASSISTANCE_NEXT_STEP } from "../planFeatures";
 
 const base: PlanPanelInput = {
   product: "plan_prepare",
@@ -126,7 +127,7 @@ describe("plan steps", () => {
   it("assistance is informational: never marked, never done; completed mentoring skips to share", () => {
     const all = { ...p2, personality: "done" as const, references: "completed" as const, interview: "ready" as const, mentoring: [s(1, "completed"), s(2, "completed")] };
     expect(row(all, "mentoring").done).toBe(true);
-    expect(row(all, "assistance")).toMatchObject({ done: false, marker: null, status: "Our team will call you about your 3 dream companies" });
+    expect(row(all, "assistance")).toMatchObject({ done: false, marker: null, status: ASSISTANCE_NEXT_STEP, action: { label: "Email us", href: CONTACT_HREF } });
     expect(marked(all)).toEqual([expect.objectContaining({ key: "share", marker: "Next step" })]);
   });
 

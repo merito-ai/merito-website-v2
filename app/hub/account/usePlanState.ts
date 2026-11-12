@@ -39,6 +39,11 @@ export function hasUnusedPlanInterview(state: PlanState | null): boolean {
   return Boolean(state?.plan && !state.plan.interviewUsed);
 }
 
+// Mirrors getsPlanInterviewLength (lib/plans.ts): allowlisted users and plan holders get 45-min interviews.
+export function hasPlanInterviewLength(state: PlanState | null): boolean {
+  return Boolean(state?.allowlisted || state?.plan);
+}
+
 // Any unused interview credit (a paid interview or a plan's). Never take payment while one exists.
 export function hasUnusedInterviewCredit(state: PlanState | null): boolean {
   return hasUnusedPlanInterview(state) || (state?.interviewCredits ?? 0) > 0;

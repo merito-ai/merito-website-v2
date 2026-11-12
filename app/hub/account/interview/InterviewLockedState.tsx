@@ -9,6 +9,7 @@ import LockedFeatureLayout from "../LockedFeatureLayout";
 import { usePlanState, planCardLabel } from "../usePlanState";
 import SamplePreviewFrame from "../SamplePreviewFrame";
 import SampleInterviewReport from "./SampleInterviewReport";
+import { INTERVIEW_VALIDITY_DAYS } from "@/lib/planFeatures";
 
 const IMPACT_POINTS = [
   "Burns your first attempt somewhere it costs nothing, instead of in a round that counts.",
@@ -20,6 +21,7 @@ const STEPS = [
   "Answer 10 role-matched questions on camera",
   "Get scored on 5 weighted parameters plus a per-skill breakdown",
   "Walk away with a strengths/gaps analysis and a phased improvement roadmap",
+  `Start whenever you're ready, then finish within ${INTERVIEW_VALIDITY_DAYS} days`,
 ];
 
 const ALSO_INCLUDED = [

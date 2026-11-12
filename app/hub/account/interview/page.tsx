@@ -110,7 +110,7 @@ export default async function InterviewReportPage({
     return (
       <main>
         <div className="mx-auto" style={{ maxWidth: 820, padding: "28px 24px 40px", display: "flex", flexDirection: "column", gap: 20 }}>
-          <InterviewInProgressState roleTitle={interview.role_title} leadId={activeLead.id} deadline={interview.magic_link_expires_at} />
+          <InterviewInProgressState roleTitle={interview.role_title} leadId={activeLead.id} deadline={interview.magic_link_expires_at} invitedAt={interview.invited_at} />
           <InterviewStatusPoller leadId={activeLead.id} currentStatus="invited" />
         </div>
       </main>

@@ -1,6 +1,6 @@
 import { UserRound } from "lucide-react";
 import ExpertBookingButton from "./ExpertBookingButton";
-import type { MentoringSession } from "@/lib/planPanel";
+import { CONTACT_HREF, type MentoringSession } from "@/lib/planPanel";
 
 const NAMES = ["Session 1", "Follow-up"];
 
@@ -32,6 +32,9 @@ export default function PlanMentoringCard({ firstName, sessions }: { firstName: 
           </li>
         ))}
       </ul>
+      <p className="text-white/55 border-t border-white/[0.06]" style={{ fontSize: 12.5, lineHeight: 1.6, margin: 0, paddingTop: 12 }}>
+        Booked a slot? It shows as Scheduled here once our team confirms it, and Completed after the call. The follow-up opens once session 1 is scheduled. Questions: <a href={CONTACT_HREF} className="text-white underline">admin@merito.ai</a>
+      </p>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { PLAN_UPGRADE_PRICE_LABEL } from "@/lib/razorpay/pricing";
-import { PLAN_FEATURE_DETAILS, type PlanFeatureKey } from "@/lib/planFeatures";
+import { PLAN_FEATURE_DETAILS, ASSISTANCE_NEXT_STEP, type PlanFeatureKey } from "@/lib/planFeatures";
 
 // "Your plan" panel rows (dashboard + pricing). Pure + client-safe: lib/plans.ts imports the service-role client.
 export type PlanPanelInput = {
@@ -119,8 +119,8 @@ export function buildPlanPanelRows(i: PlanPanelInput): PlanPanelRow[] {
       label: "Application assistance (3 companies)",
       included: mentor,
       done: false, // informational: the team calls, nothing for the user to finish
-      status: mentor ? "Our team will call you about your 3 dream companies" : "Not in your plan",
-      action: mentor ? { label: "Contact us", href: CONTACT_HREF } : upgrade,
+      status: mentor ? ASSISTANCE_NEXT_STEP : "Not in your plan",
+      action: mentor ? { label: "Email us", href: CONTACT_HREF } : upgrade,
     },
     // The existing consolidated report + its share link; no separate profile feature.
     { key: "share", label: "Share consolidated profile", included: true, done: false, status: "Updates as you complete steps", action: { label: "View & share", href: "/hub/account/combined-report" } },

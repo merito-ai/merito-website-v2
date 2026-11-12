@@ -27,8 +27,9 @@ describe("buildPlanCards", () => {
     expect(cards[1].lines.map((l) => l.included)).toEqual([true, true, true, true, true, true, true]);
   });
 
-  it("offline/composite rows carry a helper, and nothing promises a guaranteed outcome", () => {
+  it("offline/composite rows (and the interview validity) carry a helper, and nothing promises a guaranteed outcome", () => {
     expect(cards[1].lines.filter((l) => l.helper).map((l) => l.label)).toEqual([
+      "Mock AI interview (45 min)",
       "Mentoring: 1 hour as two 30-min sessions",
       "Application assistance (3 companies, via Merito's network)",
       "Shareable consolidated profile",

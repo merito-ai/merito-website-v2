@@ -40,6 +40,8 @@ describe("paymentEmails", () => {
       expect(msg.text).toContain("5. Mentoring (two 30-min sessions)");
       expect(msg.text).toMatch(/Start with step 1: check a role\s*\S+\/hub\/account/);
       expect(msg.html).toContain('/hub/account">Start with step 1: check a role</a>');
+      expect(msg.text).toContain("Once you start, you have 10 days to complete it.");
+      expect(msg.text).toContain("Application assistance: Our team will call or email you within 7 working days");
     });
 
     it("lists only Plan 1's benefits and steps for plan_prepare", async () => {
@@ -49,6 +51,8 @@ describe("paymentEmails", () => {
       expect(msg.subject).toBe("Your Merito plan is active: Assess + Prepare");
       expect(msg.text).not.toContain("mentoring");
       expect(msg.text).toContain("5. Share consolidated profile");
+      expect(msg.text).toContain("10 days to complete it");
+      expect(msg.text).not.toContain("Application assistance");
     });
 
     it("sends nothing when the user has no email", async () => {

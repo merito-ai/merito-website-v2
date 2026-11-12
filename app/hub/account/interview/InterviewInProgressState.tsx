@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Mic, Clock, Play, Volume2, Wifi } from "lucide-react";
 import InterviewResumeWarning from "./InterviewResumeWarning";
+import { INTERVIEW_VALIDITY_DAYS } from "@/lib/planFeatures";
 
 const CHECKLIST = [
   { icon: Volume2, text: "Find a quiet space with no interruptions" },
@@ -14,11 +15,18 @@ const CHECKLIST = [
 // not "APPEARED" -- payment already happened and a magic-link invite was
 // already sent. The button below launches that link directly instead of
 // relying on the candidate finding IntervueBox's email.
-export default function InterviewInProgressState({ roleTitle, leadId, deadline }: { roleTitle: string; leadId: string; deadline?: string | null }) {
+export function interviewDeadline(deadline: string | null | undefined, invitedAt: string | null | undefined): Date | null {
+  // The vendor's magic-link expiry is the real cutoff; without one, show our stated validity from the invite.
+  if (deadline) return new Date(deadline);
+  return invitedAt ? new Date(new Date(invitedAt).getTime() + INTERVIEW_VALIDITY_DAYS * 86_400_000) : null;
+}
+
+export default function InterviewInProgressState({ roleTitle, leadId, deadline, invitedAt }: { roleTitle: string; leadId: string; deadline?: string | null; invitedAt?: string | null }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const deadlineLabel = deadline
-    ? new Date(deadline).toLocaleDateString("en-IN", { year: "numeric", month: "long", day: "numeric" })
+  const due = interviewDeadline(deadline, invitedAt);
+  const deadlineLabel = due
+    ? due.toLocaleDateString("en-IN", { year: "numeric", month: "long", day: "numeric", timeZone: "Asia/Kolkata" })
     : null;
 
   async function handleStart() {

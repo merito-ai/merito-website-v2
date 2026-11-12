@@ -5,7 +5,8 @@ import type { InterviewStatus } from "./ProgressRail";
 import { PRODUCT_PRICING, formatPrice, type CandidateLevel } from "@/lib/razorpay/pricing";
 import { trackPurchase } from "@/lib/analytics";
 import { fetchWithTimeout, networkErrorMessage } from "@/lib/hub/fetchWithTimeout";
-import { usePlanState, isPlanOnly, hasUnusedPlanInterview, hasUnusedInterviewCredit } from "./usePlanState";
+import { usePlanState, isPlanOnly, hasUnusedPlanInterview, hasUnusedInterviewCredit, hasPlanInterviewLength } from "./usePlanState";
+import { INTERVIEW_VALIDITY_DAYS, INTERVIEW_VALIDITY_NOTE } from "@/lib/planFeatures";
 import PlanOnlyNotice from "./PlanOnlyNotice";
 
 type RazorpayHandlerResponse = {
@@ -67,6 +68,7 @@ export default function InterviewPaywallModal({
   const [paying, setPaying] = useState(false);
   const { loading: planLoading, state: planState } = usePlanState();
   const [error, setError] = useState<string | null>(null);
+  const long = hasPlanInterviewLength(planState);
   // Set once the invite is actually sent — while set, the modal shows a
   // confirmation instead of closing immediately, so the candidate doesn't
   // lose track of the fact that the next step is checking their email, not
@@ -189,7 +191,7 @@ export default function InterviewPaywallModal({
         <button
           onClick={handleDismiss}
           aria-label="Close"
-          style={{ position: "absolute", top: 16, right: 16, background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#9c9c9c" }}
+          style={{ position: "absolute", top: 8, right: 8, width: 44, height: 44, background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#6b6b6b" }}
         >
           ✕
         </button>
@@ -206,7 +208,7 @@ export default function InterviewPaywallModal({
               You&apos;re all set
             </h2>
             <p className="font-[family-name:var(--font-poppins)] text-[#4b4b4d]" style={{ fontSize: 13.5, lineHeight: 1.6, margin: "0 0 20px" }}>
-              {`Your AI interview for ${roleTitle} is ready. Come back to this page whenever you're ready — you'll be able to launch it right from your dashboard.`}
+              {`Your AI interview for ${roleTitle} is ready. Launch it from your dashboard whenever you're ready, and complete it within ${INTERVIEW_VALIDITY_DAYS} days.`}
             </p>
             <button
               onClick={handleDismiss}
@@ -221,8 +223,11 @@ export default function InterviewPaywallModal({
             <h2 className="font-[family-name:var(--font-gabarito)] font-semibold text-black" style={{ fontSize: "1.4rem", margin: "0 0 10px" }}>
               Ready for a real AI interview?
             </h2>
-            <p className="font-[family-name:var(--font-poppins)] text-[#4b4b4d]" style={{ fontSize: 13.5, lineHeight: 1.6, margin: "0 0 20px" }}>
-              {`You'll be able to launch your AI interview for ${roleTitle} right from your dashboard, whenever you're ready.`}
+            <p className="font-[family-name:var(--font-poppins)] text-[#4b4b4d]" style={{ fontSize: 13.5, lineHeight: 1.6, margin: "0 0 8px" }}>
+              {`You'll be able to launch your ${long ? "45-min " : ""}AI interview for ${roleTitle} right from your dashboard, whenever you're ready.`}
+            </p>
+            <p className="font-[family-name:var(--font-poppins)] text-black" style={{ fontSize: 13.5, fontWeight: 600, lineHeight: 1.6, margin: "0 0 20px" }}>
+              {INTERVIEW_VALIDITY_NOTE}
             </p>
 
             {hasUnusedInterviewCredit(planState) ? (
@@ -246,7 +251,7 @@ export default function InterviewPaywallModal({
                   ? "Starting…"
                   : hasUnusedPlanInterview(planState)
                     ? "Start your 45-min interview (included in your plan)"
-                    : "Start interview (already paid)"}
+                    : long ? "Start your 45-min interview (already paid)" : "Start interview (already paid)"}
               </button>
               </>
             ) : isPlanOnly(planState) ? (
@@ -259,7 +264,7 @@ export default function InterviewPaywallModal({
                   className="w-full font-[family-name:var(--font-poppins)] font-semibold text-white"
                   style={{ height: 50, borderRadius: 8, fontSize: 15, background: paying || planLoading ? "#dcdcdc" : "#ed1a24", border: "none", cursor: paying || planLoading ? "default" : "pointer", boxShadow: paying || planLoading ? "none" : "0 4px 6px rgba(236,34,40,0.3)" }}
                 >
-                  {paying ? "Processing…" : planLoading ? "Checking your plan…" : `Pay ${formatPrice(PRODUCT_PRICING.interview[level])}`}
+                  {paying ? "Processing…" : planLoading ? "Checking your plan…" : long ? `Pay ${formatPrice(PRODUCT_PRICING.interview[level])} for a 45-min interview` : `Pay ${formatPrice(PRODUCT_PRICING.interview[level])}`}
                 </button>
                 <p className="text-[#9c9c9c]" style={{ fontSize: 11.5, textAlign: "center", margin: "10px 0 0" }}>
                   One-time payment per attempt · UPI, card & netbanking
@@ -270,7 +275,7 @@ export default function InterviewPaywallModal({
         )}
 
         {error && (
-          <p style={{ fontSize: 12.5, color: "#ed1a24", marginTop: 10, textAlign: "center" }}>{error}</p>
+          <p role="alert" style={{ fontSize: 12.5, color: "#c8151e", marginTop: 10, textAlign: "center" }}>{error}</p>
         )}
       </div>
     </div>
