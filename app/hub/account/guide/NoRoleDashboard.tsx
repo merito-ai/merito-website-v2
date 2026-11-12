@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { Target, Eye, FileUser, ClipboardList, Gift, ShieldCheck, BadgeCheck, Brain } from "lucide-react";
+import { Target, Eye, FileUser, ClipboardList, ShieldCheck, BadgeCheck, Brain } from "lucide-react";
 import AuthenticatedFitmentChecker, { CHECK_FIT_LABEL } from "../AuthenticatedFitmentChecker";
 import UnlockPlansButton from "./UnlockPlansButton";
+import WelcomeLine from "./WelcomeLine";
 import { BTN_PRIMARY, BTN_GHOST, FONT_HEAD, FONT_BODY } from "./ui";
 import { PLAN_REPORT_COUNT } from "@/lib/planFeatures";
 
@@ -87,17 +88,25 @@ export default function NoRoleDashboard({
     <main className={`mx-auto pb-24 md:pb-10 ${FONT_BODY}`} style={{ maxWidth: 1040, padding: "28px 24px 0" }}>
       <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] items-start" style={{ gap: 28 }}>
         <div>
+          {/* One greeting element: the heading greets, so the one-time welcome line takes the kicker's place. */}
           {view === "s1" && (
-            <span className={CHIP} style={{ gap: 6, borderRadius: 50, padding: "6px 14px", fontSize: 12.5, marginBottom: 14 }}>
-              <Gift size={14} strokeWidth={2} aria-hidden="true" />
+            <WelcomeLine storageKey="seminar" spaced>
               Exclusive plans unlocked for you
-            </span>
+            </WelcomeLine>
           )}
           {view === "plan" && planLabel && (
-            <span className={CHIP} style={{ gap: 6, borderRadius: 50, padding: "6px 14px", fontSize: 12.5, marginBottom: 14 }}>
-              <BadgeCheck size={14} strokeWidth={2} aria-hidden="true" />
-              {planLabel} · active
-            </span>
+            <WelcomeLine
+              storageKey="plan"
+              spaced
+              fallback={
+                <span className={CHIP} style={{ gap: 6, borderRadius: 50, padding: "6px 14px", fontSize: 12.5, marginBottom: 14 }}>
+                  <BadgeCheck size={14} strokeWidth={2} aria-hidden="true" />
+                  {planLabel} · active
+                </span>
+              }
+            >
+              Thanks for joining. Your {planLabel} plan is active.
+            </WelcomeLine>
           )}
           <h1 className={`fv-up ${FONT_HEAD} font-semibold text-white`} style={{ fontSize: "clamp(1.7rem, 3.6vw, 2.2rem)", lineHeight: 1.15, letterSpacing: "-0.02em", margin: 0 }}>
             {hello} {title}

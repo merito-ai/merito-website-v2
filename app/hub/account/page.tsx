@@ -21,9 +21,11 @@ import { getPlanState } from "@/lib/plans";
 import PlanPanel from "./PlanPanel";
 import PlanOfferBanner from "./guide/PlanOfferBanner";
 import { planDashboardView } from "@/lib/planPanel";
-import { firstVisitView, firstName, howMeritoWorksRows, planIncludesRows } from "@/lib/firstVisit";
+import { firstVisitView, firstName, howMeritoWorksRows, planIncludesRows, isSeminarUser } from "@/lib/firstVisit";
 import NoRoleDashboard from "./guide/NoRoleDashboard";
+import WelcomeLine from "./guide/WelcomeLine";
 import PlanSteps from "./PlanSteps";
+import { PLAN_REPORT_COUNT } from "@/lib/planFeatures";
 import Link from "next/link";
 
 export default async function AccountPage({
@@ -257,6 +259,18 @@ export default async function AccountPage({
 
   const userName = current.name || user.email?.split("@")[0] || "there";
 
+  // Seminar users only: a one-time welcome line; hidden once their next step is done (a plan bought / a plan step started).
+  const welcome = !isSeminarUser(planState) ? null : planState.plan ? (
+    <WelcomeLine
+      storageKey="plan"
+      done={reportUnlocked || personalityStatus === "ready" || referenceCheckStatus !== "none" || interviewStatus !== "not_started"}
+    >
+      Your {PRODUCT_LABELS[planState.plan.product]} plan is active. Each step below is included.
+    </WelcomeLine>
+  ) : (
+    <WelcomeLine storageKey="seminar">Your {current.role_title} report is 1 of the {PLAN_REPORT_COUNT} included in every plan.</WelcomeLine>
+  );
+
   return (
     <DashboardClient
       leadId={current.id}
@@ -280,6 +294,7 @@ export default async function AccountPage({
       planOffer={planDashboardView(planState) === "offer" ? <PlanOfferBanner /> : null}
       recruiterActivity={RECRUITER_PREVIEW_ENABLED ? <RecruiterActivityPanel viewCount={recruiterViewCount} /> : null}
       mentoringInPlan={planState.plan?.product === "plan_mentor"}
+      welcome={welcome}
     />
   );
 }

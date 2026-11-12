@@ -37,6 +37,7 @@ export default function DashboardClient({
   planOffer,
   recruiterActivity,
   mentoringInPlan = false,
+  welcome = null,
 }: {
   leadId: string;
   roleTitle: string;
@@ -59,6 +60,7 @@ export default function DashboardClient({
   planOffer?: React.ReactNode; // allowlisted users without a plan: compact offer row that opens the plans popup
   recruiterActivity: React.ReactNode;
   mentoringInPlan?: boolean; // Plan 2: the panel's mentoring row is the booking entry point, so no separate expert card
+  welcome?: React.ReactNode; // seminar users: one-time welcome line in place of the orientation banner (one greeting element)
 }) {
   const [modal, setModal] = useState<"none" | "report" | "generate" | "counselling" | "tour">("none");
   const [reportUnlocked, setReportUnlocked] = useState(initialReportUnlocked);
@@ -132,7 +134,7 @@ export default function DashboardClient({
 
         {planOffer}
 
-        <OnboardingBanner roleTitle={roleTitle} />
+        {welcome ?? <OnboardingBanner roleTitle={roleTitle} />}
 
         <QuickTipsCard onStartTour={() => setModal("tour")} />
 
