@@ -13,6 +13,19 @@ In scope:
 
 Out of scope (existing UI stays as is): N2/S2 form-first changes, welcome line, locked report preview, replacing ProgressRail with the timeline, restyling the plan panel for users with roles, replacing inline plan cards on the dashboard with a role, paywall modal changes, sidebar lock icons, renaming the fitment check everywhere, E1/E6-E11/E13/E16 UI changes.
 
+### Later add-ons (decide after this ships)
+The mockup tabs (`mockups/2026-11-12-hub-first-visit-guide.html` v5) stay the reference for these.
+- Form-first screens (N2 / S2).
+- Welcome line (dismissible, N2 / S2).
+- Locked report preview (fixed placeholder lines only).
+- Timeline replacing ProgressRail for everyone.
+- Plan panel restyle (timeline look) for users with roles.
+- Inline plan cards on the dashboard with a role replaced by "Unlock plans" + the plans popup.
+- Paywall modals: "Unlock plans" for allowlisted users without a plan.
+- Sidebar lock icons on features not yet unlocked.
+- Renaming the fitment check to "Check my fit for a role" everywhere.
+- Edge cases E1, E6, E7, E8, E9, E10, E11, E13, E16.
+
 Approved 2026-11-12. Mockup: `mockups/2026-11-12-hub-first-visit-guide.html` (v3, 4 tabs + phone toggle).
 
 ## Problem
