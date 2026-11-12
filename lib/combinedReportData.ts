@@ -7,6 +7,7 @@ import { nameFromEmail, type Scores } from "@/lib/personality";
 import type { CultureScores } from "@/lib/psychometrics/scoring";
 import { isPersonalityComplete } from "@/lib/psychometrics/testFlow";
 import { leadIdOrRoleTitleFilter } from "@/lib/postgrestIdentityFilter";
+import { readReportRaw } from "@/lib/intervuebox/reportRaw";
 
 export type CombinedReportData = {
   fitment: { roleTitle: string; displayName: string; report: ResumeMatchReportReady } | null;
@@ -105,7 +106,7 @@ export async function loadCombinedReportData({
     }
     const { data: row } = await query.order("updated_at", { ascending: false }).limit(1).maybeSingle();
     if (row && row.status === "ready" && row.report_raw) {
-      interview = { roleTitle: row.role_title, report: row.report_raw as InterviewReportReady, updatedAt: row.updated_at };
+      interview = { roleTitle: row.role_title, report: readReportRaw(row.report_raw), updatedAt: row.updated_at };
     }
   }
 

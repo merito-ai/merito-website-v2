@@ -11,6 +11,7 @@ import type { ReportType } from "@/app/hub/account/reportSections";
 import type { HubNotificationCategory } from "@/lib/hubNotifications";
 import { getAbsoluteUrl } from "@/lib/site";
 import { randomUUID } from "node:crypto";
+import { readReportRaw } from "@/lib/intervuebox/reportRaw";
 
 const BAN_DURATION_INDEFINITE = "876000h"; // ~100 years, matches Supabase's ban_duration API shape for "indefinite"
 const DELETION_PURGE_WINDOW_DAYS = 30;
@@ -339,7 +340,7 @@ export async function getCandidateDetail(userId: string): Promise<CandidateDetai
   const interviewReportByKey = new Map(
     [...latestInterviewByKey.entries()].map(([key, row]) => [
       key,
-      row.status === "ready" ? (row.report_raw as InterviewReportReady | null) : null,
+      row.status === "ready" ? (row.report_raw ? readReportRaw(row.report_raw) : null) : null,
     ])
   );
 

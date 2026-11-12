@@ -9,9 +9,9 @@ import {
   buildLookupInterview,
 } from "@/lib/recruiterPreview";
 import type { ResumeMatchReportReady } from "@/lib/intervuebox/reports";
-import type { InterviewReportReady } from "@/lib/intervuebox/interviewReports";
 import { leadIdOrRoleTitleFilter } from "@/lib/postgrestIdentityFilter";
 import { isPersonalityComplete } from "@/lib/psychometrics/testFlow";
+import { readReportRaw } from "@/lib/intervuebox/reportRaw";
 
 export const runtime = "nodejs";
 
@@ -141,7 +141,7 @@ export async function POST(request: Request) {
         .limit(1)
         .maybeSingle();
       if (interviewRow?.status === "ready" && interviewRow.report_raw) {
-        sections.interview = buildLookupInterview(interviewRow.report_raw as InterviewReportReady, interviewRow.updated_at as string);
+        sections.interview = buildLookupInterview(readReportRaw(interviewRow.report_raw), interviewRow.updated_at as string);
       }
     }
 

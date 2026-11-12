@@ -5,10 +5,10 @@ import { nameFromEmail, type Scores } from "@/lib/personality";
 import { buildLookupFitment, buildLookupPersonality, buildLookupInterview } from "@/lib/recruiterPreview";
 import type { LookupResponse, CandidateLevel } from "@/shared/recruiter-preview/types";
 import type { ResumeMatchReportReady } from "@/lib/intervuebox/reports";
-import type { InterviewReportReady } from "@/lib/intervuebox/interviewReports";
 import { RECRUITER_PREVIEW_ENABLED } from "@/lib/featureFlags";
 import RecruiterPreviewClient from "./RecruiterPreviewClient";
 import { isPersonalityComplete } from "@/lib/psychometrics/testFlow";
+import { readReportRaw } from "@/lib/intervuebox/reportRaw";
 
 export default async function RecruiterPreviewPage({
   searchParams,
@@ -74,7 +74,7 @@ export default async function RecruiterPreviewPage({
       .maybeSingle();
     interview =
       interviewRow && interviewRow.status === "ready" && interviewRow.report_raw
-        ? buildLookupInterview(interviewRow.report_raw as InterviewReportReady, interviewRow.updated_at as string)
+        ? buildLookupInterview(readReportRaw(interviewRow.report_raw), interviewRow.updated_at as string)
         : null;
   }
 

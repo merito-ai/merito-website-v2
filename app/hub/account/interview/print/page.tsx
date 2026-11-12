@@ -4,10 +4,10 @@ import Image from "next/image";
 import { Manrope } from "next/font/google";
 import { Phone, Mail, MapPin, Sparkles, ShieldCheck, ShieldAlert, ListChecks, ThumbsUp, TrendingDown, TrendingUp, AlertTriangle, Compass, CheckCircle2 } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabaseAuthServer";
-import type { InterviewReportReady } from "@/lib/intervuebox/interviewReports";
 import { getCandidateResumeDetails } from "@/lib/intervuebox/reports";
 import { parseRoadmap } from "@/lib/intervuebox/parseRoadmap";
 import { parseEvaluatorNotes, parseInlineBold } from "@/lib/intervuebox/markdownNotes";
+import { readReportRaw } from "@/lib/intervuebox/reportRaw";
 
 const manrope = Manrope({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-manrope" });
 
@@ -141,7 +141,7 @@ export default async function InterviewPrintPage({
     redirect("/hub/account/interview");
   }
 
-  const report = interview.report_raw as InterviewReportReady;
+  const report = readReportRaw(interview.report_raw);
 
   // Use the activeLead we already fetched
   const lead = activeLead as { name: string | null; ib_applied_job_id: string | null };

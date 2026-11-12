@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import type { InterviewReportReady } from "../interviewReports";
-import { buildReportRaw } from "../reportRaw";
+import { buildReportRaw, readReportRaw } from "../reportRaw";
 
 // A READY report carrying more fields than the persisted shape keeps today
 // (opportunities/threats/whatToFocusOnNext/... live on InterviewReportReady
@@ -69,5 +69,12 @@ describe("buildReportRaw", () => {
     expect(raw).not.toHaveProperty("threats");
     expect(raw).not.toHaveProperty("whatToFocusOnNext");
     expect(raw).not.toHaveProperty("tabChanges");
+  });
+});
+
+describe("readReportRaw", () => {
+  it("defaults collections missing from July 2026 rows and keeps the rest", () => {
+    const r = readReportRaw({ overallScore: 6.1, roadmap: null, skillMetrics: { confidence: 7 } });
+    expect(r).toMatchObject({ overallScore: 6.1, roadmap: null, skillMetrics: { confidence: 7 }, skillReport: {}, answers: [], criteriaEvaluationTable: [], knowledgeAnswers: [] });
   });
 });

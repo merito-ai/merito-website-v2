@@ -32,3 +32,17 @@ export function buildReportRaw(report: InterviewReportReady): Record<string, unk
     knowledgeAnswers: report.knowledgeAnswers,
   };
 }
+
+// Read side: older rows (July 2026) lack some collections; default them so every
+// renderer can trust the InterviewReportReady shape.
+export function readReportRaw(raw: unknown): InterviewReportReady {
+  const r = (raw ?? {}) as Partial<InterviewReportReady>;
+  return {
+    ...r,
+    skillMetrics: r.skillMetrics ?? {},
+    criteriaEvaluationTable: r.criteriaEvaluationTable ?? [],
+    skillReport: r.skillReport ?? {},
+    answers: r.answers ?? [],
+    knowledgeAnswers: r.knowledgeAnswers ?? [],
+  } as InterviewReportReady;
+}

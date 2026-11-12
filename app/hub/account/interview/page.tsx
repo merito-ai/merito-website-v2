@@ -19,6 +19,7 @@ import ExportPreviewButton from "../ExportPreviewButton";
 import PlanFeatureNote from "@/app/hub/account/PlanFeatureNote";
 import NoRoleNotice, { NEEDS_ROLE_TAIL } from "@/app/hub/account/NoRoleNotice";
 import { Mic } from "lucide-react";
+import { readReportRaw } from "@/lib/intervuebox/reportRaw";
 
 const EYEBROW = "font-[family-name:var(--font-poppins)] font-bold uppercase text-white/40";
 
@@ -172,7 +173,7 @@ export default async function InterviewReportPage({
     );
   }
 
-  const report = interview.report_raw as InterviewReportReady;
+  const report = readReportRaw(interview.report_raw);
 
   // Fetch additional lead details for the active lead
   const { data: lead } = await supabase
@@ -273,7 +274,7 @@ export default async function InterviewReportPage({
             <InterviewScoreGauge score={report.overallScore} />
           </div>
           <div className={`grid grid-cols-2 ${report.tabChanges != null ? "sm:grid-cols-5" : "sm:grid-cols-4"}`} style={{ flex: 1, minWidth: 0, gap: 10, width: "100%" }}>
-            <StatTile icon={ListChecks} value={String(report.answers?.length ?? 0)} label="Questions" />
+            <StatTile icon={ListChecks} value={String(report.answers.length)} label="Questions" />
             <StatTile icon={ChartColumn} value={String(skillsAssessedCount)} label="Skills assessed" />
             {report.tabChanges != null && <StatTile icon={Activity} value={String(report.tabChanges)} label="Tab changes" />}
             <StatTile

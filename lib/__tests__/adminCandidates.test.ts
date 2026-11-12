@@ -1376,7 +1376,7 @@ describe("getCandidateDetail", () => {
 
     const detail = await getCandidateDetail("user-1");
 
-    expect(detail!.leads[0].interviewReport).toEqual({ overallScore: 8 });
+    expect(detail!.leads[0].interviewReport).toMatchObject({ overallScore: 8 });
     expect(detail!.leads[0].interviewRow).toEqual({ id: "interview-1", status: "ready", ibAgentId: "agent-1", ibCandidateId: "cand-1" });
   });
 
@@ -1389,7 +1389,7 @@ describe("getCandidateDetail", () => {
 
     const detail = await getCandidateDetail("user-1");
 
-    expect(detail!.leads[0].interviewReport).toEqual({ overallScore: 5 });
+    expect(detail!.leads[0].interviewReport).toMatchObject({ overallScore: 5 });
     expect(detail!.leads[0].interviewRow?.id).toBe("interview-2");
   });
 
