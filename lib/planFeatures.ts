@@ -25,7 +25,7 @@ export const ASSISTANCE_LABEL: Record<AssistanceStatus, string> = { not_contacte
 export const ASSISTANCE_NEXT_STEP = "Our team will call or email you within 7 working days of purchase to pick your 3 companies.";
 
 export const PLAN_FEATURE_DETAILS = {
-  reports: `Detailed fitment report for each role you check. Extra roles ${formatPrice(PRODUCT_PRICING.report.entry)} each.`,
+  reports: `Detailed fitment reports for 3 roles, included at no extra cost. A 4th role onwards is ${formatPrice(PRODUCT_PRICING.report.entry)} each.`,
   personality: `${QUESTIONS} questions in two parts. Report on your traits and the work cultures that suit you.`,
   interview: `45-min mock interview on up to ${PLAN_INTERVIEW_SKILLS} skills from your target role, with a scored report. ${INTERVIEW_VALIDITY_NOTE}`,
   references: `Invite up to ${MAX_REFEREES} referees; ${MIN_REFERENCES} responses give you a verified reference report. Re-reference ${formatPrice(PLAN_REFERENCE_REFRESH_PRICE_PAISE)}.`,
