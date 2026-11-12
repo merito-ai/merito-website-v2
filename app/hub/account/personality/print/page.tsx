@@ -155,7 +155,7 @@ export default async function PersonalityPrintPage({
         <p className="font-semibold uppercase" style={{ fontSize: 11, letterSpacing: "0.06em", margin: "0 0 6px", color: "#9CA3AF" }}>
           Personality profile · Big Five (OCEAN)
         </p>
-        <p style={{ fontSize: 13, margin: "0 0 18px", color: "#EC1B25" }}>fit signal for {roleTitle}</p>
+        <p style={{ fontSize: 13, margin: "0 0 18px", color: "#EC1B25" }}>Assessed for {roleTitle}</p>
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {TRAITS.map((t) => {
             const color = TRAIT_COLOR[t];

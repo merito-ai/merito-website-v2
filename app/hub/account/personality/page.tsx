@@ -8,7 +8,7 @@ import PersonalityTestClient from "./PersonalityTestClient";
 import PersonalityLockedState from "./PersonalityLockedState";
 import PlanFeatureNote from "@/app/hub/account/PlanFeatureNote";
 
-// Reads naturally in the test intro ("..., for your next role") and the report ("fit signal for your next role").
+// Reads naturally in the test intro ("..., for your next role") and the report ("Assessed for your next role").
 const NO_ROLE_TITLE = "your next role";
 
 export default async function PersonalityTestPage({

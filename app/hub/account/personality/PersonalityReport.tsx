@@ -91,7 +91,7 @@ export default function PersonalityReport({
               {candidateName}
             </h1>
             <p className="font-[family-name:var(--font-poppins)] text-[#ed1a24]" style={{ fontSize: 13, margin: 0 }}>
-              fit signal for {roleTitle}
+              Assessed for {roleTitle}
             </p>
           </div>
           <div className="flex items-center flex-wrap" style={{ gap: 8 }}>

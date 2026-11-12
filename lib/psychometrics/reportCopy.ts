@@ -19,11 +19,11 @@ export const UNRELIABLE_TEXT =
   "Some check statements were answered in a way that suggests they weren't read closely, so we show your culture mix only, without organisation-type fit.";
 // Spec "Candidate-facing caveats (must appear in report)".
 export const CULTURE_CAVEATS = [
-  "These are typical patterns only. Teams inside one company often differ more than industries do.",
-  "Culture fit modestly predicts job satisfaction and only weakly predicts staying or performing well.",
-  "The organisation benchmarks are Merito estimates built from small or non-Indian samples.",
-  "This shows what you prefer, not what you are able to do, and it is not a hiring screen.",
-  "Most people prefer collaborative (Clan) cultures, so a high Clan score is common.",
+  "Typical patterns only. Teams inside one company vary more than industries do.",
+  "Fit modestly predicts satisfaction, weakly predicts tenure or performance.",
+  "Benchmarks are Merito estimates from small or non-Indian samples.",
+  "A preference, not ability, and not a hiring screen.",
+  "High Clan scores are common.",
 ];
 export const SELF_DEV_NOTE =
   "This report is for your own development. It describes your self-reported preferences and is not for hiring or promotion decisions.";
