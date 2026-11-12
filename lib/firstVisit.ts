@@ -46,3 +46,29 @@ export function planIncludesRows(): PlanPanelRow[] {
   ];
   return steps.map((s, i) => row(s, i));
 }
+
+// Seminar users (allowlisted or plan holders) get the "Later add-ons"; everyone else keeps today's Hub exactly.
+export function isSeminarUser(s: { allowlisted: boolean; plan: unknown } | null | undefined): boolean {
+  return Boolean(s?.allowlisted || s?.plan);
+}
+
+type NavPlanState = {
+  allowlisted: boolean;
+  plan: { product: string } | null;
+  interviewCredits?: number;
+  ownedIndividually?: { personality: boolean; references: boolean; reportUnlocks: number; interviewCredits: number } | null;
+};
+
+// Sidebar hrefs that get a lock icon: features the seminar user has not unlocked yet. Normal users: none.
+export function lockedNavHrefs(s: NavPlanState | null | undefined): string[] {
+  if (!s || !isSeminarUser(s)) return [];
+  if (s.plan) return s.plan.product === "plan_mentor" ? [] : ["/hub/account/expert"];
+  const owned = s.ownedIndividually;
+  return [
+    !owned?.reportUnlocks && "/hub/account/report",
+    !owned?.personality && "/hub/account/personality",
+    !(s.interviewCredits ?? owned?.interviewCredits) && "/hub/account/interview",
+    !owned?.references && "/hub/account/references",
+    "/hub/account/expert", // mentoring is plan-only for allowlisted users
+  ].filter((h): h is string => Boolean(h));
+}

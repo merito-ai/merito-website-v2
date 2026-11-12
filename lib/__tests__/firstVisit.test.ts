@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { firstVisitView, firstName, howMeritoWorksRows, planIncludesRows } from "../firstVisit";
+import { firstVisitView, firstName, howMeritoWorksRows, planIncludesRows, isSeminarUser, lockedNavHrefs } from "../firstVisit";
 import { buildPlanPanelRows } from "../planPanel";
 
 describe("firstVisitView", () => {
@@ -53,5 +53,34 @@ describe("no-role step lists", () => {
     const noRolePlan = buildPlanPanelRows({ product: "plan_mentor", reportCreditsLeft: 3, personality: "none", interview: "unused", references: "none", mentoring: [], hasRole: false });
     const text = JSON.stringify([howMeritoWorksRows(), planIncludesRows(), noRolePlan]);
     expect(text).not.toMatch(/—|Plan [12]\b|seminar/i);
+  });
+});
+
+describe("isSeminarUser gate (normal users keep today's UI)", () => {
+  it("only allowlisted users or plan holders", () => {
+    expect(isSeminarUser({ allowlisted: false, plan: null })).toBe(false);
+    expect(isSeminarUser(null)).toBe(false);
+    expect(isSeminarUser({ allowlisted: true, plan: null })).toBe(true);
+    expect(isSeminarUser({ allowlisted: false, plan: { orderId: "o" } })).toBe(true);
+  });
+  it("normal users: no sidebar locks, whatever they own", () => {
+    expect(lockedNavHrefs({ allowlisted: false, plan: null, ownedIndividually: { personality: false, references: false, reportUnlocks: 0, interviewCredits: 0 } })).toEqual([]);
+    expect(lockedNavHrefs(null)).toEqual([]);
+  });
+});
+
+describe("lockedNavHrefs", () => {
+  const none = { personality: false, references: false, reportUnlocks: 0, interviewCredits: 0 };
+  it("allowlisted without a plan: every paid feature locked, owned ones open", () => {
+    expect(lockedNavHrefs({ allowlisted: true, plan: null, ownedIndividually: none })).toEqual([
+      "/hub/account/report", "/hub/account/personality", "/hub/account/interview", "/hub/account/references", "/hub/account/expert",
+    ]);
+    expect(lockedNavHrefs({ allowlisted: true, plan: null, interviewCredits: 1, ownedIndividually: { ...none, personality: true, reportUnlocks: 1 } })).toEqual([
+      "/hub/account/references", "/hub/account/expert",
+    ]);
+  });
+  it("plan holders: only mentoring for Assess + Prepare", () => {
+    expect(lockedNavHrefs({ allowlisted: true, plan: { product: "plan_prepare" } })).toEqual(["/hub/account/expert"]);
+    expect(lockedNavHrefs({ allowlisted: false, plan: { product: "plan_mentor" } })).toEqual([]);
   });
 });
