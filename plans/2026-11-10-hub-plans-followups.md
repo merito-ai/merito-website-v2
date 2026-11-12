@@ -217,3 +217,16 @@ Not covered / open (Low):
 - Optional: auto-open the plans popup once on first dashboard visit for allowlisted no-plan users.
 - FIXED 2026-11-12: `/hub/account/interview` crashed (Server Components error) for ready interviews whose July 2026 `report_raw` has no `answers` (4 such prod rows have `roadmap: null` too). Fixed via `readReportRaw()` (lib/intervuebox/reportRaw.ts) at every report_raw read site: defaults answers/skillReport/skillMetrics/criteriaEvaluationTable/knowledgeAnswers.
 - Interview start confirm checked on prod (roshanrk2014, full stack developer, 1 paid credit): dialog opens, cancel closes, nothing started.
+## Hub e2e sweep (2026-11-12)
+
+Playwright specs in `app/hub/account/__tests__/*.e2e.test.ts` (desktop + 375px), helpers in `test/e2e/hub.ts`. Local Supabase only (asserted); the e2e dev server runs with Resend and IntervueBox disabled, a local Razorpay webhook secret and `ADMIN_EMAIL=e2e-admin@example.test` (`playwright.config.ts`). Users are `e2e-*@example.test`, reset on every run. Rerun: `npx playwright test app/hub/account/__tests__ --workers=3` (stop any other server on :3000 first).
+
+Not fixed (Medium/Low):
+- Locked fitment report page (`/hub/account/report`, `ReportLockedState`) renders the candidate's real report under a visual crop, so the full paid text (summary, strengths, category comments) is in the DOM. Intentional per the code comment, but anyone can read it in devtools. Covered by a `test.fail` in `dashboard-role.e2e.test.ts`; flip it when fixed. Medium.
+- Admin pages (`/admin/plan-allowlist`, `/admin/assistance`) overflow sideways at 375px (tables). Desktop tool; covered by a mobile `test.fail` in `samples-admin.e2e.test.ts`. Low.
+- Allowlist paste "Name <email>" lists the name words as skipped invalid in the toast (already noted above; e2e asserts the current documented behaviour). Low.
+- Admin payments labels products "Plan 1" / "Plan 2" (`app/admin/payments/paymentStatus.ts`). Admin only. Low.
+- References print page shows "—" for empty category values (`app/hub/account/references/print/page.tsx`). Low.
+- Existing `switcher.e2e.test.ts` and `recruiter-preview-phase4.e2e.test.ts` need `TEST_USER_ID` / `TEST_SESSION_TOKEN` and fail without them (pre-existing, not part of this sweep). Low.
+
+Not covered by e2e (and why): Razorpay's own checkout UI (payments are simulated through signed webhooks into the real finalize path); plan welcome email delivery (Resend disabled); live interview start/launch (live vendor); a successful referee invite (sends email; only validation is tested); Calendly booking and LinkedIn share (external); PDF file contents; role archive (no such feature).

@@ -98,6 +98,7 @@ for (const vp of VIEWPORTS) {
       await expect(rows.filter({ hasText: "Personality + culture" })).toContainText("You can do this anytime");
       await page.getByRole("main").getByRole("link", { name: "Start personality test" }).click();
       await expect(page).toHaveURL(/\/hub\/account\/personality/);
+      await expect(page.getByRole("button", { name: "Start test" })).toBeVisible(); // not bounced back to the dashboard
     });
 
     for (const path of ["interview", "references", "combined-report"]) {

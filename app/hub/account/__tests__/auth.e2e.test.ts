@@ -27,7 +27,8 @@ for (const vp of VIEWPORTS) {
       const link = await magicLink(u.email);
       await page.goto(link);
       await expect(page).toHaveURL(/\/hub\/account$/);
-      await page.goto(link);
+      await page.goto("/hub/account/pricing");
+      await page.goto(link); // token already used
       await expect(page).toHaveURL(/\/hub\/account$/);
     });
 

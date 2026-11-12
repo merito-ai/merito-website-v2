@@ -46,6 +46,15 @@ async function findUserId(email: string): Promise<string | null> {
 
 export type Seeded = { id: string; email: string };
 
+/** Find or create an auth user without touching their data (admin accounts). */
+export async function ensureUser(email: string): Promise<string> {
+  const found = await findUserId(email);
+  if (found) return found;
+  const { data, error } = await db.auth.admin.createUser({ email, email_confirm: true });
+  if (error || !data.user) throw new Error(`createUser ${email}: ${error?.message}`);
+  return data.user.id;
+}
+
 /** Idempotent: (re)creates the user, wipes their rows, sets allowlist. */
 export async function seedUser(slug: string, opts: { name?: string | null; allowlisted?: boolean } = {}): Promise<Seeded> {
   const email = `e2e-${slug}@example.test`;
@@ -60,6 +69,16 @@ export async function seedUser(slug: string, opts: { name?: string | null; allow
     await db.auth.admin.updateUserById(id, { user_metadata: meta });
   }
   ids.set(email, id);
+  // Referees hang off reference_checks (no user_id): clear them first.
+  const { data: checks } = await db.from("reference_checks").select("id").eq("user_id", id);
+  const checkIds = (checks ?? []).map((c) => c.id);
+  if (checkIds.length) {
+    const { data: refs } = await db.from("referees").select("id").in("reference_check_id", checkIds);
+    const refIds = (refs ?? []).map((r) => r.id);
+    if (refIds.length) await db.from("reference_tokens").delete().in("reference_id", refIds);
+    const { error } = await db.from("referees").delete().in("reference_check_id", checkIds);
+    if (error) throw new Error(`wipe referees: ${error.message}`);
+  }
   for (const t of USER_TABLES) {
     const { error } = await db.from(t).delete().eq("user_id", id);
     if (error && !/does not exist|schema cache/.test(error.message)) throw new Error(`wipe ${t}: ${error.message}`);
@@ -95,6 +114,16 @@ export async function seedOrder(
     ...(o.createdAt ? { created_at: o.createdAt } : {}),
   });
   if (error) throw new Error(`seedOrder: ${error.message}`);
+  // A paid plan carries finalize's grants (mirrors lib/planGrants.ts applyPlanGrants).
+  if ((o.status ?? "success") === "success") {
+    if (product === "plan_prepare" || product === "plan_mentor") {
+      await db.from("product_unlocks").upsert(["personality", "references"].map((p) => ({ user_id: u.id, product: p })), { onConflict: "user_id,product", ignoreDuplicates: true });
+    }
+    if (product === "plan_mentor" || product === "plan_upgrade_mentor") {
+      const { error: e } = await db.from("counselling_requests").insert([1, 2].map((session) => ({ user_id: u.id, order_id: orderId, session })));
+      if (e) throw new Error(`seedOrder mentoring: ${e.message}`);
+    }
+  }
   return orderId;
 }
 
@@ -181,11 +210,11 @@ export const test = base.extend<{ consoleGuard: void }, { safeServer: void }>({
   // A reused dev server without the e2e env could send real email / hit the live vendor: refuse it.
   safeServer: [
     async ({ playwright }, use) => {
-      const req = await playwright.request.newContext({ baseURL: "http://localhost:3000" });
+      const req = await playwright.request.newContext({ baseURL: `http://localhost:${process.env.E2E_PORT ?? "3000"}`, timeout: 120_000 });
       const body = JSON.stringify({ event: "e2e.ping" });
       const res = await req.post("/api/webhooks/razorpay", { data: body, headers: { "content-type": "application/json", "x-razorpay-signature": signWebhook(body) } });
       await req.dispose();
-      if (res.status() !== 200) throw new Error("The :3000 server is not the e2e-configured one (playwright.config.ts webServer.env). Stop it and rerun.");
+      if (res.status() !== 200) throw new Error("The e2e port's server is not the e2e-configured one (playwright.config.ts webServer.env). Stop it and rerun.");
       await use();
     },
     { scope: "worker", auto: true },
