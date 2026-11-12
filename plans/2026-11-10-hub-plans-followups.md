@@ -195,3 +195,13 @@ Skipped (and why):
 - 4th-report modal line, "Get this now" on included report: plan holders no longer see the per-product cards on pricing; low value.
 - Allowlist toast listing display-name words, `unlock-report` 0-credit order, admin full-refund warning, Razorpay closed-window noise, Calendly session detection, admin counselling sort: Low, unchanged.
 - React `key` warning on the dashboard: not reproduced in this pass.
+
+## First-visit guide, no-role dashboard (2026-11-12)
+
+Built per `plans/2026-11-12-hub-first-visit-guide-design.md` "Scope (2026-11-12, user)". Not fixed (Medium/Low):
+- Contrast: brand red `#ed1a24` as small text on the dark Hub (PlanSteps "Start here" marker and action links, the plan/kicker chips, "See prices") is about 4.2:1, under 4.5:1. Existing Hub token, kept for consistency; the new guide buttons use `#d9161f` (5.1:1 with white). Low.
+- Personality without a role (plan holders, P1): the row is saved with `role_title = "your next role"`; the personality PDF export/print route still needs a role and redirects for these users. Low.
+- InterviewPaywallModal shows the generic "Ready for a real AI interview?" content for a moment while `/api/hub/plan-state` loads, then switches to the plan confirm. Low.
+- Hub TopBar overflows sideways below about 366 CSS px (role switcher + icons); 375 is fine. Pre-existing. Low.
+- P1 hero keeps the mockup's ghost "Start personality test" next to the panel row's "Start" link (two entry points to the same step). Decide when the panel restyle add-on lands. Low.
+- Local QA fixtures `fv-n1/s1/p1/p2/e3/e4@example.test` left in the local Supabase only.

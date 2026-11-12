@@ -27,10 +27,12 @@ function CheckFit() {
     <AuthenticatedFitmentChecker
       renderTrigger={(open) => (
         <>
-          <button type="button" onClick={open} className={`${BTN_PRIMARY} hidden md:inline-flex`}>
-            <Target size={16} strokeWidth={2} aria-hidden="true" />
-            {CHECK_FIT_LABEL}
-          </button>
+          <span className="hidden md:inline-flex">
+            <button type="button" onClick={open} className={BTN_PRIMARY}>
+              <Target size={16} strokeWidth={2} aria-hidden="true" />
+              {CHECK_FIT_LABEL}
+            </button>
+          </span>
           <StickyBar>
             <button type="button" onClick={open} className={BTN_PRIMARY}>
               <Target size={16} strokeWidth={2} aria-hidden="true" />
@@ -100,8 +102,9 @@ export default function NoRoleDashboard({
           <h1 className={`fv-up ${FONT_HEAD} font-semibold text-white`} style={{ fontSize: "clamp(1.7rem, 3.6vw, 2.2rem)", lineHeight: 1.15, letterSpacing: "-0.02em", margin: 0 }}>
             {hello} {title}
           </h1>
-          <div className="fv-up fv-up-2">
-            <p className="text-white/70" style={{ fontSize: 14.5, lineHeight: 1.6, margin: "12px 0 0", maxWidth: 520 }}>
+          {/* Not animated: it holds the fixed sticky bar and modals (a transform would trap them). */}
+          <div>
+            <p className="fv-up fv-up-2 text-white/70" style={{ fontSize: 14.5, lineHeight: 1.6, margin: "12px 0 0", maxWidth: 520 }}>
               {lead}
             </p>
             {view !== "s1" && PREP}

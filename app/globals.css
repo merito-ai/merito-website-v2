@@ -128,7 +128,8 @@ body:has(.plan-panel) #zs-fl-tip {
 
 /* Hub first-visit guide: short fade-up on load, sheet slide on phones. Off under reduced motion. */
 @media (prefers-reduced-motion: no-preference) {
-  .fv-up { animation: fv-up 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+  /* backwards, not both: a filled transform would keep fixed children (sticky bar, modals) from the viewport. */
+  .fv-up { animation: fv-up 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) backwards; }
   .fv-up-2 { animation-delay: 0.06s; }
   .fv-up-3 { animation-delay: 0.12s; }
   .fv-pop { animation: fv-pop 0.26s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
