@@ -15,16 +15,21 @@ Out of scope (existing UI stays as is): N2/S2 form-first changes, welcome line, 
 
 ### Later add-ons (decide after this ships)
 The mockup tabs (`mockups/2026-11-12-hub-first-visit-guide.html` v5) stay the reference for these.
-- Form-first screens (N2 / S2).
-- Welcome line (dismissible, N2 / S2).
-- Locked report preview (fixed placeholder lines only).
-- Timeline replacing ProgressRail for everyone.
-- Plan panel restyle (timeline look) for users with roles.
-- Inline plan cards on the dashboard with a role replaced by "Unlock plans" + the plans popup.
-- Paywall modals: "Unlock plans" for allowlisted users without a plan.
-- Sidebar lock icons on features not yet unlocked.
-- Renaming the fitment check to "Check my fit for a role" everywhere.
-- Edge cases E1, E6, E7, E8, E9, E10, E11, E13, E16.
+Status 2026-11-12 (branch feat/personality-culture-surfaces, local, unpushed). All built items are gated on `isSeminarUser` (lib/firstVisit.ts: allowlisted or plan holder); normal users keep today's UI (unit + e2e guard).
+1. BUILT: one-time dismissible welcome line for seminar users (S1, P1, and the role dashboard; replaces the kicker / orientation banner, one greeting per screen; ✕ remembered per browser; hides once the next step is done).
+2. BUILT: "Unlock plans" + shared plans popup for allowlisted users without a plan: role dashboard (one offer row, duplicate plan card removed) and every feature paywall (report, personality, interview, references, mentoring).
+3. BUILT: sidebar lock icons on features not yet unlocked (seminar users, accessible ", locked" label; desktop sidebar only).
+4. BUILT: "Check my fit for a role" on seminar surfaces (plan panel step 1 action, S1 screen, role switcher, role check modal button).
+5. BUILT: E6 expired interview link (plan panel row + interview page: "Your interview link expired" + Email us, no Start).
+6. BUILT: E7 report pending / failed under the score (failed = still PENDING a day after the check; no "Open my report" while failed).
+7. BUILT: E8 "All 3 used · extra roles ₹299".
+8. BUILT: E9 "N roles checked · X left" (interview row already names its role).
+9. BUILT: E11 everything done: share row becomes the next step with "Share my profile".
+10. BUILT: E13 encouraging line under a low score ("Here's what to work on").
+11. BUILT (all users, copy rule): references print page shows "Not provided" instead of an em-dash.
+12. BUILT: E16 mentoring follow-up "Unlocked, not booked yet"; assistance "Not contacted yet" in the existing plan panel rows.
+- Not doing (user, 2026-11-12): N2/S2 form-first screens (score hero + locked report preview + progress timeline), timeline replacing ProgressRail, plan panel restyle to the timeline look, plan badge + primary-action hero for plan holders with roles, E10 (existing personality states stay as they are).
+- Not in this brief: E1 (normal-user per-step ownership in a timeline).
 
 Approved 2026-11-12. Mockup: `mockups/2026-11-12-hub-first-visit-guide.html` (v3, 4 tabs + phone toggle).
 

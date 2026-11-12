@@ -230,3 +230,19 @@ Not fixed (Medium/Low):
 - Existing `switcher.e2e.test.ts` and `recruiter-preview-phase4.e2e.test.ts` need `TEST_USER_ID` / `TEST_SESSION_TOKEN` and fail without them (pre-existing, not part of this sweep). Low.
 
 Not covered by e2e (and why): Razorpay's own checkout UI (payments are simulated through signed webhooks into the real finalize path); plan welcome email delivery (Resend disabled); live interview start/launch (live vendor); a successful referee invite (sends email; only validation is tested); Calendly booking and LinkedIn share (external); PDF file contents; role archive (no such feature).
+
+- 2026-11-12: Dashboard logs React `Each child in a list should have a unique "key" prop` (DashboardClient, child from AccountPage) on every load; fails the e2e consoleGuard for any test that lands on /hub/account.
+
+## Seminar-user add-ons (2026-11-12, branch feat/personality-culture-surfaces, local)
+
+Built per `plans/2026-11-12-hub-first-visit-guide-design.md` "Later add-ons" (items 1-12), gated on `isSeminarUser` (lib/firstVisit.ts). E2E: `app/hub/account/__tests__/seminar-addons.e2e.test.ts`.
+
+Not fixed (Medium/Low):
+- E7 "report failed" is a heuristic: a lead still `PENDING` 24h after the check (`leadReportState`, lib/firstVisit.ts). The fitment check stores no failure status; add one (e.g. `FAILED` when the vendor errors) and drop the heuristic. Medium.
+- E7 normal-user side: a stuck PENDING lead still shows "0.0" with an empty verdict for normal users (unchanged by design). Low.
+- The plan panel's "Your report is ready · Open my report" step also shows while the report is only PENDING (pre-existing; now suppressed only once it reads as failed). Low.
+- Sidebar lock icons are desktop-only: the Hub has no phone nav list to carry them. Low.
+- `usePlanState` now also runs in Sidebar and RoleSwitcherMenu: several `/api/hub/plan-state` fetches per page. A shared context would make it one. Low.
+- Welcome line "hides once the next step is done" for plan holders = any plan step started (report unlocked, personality done, references or interview started). Low, PM may want a different trigger.
+- The S1 secondary button is now "Check my fit for a role" (was "Check a role first, free"); the "free" is still in the lead line above it. Low.
+- Report/personality/references paywall modals have no Esc handling of their own (pre-existing); Esc in the plans popup on top closes only the popup. Low.
