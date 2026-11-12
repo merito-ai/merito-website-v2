@@ -28,7 +28,7 @@ for (const vp of VIEWPORTS) {
         const order = await pay(page, u, product);
         expect(await status(order)).toBe("success");
         await login(page, u.email);
-        await expect(page.getByText(`${PRODUCT_LABELS[product]} · active`)).toBeVisible();
+        await expect(page.getByText(`${PRODUCT_LABELS[product]} · active`).or(page.getByText(`Your ${PRODUCT_LABELS[product]} plan is active.`)).first()).toBeVisible(); // first visit: welcome line in the badge's place
         await expect(panel(page)).toContainText(`Your plan: ${PRODUCT_LABELS[product]}`);
         await expect(panel(page)).toContainText("3 of 3 left");
         const mentoring = panel(page).locator("li").filter({ hasText: "Mentoring" });
@@ -47,7 +47,7 @@ for (const vp of VIEWPORTS) {
       await expect(row("Application assistance")).toContainText("Not in your plan");
       await pay(page, u, "plan_upgrade_mentor");
       await page.reload();
-      await expect(page.getByText(`${PRODUCT_LABELS.plan_mentor} · active`)).toBeVisible();
+      await expect(page.getByText(`${PRODUCT_LABELS.plan_mentor} · active`).or(page.getByText(`Your ${PRODUCT_LABELS.plan_mentor} plan is active.`)).first()).toBeVisible(); // first visit: welcome line in the badge's place
       await expect(row("Mentoring")).toContainText("Session 1");
       await expect(row("Mentoring").getByRole("link", { name: /Book session 1/ })).toBeVisible();
       await expect(row("Application assistance")).not.toContainText("Not in your plan");

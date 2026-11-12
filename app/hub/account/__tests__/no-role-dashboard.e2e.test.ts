@@ -85,7 +85,7 @@ for (const vp of VIEWPORTS) {
       const u = await seedUser(`nr-p1-${vp.name}`);
       await seedOrder(u, "plan_prepare");
       await login(page, u.email);
-      await expect(page.getByText(`${PRODUCT_LABELS.plan_prepare} · active`)).toBeVisible();
+      await expect(page.getByText(`${PRODUCT_LABELS.plan_prepare} · active`).or(page.getByText(`Your ${PRODUCT_LABELS.plan_prepare} plan is active.`)).first()).toBeVisible(); // first visit: welcome line in the badge's place
       await guards(page);
 
       const rows = page.locator(".plan-panel li");
