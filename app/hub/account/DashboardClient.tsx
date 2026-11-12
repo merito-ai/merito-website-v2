@@ -38,6 +38,7 @@ export default function DashboardClient({
   recruiterActivity,
   mentoringInPlan = false,
   welcome = null,
+  scoreNote = null,
 }: {
   leadId: string;
   roleTitle: string;
@@ -60,6 +61,7 @@ export default function DashboardClient({
   planOffer?: React.ReactNode; // allowlisted users without a plan: compact offer row that opens the plans popup
   recruiterActivity: React.ReactNode;
   mentoringInPlan?: boolean; // Plan 2: the panel's mentoring row is the booking entry point, so no separate expert card
+  scoreNote?: React.ReactNode; // seminar users: report pending/failed (E7) or encouragement (E13) under the score
   welcome?: React.ReactNode; // seminar users: one-time welcome line in place of the orientation banner (one greeting element)
 }) {
   const [modal, setModal] = useState<"none" | "report" | "generate" | "counselling" | "tour">("none");
@@ -138,7 +140,7 @@ export default function DashboardClient({
 
         <QuickTipsCard onStartTour={() => setModal("tour")} />
 
-        <ScoreCard roleTitle={roleTitle} score={score} verdict={verdict} />
+        <ScoreCard roleTitle={roleTitle} score={score} verdict={verdict} note={scoreNote} />
 
         {planPanel}
 

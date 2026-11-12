@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { firstVisitView, firstName, howMeritoWorksRows, planIncludesRows, isSeminarUser, lockedNavHrefs } from "../firstVisit";
+import { firstVisitView, firstName, howMeritoWorksRows, planIncludesRows, isSeminarUser, lockedNavHrefs, leadReportState } from "../firstVisit";
 import { buildPlanPanelRows } from "../planPanel";
 
 describe("firstVisitView", () => {
@@ -82,5 +82,14 @@ describe("lockedNavHrefs", () => {
   it("plan holders: only mentoring for Assess + Prepare", () => {
     expect(lockedNavHrefs({ allowlisted: true, plan: { product: "plan_prepare" } })).toEqual(["/hub/account/expert"]);
     expect(lockedNavHrefs({ allowlisted: false, plan: { product: "plan_mentor" } })).toEqual([]);
+  });
+});
+
+describe("leadReportState (E7)", () => {
+  const now = Date.parse("2026-11-12T12:00:00Z");
+  it("READY is ready; PENDING is pending for a day, then failed", () => {
+    expect(leadReportState("READY", "2026-01-01T00:00:00Z", now)).toBe("ready");
+    expect(leadReportState("PENDING", "2026-11-12T00:00:00Z", now)).toBe("pending");
+    expect(leadReportState("PENDING", "2026-11-11T00:00:00Z", now)).toBe("failed");
   });
 });

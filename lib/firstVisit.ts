@@ -72,3 +72,11 @@ export function lockedNavHrefs(s: NavPlanState | null | undefined): string[] {
     "/hub/account/expert", // mentoring is plan-only for allowlisted users
   ].filter((h): h is string => Boolean(h));
 }
+
+// shortcut: there is no FAILED status (the vendor only says PENDING/READY), so a report still PENDING a day after the
+// check counts as failed (E7). Upgrade when the fitment check stores a real failure status.
+export const REPORT_FAILED_AFTER_MS = 24 * 3_600_000;
+export function leadReportState(status: string | null, createdAt: string, now = Date.now()): "ready" | "pending" | "failed" {
+  if (status === "READY") return "ready";
+  return now - Date.parse(createdAt) > REPORT_FAILED_AFTER_MS ? "failed" : "pending";
+}

@@ -6,10 +6,12 @@ export default function ScoreCard({
   roleTitle,
   score,
   verdict,
+  note = null,
 }: {
   roleTitle: string;
   score: number;
   verdict: string;
+  note?: React.ReactNode; // seminar users: report state / encouragement line
 }) {
   const percent = Math.max(0, Math.min(100, (score / 10) * 100));
   const band = getMatchBandDark(percent);
@@ -58,6 +60,7 @@ export default function ScoreCard({
           <p className="font-[family-name:var(--font-poppins)] text-white/55" style={{ fontSize: 13, lineHeight: 1.6, margin: 0 }}>
             {verdict}
           </p>
+          {note}
         </div>
       </div>
     </div>

@@ -21,9 +21,10 @@ import { getPlanState } from "@/lib/plans";
 import PlanPanel from "./PlanPanel";
 import PlanOfferBanner from "./guide/PlanOfferBanner";
 import { planDashboardView } from "@/lib/planPanel";
-import { firstVisitView, firstName, howMeritoWorksRows, planIncludesRows, isSeminarUser } from "@/lib/firstVisit";
+import { firstVisitView, firstName, howMeritoWorksRows, planIncludesRows, isSeminarUser, leadReportState } from "@/lib/firstVisit";
 import NoRoleDashboard from "./guide/NoRoleDashboard";
 import WelcomeLine from "./guide/WelcomeLine";
+import ScoreNote from "./guide/ScoreNote";
 import PlanSteps from "./PlanSteps";
 import { PLAN_REPORT_COUNT } from "@/lib/planFeatures";
 import Link from "next/link";
@@ -259,6 +260,10 @@ export default async function AccountPage({
 
   const userName = current.name || user.email?.split("@")[0] || "there";
 
+  // Seminar users only (E7): say when the report is still being prepared or failed; a failed one is not offered for unlock.
+  const reportState = isSeminarUser(planState) ? leadReportState(resumeMatchStatus, current.created_at) : "ready";
+  const scoreNote = reportState === "ready" ? null : <ScoreNote state={reportState} />;
+
   // Seminar users only: a one-time welcome line; hidden once their next step is done (a plan bought / a plan step started).
   const welcome = !isSeminarUser(planState) ? null : planState.plan ? (
     <WelcomeLine
@@ -290,11 +295,12 @@ export default async function AccountPage({
       counsellingPriceLabel={counsellingPriceLabel}
       initialCounsellingRequested={Boolean(counsellingRequest)}
       applications={leads.map((l) => ({ id: l.id, roleTitle: l.role_title, score: l.score, createdAt: l.created_at }))}
-      planPanel={planState.plan ? <PlanPanel userId={user.id} plan={planState.plan} reportLocked={!reportUnlocked} /> : null}
+      planPanel={planState.plan ? <PlanPanel userId={user.id} plan={planState.plan} reportLocked={!reportUnlocked && reportState !== "failed"} /> : null}
       planOffer={planDashboardView(planState) === "offer" ? <PlanOfferBanner /> : null}
       recruiterActivity={RECRUITER_PREVIEW_ENABLED ? <RecruiterActivityPanel viewCount={recruiterViewCount} /> : null}
       mentoringInPlan={planState.plan?.product === "plan_mentor"}
       welcome={welcome}
+      scoreNote={scoreNote}
     />
   );
 }
