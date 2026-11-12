@@ -14,6 +14,7 @@ export type PlanPanelInput = {
   interviewDueBy?: Date | null; // invited but not started: vendor link expiry, else invited_at + INTERVIEW_VALIDITY_DAYS
   assistance?: AssistanceStatus; // Plan 2, set by the team in /admin/assistance
   interviewRole?: string | null; // role the plan's one interview was used for
+  interviewExpired?: boolean; // E6: invited, never started, link past its 10 days
 };
 
 export type MentoringRow = { session: number; status: string; scheduled_at: string | null };
@@ -73,7 +74,10 @@ export function buildPlanPanelRows(i: PlanPanelInput): PlanPanelRow[] {
   const used = `Interview used${i.interviewRole ? ` for ${i.interviewRole}` : ""}`;
   const interview: Record<PlanPanelInput["interview"], Pick<PlanPanelRow, "status" | "action">> = {
     unused: { status: "1 interview, for any one of your roles. Pick the role you care most about.", action: { label: "Start", href: "/hub/account/interview" } },
-    in_progress: { status: i.interviewDueBy ? `${used} · complete by ${date(i.interviewDueBy.toISOString())}` : used, action: { label: "Open", href: "/hub/account/interview" } },
+    // E6: no dead Start once the link expired; the team can reinvite.
+    in_progress: i.interviewExpired
+      ? { status: `${used} · Your interview link expired`, action: { label: "Email us", href: CONTACT_HREF } }
+      : { status: i.interviewDueBy ? `${used} · complete by ${date(i.interviewDueBy.toISOString())}` : used, action: { label: "Open", href: "/hub/account/interview" } },
     ready: { status: used, action: { label: "View report", href: "/hub/account/interview" } },
   };
   const references: Record<PlanPanelInput["references"], Pick<PlanPanelRow, "status" | "action">> = {

@@ -20,6 +20,9 @@ import PlanFeatureNote from "@/app/hub/account/PlanFeatureNote";
 import NoRoleNotice, { NEEDS_ROLE_TAIL } from "@/app/hub/account/NoRoleNotice";
 import { Mic } from "lucide-react";
 import { readReportRaw } from "@/lib/intervuebox/reportRaw";
+import { getPlanState } from "@/lib/plans";
+import { isSeminarUser } from "@/lib/firstVisit";
+import { interviewDeadline, isPastDeadline } from "@/lib/planFeatures";
 
 const EYEBROW = "font-[family-name:var(--font-poppins)] font-bold uppercase text-white/40";
 
@@ -117,10 +120,13 @@ export default async function InterviewReportPage({
   }
 
   if (viewState === "invited") {
+    // E6, seminar users only: a link past its window shows "expired" + Email us instead of a dead Start.
+    const due = interviewDeadline(interview.magic_link_expires_at, interview.invited_at);
+    const expired = isPastDeadline(due) && isSeminarUser(await getPlanState(user.id, user.email));
     return (
       <main>
         <div className="mx-auto" style={{ maxWidth: 820, padding: "28px 24px 40px", display: "flex", flexDirection: "column", gap: 20 }}>
-          <InterviewInProgressState roleTitle={interview.role_title} leadId={activeLead.id} deadline={interview.magic_link_expires_at} invitedAt={interview.invited_at} />
+          <InterviewInProgressState roleTitle={interview.role_title} leadId={activeLead.id} deadline={interview.magic_link_expires_at} invitedAt={interview.invited_at} expired={expired} />
           <InterviewStatusPoller leadId={activeLead.id} currentStatus="invited" />
         </div>
       </main>

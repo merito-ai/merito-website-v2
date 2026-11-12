@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Mic, Clock, Play, Volume2, Wifi } from "lucide-react";
+import { Mic, Clock, Play, Volume2, Wifi, Mail } from "lucide-react";
+import { CONTACT_HREF } from "@/lib/planPanel";
 import InterviewResumeWarning from "./InterviewResumeWarning";
 import { interviewDeadline } from "@/lib/planFeatures";
 
@@ -15,7 +16,8 @@ const CHECKLIST = [
 // not "APPEARED" -- payment already happened and a magic-link invite was
 // already sent. The button below launches that link directly instead of
 // relying on the candidate finding IntervueBox's email.
-export default function InterviewInProgressState({ roleTitle, leadId, deadline, invitedAt }: { roleTitle: string; leadId: string; deadline?: string | null; invitedAt?: string | null }) {
+// expired (seminar users, E6): the link is past its 10 days, so no dead Start; the team can reinvite.
+export default function InterviewInProgressState({ roleTitle, leadId, deadline, invitedAt, expired = false }: { roleTitle: string; leadId: string; deadline?: string | null; invitedAt?: string | null; expired?: boolean }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const due = interviewDeadline(deadline, invitedAt);
@@ -43,6 +45,32 @@ export default function InterviewInProgressState({ roleTitle, leadId, deadline, 
       setError("Couldn't start the interview. Please try again.");
       setLoading(false);
     }
+  }
+
+  if (expired) {
+    return (
+      <div className="bg-[#141416] border border-white/[0.08] font-[family-name:var(--font-poppins)]" style={{ borderRadius: 14, padding: 24 }}>
+        <div className="flex items-center" style={{ gap: 12, marginBottom: 10 }}>
+          <div className="flex items-center justify-center bg-[#ed1a24]/15 text-[#ed1a24] shrink-0" style={{ width: 36, height: 36, borderRadius: 10 }}>
+            <Clock size={17} strokeWidth={2} aria-hidden="true" />
+          </div>
+          <h2 className="font-[family-name:var(--font-gabarito)] font-semibold text-white" style={{ fontSize: "1.05rem", margin: 0 }}>
+            Your interview link expired
+          </h2>
+        </div>
+        <p className="text-white/70" style={{ fontSize: 13, lineHeight: 1.65, margin: "0 0 16px" }}>
+          Your interview for {roleTitle} wasn&apos;t started within its {deadlineLabel ? `window (it closed on ${deadlineLabel})` : "window"}. Email us and our team will send you a new link.
+        </p>
+        <a
+          href={CONTACT_HREF}
+          className="inline-flex items-center font-semibold text-white bg-[#d9161f] hover:bg-[#c8151e] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          style={{ gap: 8, minHeight: 44, padding: "0 20px", borderRadius: 8, fontSize: 14 }}
+        >
+          <Mail size={15} strokeWidth={2} aria-hidden="true" />
+          Email us
+        </a>
+      </div>
+    );
   }
 
   return (

@@ -144,6 +144,11 @@ describe("plan steps", () => {
 
   it("an opened-but-unstarted interview shows its complete-by date", () => {
     expect(row({ ...base, interview: "in_progress", interviewRole: "PM", interviewDueBy: new Date("2026-11-22T06:00:00Z") }, "interview").status).toBe("Interview used for PM · complete by 22 Nov 2026");
+    // E6: expired link -> no Start/Open, email the team instead
+    expect(row({ ...base, interview: "in_progress", interviewRole: "PM", interviewExpired: true }, "interview")).toMatchObject({
+      status: "Interview used for PM · Your interview link expired",
+      action: { label: "Email us", href: "mailto:admin@merito.ai" },
+    });
   });
 
   it("Plan 1 skips not-included mentoring for the marker", () => {

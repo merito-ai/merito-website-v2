@@ -4,7 +4,7 @@ import { PRODUCT_LABELS } from "@/lib/razorpay/pricing";
 import type { PlanState } from "@/lib/plans";
 import { buildPlanPanelRows, type PlanPanelInput } from "@/lib/planPanel";
 import { needsUpdatedTest } from "@/lib/psychometrics/testFlow";
-import { interviewDeadline } from "@/lib/planFeatures";
+import { interviewDeadline, isPastDeadline } from "@/lib/planFeatures";
 import { getAssistanceStatus } from "@/lib/planAssistance";
 import PlanSteps from "./PlanSteps";
 
@@ -20,6 +20,8 @@ export default async function PlanPanel({ userId, plan, hasRole = true, reportLo
     plan.product === "plan_mentor" ? getAssistanceStatus(userId).catch(() => "not_contacted" as const) : Promise.resolve("not_contacted" as const),
   ]);
 
+  const notStarted = interview?.status === "invited" && interview.ib_interview_status !== "APPEARED";
+  const dueBy = notStarted ? interviewDeadline(interview.magic_link_expires_at, interview.invited_at) : null;
   const input: PlanPanelInput = {
     product: plan.product,
     reportCreditsLeft: plan.reportCreditsLeft,
@@ -30,7 +32,8 @@ export default async function PlanPanel({ userId, plan, hasRole = true, reportLo
     hasRole,
     reportLocked,
     // Only an invite not yet opened has a "complete by" date (same rule as the interview page's invited state).
-    interviewDueBy: interview?.status === "invited" && interview.ib_interview_status !== "APPEARED" ? interviewDeadline(interview.magic_link_expires_at, interview.invited_at) : null,
+    interviewDueBy: dueBy,
+    interviewExpired: isPastDeadline(dueBy),
     assistance,
     interviewRole: interview?.role_title ?? null,
   };

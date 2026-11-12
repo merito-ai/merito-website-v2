@@ -17,6 +17,11 @@ export function interviewDeadline(deadline: string | null | undefined, invitedAt
   return invitedAt ? new Date(new Date(invitedAt).getTime() + INTERVIEW_VALIDITY_DAYS * 86_400_000) : null;
 }
 
+// E6: an invite past its deadline (callers pass only invites not yet started).
+export function isPastDeadline(due: Date | null, now = Date.now()): boolean {
+  return due !== null && due.getTime() < now;
+}
+
 // Application assistance is offline (no workflow): what happens next. Turnaround is a PM default (2026-11-12), not yet confirmed.
 // Admin-set progress (table plan_assistance, migration 0073). Client-safe so the admin form can use it.
 export type AssistanceStatus = "not_contacted" | "in_progress" | "done";
