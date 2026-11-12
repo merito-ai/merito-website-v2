@@ -222,7 +222,7 @@ export default async function PersonalityPrintPage({
           </span>
         </div>
         <p style={{ fontSize: 12, margin: "0 0 16px", color: "#9CA3AF" }}>
-          Automated checks on how the questionnaire was answered &mdash; not part of the personality result itself.
+          Automated checks on how the questionnaire was answered. Not part of the personality result itself.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: 12 }}>
           {validityCells.map((c) => (

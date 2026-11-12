@@ -181,7 +181,7 @@ export default function PersonalityTestClient({
         <div className="flex items-center" style={{ gap: 10, marginBottom: 12 }}>
           <ClipboardList size={20} strokeWidth={2} className="text-[#ed1a24]" />
           <span className="font-[family-name:var(--font-poppins)] font-semibold text-white" style={{ fontSize: 15 }}>
-            Part 2 of 2 &mdash; Work culture preferences
+            Part 2 of 2: Work culture preferences
           </span>
         </div>
         <p className="font-[family-name:var(--font-poppins)] text-white/55" style={{ fontSize: 14, lineHeight: 1.65, margin: "0 0 20px" }}>
@@ -214,7 +214,7 @@ export default function PersonalityTestClient({
           </span>
         </div>
         <p className="font-[family-name:var(--font-poppins)] text-white/55" style={{ fontSize: 14, lineHeight: 1.65, margin: "0 0 16px" }}>
-          A short questionnaire that maps how you tend to think, work and relate to others across five broad dimensions of personality &mdash; for {roleTitle}.
+          A short questionnaire that maps how you tend to think, work and relate to others across five broad dimensions of personality, for {roleTitle}.
         </p>
         <div className="flex flex-wrap" style={{ gap: 8, marginBottom: 20 }}>
           {["2 parts", `${ALL.length + CULTURE_ITEMS.length} statements`, "~17 minutes", "No right or wrong answers"].map((b) => (
@@ -230,7 +230,7 @@ export default function PersonalityTestClient({
         <div className="font-[family-name:var(--font-poppins)] text-white/55" style={{ fontSize: 13, lineHeight: 1.65, margin: "0 0 20px", display: "flex", flexDirection: "column", gap: 6 }}>
           <p style={{ margin: 0 }}>Part 1 is about your personality, Part 2 about the work culture you prefer. {retakingV1 ? "Both parts are saved when you finish; your earlier result stays until then." : "Your progress is saved after Part 1."}</p>
           <p style={{ margin: 0 }}>In Part 1, rate how accurately each statement describes you, from 1 (very inaccurate) to 5 (very accurate).</p>
-          <p style={{ margin: 0 }}>Answer for how you actually are &mdash; not how you think you should be.</p>
+          <p style={{ margin: 0 }}>Answer for how you actually are, not how you think you should be.</p>
           <p style={{ margin: 0 }}>Try not to sit on the fence: pick the side that fits you better.</p>
           <p style={{ margin: 0 }}>A few statements are worded in reverse, so read each one carefully.</p>
         </div>
