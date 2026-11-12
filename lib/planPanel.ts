@@ -117,7 +117,7 @@ export function buildPlanPanelRows(i: PlanPanelInput): PlanPanelRow[] {
           label: "Check a role (CV report)",
           included: true,
           done: i.hasRole !== false,
-          status: i.reportCreditsLeft > 0 ? `${i.reportCreditsLeft} of ${REPORT_CREDITS} left` : `All ${REPORT_CREDITS} used · extra reports ₹299`,
+          status: i.reportCreditsLeft > 0 ? `${i.reportCreditsLeft} of ${REPORT_CREDITS} left` : `All ${REPORT_CREDITS} used · extra roles ₹299`,
           action: { label: CHECK_FIT_LABEL, href: "#check-role" },
         },
     { key: "personality", label: "Personality + culture", included: true, done: i.personality === "done", ...personality[i.personality] },

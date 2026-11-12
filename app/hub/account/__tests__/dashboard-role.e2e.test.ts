@@ -93,7 +93,7 @@ for (const vp of VIEWPORTS) {
         await unlockReport(u.id, l, role, order);
       }
       await page.reload();
-      await expect(panel(page)).toContainText("All 3 used · extra reports ₹299");
+      await expect(panel(page)).toContainText("All 3 used · extra roles ₹299");
       await guards(page);
       await page.getByTestId("role-switcher-trigger").filter({ visible: true }).first().click();
       await page.getByRole("menuitem", { name: /Check my fit for a role/ }).click();
