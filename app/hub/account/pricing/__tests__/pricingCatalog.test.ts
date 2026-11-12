@@ -104,8 +104,8 @@ describe("buildPricingCards", () => {
       report: "₹299",
       personality: "₹299",
       references: "₹299",
-      interview: "₹1499",
-      counselling: "₹2999",
+      interview: "₹1,499",
+      counselling: "₹2,999",
     });
   });
 });
@@ -150,7 +150,7 @@ describe("applyPlanToCards", () => {
       personality: "Included in your plan",
       references: "Included in your plan",
       interview: "Included in your plan",
-      counselling: "₹1999",
+      counselling: "₹1,999",
     });
     for (const c of cs) expect([c.inBundle, c.bundlePriceLabel]).toEqual([false, null]);
   });

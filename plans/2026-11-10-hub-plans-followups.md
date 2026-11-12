@@ -205,3 +205,13 @@ Built per `plans/2026-11-12-hub-first-visit-guide-design.md` "Scope (2026-11-12,
 - Hub TopBar overflows sideways below about 366 CSS px (role switcher + icons); 375 is fine. Pre-existing. Low.
 - P1 hero keeps the mockup's ghost "Start personality test" next to the panel row's "Start" link (two entry points to the same step). Decide when the panel restyle add-on lands. Low.
 - Local QA fixtures `fv-n1/s1/p1/p2/e3/e4@example.test` left in the local Supabase only.
+
+## Prod smoke test (2026-11-12, roshanrk2014, allowlisted, no plan)
+
+Fixed: SalesIQ chat back on the Hub (admin ChromeGate re-added the script that `SalesIqWidget` keeps off /hub); dashboard plan comparison replaced by a compact "Plans unlocked for you" row that opens the shared plans popup (was a 7-row table above the score); "seminar" line gone; interrupted-interview copy rendered "Engineerended" (compiled JSX dropped the space after `{roleTitle}`; now one template literal); `formatPrice` groups thousands (₹1,999); em-dashes in sample report data.
+
+Not covered / open (Low):
+- Interview confirm dialog not checked on prod: the test account has an interrupted interview (Resume only). Re-check with an account that has no interview.
+- Upgrade ₹2,999 not visible to a no-plan account; label comes from `PLAN_UPGRADE_PRICE_LABEL` (299900 paise).
+- Root cause of the dropped JSX space not found (only that one spot in prod chunks). Watch for "{expr} word" text joining in new copy.
+- Optional: auto-open the plans popup once on first dashboard visit for allowlisted no-plan users.

@@ -36,7 +36,7 @@ export default function InterviewTerminatedState({ roleTitle, leadId }: { roleTi
         </span>
       </div>
       <p className="font-[family-name:var(--font-poppins)] text-white/60" style={{ fontSize: 13, lineHeight: 1.65, margin: "0 0 16px" }}>
-        Your session for {roleTitle} ended before it finished. Your progress is saved. Resume whenever you&apos;re ready.
+        {`Your session for ${roleTitle} ended before it finished. Your progress is saved. Resume whenever you're ready.`}
       </p>
       <InterviewResumeWarning />
       <button

@@ -19,8 +19,7 @@ import { leadIdOrRoleTitleFilter } from "@/lib/postgrestIdentityFilter";
 import { isPersonalityComplete, needsUpdatedTest } from "@/lib/psychometrics/testFlow";
 import { getPlanState } from "@/lib/plans";
 import PlanPanel from "./PlanPanel";
-import PlanCardsClient from "./pricing/PlanCardsClient";
-import { buildPlanCards } from "./pricing/pricingCatalog";
+import PlanOfferBanner from "./guide/PlanOfferBanner";
 import { planDashboardView } from "@/lib/planPanel";
 import { firstVisitView, firstName, howMeritoWorksRows, planIncludesRows } from "@/lib/firstVisit";
 import NoRoleDashboard from "./guide/NoRoleDashboard";
@@ -278,7 +277,7 @@ export default async function AccountPage({
       initialCounsellingRequested={Boolean(counsellingRequest)}
       applications={leads.map((l) => ({ id: l.id, roleTitle: l.role_title, score: l.score, createdAt: l.created_at }))}
       planPanel={planState.plan ? <PlanPanel userId={user.id} plan={planState.plan} reportLocked={!reportUnlocked} /> : null}
-      planOffer={planDashboardView(planState) === "offer" ? <PlanCardsClient plans={buildPlanCards()} embedded /> : null}
+      planOffer={planDashboardView(planState) === "offer" ? <PlanOfferBanner /> : null}
       recruiterActivity={RECRUITER_PREVIEW_ENABLED ? <RecruiterActivityPanel viewCount={recruiterViewCount} /> : null}
       mentoringInPlan={planState.plan?.product === "plan_mentor"}
     />

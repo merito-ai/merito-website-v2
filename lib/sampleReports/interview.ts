@@ -17,7 +17,7 @@ export const SAMPLE_INTERVIEW_REPORT: InterviewReportReady = {
     "Problem Solving": 72,
   },
   overallSummary:
-    "Answers were structured and mostly on-target, with clear reasoning on the metrics questions. Confidence dipped noticeably on the experimentation prompts, where hedging replaced a direct answer. Examples were real but under-quantified — outcomes were described qualitatively where numbers would have carried more weight.",
+    "Answers were structured and mostly on-target, with clear reasoning on the metrics questions. Confidence dipped noticeably on the experimentation prompts, where hedging replaced a direct answer. Examples were real but under-quantified: outcomes were described qualitatively where numbers would have carried more weight.",
   strengths:
     "- Structured answers with a clear beginning, middle and conclusion.\n- Comfortable reasoning aloud through an unfamiliar metrics question.\n- Concrete, real examples rather than hypotheticals.",
   areasOfImprovement:
@@ -30,7 +30,7 @@ export const SAMPLE_INTERVIEW_REPORT: InterviewReportReady = {
   feedbackToInterviewer:
     "STRENGTHS: Sound analytical instincts and a habit of stating assumptions before answering. WEAKNESSES: Limited experimentation depth; outcomes under-quantified. OPPORTUNITIES: A short course on experiment design would close the most visible gap. THREATS: May struggle in a role where owning an A/B programme is a week-one expectation. RECOMMENDATION: Worth a further round if the experimentation gap is probed directly.",
   roadmap:
-    "Short-Term (0-2 months) — GOAL: Close the experimentation gap. Focus: sample sizing, power, stopping rules. What to do: run two end-to-end experiments on a public dataset and write up the decision each produced.\nMid-Term (2-4 months) — GOAL: Quantify your own impact. Focus: rebuild every CV bullet around a number and the decision it drove.\nLong-Term (4-6+ months) — GOAL: Move from reporting to owning. Focus: take one metric end to end, from definition through to the call you made on it.",
+    "Short-Term (0-2 months). GOAL: Close the experimentation gap. Focus: sample sizing, power, stopping rules. What to do: run two end-to-end experiments on a public dataset and write up the decision each produced.\nMid-Term (2-4 months). GOAL: Quantify your own impact. Focus: rebuild every CV bullet around a number and the decision it drove.\nLong-Term (4-6+ months). GOAL: Move from reporting to owning. Focus: take one metric end to end, from definition through to the call you made on it.",
   opportunities: null,
   threats: null,
   criteriaEvaluationTable: [],

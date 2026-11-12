@@ -61,6 +61,6 @@ export const SAMPLE_FITMENT_REPORT: ResumeMatchReportReady = {
   weakPoints: [
     "No evidence of designing or running experiments, which the JD names first.",
     "Analysis is described as delivered to decision-makers rather than owned through to a decision.",
-    "Marketplace dynamics — supply liquidity, take-rate, two-sided growth — are absent.",
+    "Marketplace dynamics (supply liquidity, take-rate, two-sided growth) are absent.",
   ],
 };

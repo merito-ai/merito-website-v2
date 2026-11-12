@@ -56,7 +56,7 @@ export default function DashboardClient({
   initialCounsellingRequested: boolean;
   applications: Application[];
   planPanel: React.ReactNode;
-  planOffer?: React.ReactNode; // allowlisted (seminar) users without a plan: plan comparison at the top
+  planOffer?: React.ReactNode; // allowlisted users without a plan: compact offer row that opens the plans popup
   recruiterActivity: React.ReactNode;
   mentoringInPlan?: boolean; // Plan 2: the panel's mentoring row is the booking entry point, so no separate expert card
 }) {

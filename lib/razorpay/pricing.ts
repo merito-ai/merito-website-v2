@@ -43,5 +43,5 @@ export function referenceRefreshPricePaise(planHolder: boolean): number {
 }
 
 export function formatPrice(paise: number): string {
-  return `₹${Math.round(paise / 100)}`;
+  return `₹${Math.round(paise / 100).toLocaleString("en-IN")}`;
 }

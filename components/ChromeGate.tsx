@@ -1,7 +1,6 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import Script from "next/script";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -18,17 +17,7 @@ export default function ChromeGate({ children }: { children: React.ReactNode }) 
       <Navbar />
       {children}
       <Footer />
-      <Script id="zoho-init" strategy="afterInteractive">
-        {`
-          window.$zoho=window.$zoho || {};
-          $zoho.salesiq=$zoho.salesiq||{ready:function(){}}
-        `}
-      </Script>
-      <Script
-        id="zsiqscript"
-        src="https://salesiq.zohopublic.in/widget?wc=siq60bd6a01da5298e0b5a2257627058c32ba59a589f85784499b5013bfa2af42fc"
-        strategy="afterInteractive"
-      />
+      {/* SalesIQ chat loads from SalesIqWidget (app/layout.tsx), which skips /hub and /admin. */}
     </>
   );
 }
