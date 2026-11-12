@@ -4,6 +4,7 @@ import { getCandidateResumeDetails, getResumeMatchReport, scoreOutOfTen, type Ca
 import { getInterviewReport, type InterviewReportReady } from "@/lib/intervuebox/interviewReports";
 import { buildReportRaw } from "@/lib/intervuebox/reportRaw";
 import type { Scores, Validity } from "@/lib/personality";
+import type { CultureScores } from "@/lib/psychometrics/scoring";
 import { isPersonalityComplete } from "@/lib/psychometrics/testFlow";
 import { logAdminAction, listActionsForTarget, type AdminActionRow } from "@/lib/adminAuditLog";
 import type { ReportType } from "@/app/hub/account/reportSections";
@@ -278,7 +279,7 @@ export type CandidateDetail = {
   email: string;
   name: string | null;
   leads: CandidateLeadDetail[];
-  personality: { roleTitle: string; scores: Scores; validity: Validity } | null;
+  personality: { roleTitle: string; scores: Scores; validity: Validity; culture: { scores: CultureScores; reliable: boolean | null } | null } | null;
   references: {
     status: string;
     minReferences: number;
@@ -344,7 +345,7 @@ export async function getCandidateDetail(userId: string): Promise<CandidateDetai
 
   const { data: personalityRow } = await supabase
     .from("personality_tests")
-    .select("role_title, scores, validity, version, culture_scores")
+    .select("role_title, scores, validity, version, culture_scores, culture_reliable")
     .eq("user_id", userId)
     .order("completed_at", { ascending: false })
     .limit(1)
@@ -449,7 +450,14 @@ export async function getCandidateDetail(userId: string): Promise<CandidateDetai
     leads,
     personality:
       personalityRow && personalityRow.scores && personalityRow.validity && isPersonalityComplete(personalityRow)
-        ? { roleTitle: personalityRow.role_title, scores: personalityRow.scores as Scores, validity: personalityRow.validity as Validity }
+        ? {
+            roleTitle: personalityRow.role_title,
+            scores: personalityRow.scores as Scores,
+            validity: personalityRow.validity as Validity,
+            culture: personalityRow.culture_scores
+              ? { scores: personalityRow.culture_scores as CultureScores, reliable: personalityRow.culture_reliable as boolean | null }
+              : null,
+          }
         : null,
     references: referenceStatus
       ? {

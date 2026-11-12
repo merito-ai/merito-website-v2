@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import type { Scores } from "@/lib/personality";
-import { strengthsAndDevelopment, CULTURE_CAVEATS, SELF_DEV_NOTE, SHARE_CULTURE_HEADING } from "../reportCopy";
+import { strengthsAndDevelopment, cultureFitLine, CULTURE_CAVEATS, FLAT_TEXT, SELF_DEV_NOTE, SHARE_CULTURE_HEADING } from "../reportCopy";
 
 const s = (E: number, A: number, C: number, ES: number, O: number): Scores => {
   const t = (pct: number) => ({ raw: 0, pct, band: 0 });
@@ -27,4 +27,20 @@ describe("report copy", () => {
   it("self-development note says not for hiring", () => expect(SELF_DEV_NOTE).toContain("not for hiring"));
   it("share heading labels culture as self-reported preferences, for development", () =>
     expect(SHARE_CULTURE_HEADING).toContain("self-reported preferences, for development"));
+});
+
+describe("cultureFitLine", () => {
+  it("unreliable shows no line (mix only)", () => {
+    expect(cultureFitLine({ kind: "unreliable" })).toBeNull();
+  });
+  it("flat shows the adaptable text", () => {
+    expect(cultureFitLine({ kind: "flat" })).toBe(FLAT_TEXT);
+  });
+  it("fit shows the top benchmark with its %", () => {
+    const fits = [
+      { key: "startup", label: "Early-stage startup", basis: "", fit: 98 },
+      { key: "hospital", label: "Hospital / healthcare", basis: "", fit: 60 },
+    ];
+    expect(cultureFitLine({ kind: "fit", fits })).toBe("Closest organisation type: Early-stage startup (98% fit, Merito estimate)");
+  });
 });

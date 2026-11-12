@@ -1,5 +1,6 @@
 import { TRAITS, type Scores, type TraitKey } from "@/lib/personality";
 import type { CultureKey } from "./cultureItems";
+import type { FitResult } from "./cultureFit";
 
 export const CULTURE_LABEL: Record<CultureKey, string> = {
   Clan: "Collaborative (Clan)",
@@ -27,6 +28,13 @@ export const CULTURE_CAVEATS = [
 export const SELF_DEV_NOTE =
   "This report is for your own development. It describes your self-reported preferences and is not for hiring or promotion decisions.";
 export const SHARE_CULTURE_HEADING = "Work culture: self-reported preferences, for development";
+
+// One-line culture result for compact surfaces (combined report, share link, samples). Unreliable: mix only, no line.
+export function cultureFitLine(fit: FitResult): string | null {
+  if (fit.kind === "unreliable") return null;
+  if (fit.kind === "flat") return FLAT_TEXT;
+  return `Closest organisation type: ${fit.fits[0].label} (${fit.fits[0].fit}% fit, Merito estimate)`;
+}
 
 export function strengthsAndDevelopment(scores: Scores): { strengths: TraitKey[]; development: TraitKey[] } {
   const ranked = [...TRAITS].sort((a, b) => scores[b].pct - scores[a].pct || TRAITS.indexOf(a) - TRAITS.indexOf(b));

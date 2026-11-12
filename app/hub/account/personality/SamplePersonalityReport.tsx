@@ -9,7 +9,12 @@ import {
   BANDS,
   traitLevel,
 } from "@/lib/personality";
-import { SAMPLE_PERSONALITY_SCORES, SAMPLE_PERSONALITY_NAME } from "@/lib/sampleReports/personality";
+import { CULTURES } from "@/lib/psychometrics/cultureItems";
+import { cultureFit } from "@/lib/psychometrics/cultureFit";
+import { CULTURE_LABEL, SHARE_CULTURE_HEADING, cultureFitLine } from "@/lib/psychometrics/reportCopy";
+import { SAMPLE_PERSONALITY_SCORES, SAMPLE_PERSONALITY_NAME, SAMPLE_PERSONALITY_CULTURE } from "@/lib/sampleReports/personality";
+
+const cultureLine = cultureFitLine(cultureFit(SAMPLE_PERSONALITY_CULTURE, true));
 
 export default function SamplePersonalityReport() {
   const firstTrait = TRAITS[0];
@@ -39,6 +44,30 @@ export default function SamplePersonalityReport() {
             </div>
           );
         })}
+      </div>
+
+      <div className="bg-white/[0.04]" style={{ borderRadius: 10, padding: 14 }}>
+        <p className="font-[family-name:var(--font-poppins)] font-semibold text-white" style={{ fontSize: 13, margin: "0 0 10px" }}>
+          {SHARE_CULTURE_HEADING}
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {CULTURES.map((k) => (
+            <div key={k}>
+              <div className="flex items-center justify-between font-[family-name:var(--font-poppins)]" style={{ marginBottom: 4, fontSize: 12 }}>
+                <span className="text-white/80">{CULTURE_LABEL[k]}</span>
+                <span className="font-semibold text-[#ed1a24]">{SAMPLE_PERSONALITY_CULTURE[k]}/100</span>
+              </div>
+              <div className="bg-white/[0.08] overflow-hidden" style={{ height: 6, borderRadius: 6 }}>
+                <div className="h-full bg-[#ed1a24]" style={{ borderRadius: 6, width: `${SAMPLE_PERSONALITY_CULTURE[k]}%` }} />
+              </div>
+            </div>
+          ))}
+        </div>
+        {cultureLine && (
+          <p className="font-[family-name:var(--font-poppins)] text-white/70" style={{ fontSize: 12, lineHeight: 1.6, margin: "10px 0 0" }}>
+            {cultureLine}
+          </p>
+        )}
       </div>
 
       <div className="bg-white/[0.04]" style={{ borderRadius: 10, padding: 14 }}>

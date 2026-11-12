@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { TRAITS, BANDS, traitLevel } from "@/lib/personality";
-import { SAMPLE_PERSONALITY_SCORES, SAMPLE_PERSONALITY_NAME } from "../personality";
+import { SAMPLE_PERSONALITY_SCORES, SAMPLE_PERSONALITY_NAME, SAMPLE_PERSONALITY_CULTURE } from "../personality";
+import { CULTURES } from "@/lib/psychometrics/cultureItems";
+import { cultureFit } from "@/lib/psychometrics/cultureFit";
 
 describe("SAMPLE_PERSONALITY_SCORES", () => {
   it("scores all five Big Five traits", () => {
@@ -33,5 +35,19 @@ describe("SAMPLE_PERSONALITY_SCORES", () => {
 
   it("uses the fictional sample persona", () => {
     expect(SAMPLE_PERSONALITY_NAME).toBe("Ananya");
+  });
+});
+
+describe("SAMPLE_PERSONALITY_CULTURE", () => {
+  it("has a 0-100 integer score for every culture", () => {
+    for (const k of CULTURES) {
+      expect(Number.isInteger(SAMPLE_PERSONALITY_CULTURE[k])).toBe(true);
+      expect(SAMPLE_PERSONALITY_CULTURE[k]).toBeGreaterThanOrEqual(0);
+      expect(SAMPLE_PERSONALITY_CULTURE[k]).toBeLessThanOrEqual(100);
+    }
+  });
+  it("is shaped enough to show a fit %, not the adaptable state", () => {
+    const fit = cultureFit(SAMPLE_PERSONALITY_CULTURE, true);
+    expect(fit.kind).toBe("fit");
   });
 });

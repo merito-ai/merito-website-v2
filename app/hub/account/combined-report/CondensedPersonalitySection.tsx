@@ -2,7 +2,7 @@ import { TRAITS, TRAIT_NAME, TRAIT_MEANING, TRAIT_WORK_IMPLICATION, BANDS, trait
 import { CULTURES } from "@/lib/psychometrics/cultureItems";
 import type { CultureScores } from "@/lib/psychometrics/scoring";
 import { cultureFit } from "@/lib/psychometrics/cultureFit";
-import { CULTURE_LABEL, FLAT_TEXT, SHARE_CULTURE_HEADING } from "@/lib/psychometrics/reportCopy";
+import { CULTURE_LABEL, SHARE_CULTURE_HEADING, cultureFitLine } from "@/lib/psychometrics/reportCopy";
 import CombinedRadar from "./CombinedRadar";
 
 // Compact 2-column card grid matching the specimen's Personality Profile
@@ -24,6 +24,7 @@ export default function CondensedPersonalitySection({
 }) {
   const firstName = candidateName.split(/\s+/)[0] || candidateName;
   const fit = culture ? cultureFit(culture.scores, culture.reliable) : null;
+  const fitLine = fit && cultureFitLine(fit);
 
   return (
     <>
@@ -114,9 +115,9 @@ export default function CondensedPersonalitySection({
               );
             })}
           </div>
-          {fit.kind !== "unreliable" && (
+          {fitLine && (
             <p className="font-[family-name:var(--font-inter)] text-black" style={{ fontSize: 12.5, lineHeight: 1.6, margin: "12px 0 0" }}>
-              {fit.kind === "flat" ? FLAT_TEXT : `Closest organisation type: ${fit.fits[0].label} (${fit.fits[0].fit}% fit, Merito estimate)`}
+              {fitLine}
             </p>
           )}
         </div>

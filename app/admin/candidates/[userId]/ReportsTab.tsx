@@ -19,8 +19,7 @@ import FitmentOverrideForm from "./FitmentOverrideForm";
 import InterviewOverrideForm from "./InterviewOverrideForm";
 import InterviewResync from "./InterviewResync";
 import VendorCompare from "./VendorCompare";
-import type { CandidateLeadDetail } from "@/lib/adminCandidates";
-import type { Scores, Validity } from "@/lib/personality";
+import type { CandidateLeadDetail, CandidateDetail } from "@/lib/adminCandidates";
 
 const emptyNote: React.CSSProperties = { fontSize: 13 };
 const pillBase: React.CSSProperties = {
@@ -55,7 +54,7 @@ export default function ReportsTab({
   email: string;
   candidateName: string;
   leads: CandidateLeadDetail[];
-  personality: { roleTitle: string; scores: Scores; validity: Validity } | null;
+  personality: CandidateDetail["personality"];
 }) {
   const [selectedLeadId, setSelectedLeadId] = useState(leads[0]?.id ?? "");
   const lead = leads.find((l) => l.id === selectedLeadId) ?? leads[0];
@@ -221,7 +220,7 @@ export default function ReportsTab({
           Personality
         </h3>
         {personality ? (
-          <PersonalityReport candidateName={candidateName} roleTitle={personality.roleTitle} scores={personality.scores} validity={personality.validity} />
+          <PersonalityReport candidateName={candidateName} roleTitle={personality.roleTitle} scores={personality.scores} validity={personality.validity} culture={personality.culture} />
         ) : (
           <p className="font-[family-name:var(--font-poppins)] text-[#9c9c9c]" style={emptyNote}>
             Not taken yet.

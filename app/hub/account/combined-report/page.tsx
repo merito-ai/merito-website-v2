@@ -7,6 +7,8 @@ import { loadCombinedReportData } from "@/lib/combinedReportData";
 import { getMatchBand } from "../report/ResumeMatchGauge";
 import { remapBandDark } from "./combinedBandColors";
 import { TRAITS, TRAIT_NAME } from "@/lib/personality";
+import { cultureFit } from "@/lib/psychometrics/cultureFit";
+import { cultureFitLine } from "@/lib/psychometrics/reportCopy";
 import CombinedGauge from "./CombinedGauge";
 import CombinedReportActions from "./CombinedReportActions";
 import PlanFeatureNote from "@/app/hub/account/PlanFeatureNote";
@@ -108,6 +110,8 @@ export default async function CombinedReportPage({
     const ranked = [...TRAITS].sort((a, b) => personality.scores[b].pct - personality.scores[a].pct);
     const [top1, top2] = ranked;
     personalitySummary = `Highest in ${TRAIT_NAME[top1]} (${personality.scores[top1].pct}%) and ${TRAIT_NAME[top2]} (${personality.scores[top2].pct}%).`;
+    const cultureLine = personality.culture && cultureFitLine(cultureFit(personality.culture.scores, personality.culture.reliable));
+    if (cultureLine) personalitySummary += ` ${cultureLine}.`;
   }
 
   // The interview page resolves by ?lead= (not ?role=), so look up the lead
