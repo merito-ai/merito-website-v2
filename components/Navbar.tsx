@@ -36,6 +36,10 @@ export default function Navbar() {
     return null;
   }
 
+  // Hub visitors are candidates: the header CTA is their way back in, not the recruiter "Talk to an expert".
+  const isHub = pathname === "/hub" || pathname.startsWith("/hub/");
+  const cta = isHub ? { href: "/hub/login", label: "Log in" } : { href: "/contact", label: "Talk to an expert" };
+
   return (
     <header className="sticky top-0 z-50 flex justify-center bg-transparent px-4 py-4">
       <nav className="flex h-[82px] w-full max-w-[1328px] items-center justify-between rounded-[40px] border border-black/12 bg-white px-4 shadow-[0_8px_22px_rgba(17,35,89,0.08)] sm:rounded-[8px] sm:px-5 lg:px-6">
@@ -161,10 +165,10 @@ export default function Navbar() {
 
         {/* CTA */}
         <Link
-          href="/contact"
-          className="relative hidden h-[50px] items-center justify-center overflow-hidden whitespace-nowrap rounded-[8px] bg-[#ed1a24] px-6 font-[family-name:var(--font-poppins)] text-[16px] font-semibold text-white transition-all duration-200 hover:bg-black hover:text-white hover:scale-[1.03] active:scale-[0.97] md:flex"
+          href={cta.href}
+          className={`relative ${isHub ? "ml-auto mr-2 flex h-[44px] px-4 text-[15px] md:ml-0 md:mr-0 md:h-[50px] md:px-6 md:text-[16px]" : "hidden h-[50px] px-6 text-[16px] md:flex"} items-center justify-center overflow-hidden whitespace-nowrap rounded-[8px] bg-[#ed1a24] font-[family-name:var(--font-poppins)] font-semibold text-white transition-all duration-200 hover:bg-black hover:text-white hover:scale-[1.03] active:scale-[0.97]`}
         >
-          <span className="relative z-10">Talk to an expert</span>
+          <span className="relative z-10">{cta.label}</span>
         </Link>
 
         {/* Mobile hamburger */}
@@ -220,11 +224,11 @@ export default function Navbar() {
             );
           })}
           <Link
-            href="/contact"
+            href={cta.href}
             onClick={() => setOpen(false)}
             className="flex items-center justify-center bg-[#ed1a24] text-white font-semibold text-[16px] px-6 h-[50px] rounded-[8px] mt-2"
           >
-            Talk to an expert
+            {cta.label}
           </Link>
         </div>
       )}
