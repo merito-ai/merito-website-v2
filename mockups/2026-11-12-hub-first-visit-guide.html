@@ -129,6 +129,27 @@
   .states { display:flex; gap:6px; flex-wrap:wrap; align-items:center; margin:-12px 0 20px; font-size:11.5px; color:var(--dim); }
   .states button { background:transparent; border:1px dashed var(--line2); color:var(--mute); border-radius:6px; padding:4px 8px; font-size:11.5px; }
 
+  .row.lockd .dot { color:var(--dim); border-style:dashed; }
+  .row.lockd .t { color:var(--mute); }
+  .need { font-size:11px; font-weight:600; padding:3px 9px; border-radius:20px; background:#ffffff0e; color:var(--mute); display:inline-flex; gap:5px; align-items:center; margin-top:5px; white-space:nowrap; }
+  .need svg { width:11px; height:11px; }
+  .rowact { margin-top:8px; display:flex; gap:8px; flex-wrap:wrap; }
+  .mini-btn { height:36px; min-width:44px; padding:0 12px; border-radius:9px; border:1px solid var(--line2); background:#ffffff06; color:#fff; font-size:12.5px; display:inline-flex; gap:6px; align-items:center; }
+  .mini-btn.red { background:var(--red); border-color:var(--red); }
+  .plantag { display:inline-flex; gap:7px; align-items:center; font-size:12px; font-weight:600; color:var(--green); background:#3ecf8e1a; border:1px solid #3ecf8e40; border-radius:20px; padding:5px 12px; margin-bottom:16px; }
+  .plantag svg { width:13px; height:13px; }
+  .cm { max-width:480px !important; }
+  .rolebox { display:flex; gap:12px; align-items:center; border:1px solid #e6e6e8; border-radius:14px; padding:14px; margin:4px 0 14px; }
+  .rolebox .ic2 { width:40px; height:40px; border-radius:10px; background:#ffe8e9; color:var(--red); display:grid; place-items:center; }
+  .rolebox b { display:block; font-size:15px; } .rolebox small { color:#6b6b70; font-size:12.5px; }
+  .rolebox a { margin-left:auto; font-size:13px; color:#141416; text-underline-offset:3px; min-height:44px; display:flex; align-items:center; }
+  .warn { display:flex; gap:10px; background:#fff7ed; border:1px solid #fed7aa; color:#7c2d12; border-radius:12px; padding:12px; font-size:13px; line-height:1.5; margin-bottom:14px; }
+  .warn svg { color:#ea580c; margin-top:2px; }
+  .facts { list-style:none; padding:0; margin:0 0 18px; display:grid; gap:8px; font-size:13px; color:#3a3a3f; }
+  .facts li { display:flex; gap:9px; align-items:center; } .facts svg { width:15px; height:15px; color:#6b6b70; }
+  .cm .btn { width:100%; justify-content:center; }
+  .cm .later { width:100%; height:44px; margin-top:8px; border:0; background:transparent; color:#57575c; font-size:13.5px; }
+
   /* phone sticky CTA */
   .sticky { display:none; }
   body.phone .sticky { display:block; position:absolute; left:0; right:0; bottom:0; padding:12px 16px 16px; background:linear-gradient(0deg,var(--bg) 70%,transparent); z-index:5; }
@@ -173,11 +194,13 @@
 </head>
 <body>
 <div class="bar">
-  <b>Hub first visit · mockup v3</b>
+  <b>Hub first visit · mockup v5</b>
   <button class="tab on" data-s="n1">Normal · login first</button>
   <button class="tab" data-s="n2">Normal · form first</button>
   <button class="tab" data-s="s1">Plan user · login first</button>
   <button class="tab" data-s="s2">Plan user · form first</button>
+  <button class="tab" data-s="p1">Plan holder · no role yet</button>
+  <button class="tab" data-s="p2">Plan holder · start interview</button>
   <span class="grow"></span>
   <button class="tab" id="dev">Phone (375px)</button>
 </div>
@@ -227,7 +250,7 @@
       <div class="tl">
         <h3>Your progress</h3><p class="sub">1 of 5 steps done</p>
         <div class="prog"><i style="width:20%"></i></div>
-        <div class="row done"><span class="dot"><i data-lucide="check"></i></span><div><div class="t">Fitment score</div><div class="d">72 / 100 for Product Analyst</div></div><span class="pill ok">Done</span></div>
+        <div class="row done"><span class="dot"><i data-lucide="check"></i></span><div><div class="t">Fitment score</div><div class="d">Product Analyst</div></div><span class="pill ok">Done</span></div>
         <div class="row now"><span class="dot"><i data-lucide="file-bar-chart"></i></span><div><div class="t">Detailed report <span class="here">NEXT</span></div><div class="d">Strengths, gaps and what to fix</div></div><span class="pill paid">Paid</span></div>
         <div class="row"><span class="dot"><i data-lucide="brain"></i></span><div><div class="t">Personality + culture</div><div class="d">Traits and work cultures</div></div><span class="pill paid">Paid</span></div>
         <div class="row"><span class="dot"><i data-lucide="mic"></i></span><div><div class="t">Mock AI interview</div><div class="d">Scored practice interview</div></div><span class="pill paid">Paid</span></div>
@@ -249,7 +272,7 @@
         <span class="kicker fx"><i data-lucide="gift"></i>Exclusive plans unlocked for you</span>
         <h1 class="fx">Welcome, Sneha. Everything you need to <em>land your next role.</em></h1>
         <div class="fx">
-          <p class="lead">One payment unlocks reports for 3 roles, a personality and culture test, a 45-min AI interview, references and a shareable profile.</p>
+          <p class="lead">One payment unlocks everything on the right. Start with a free role check, or pick a plan now.</p>
           <div class="actions"><button class="btn hide-phone" data-open><i data-lucide="lock-open"></i>Unlock plans</button><button class="ghost"><i data-lucide="target"></i>Check a role first, free</button></div>
           <p class="fine"><i data-lucide="shield-check"></i>One-time payment. Features never expire.</p>
         </div>
@@ -275,7 +298,7 @@
   <p class="note"><strong>Plan user (allowlisted), used the public form, then signed in, no plan.</strong> Score first, step 1 done. "Unlock plans" opens the popup; this role's report counts as 1 of the 3 included.</p>
   <div class="frame"><div class="top"><span class="logo"><i>M</i>erito</span><span class="hub">HUB</span><span class="search"></span><span class="av">S</span></div>
   <div class="main"><nav class="side"></nav><div class="content">
-    <div class="hello fx"><i data-lucide="gift"></i>Welcome, Sneha. Exclusive plans are unlocked for your account.<button class="x" aria-label="Dismiss"><i data-lucide="x"></i></button></div>
+    <span class="kicker fx"><i data-lucide="gift"></i>Welcome, Sneha. Exclusive plans are unlocked for you</span>
     <div class="hero">
       <div>
         <div class="score fx"><div class="ring"><span>72</span></div><div><p class="role"><i data-lucide="briefcase" style="width:13px;height:13px"></i>Product Analyst</p><h1>Good fit</h1></div></div>
@@ -288,7 +311,7 @@
       <div class="tl">
         <h3>Your progress</h3><p class="sub">1 step done. A plan unlocks the rest.</p>
         <div class="prog"><i style="width:17%"></i></div>
-        <div class="row done"><span class="dot"><i data-lucide="check"></i></span><div><div class="t">Fitment score</div><div class="d">72 / 100 for Product Analyst</div></div><span class="pill ok">Done</span></div>
+        <div class="row done"><span class="dot"><i data-lucide="check"></i></span><div><div class="t">Fitment score</div><div class="d">Product Analyst</div></div><span class="pill ok">Done</span></div>
         <div class="row now"><span class="dot"><i data-lucide="file-bar-chart"></i></span><div><div class="t">3 role reports <span class="here">NEXT</span></div><div class="d">This role + 2 more</div></div><span class="pill incl">All plans</span></div>
         <div class="row"><span class="dot"><i data-lucide="brain"></i></span><div><div class="t">Personality + culture</div><div class="d">Traits and work cultures</div></div><span class="pill incl">All plans</span></div>
         <div class="row"><span class="dot"><i data-lucide="mic"></i></span><div><div class="t">45-min AI interview</div><div class="d">10 days to complete</div></div><span class="pill incl">All plans</span></div>
@@ -301,6 +324,84 @@
   <div class="scrim"></div>
   </div>
 </section>
+
+<!-- P1 -->
+<section class="scene" id="p1">
+  <p class="note"><strong>Bought a plan first, no role yet.</strong> Step 1 "Check a role" is the clear start. Interview, references and shareable profile show a "Needs a role" tag only (today their buttons bounce back silently). One action on screen: Check my fit. Personality is open now. This restyled plan panel (timeline look) replaces today's plan panel for all plan holders.</p>
+  <div class="frame"><div class="top"><span class="logo"><i>M</i>erito</span><span class="hub">HUB</span><span class="search"></span><span class="av">S</span></div>
+  <div class="main"><nav class="side"></nav><div class="content">
+    <div class="hero">
+      <div>
+        <span class="plantag fx"><i data-lucide="badge-check"></i>Assess + Mentor + Apply · active</span>
+        <h1 class="fx">You're all set, Sneha. <em>Start by checking a role.</em></h1>
+        <div class="fx">
+          <p class="lead">Your interview and references are built around a role, so add one first. You have 3 roles included.</p>
+          <div class="prep"><span><i data-lucide="file-user"></i>Your CV (PDF or Word)</span><span><i data-lucide="clipboard-list"></i>The job description</span></div>
+          <div class="actions"><button class="btn hide-phone"><i data-lucide="target"></i>Check my fit for a role</button><button class="ghost"><i data-lucide="brain"></i>Start personality test</button></div>
+        </div>
+      </div>
+      <div class="tl">
+        <h3>Your plan</h3><p class="sub">0 of 6 steps done</p>
+        <div class="prog"><i style="width:2%"></i></div>
+        <div class="row now"><span class="dot"><i data-lucide="target"></i></span><div><div class="t">Check a role <span class="here">START HERE</span></div><div class="d">3 roles included · 3 left</div></div><span class="pill incl">Included</span></div>
+        <div class="row"><span class="dot"><i data-lucide="brain"></i></span><div><div class="t">Personality + culture</div><div class="d">You can do this anytime</div><div class="rowact"><button class="mini-btn">Start</button></div></div><span class="pill incl">Included</span></div>
+        <div class="row lockd"><span class="dot"><i data-lucide="mic"></i></span><div><div class="t">45-min AI interview</div><div class="d">1 interview, for any one of your roles. Your 10 days start when you begin.</div></div><span class="need"><i data-lucide="lock"></i>Needs a role</span></div>
+        <div class="row lockd"><span class="dot"><i data-lucide="users"></i></span><div><div class="t">References</div><div class="d">Referees vouch for you for this role</div></div><span class="need"><i data-lucide="lock"></i>Needs a role</span></div>
+        <div class="row"><span class="dot"><i data-lucide="user-check"></i></span><div><div class="t">Mentoring</div><div class="d">Session 1, then a follow-up</div><div class="rowact"><button class="mini-btn">Book session 1</button></div></div><span class="pill incl">Included</span></div>
+        <div class="row"><span class="dot"><i data-lucide="briefcase"></i></span><div><div class="t">Application assistance</div><div class="d">Our team will call or email you within 7 working days to pick your 3 companies</div></div><span class="pill paid">By our team</span></div>
+        <div class="row lockd"><span class="dot"><i data-lucide="share-2"></i></span><div><div class="t">Shareable profile</div><div class="d">Builds as you complete steps</div></div><span class="need"><i data-lucide="lock"></i>Needs a role</span></div>
+      </div>
+    </div>
+  </div></div>
+  <div class="sticky"><button class="btn"><i data-lucide="target"></i>Check my fit for a role</button></div>
+  </div>
+</section>
+
+<!-- P2 -->
+<section class="scene" id="p2">
+  <p class="note"><strong>Plan holder with roles, starting the interview.</strong> One Start button (hero; sticky on phone). Clicking it opens the confirmation (try it): it names the role, warns it can't move to another role, offers "Switch role", and says the 10 days start now.</p>
+  <div class="frame"><div class="top"><span class="logo"><i>M</i>erito</span><span class="hub">HUB</span><span class="search"></span><span class="av">S</span></div>
+  <div class="main"><nav class="side"></nav><div class="content">
+    <div class="hero">
+      <div>
+        <span class="plantag fx"><i data-lucide="badge-check"></i>Assess + Prepare · active</span>
+        <h1 class="fx">Nice progress, Sneha. <em>Your interview is next.</em></h1>
+        <div class="fx">
+          <p class="lead">Your plan includes one 45-min AI interview. Pick the role you care most about, then start whenever you have 45 quiet minutes.</p>
+          <div class="actions"><button class="btn hide-phone" data-confirm><i data-lucide="mic"></i>Start interview</button><button class="ghost"><i data-lucide="repeat"></i>Switch role</button></div>
+          <p class="fine"><i data-lucide="briefcase"></i>Current role: Product Analyst</p>
+        </div>
+      </div>
+      <div class="tl">
+        <h3>Your plan</h3><p class="sub">2 of 5 steps done</p>
+        <div class="prog"><i style="width:40%"></i></div>
+        <div class="row done"><span class="dot"><i data-lucide="check"></i></span><div><div class="t">Check a role</div><div class="d">2 roles checked · 1 left</div></div><span class="pill ok">Done</span></div>
+        <div class="row done"><span class="dot"><i data-lucide="check"></i></span><div><div class="t">Personality + culture</div><div class="d">Completed</div></div><span class="pill ok">Done</span></div>
+        <div class="row now"><span class="dot"><i data-lucide="mic"></i></span><div><div class="t">45-min AI interview <span class="here">NEXT</span></div><div class="d">1 interview, for any one of your roles</div></div><span class="pill incl">Included</span></div>
+        <div class="row"><span class="dot"><i data-lucide="users"></i></span><div><div class="t">References</div><div class="d">Invite your referees</div><div class="rowact"><button class="mini-btn">Invite referees</button></div></div><span class="pill incl">Included</span></div>
+        <div class="row"><span class="dot"><i data-lucide="share-2"></i></span><div><div class="t">Shareable profile</div><div class="d">Updates as you complete steps</div></div><span class="pill incl">Included</span></div>
+        <div class="row lockd"><span class="dot"><i data-lucide="user-check"></i></span><div><div class="t">Mentoring + application help</div><div class="d">Add with Assess + Mentor + Apply</div><div class="rowact"><button class="mini-btn">Upgrade for ₹2,999</button></div></div><span class="pill p2">Mentor + Apply</span></div>
+      </div>
+    </div>
+  </div></div>
+  <div class="sticky"><button class="btn" data-confirm><i data-lucide="mic"></i>Start interview</button></div>
+  <div class="scrim cscrim"></div>
+  </div>
+</section>
+
+<template id="confirm">
+  <div class="modal cm" role="dialog" aria-modal="true" aria-labelledby="ct">
+    <div class="grab"></div>
+    <button class="close" aria-label="Close"><i data-lucide="x"></i></button>
+    <h2 id="ct">Start your interview?</h2>
+    <p class="msub">This uses the one interview included in your plan.</p>
+    <div class="rolebox"><span class="ic2"><i data-lucide="briefcase"></i></span><div><b>Product Analyst</b><small>Interview role</small></div><a href="#">Switch role</a></div>
+    <div class="warn"><i data-lucide="alert-triangle"></i><span>Once started, this interview can't be moved to another role. Want a different role? Switch roles first.</span></div>
+    <ul class="facts"><li><i data-lucide="clock"></i>45 minutes, about 10 skills from this role</li><li><i data-lucide="calendar"></i>You have 10 days to finish, starting now</li><li><i data-lucide="file-bar-chart"></i>Scored report when you finish</li></ul>
+    <button class="btn"><i data-lucide="mic"></i>Start interview for Product Analyst</button>
+    <button class="later">Not now</button>
+  </div>
+</template>
 
 <template id="plans">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="pt">
@@ -334,10 +435,13 @@
 <script>
   const side = `<div class="on"><i data-lucide="layout-grid"></i>Overview</div><div><i data-lucide="file-text"></i>Fitment report</div><div><i data-lucide="brain"></i>Personality test</div><div><i data-lucide="mic"></i>Mock interview</div><div><i data-lucide="users"></i>Reference checks</div><div><i data-lucide="files"></i>Consolidated report</div><div><i data-lucide="user-check"></i>Expert guidance</div><div style="margin-top:10px"><i data-lucide="tag"></i>Pricing</div><div><i data-lucide="receipt"></i>Order history</div>`;
   document.querySelectorAll('.side').forEach(s => s.innerHTML = side);
-  document.querySelectorAll('.scrim').forEach(s => s.innerHTML = document.getElementById('plans').innerHTML);
+  document.querySelectorAll('.scrim:not(.cscrim)').forEach(s => s.innerHTML = document.getElementById('plans').innerHTML);
   document.querySelectorAll('[data-open]').forEach(b => b.onclick = () => {
     const s = b.closest('.frame').querySelector('.scrim'); s.classList.add('open'); s.querySelector('.close').focus();
   });
+  document.querySelectorAll('.cscrim').forEach(s => s.innerHTML = document.getElementById('confirm').innerHTML);
+  document.querySelectorAll('[data-confirm]').forEach(b => b.onclick = () => { const s = b.closest('.frame').querySelector('.cscrim'); s.classList.add('open'); s.querySelector('.close').focus(); });
+  document.querySelectorAll('.cscrim .later').forEach(b => b.addEventListener('click', () => b.closest('.scrim').classList.remove('open')));
   document.querySelectorAll('.scrim').forEach(s => { s.onclick = e => { if (e.target === s || e.target.closest('.close')) s.classList.remove('open'); }; });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.scrim.open').forEach(s => s.classList.remove('open')); });
   document.querySelectorAll('.tab[data-s]').forEach(t => t.onclick = () => {

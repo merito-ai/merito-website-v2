@@ -65,3 +65,11 @@ The plan includes 1 interview, for any one of the 3 roles; it cannot move to ano
 - Plan panel interview row: "1 interview, for any one of your roles. Pick the role you care most about."
 - Interview start confirmation: "This uses your plan's interview for <role>. You can't switch it to another role later. Want a different role? Switch roles first." + "Switch role" link (existing role switcher).
 - After use: "Interview used for <role>."
+
+### No repetition (rules for every Hub screen)
+- One primary action per screen (hero button; sticky copy of it on phone only). Timeline rows carry actions only for secondary steps; the "Next" row has no second button for the same action.
+- Each fact said once per screen: details live in the timeline row or the confirm dialog, not also in the hero.
+- One greeting element per screen (kicker or welcome line, not both).
+- Score shown once (ring); timeline rows show the role name, not the score again.
+- Locked rows show a "Needs a role" tag only, no extra "Check a role" buttons.
+- One shared plans popup and one shared confirm dialog, reused by every entry point.
