@@ -233,10 +233,10 @@ export default function FitmentChecker() {
         targeting, and its job description. About 2 minutes.
       </p>
 
-      <label className="block font-[family-name:var(--font-poppins)] font-semibold text-black" style={{ fontSize: 12, marginBottom: 6 }}>
+      <label htmlFor="fc-field-1" className="block font-[family-name:var(--font-poppins)] font-semibold text-black" style={{ fontSize: 12, marginBottom: 6 }}>
         Full name <span style={{ color: "#ed1a24" }}>*</span>
       </label>
-      <input
+      <input id="fc-field-1"
         type="text"
         value={name}
         onChange={(e) => setName(e.target.value)}
@@ -245,10 +245,10 @@ export default function FitmentChecker() {
         style={{ padding: "13px 14px", borderRadius: 8, fontSize: 14, marginBottom: 12 }}
       />
 
-      <label className="block font-[family-name:var(--font-poppins)] font-semibold text-black" style={{ fontSize: 12, marginBottom: 6 }}>
+      <label htmlFor="fc-field-2" className="block font-[family-name:var(--font-poppins)] font-semibold text-black" style={{ fontSize: 12, marginBottom: 6 }}>
         Your email <span style={{ color: "#ed1a24" }}>*</span>
       </label>
-      <input
+      <input id="fc-field-2"
         type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
@@ -260,10 +260,10 @@ export default function FitmentChecker() {
         Use the same email address as on your CV. Mismatched emails can break your account setup later.
       </p>
 
-      <label className="block font-[family-name:var(--font-poppins)] font-semibold text-black" style={{ fontSize: 12, marginBottom: 6 }}>
+      <label htmlFor="fc-field-3" className="block font-[family-name:var(--font-poppins)] font-semibold text-black" style={{ fontSize: 12, marginBottom: 6 }}>
         Phone number <span style={{ color: "#ed1a24" }}>*</span>
       </label>
-      <input
+      <input id="fc-field-3"
         type="tel"
         value={phone}
         onChange={(e) => setPhone(e.target.value)}
@@ -272,10 +272,10 @@ export default function FitmentChecker() {
         style={{ padding: "13px 14px", borderRadius: 8, fontSize: 14, marginBottom: 12 }}
       />
 
-      <label className="block font-[family-name:var(--font-poppins)] font-semibold text-black" style={{ fontSize: 12, marginBottom: 6 }}>
+      <label htmlFor="fc-field-4" className="block font-[family-name:var(--font-poppins)] font-semibold text-black" style={{ fontSize: 12, marginBottom: 6 }}>
         The role you want <span style={{ color: "#ed1a24" }}>*</span>
       </label>
-      <input
+      <input id="fc-field-4"
         value={role}
         onChange={(e) => setRole(e.target.value)}
         placeholder="e.g. Senior Product Manager"
@@ -287,6 +287,7 @@ export default function FitmentChecker() {
       </p>
 
       <select
+        aria-label="Your seniority level"
         value={candidateLevel}
         onChange={(e) => setCandidateLevel(e.target.value as "entry" | "mid" | "senior")}
         className="w-full box-border bg-white font-[family-name:var(--font-poppins)] text-black outline-none border border-[#dcdcdc] focus:border-[#ed1a24]"
@@ -301,11 +302,11 @@ export default function FitmentChecker() {
       </select>
 
       <div className="flex items-center" style={{ gap: 8, marginBottom: 6 }}>
-        <label className="font-[family-name:var(--font-poppins)] font-semibold text-black" style={{ fontSize: 12 }}>
+        <label htmlFor="fc-field-5" className="font-[family-name:var(--font-poppins)] font-semibold text-black" style={{ fontSize: 12 }}>
           Job description <span style={{ color: "#ed1a24" }}>*</span>
         </label>
       </div>
-      <textarea
+      <textarea id="fc-field-5"
         value={jdText}
         onChange={(e) => setJdText(e.target.value)}
         placeholder="Paste the full job description here..."

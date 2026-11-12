@@ -44,7 +44,7 @@ function getOpsEmail(): string {
 
 // Plan bought or upgraded (product = the effective plan). Benefits use the comparison-table
 // wording, steps the dashboard panel's. Caller sends once per order and swallows failures.
-export async function sendPlanWelcomeEmail(userId: string, product: PlanProduct): Promise<void> {
+export async function sendPlanWelcomeEmail(userId: string, product: PlanProduct, upgraded = false): Promise<void> {
   const { data } = await getSupabaseServerClient().auth.admin.getUserById(userId);
   const to = data?.user?.email;
   if (!to) return;
@@ -53,7 +53,8 @@ export async function sendPlanWelcomeEmail(userId: string, product: PlanProduct)
   const steps = buildPlanPanelRows({ product, reportCreditsLeft: 3, personality: "none", interview: "unused", references: "none", mentoring: [] })
     .filter((r) => r.included)
     .map((r) => r.label);
-  const url = getAbsoluteUrl("/hub/account");
+  // An upgrade already did step 1 on Plan 1: point at the new part (mentoring) instead.
+  const [cta, url] = upgraded ? ["Book your first mentoring session", getAbsoluteUrl("/hub/account/expert")] : ["Start with step 1: check a role", getAbsoluteUrl("/hub/account")];
   const notes = [`Mock AI interview: ${INTERVIEW_VALIDITY_NOTE}`, ...(product === "plan_mentor" ? [`Application assistance: ${ASSISTANCE_NEXT_STEP}`] : [])];
   const text = [
     `Your Merito plan "${name}" is active.`,
@@ -67,14 +68,14 @@ export async function sendPlanWelcomeEmail(userId: string, product: PlanProduct)
     "Good to know:",
     ...notes.map((n) => `- ${n}`),
     "",
-    `Start with step 1: check a role\n${url}`,
+    `${cta}\n${url}`,
   ].join("\n");
   const html =
     `<p>Your Merito plan <strong>${name}</strong> is active.</p>` +
     `<p><strong>What's included:</strong></p><ul>${benefits.map((b) => `<li>${b}</li>`).join("")}</ul>` +
     `<p><strong>Your steps:</strong></p><ol>${steps.map((st) => `<li>${st}</li>`).join("")}</ol>` +
     `<p><strong>Good to know:</strong></p><ul>${notes.map((n) => `<li>${n}</li>`).join("")}</ul>` +
-    `<p><a href="${url}">Start with step 1: check a role</a></p>`;
+    `<p><a href="${url}">${cta}</a></p>`;
 
   await getResendClient().emails.send({ from: getFromEmail(), to: [to], subject: `Your Merito plan is active: ${name}`, text, html });
 }

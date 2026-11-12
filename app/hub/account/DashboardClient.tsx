@@ -36,6 +36,7 @@ export default function DashboardClient({
   planPanel,
   planOffer,
   recruiterActivity,
+  mentoringInPlan = false,
 }: {
   leadId: string;
   roleTitle: string;
@@ -57,6 +58,7 @@ export default function DashboardClient({
   planPanel: React.ReactNode;
   planOffer?: React.ReactNode; // allowlisted (seminar) users without a plan: plan comparison at the top
   recruiterActivity: React.ReactNode;
+  mentoringInPlan?: boolean; // Plan 2: the panel's mentoring row is the booking entry point, so no separate expert card
 }) {
   const [modal, setModal] = useState<"none" | "report" | "generate" | "counselling" | "tour">("none");
   const [reportUnlocked, setReportUnlocked] = useState(initialReportUnlocked);
@@ -115,7 +117,7 @@ export default function DashboardClient({
             Hi {userName}, here&apos;s how you stand for {roleTitle}
           </h1>
           <p className="font-[family-name:var(--font-poppins)] text-white/50" style={{ fontSize: 13.5, margin: 0 }}>
-            {doneCount} of {totalSteps} steps complete. Each one strengthens the case a recruiter sees.
+            {planPanel ? "Follow your plan steps below." : `${doneCount} of ${totalSteps} steps complete.`} Each one strengthens the case a recruiter sees.
           </p>
           <div
             className="inline-flex items-center bg-[#ed1a24]/10 border border-[#ed1a24]/25"
@@ -153,7 +155,7 @@ export default function DashboardClient({
 
         {recruiterActivity}
 
-        <section id="guidance" style={{ scrollMarginTop: 114 }}>
+        {!mentoringInPlan && <section id="guidance" style={{ scrollMarginTop: 114 }}>
           <p className="font-[family-name:var(--font-poppins)] font-bold uppercase text-white/40" style={{ fontSize: 11, letterSpacing: "0.08em", margin: "0 0 10px" }}>
             Guidance
           </p>
@@ -162,7 +164,7 @@ export default function DashboardClient({
             requested={counsellingRequested}
             onOpenPaywall={() => setModal("counselling")}
           />
-        </section>
+        </section>}
 
         <RecentActivityCard applications={otherApplications} />
 

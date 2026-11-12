@@ -234,10 +234,7 @@ export default function PlanCardsClient({ plans, owned = null, embedded = false 
                       </span>
                     )}
                     <span className="block font-[family-name:var(--font-gabarito)] font-bold text-white text-[12.5px] md:text-[16px] leading-tight">
-                      <span className="md:hidden" aria-hidden="true">
-                        {SHORT_TITLE[plan.product]}
-                      </span>
-                      <span className="sr-only md:not-sr-only">{plan.title}</span>
+                      {plan.title}
                     </span>
                     <span className="block font-[family-name:var(--font-gabarito)] font-bold text-white text-[17px] md:text-[26px]" style={{ marginTop: 4 }}>
                       {plan.priceLabel}
@@ -298,8 +295,6 @@ export default function PlanCardsClient({ plans, owned = null, embedded = false 
     </Wrap>
   );
 }
-
-const SHORT_TITLE: Record<PlanProduct, string> = { plan_prepare: "Prepare", plan_mentor: "Mentor + Apply" };
 
 // Not colour/icon alone: the sr-only text carries the meaning.
 function Tick({ included }: { included: boolean }) {

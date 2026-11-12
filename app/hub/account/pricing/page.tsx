@@ -24,7 +24,7 @@ export default async function PricingPage({
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/hub/login");
+    redirect("/hub/login?next=/hub/account/pricing");
   }
 
   // Allowlisted users always see the plan comparison; a holder's column shows Active (plans are account-level, no lead needed).

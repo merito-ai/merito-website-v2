@@ -681,7 +681,7 @@ describe("plan orders", () => {
     const { finalizeRazorpayOrder } = await import("../finalize");
     await finalizeRazorpayOrder("order_p", "pay_1");
     expect(sendPlanWelcomeEmailMock).toHaveBeenCalledTimes(1);
-    expect(sendPlanWelcomeEmailMock).toHaveBeenCalledWith("user-1", "plan_prepare");
+    expect(sendPlanWelcomeEmailMock).toHaveBeenCalledWith("user-1", "plan_prepare", false);
   });
 
   it("does not email when another finalize path already flipped the order (verify/webhook race)", async () => {
@@ -723,7 +723,7 @@ describe("plan orders", () => {
     const result = await finalizeRazorpayOrder("order_p", "pay_1");
     expect(result).toEqual({ ok: true, product: "plan_upgrade_mentor", userId: "user-1", leadId: null });
     expect(applyPlanGrantsMock).toHaveBeenCalledWith("user-1", "order_p", "plan_upgrade_mentor");
-    expect(sendPlanWelcomeEmailMock).toHaveBeenCalledWith("user-1", "plan_mentor");
+    expect(sendPlanWelcomeEmailMock).toHaveBeenCalledWith("user-1", "plan_mentor", true);
   });
 
   it("upgrade refund reverses only the mentoring request (Plan 1 items untouched)", async () => {

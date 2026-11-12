@@ -224,7 +224,7 @@ export default function InterviewPaywallModal({
               Ready for a real AI interview?
             </h2>
             <p className="font-[family-name:var(--font-poppins)] text-[#4b4b4d]" style={{ fontSize: 13.5, lineHeight: 1.6, margin: "0 0 8px" }}>
-              {`You'll be able to launch your ${long ? "45-min " : ""}AI interview for ${roleTitle} right from your dashboard, whenever you're ready.`}
+              {`Once started, launch your ${long ? "45-min " : ""}AI interview for ${roleTitle} from your dashboard whenever you're ready.`}
             </p>
             <p className="font-[family-name:var(--font-poppins)] text-black" style={{ fontSize: 13.5, fontWeight: 600, lineHeight: 1.6, margin: "0 0 20px" }}>
               {INTERVIEW_VALIDITY_NOTE}
@@ -266,7 +266,7 @@ export default function InterviewPaywallModal({
                 >
                   {paying ? "Processing…" : planLoading ? "Checking your plan…" : long ? `Pay ${formatPrice(PRODUCT_PRICING.interview[level])} for a 45-min interview` : `Pay ${formatPrice(PRODUCT_PRICING.interview[level])}`}
                 </button>
-                <p className="text-[#9c9c9c]" style={{ fontSize: 11.5, textAlign: "center", margin: "10px 0 0" }}>
+                <p className="text-[#6b6b6b]" style={{ fontSize: 11.5, textAlign: "center", margin: "10px 0 0" }}>
                   One-time payment per attempt · UPI, card & netbanking
                 </p>
               </>

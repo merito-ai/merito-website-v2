@@ -92,6 +92,17 @@ body:has([aria-modal="true"]) iframe[id*="siq"] {
   display: none !important;
 }
 
+/* "Your plan" panel: the SalesIQ teaser (200px) and bubble sit over the panel's right-aligned
+   action links on desktop. Drop the teaser and keep the links clear of the 55px bubble. */
+body:has(.plan-panel) #zs-fl-tip {
+  display: none !important;
+}
+@media screen and (min-width: 768px) and (max-width: 1400px) {
+  .plan-panel {
+    padding-right: 76px !important;
+  }
+}
+
 /* Condensed personality card (combined report, sample, share link) is a fixed
    320px + 1fr grid; stack it on phones so the page doesn't scroll sideways. */
 @media screen and (max-width: 640px) {

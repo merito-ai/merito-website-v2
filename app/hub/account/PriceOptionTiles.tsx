@@ -48,7 +48,7 @@ export default function PriceOptionTiles({
               : `Continue to payment for ${formatPrice(soloPrice)}`}
         </button>
         {freeReports === 0 && (
-          <p className="text-[#9c9c9c]" style={{ fontSize: 11.5, textAlign: "center", margin: "10px 0 0" }}>
+          <p className="text-[#6b6b6b]" style={{ fontSize: 11.5, textAlign: "center", margin: "10px 0 0" }}>
             One-time payment · No subscription · UPI, card & netbanking
           </p>
         )}
@@ -93,7 +93,7 @@ export default function PriceOptionTiles({
         </span>
       </p>
 
-      <p className="text-[#9c9c9c]" style={{ fontSize: 11.5, textAlign: "center", margin: 0 }}>
+      <p className="text-[#6b6b6b]" style={{ fontSize: 11.5, textAlign: "center", margin: 0 }}>
         One-time payment · No subscription · UPI, card & netbanking
       </p>
     </>

@@ -5,7 +5,7 @@ import { claimFitmentLeads } from "@/lib/claimFitmentLeads";
 // Only known internal destinations are allowed — `next` is attacker-controlled
 // input reflected into a redirect Location header, so anything not in this
 // exact-match allowlist falls back to the default (no open redirect).
-const ALLOWED_NEXT_PATHS = new Set(["/admin"]);
+const ALLOWED_NEXT_PATHS = new Set(["/admin", "/hub/account/pricing"]);
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);

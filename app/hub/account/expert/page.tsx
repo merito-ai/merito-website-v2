@@ -206,7 +206,7 @@ export default async function ExpertBioPage({
             Stop guessing. Get clarity from someone who&apos;s seen careers from both sides.
           </h1>
           <p className="font-[family-name:var(--font-poppins)] text-white/55" style={{ fontSize: 14, margin: "8px 0 0" }}>
-            A 1:1 session with a Merito career expert.
+            {mentorPlan ? "Two 30-minute 1:1 sessions with a Merito career expert." : "A 1:1 session with a Merito career expert."}
           </p>
           <PlanFeatureNote userId={user.id} feature="mentoring" />
         </div>

@@ -255,6 +255,7 @@ export default async function AccountPage({
       planPanel={planState.plan ? <PlanPanel userId={user.id} plan={planState.plan} reportLocked={!reportUnlocked} /> : null}
       planOffer={planDashboardView(planState) === "offer" ? <PlanCardsClient plans={buildPlanCards()} embedded /> : null}
       recruiterActivity={RECRUITER_PREVIEW_ENABLED ? <RecruiterActivityPanel viewCount={recruiterViewCount} /> : null}
+      mentoringInPlan={planState.plan?.product === "plan_mentor"}
     />
   );
 }

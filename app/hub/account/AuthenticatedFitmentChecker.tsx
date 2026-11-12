@@ -138,10 +138,10 @@ export default function AuthenticatedFitmentChecker() {
               Free, takes about 60 seconds. We&apos;ll use your Merito account email.
             </p>
 
-            <label className="block font-[family-name:var(--font-poppins)] font-semibold text-white/80" style={{ fontSize: 12, marginBottom: 6 }}>
+            <label htmlFor="afc-field-1" className="block font-[family-name:var(--font-poppins)] font-semibold text-white/80" style={{ fontSize: 12, marginBottom: 6 }}>
               Full name
             </label>
-            <input
+            <input id="afc-field-1"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -150,10 +150,10 @@ export default function AuthenticatedFitmentChecker() {
               style={{ padding: "13px 14px", borderRadius: 8, fontSize: 14, marginBottom: 12 }}
             />
 
-            <label className="block font-[family-name:var(--font-poppins)] font-semibold text-white/80" style={{ fontSize: 12, marginBottom: 6 }}>
+            <label htmlFor="afc-field-2" className="block font-[family-name:var(--font-poppins)] font-semibold text-white/80" style={{ fontSize: 12, marginBottom: 6 }}>
               Phone number
             </label>
-            <input
+            <input id="afc-field-2"
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
@@ -162,10 +162,10 @@ export default function AuthenticatedFitmentChecker() {
               style={{ padding: "13px 14px", borderRadius: 8, fontSize: 14, marginBottom: 12 }}
             />
 
-            <label className="block font-[family-name:var(--font-poppins)] font-semibold text-white/80" style={{ fontSize: 12, marginBottom: 6 }}>
+            <label htmlFor="afc-field-3" className="block font-[family-name:var(--font-poppins)] font-semibold text-white/80" style={{ fontSize: 12, marginBottom: 6 }}>
               The role you want
             </label>
-            <input
+            <input id="afc-field-3"
               value={role}
               onChange={(e) => setRole(e.target.value)}
               placeholder="e.g. Senior Product Manager"
@@ -177,6 +177,7 @@ export default function AuthenticatedFitmentChecker() {
             </p>
 
             <select
+              aria-label="Your seniority level"
               value={candidateLevel}
               onChange={(e) => setCandidateLevel(e.target.value as "entry" | "mid" | "senior")}
               className="w-full box-border bg-white/[0.04] font-[family-name:var(--font-poppins)] text-white outline-none border border-white/[0.12] focus:border-[#ed1a24]"
@@ -191,11 +192,11 @@ export default function AuthenticatedFitmentChecker() {
             </select>
 
             <div className="flex items-center" style={{ gap: 8, marginBottom: 6 }}>
-              <label className="font-[family-name:var(--font-poppins)] font-semibold text-white/80" style={{ fontSize: 12 }}>
+              <label htmlFor="afc-field-4" className="font-[family-name:var(--font-poppins)] font-semibold text-white/80" style={{ fontSize: 12 }}>
                 Job description
               </label>
             </div>
-            <textarea
+            <textarea id="afc-field-4"
               value={jdText}
               onChange={(e) => setJdText(e.target.value)}
               placeholder="Paste the full job description here..."

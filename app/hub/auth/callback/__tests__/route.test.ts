@@ -82,6 +82,16 @@ describe("GET /hub/auth/callback", () => {
     expect(response.headers.get("location")).toBe("http://localhost/hub/account");
   });
 
+  it("returns to the pricing page when next=/hub/account/pricing, and ignores unknown next paths", async () => {
+    verifyOtpMock.mockResolvedValue({ data: { user: { id: "user-123", email: "candidate@example.com" } }, error: null });
+    claimFitmentLeadsMock.mockResolvedValue({ claimedCount: 0 });
+    const { GET } = await importRoute();
+    const ok = await GET(new Request("http://localhost/hub/auth/callback?next=%2Fhub%2Faccount%2Fpricing&token_hash=ml-hash&type=magiclink"));
+    expect(ok.headers.get("location")).toBe("http://localhost/hub/account/pricing");
+    const evil = await GET(new Request("http://localhost/hub/auth/callback?next=%2F%2Fevil.example&token_hash=ml-hash&type=magiclink"));
+    expect(evil.headers.get("location")).toBe("http://localhost/hub/account");
+  });
+
   it("redirects to /hub/login?error=expired on an invalid token_hash, without claiming", async () => {
     verifyOtpMock.mockResolvedValue({
       data: { user: null },

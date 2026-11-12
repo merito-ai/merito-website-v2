@@ -42,7 +42,10 @@ export async function proxy(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.redirect(new URL("/hub/login", request.url));
+    const login = new URL("/hub/login", request.url);
+    // Pricing is linked from seminar messages: come back to it after sign-in (callback allowlists it).
+    if (request.nextUrl.pathname === "/hub/account/pricing") login.searchParams.set("next", "/hub/account/pricing");
+    return NextResponse.redirect(login);
   }
 
   return response;

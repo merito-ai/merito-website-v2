@@ -181,3 +181,17 @@ Low:
 - Admin plan allowlist shows the literal "None" for an empty note.
 - Expert page header for Plan 2 says "A 1-1 session" (plan has two).
 - `/hub/share/[token]` not re-checked at 375 in this pass (same components as `/hub/sample-report`, which was).
+
+## Batch 2 (2026-11-12)
+
+Fixed: application assistance admin tracking (`/admin/assistance`, table `plan_assistance`, **migration 0073, apply to prod before deploy**), panel row shows In progress / Done; dashboard header no longer counts "N of 5" for plan holders; pricing columns use the full plan names; Plan 2 dashboard drops the duplicate expert card (Plan 1 keeps it as the paid upsell); panel interview row shows "complete by <date>" for an opened invite; SalesIQ teaser hidden and panel actions kept clear of the bubble; allowlist empty note shows blank, "1 email"; admin page titles are h1 (allowlist + every admin page); 409 copy names the plan; contrast `#9c9c9c` on white in PlanOnlyNotice / paywall sub-lines / counselling modal; counselling modal close 44px; fitment-checker labels linked (`htmlFor`, seniority `aria-label`); expert page subtitle for Plan 2; upgrade welcome email points at mentoring; logged-out `/hub/account/pricing` returns there after sign-in; interview paywall copy no longer says "whenever you're ready" above a start-now button.
+
+Refund check (code read, no change needed): `markRazorpayRefunded` on a plan deletes the plan's `report_unlocks` (by order_id), revokes personality/references unless another success payment covers them, cancels open mentoring sessions (completed kept), then flips the txn to `refunded`. `getPlanOrder` only reads `status = success`, so a refunded plan disappears everywhere (panel, interview credit, `getsPlanInterviewLength`, admin assistance list). An allowlisted user still gets 45-min interviews after a refund (by design: allowlist, not plan).
+
+Skipped (and why):
+- finalize CAS error ignored, double-plan race, upgrade after Plan 1 refund: payment-path changes right before a live founder purchase; not small/safe now.
+- `usePlanState` 401 = "no plan": needs a session-expired UI state; Medium, not small.
+- Personality part 2 resubmit / mid-part refresh loss: test-flow changes, not small.
+- 4th-report modal line, "Get this now" on included report: plan holders no longer see the per-product cards on pricing; low value.
+- Allowlist toast listing display-name words, `unlock-report` 0-credit order, admin full-refund warning, Razorpay closed-window noise, Calendly session detection, admin counselling sort: Low, unchanged.
+- React `key` warning on the dashboard: not reproduced in this pass.

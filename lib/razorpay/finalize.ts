@@ -123,7 +123,7 @@ export async function finalizeRazorpayOrder(
       .neq("status", "success")
       .select("order_id");
     if (flipped?.length && (isPlanProduct(product) || product === PLAN_UPGRADE)) {
-      await sendPlanWelcomeEmail(txn.user_id, product === PLAN_UPGRADE ? "plan_mentor" : product).catch((err) =>
+      await sendPlanWelcomeEmail(txn.user_id, product === PLAN_UPGRADE ? "plan_mentor" : product, product === PLAN_UPGRADE).catch((err) =>
         console.error("finalize: plan welcome email failed", { orderId, err })
       );
     }

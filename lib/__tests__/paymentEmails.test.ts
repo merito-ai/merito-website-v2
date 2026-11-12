@@ -55,6 +55,14 @@ describe("paymentEmails", () => {
       expect(msg.text).not.toContain("Application assistance");
     });
 
+    it("points an upgrade at mentoring, not step 1", async () => {
+      const { sendPlanWelcomeEmail } = await import("../paymentEmails");
+      await sendPlanWelcomeEmail("u1", "plan_mentor", true);
+      const msg = sendMock.mock.calls[0][0];
+      expect(msg.text).toMatch(/Book your first mentoring session\s*\S+\/hub\/account\/expert/);
+      expect(msg.text).not.toContain("Start with step 1");
+    });
+
     it("sends nothing when the user has no email", async () => {
       getUserByIdMock.mockResolvedValue({ data: { user: null }, error: null });
       const { sendPlanWelcomeEmail } = await import("../paymentEmails");

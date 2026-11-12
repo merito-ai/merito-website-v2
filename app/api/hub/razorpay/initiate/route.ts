@@ -57,7 +57,7 @@ export async function POST(request: Request) {
     // Upgrade (PM 2026-11-11) only lifts an active Plan 1; no downgrade, no second plan.
     if (product === PLAN_UPGRADE) {
       if (existingPlan?.product !== "plan_prepare") {
-        return Response.json({ error: existingPlan ? "You already have Plan 2." : "Upgrading needs an active Plan 1." }, { status: 409 });
+        return Response.json({ error: existingPlan ? "You already have the Assess + Mentor + Apply plan." : "Upgrading needs an active Assess + Prepare plan." }, { status: 409 });
       }
     } else if (existingPlan) {
       return Response.json({ error: "You already have a plan." }, { status: 409 });

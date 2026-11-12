@@ -146,7 +146,7 @@ export default function CounsellingPaywallModal({
         <button
           onClick={onClose}
           aria-label="Close"
-          style={{ position: "absolute", top: 16, right: 16, background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#9c9c9c" }}
+          style={{ position: "absolute", top: 8, right: 8, width: 44, height: 44, background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#6b6b6b" }}
         >
           ✕
         </button>
@@ -176,7 +176,7 @@ export default function CounsellingPaywallModal({
             >
               {paying ? "Redirecting…" : `Book my expert call for ${priceLabel}`}
             </button>
-            <p className="text-[#9c9c9c]" style={{ fontSize: 11.5, textAlign: "center", margin: "10px 0 0" }}>
+            <p className="text-[#6b6b6b]" style={{ fontSize: 11.5, textAlign: "center", margin: "10px 0 0" }}>
               One-time payment · No subscription · UPI, card & netbanking
             </p>
           </>

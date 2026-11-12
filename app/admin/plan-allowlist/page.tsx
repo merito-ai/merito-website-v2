@@ -12,14 +12,14 @@ export default async function PlanAllowlistPage() {
     <div>
       <PageHeader title="Plan allowlist" description="People on this list see the two plans instead of single prices. Removing someone keeps any plan they bought." />
       <AllowlistForm />
-      <p className="font-[family-name:var(--font-poppins)]" style={{ fontSize: 13, margin: "0 0 8px" }}>{rows.length} emails</p>
+      <p className="font-[family-name:var(--font-poppins)]" style={{ fontSize: 13, margin: "0 0 8px" }}>{rows.length} {rows.length === 1 ? "email" : "emails"}</p>
       <Table>
         <TableHeadRow columns={["Email", "Note", "Added by", "Added", ""]} />
         <tbody>
           {rows.map((r) => (
             <TableRow key={r.email}>
               <TableCell>{r.email}</TableCell>
-              <TableCell>{r.note ?? "None"}</TableCell>
+              <TableCell>{r.note ?? ""}</TableCell>
               <TableCell>{r.added_by}</TableCell>
               <TableCell>{new Date(r.added_at).toLocaleDateString("en-IN")}</TableCell>
               <TableCell align="right">
