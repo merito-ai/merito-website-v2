@@ -4,7 +4,7 @@ import { createSupabaseServerClient } from "@/lib/supabaseAuthServer";
 import { isReportUnlocked } from "@/lib/reportUnlocks";
 import { isProductUnlocked } from "@/lib/productUnlocks";
 import { DEFAULT_LEVEL, type CandidateLevel } from "@/lib/razorpay/pricing";
-import { getCandidateResumeDetails, type ResumeMatchReportReady } from "@/lib/intervuebox/reports";
+import { getCandidateResumeDetails, type ResumeMatchReportReady, redactLockedReport } from "@/lib/intervuebox/reports";
 import ResumeMatchCategoryCard, { CATEGORY_ICONS } from "./ResumeMatchCategoryCard";
 import ResumeMatchGauge, { getMatchBandDark } from "./ResumeMatchGauge";
 import CandidateStatsCard from "./CandidateStatsCard";
@@ -54,7 +54,7 @@ export default async function FullReportPage({
 
     const lockedReport =
       current.resume_match_status === "READY" && current.resume_match_raw
-        ? (current.resume_match_raw as ResumeMatchReportReady)
+        ? redactLockedReport(current.resume_match_raw as ResumeMatchReportReady)
         : null;
 
     return (

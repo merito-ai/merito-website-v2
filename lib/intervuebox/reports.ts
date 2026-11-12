@@ -170,3 +170,17 @@ export async function getCandidateResumeDetails(appliedJobId: string): Promise<C
     totalExperience: details.totalExperience ?? null,
   };
 }
+
+// A locked report is previewed with the candidate's real scores but none of the paid text: blur/crop is
+// visual only, so anything sent to the browser is readable in devtools.
+export const LOCKED_PLACEHOLDER = "Unlock the full report to read this.";
+export function redactLockedReport(report: ResumeMatchReportReady): ResumeMatchReportReady {
+  return {
+    overallScore: report.overallScore,
+    rank: report.rank,
+    categories: report.categories.map(({ key, label, score }) => ({ key, label, score, comment: LOCKED_PLACEHOLDER })),
+    summary: LOCKED_PLACEHOLDER,
+    strongPoints: [LOCKED_PLACEHOLDER, LOCKED_PLACEHOLDER, LOCKED_PLACEHOLDER],
+    weakPoints: [LOCKED_PLACEHOLDER, LOCKED_PLACEHOLDER, LOCKED_PLACEHOLDER],
+  };
+}

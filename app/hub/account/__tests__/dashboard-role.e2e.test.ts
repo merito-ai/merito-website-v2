@@ -47,9 +47,8 @@ for (const vp of VIEWPORTS) {
       await guards(page);
     });
 
-    // Known gap (plans/2026-11-10-hub-plans-followups.md): the locked report page renders the real report under a visual crop.
+    // Locked report: real scores only; every paid text field is a placeholder (redactLockedReport).
     test("locked report page keeps paid text out of the DOM", async ({ page }) => {
-      test.fail(true, "Locked report preview ships the real report text (visual crop only). Logged as Medium.");
       const u = await seedUser(`dash-leak-${vp.name}`);
       await seedLead(u, { raw: raw("K") });
       await login(page, u.email);
