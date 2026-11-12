@@ -38,6 +38,7 @@ export default function CombinedSkillTable({ skillReport }: { skillReport: Recor
         {entries.map(([skill, entry], i) => (
           <div
             key={skill}
+            className="combined-skill-row"
             style={{
               display: "grid",
               gridTemplateColumns: "180px 1fr 84px",

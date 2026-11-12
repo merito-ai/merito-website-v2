@@ -91,3 +91,26 @@ body:has([aria-modal="true"]) [id^="zsiq"],
 body:has([aria-modal="true"]) iframe[id*="siq"] {
   display: none !important;
 }
+
+/* Condensed personality card (combined report, sample, share link) is a fixed
+   320px + 1fr grid; stack it on phones so the page doesn't scroll sideways. */
+@media screen and (max-width: 640px) {
+  .condensed-personality-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    padding: 20px !important;
+    gap: 20px !important;
+  }
+  .condensed-personality-grid svg {
+    max-width: 100%;
+    height: auto;
+  }
+  /* Skill rows (180px | 1fr | 84px): name + score on top, comment below. */
+  .combined-skill-row {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    gap: 8px 16px !important;
+  }
+  .combined-skill-row > :nth-child(2) {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
