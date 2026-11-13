@@ -54,14 +54,17 @@ describe("GET /api/hub/personality/export", () => {
     expect(response.status).toBe(401);
   });
 
-  it("returns 404 when no role can be resolved", async () => {
+  it("exports with a 'your next role' label when no role exists (plan holder before any role check)", async () => {
     getUserMock.mockResolvedValue({ data: { user: { id: "user-1", email: "roshan@merito.in" } } });
     leadMaybeSingleMock.mockResolvedValue({ data: null, error: null });
+    const t = { raw: 30, pct: 50, band: 2 };
+    testMaybeSingleMock.mockResolvedValue({ data: { scores: { E: t, A: t, C: t, ES: t, O: t }, validity: { meanRaw: 3, pctMid: 10, incon: 0.5, sd: 2 } }, error: null });
     const { GET } = await importRoute();
 
     const response = await GET(buildRequest());
 
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(200);
+    expect(renderPageToPdfMock.mock.calls[0][0]).toBe("http://localhost/hub/account/personality/print?role=your%20next%20role");
   });
 
   it("returns 404 when the personality test hasn't been taken", async () => {

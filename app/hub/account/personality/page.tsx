@@ -6,10 +6,10 @@ import { isProductUnlocked } from "@/lib/productUnlocks";
 import { DEFAULT_LEVEL, type CandidateLevel } from "@/lib/razorpay/pricing";
 import PersonalityTestClient from "./PersonalityTestClient";
 import PersonalityLockedState from "./PersonalityLockedState";
+import { NO_ROLE_TITLE } from "@/lib/psychometrics/reportCopy";
 import PlanFeatureNote from "@/app/hub/account/PlanFeatureNote";
 
 // Reads naturally in the test intro ("..., for your next role") and the report ("Assessed for your next role").
-const NO_ROLE_TITLE = "your next role";
 
 export default async function PersonalityTestPage({
   searchParams,

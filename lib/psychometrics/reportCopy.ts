@@ -27,11 +27,16 @@ export const CULTURE_CAVEATS = [
 ];
 export const SELF_DEV_NOTE =
   "This report is for your own development. It describes your self-reported preferences and is not for hiring or promotion decisions.";
+// Label for a personality result taken before any role check (plan holders; the test is candidate-wide).
+export const NO_ROLE_TITLE = "your next role";
 export const SHARE_CULTURE_HEADING = "Work culture: self-reported preferences, for development";
 
-// One-line culture result for compact surfaces (combined report, share link, samples). Unreliable: mix only, no line.
-export function cultureFitLine(fit: FitResult): string | null {
-  if (fit.kind === "unreliable") return null;
+// Neutral, reader-agnostic: compact surfaces are also read by recruiters.
+export const FIT_HIDDEN_TEXT = "Fit not shown: some answers suggest low attention";
+
+// One-line culture result for compact surfaces (combined report, share link, samples).
+export function cultureFitLine(fit: FitResult): string {
+  if (fit.kind === "unreliable") return FIT_HIDDEN_TEXT;
   if (fit.kind === "flat") return FLAT_TEXT;
   return `Closest organisation type: ${fit.fits[0].label} (${fit.fits[0].fit}% fit, Merito estimate)`;
 }

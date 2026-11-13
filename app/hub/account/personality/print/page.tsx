@@ -20,7 +20,7 @@ import {
 } from "@/lib/personality";
 import type { CultureScores } from "@/lib/psychometrics/scoring";
 import { isPersonalityComplete } from "@/lib/psychometrics/testFlow";
-import { SELF_DEV_NOTE } from "@/lib/psychometrics/reportCopy";
+import { SELF_DEV_NOTE, NO_ROLE_TITLE } from "@/lib/psychometrics/reportCopy";
 import StrengthsSection from "../StrengthsSection";
 import CultureSection from "../CultureSection";
 
@@ -68,11 +68,7 @@ export default async function PersonalityPrintPage({
     .limit(1);
 
   const { role } = await searchParams;
-  const roleTitle = (typeof role === "string" ? role : null) ?? leads?.[0]?.role_title ?? null;
-
-  if (!roleTitle) {
-    redirect("/hub/account");
-  }
+  const roleTitle = (typeof role === "string" ? role : null) ?? leads?.[0]?.role_title ?? NO_ROLE_TITLE;
 
   const unlocked = await isProductUnlocked(user.id, "personality");
   const { data: existing } = await supabase

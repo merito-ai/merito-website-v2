@@ -1,6 +1,7 @@
 import { createSupabaseServerClient } from "@/lib/supabaseAuthServer";
 import { renderPageToPdf, requestCookiesFor } from "@/lib/pdf/renderPageToPdf";
 import { isPersonalityComplete } from "@/lib/psychometrics/testFlow";
+import { NO_ROLE_TITLE } from "@/lib/psychometrics/reportCopy";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -16,22 +17,18 @@ export async function GET(request: Request) {
   }
 
   const url = new URL(request.url);
-  let roleTitle = url.searchParams.get("role");
-
-  if (!roleTitle) {
-    const { data: lead } = await supabase
-      .from("fitment_leads")
-      .select("role_title")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
-    roleTitle = lead?.role_title ?? null;
-  }
-
-  if (!roleTitle) {
-    return Response.json({ error: "No target role found." }, { status: 404 });
-  }
+  const roleTitle =
+    url.searchParams.get("role") ||
+    (
+      await supabase
+        .from("fitment_leads")
+        .select("role_title")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle()
+    ).data?.role_title ||
+    NO_ROLE_TITLE;
 
   const { data: existing } = await supabase
     .from("personality_tests")
