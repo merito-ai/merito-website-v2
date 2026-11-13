@@ -34,7 +34,7 @@ export default defineConfig({
       INTERVUEBOX_BASE_URL: "http://127.0.0.1:9",
       INTERVUEBOX_API_KEY: "e2e-disabled",
       RAZORPAY_WEBHOOK_SECRET: "e2e-local-webhook-secret",
-      ADMIN_EMAIL: "e2e-admin@example.test",
+      ADMIN_EMAIL: "e2e-admin-desktop@example.test,e2e-admin-mobile-375@example.test", // one per viewport (samples-admin.e2e.test.ts)
     },
   },
 });

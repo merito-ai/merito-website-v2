@@ -1,4 +1,4 @@
-import { test, expect, VIEWPORTS, seedUser, seedOrder, seedLead, login, guards, copyGuard, dialogGuard, db } from "../../../../test/e2e/hub";
+import { test, expect, VIEWPORTS, seedUser, seedOrder, seedLead, login, magicLink, guards, copyGuard, dialogGuard, db } from "../../../../test/e2e/hub";
 import { PRODUCT_LABELS } from "@/lib/razorpay/pricing";
 
 const P = PRODUCT_LABELS.plan_prepare;
@@ -70,6 +70,26 @@ for (const vp of VIEWPORTS) {
       await page.goto("/hub/account/pricing");
       await expect(page.getByRole("button", { name: /Upgrade for/ })).toHaveCount(0);
       await expect(page.getByRole("button", { name: /Choose this plan/ })).toHaveCount(0);
+    });
+
+    test("expired session: sign-in prompt instead of prices, and back to the page", async ({ page }) => {
+      const u = await seedUser(`price-expired-${vp.name}`, { allowlisted: true });
+      await seedLead(u);
+      await login(page, u.email);
+      // Session dies while the page is open: plan-state answers 401 like a signed-out request.
+      await page.route("**/api/hub/plan-state", (r) => r.fulfill({ status: 401, contentType: "application/json", body: '{"error":"Not signed in."}' }));
+      page.removeAllListeners("console"); // the browser logs the mocked 401 as a console error
+      await page.goto("/hub/account/report");
+      const dlg = page.getByRole("alertdialog", { name: "Your session expired. Sign in again" });
+      await expect(dlg).toBeVisible();
+      await expect(page.getByText(/Continue to payment|for ₹/)).toHaveCount(0);
+      await copyGuard(dlg);
+      await dlg.getByRole("link", { name: "Sign in" }).click();
+      await expect(page).toHaveURL(/\/hub\/login\?next=%2Fhub%2Faccount%2Freport$/);
+      await page.unroute("**/api/hub/plan-state");
+      await page.goto(await magicLink(u.email, new URL(page.url()).searchParams.get("next")!));
+      await expect(page).toHaveURL(/\/hub\/account\/report$/);
+      await expect(page.getByRole("alertdialog")).toHaveCount(0);
     });
   });
 }

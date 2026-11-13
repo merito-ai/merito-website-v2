@@ -1,4 +1,4 @@
-import { test, expect, VIEWPORTS, seedUser, magicLink, login, guards } from "../../../../test/e2e/hub";
+import { test, expect, VIEWPORTS, seedUser, magicLink, guards } from "../../../../test/e2e/hub";
 
 // Hub sign-in (magic link only). OTP mail goes to the LOCAL Supabase mail catcher.
 for (const vp of VIEWPORTS) {
@@ -40,13 +40,19 @@ for (const vp of VIEWPORTS) {
       await expect(page).toHaveURL(/\/hub\/account\/pricing$/);
     });
 
-    test("logged-out feature deep link goes to login; signed-in reaches it", async ({ page }) => {
+    test("logged-out feature deep link goes to login and back", async ({ page }) => {
       const u = await seedUser(`auth-feature-${vp.name}`);
       await page.goto("/hub/account/interview");
-      await expect(page).toHaveURL(/\/hub\/login/);
-      await login(page, u.email);
-      await page.goto("/hub/account/interview");
+      await expect(page).toHaveURL(/\/hub\/login\?next=%2Fhub%2Faccount%2Finterview$/);
+      const next = new URL(page.url()).searchParams.get("next")!;
+      await page.goto(await magicLink(u.email, next));
       await expect(page).toHaveURL(/\/hub\/account\/interview$/);
+    });
+
+    test("an unsafe next falls back to the dashboard", async ({ page }) => {
+      const u = await seedUser(`auth-unsafe-${vp.name}`);
+      await page.goto(await magicLink(u.email, "//evil.example/hub/account"));
+      await expect(page).toHaveURL(/localhost:\d+\/hub\/account$/);
     });
   });
 }

@@ -1,6 +1,8 @@
 import { test, expect, VIEWPORTS, seedUser, seedOrder, seedLead, ensureUser, magicLink, login, guards, copyGuard, noHScroll, db } from "../../../../test/e2e/hub";
 
-const ADMIN = "e2e-admin@example.test"; // = playwright.config.ts webServer.env.ADMIN_EMAIL
+// One admin per viewport (both listed in playwright.config.ts webServer.env.ADMIN_EMAIL), tests serial within it:
+// a new magic link for a user invalidates that user's previous one, so parallel admin logins raced each other.
+const adminFor = (vp: string) => `e2e-admin-${vp}@example.test`;
 
 for (const vp of VIEWPORTS) {
   test.describe(`sample reports @${vp.name}`, () => {
@@ -24,6 +26,8 @@ for (const vp of VIEWPORTS) {
 
   test.describe(`admin @${vp.name}`, () => {
     test.use(vp.use);
+    test.describe.configure({ mode: "serial" });
+    const ADMIN = adminFor(vp.name);
 
     test("plan allowlist: mixed separators and Name <email>, blank note, remove", async ({ page }) => {
       const e = (k: string) => `e2e-al-${k}-${vp.name}@example.test`;
@@ -76,10 +80,9 @@ for (const vp of VIEWPORTS) {
     });
 
     test("admin pages have no sideways scroll", async ({ page }) => {
-      test.fail(vp.name !== "desktop", "Admin tables overflow the page at 375px. Logged Low in plans/2026-11-10-hub-plans-followups.md.");
       await ensureUser(ADMIN);
       await page.goto(await magicLink(ADMIN, "/admin"));
-      for (const path of ["/admin/plan-allowlist", "/admin/assistance"]) {
+      for (const path of ["/admin", "/admin/payments", "/admin/plan-allowlist", "/admin/assistance"]) {
         await page.goto(path);
         await page.waitForLoadState("networkidle");
         await noHScroll(page);
