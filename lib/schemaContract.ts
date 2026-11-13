@@ -133,6 +133,12 @@ export const SCHEMA_CONTRACT: ReadonlyArray<ContractCheck> = [
 
   // --- fitment check + AI interview flows ----------------------------------
   tableExists("fitment_leads", "fitment-check, razorpay, start-ai-interview all read/write it"),
+  columnExists("fitment_leads", "cv_path", "CV download routes + candidate-purge select cv_path; fitment-check writes it (migration 0074)"),
+  {
+    name: "storage bucket candidate-cvs is private",
+    why: "fitment-check stores CVs there; CV download signs URLs from it (migration 0074). Must never be public: CVs are PII",
+    sql: `select coalesce((select not public from storage.buckets where id = 'candidate-cvs'), false) as ok`,
+  },
   tableExists("fitment_interviews", "start-ai-interview, interview status/resume/launch-link read/write it"),
   columnExists("fitment_interviews", "lead_id", "start-ai-interview keys inserts + existing/priorAttempt lookups on lead_id (migration 0051)"),
   tableExists("razorpay_transactions", "every paid flow's payment gate reads it"),
