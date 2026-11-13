@@ -93,7 +93,7 @@ export default async function AdminCandidateDetailPage({
         <div>
           <section style={{ marginBottom: 32 }}>
             <Table>
-              <TableHeadRow columns={["Role", "Report", "Interview"]} />
+              <TableHeadRow columns={["Role", "Report", "Interview", "Files"]} />
               <tbody>
                 {entitlements.roles.map((r) => (
                   <TableRow key={r.leadId}>
@@ -103,6 +103,19 @@ export default async function AdminCandidateDetailPage({
                     </TableCell>
                     <TableCell>
                       <StatusBadge status={r.interview} />
+                    </TableCell>
+                    <TableCell>
+                      <span className="font-[family-name:var(--font-poppins)]" style={{ fontSize: 13, display: "inline-flex", gap: 12, flexWrap: "wrap" }}>
+                        <a className="font-semibold text-[#ed1a24]" href={`/api/admin/candidates/${candidate.userId}/cv?lead=${r.leadId}`}>
+                          Download CV
+                        </a>
+                        <a
+                          className="font-semibold text-[#ed1a24]"
+                          href={`/api/admin/candidates/${candidate.userId}/export?role=${encodeURIComponent(r.roleTitle)}`}
+                        >
+                          Download report (PDF)
+                        </a>
+                      </span>
                     </TableCell>
                   </TableRow>
                 ))}

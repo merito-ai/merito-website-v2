@@ -68,6 +68,13 @@ export default async function FullReportPage({
               A dimension-by-dimension breakdown of your CV against the {current.role_title} JD.
             </p>
             <PlanFeatureNote userId={user.id} feature="reports" />
+            <a
+              href={`/api/hub/cv?lead=${current.id}`}
+              className="font-[family-name:var(--font-poppins)] text-white/60 hover:text-white underline underline-offset-2 print:hidden"
+              style={{ display: "inline-block", fontSize: 12.5, marginTop: 8 }}
+            >
+              Download my CV
+            </a>
           </div>
           <ReportLockedState
             leadId={current.id}
@@ -135,6 +142,13 @@ export default async function FullReportPage({
           >
             <Briefcase size={12} strokeWidth={2} /> {current.role_title}
           </span>
+          <a
+            href={`/api/hub/cv?lead=${current.id}`}
+            className="font-[family-name:var(--font-poppins)] text-white/60 hover:text-white underline underline-offset-2 print:hidden"
+            style={{ display: "inline-block", fontSize: 12.5, marginTop: 10, marginLeft: 12 }}
+          >
+            Download my CV
+          </a>
         </div>
 
         <div
