@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ClipboardList, Play } from "lucide-react";
 import {
   ITEMS,
@@ -12,7 +12,7 @@ import {
 } from "@/lib/personality";
 import { CULTURE_ITEMS } from "@/lib/psychometrics/cultureItems";
 import type { CultureScores } from "@/lib/psychometrics/scoring";
-import { initialPhase, type TestPhase } from "@/lib/psychometrics/testFlow";
+import { initialPhase, readRetakeDraft, writeRetakeDraft, type TestPhase } from "@/lib/psychometrics/testFlow";
 import PersonalityReport from "./PersonalityReport";
 
 const ALL = [...ITEMS, ...IMPRESSION_ITEMS];
@@ -55,6 +55,14 @@ export default function PersonalityTestClient({
   const [hint, setHint] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Refresh mid-retake: resume at Part 2 with the Part 1 answers kept in this browser.
+  useEffect(() => {
+    const draft = retakingV1 ? readRetakeDraft() : null;
+    if (!draft) return;
+    setAnswers(draft);
+    setPhase("culture-intro");
+  }, [retakingV1]);
 
   const isCulture = phase === "culture-quiz";
   const items = useMemo(
@@ -119,6 +127,7 @@ export default function PersonalityTestClient({
       }
       const data = await save({ roleTitle, part: "culture", answers: cultureAnswers, ...(retakingV1 && { personalityAnswers: answers }) });
       if (!data) return;
+      if (retakingV1) writeRetakeDraft(null);
       if (retakingV1) setResult({ scores: data.scores as Scores, validity: data.validity as Validity, culture: data.culture as CultureResult });
       else setResult((r) => (r ? { ...r, culture: data.culture as CultureResult } : r));
       setPhase("report");
@@ -129,7 +138,8 @@ export default function PersonalityTestClient({
       setHint("Please answer every statement before seeing your results.");
       return;
     }
-    if (!retakingV1) {
+    if (retakingV1) writeRetakeDraft(answers);
+    else {
       const data = await save({ roleTitle, part: "personality", answers });
       if (!data) return;
       setResult({ scores: data.scores as Scores, validity: data.validity as Validity, culture: null });

@@ -1,3 +1,5 @@
+import { isCompleteAnswerSet, type Answers } from "@/lib/personality";
+
 export type TestPhase = "intro" | "quiz" | "culture-intro" | "culture-quiz" | "report";
 
 // Where the two-part personality + culture test opens: v1 rows (old personality-only results) show
@@ -19,4 +21,23 @@ export function isPersonalityComplete(row: { version?: number | null; culture_sc
 // dashboard and plan panel prompt the updated test, which the personality unlock already covers.
 export function needsUpdatedTest(row: { version?: number | null } | null | undefined): boolean {
   return row?.version === 1;
+}
+
+// A v1 retake sends Part 1 with Part 2 (so v1 stays until both are done). Keep finished Part 1 answers
+// in this browser so a refresh during Part 2 doesn't lose them. Storage can throw (private mode): ignore.
+const RETAKE_DRAFT_KEY = "merito-personality-retake-part1";
+export function readRetakeDraft(): Answers | null {
+  try {
+    const a = JSON.parse(globalThis.localStorage?.getItem(RETAKE_DRAFT_KEY) ?? "null");
+    return a && typeof a === "object" && isCompleteAnswerSet(a) ? a : null;
+  } catch {
+    return null;
+  }
+}
+
+export function writeRetakeDraft(answers: Answers | null): void {
+  try {
+    if (answers) globalThis.localStorage?.setItem(RETAKE_DRAFT_KEY, JSON.stringify(answers));
+    else globalThis.localStorage?.removeItem(RETAKE_DRAFT_KEY);
+  } catch {}
 }
