@@ -100,3 +100,10 @@ Readers: `leadReportState` returns `failed` only for `FAILED` (drop the time inf
 IntervueBox's own PDF is the source of truth. Done: headline = vendor `overallSkillScore`, strict tier cutoffs, `*` bullets, Training Needs.
 - Nice to have: headline band words ("Strong / Developing / Needs work", `getScoreBand` 70/40) are ours; vendor shows a tier (e.g. PROFICIENT). Swap to the tier label on the in-app gauge, combined and shared reports.
 - Nice to have: tier cutoffs 35 and 15 are inferred (only 60 and 45 confirmed against one vendor PDF). Confirm with a low-scoring vendor PDF.
+
+## Prod recheck of plan-user flow after 5009e02 (2026-11-13)
+
+Live merito.ai, desktop 1280 + 375px, read-only (writes blocked). PASS: S1 screen (welcome line, dismiss persists after reload, Unlock plans, Check my fit for a role), plans popup (focus in, Tab trapped, Esc closes, focus returns, bottom sheet at 375), confirm dialog (10 days, 45 min), role dashboard (one offer row, ", locked" on References + Expert guidance), report/references/mentoring paywalls end in the shared popup, locked report DOM shows only "Unlock the full report to read this." placeholders, no em-dash / Plan 1/2 / seminar on any page, logged-out /hub unchanged and /hub/account redirects to login.
+- Minor: paywall modals (report, references, mentoring) first render the old single price ("Continue to payment for ₹299", disabled) for about 1-2s while each modal re-fetches /api/hub/plan-state, then swap to "Unlock plans". Show a neutral loading state instead, or pass the page's plan state down (one dashboard load fetches plan-state 3-5 times).
+- Minor, to recheck locally: on the 375px role dashboard the popup sheet measured 26px taller than the viewport after tabbing to its end (S1 measured exact); "Compare all features" sits on the bottom edge with no padding.
+- Not checked on prod (this account owns them or has no data): personality and interview paywalls, all plan-holder states (E6-E16), normal user with no role (N1).
