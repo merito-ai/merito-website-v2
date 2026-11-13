@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import type { Scores } from "@/lib/personality";
-import { strengthsAndDevelopment, cultureFitLine, CULTURE_CAVEATS, FLAT_TEXT, SELF_DEV_NOTE, SHARE_CULTURE_HEADING } from "../reportCopy";
+import { strengthsAndDevelopment, cultureFitLine, CULTURE_CAVEATS, FIT_HIDDEN_TEXT, FLAT_TEXT, SELF_DEV_NOTE, SHARE_CULTURE_HEADING } from "../reportCopy";
 
 const s = (E: number, A: number, C: number, ES: number, O: number): Scores => {
   const t = (pct: number) => ({ raw: 0, pct, band: 0 });
@@ -30,8 +30,8 @@ describe("report copy", () => {
 });
 
 describe("cultureFitLine", () => {
-  it("unreliable shows no line (mix only)", () => {
-    expect(cultureFitLine({ kind: "unreliable" })).toBeNull();
+  it("unreliable explains why fit is hidden, neutrally", () => {
+    expect(cultureFitLine({ kind: "unreliable" })).toBe(FIT_HIDDEN_TEXT);
   });
   it("flat shows the adaptable text", () => {
     expect(cultureFitLine({ kind: "flat" })).toBe(FLAT_TEXT);
