@@ -92,6 +92,17 @@ describe("GET /hub/auth/callback", () => {
     expect(evil.headers.get("location")).toBe("http://localhost/hub/account");
   });
 
+  it("returns to any /hub/account deep link (with query) but not encoded tricks", async () => {
+    verifyOtpMock.mockResolvedValue({ data: { user: { id: "user-123", email: "candidate@example.com" } }, error: null });
+    claimFitmentLeadsMock.mockResolvedValue({ claimedCount: 0 });
+    const { GET } = await importRoute();
+    const deep = "/hub/account/report?lead=abc";
+    const ok = await GET(new Request(`http://localhost/hub/auth/callback?next=${encodeURIComponent(deep)}&token_hash=ml-hash&type=magiclink`));
+    expect(ok.headers.get("location")).toBe(`http://localhost${deep}`);
+    const trick = await GET(new Request(`http://localhost/hub/auth/callback?next=${encodeURIComponent("/hub/account/%5C%5Cevil.example")}&token_hash=ml-hash&type=magiclink`));
+    expect(trick.headers.get("location")).toBe("http://localhost/hub/account");
+  });
+
   it("redirects to /hub/login?error=expired on an invalid token_hash, without claiming", async () => {
     verifyOtpMock.mockResolvedValue({
       data: { user: null },

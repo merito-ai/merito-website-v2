@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { RECRUITER_PREVIEW_ENABLED } from "@/lib/featureFlags";
+import { safeNextPath } from "@/lib/safeNext";
 
 export async function proxy(request: NextRequest) {
   // Recruiter preview is parked (extension risks LinkedIn bans): its APIs,
@@ -43,8 +44,9 @@ export async function proxy(request: NextRequest) {
 
   if (!user) {
     const login = new URL("/hub/login", request.url);
-    // Pricing is linked from seminar messages: come back to it after sign-in (callback allowlists it).
-    if (request.nextUrl.pathname === "/hub/account/pricing") login.searchParams.set("next", "/hub/account/pricing");
+    // Deep links come back after sign-in; the callback re-checks next with the same guard.
+    const next = safeNextPath(request.nextUrl.pathname + request.nextUrl.search);
+    if (next && next !== "/hub/account") login.searchParams.set("next", next);
     return NextResponse.redirect(login);
   }
 
