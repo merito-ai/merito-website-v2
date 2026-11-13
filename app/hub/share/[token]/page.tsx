@@ -13,7 +13,7 @@ import CombinedSkillTable from "../../account/combined-report/CombinedSkillTable
 import CombinedRoadmapTimeline from "../../account/combined-report/CombinedRoadmapTimeline";
 import CondensedPersonalitySection from "../../account/combined-report/CondensedPersonalitySection";
 import { InlineText } from "../../account/EvaluatorNotes";
-import { parseEvaluatorNotes } from "@/lib/intervuebox/markdownNotes";
+import { parseEvaluatorNotes, splitBullets } from "@/lib/intervuebox/markdownNotes";
 import { getCriteriaStatusColor } from "@/lib/criteriaStatus";
 import AnimatedGauge from "./AnimatedGauge";
 import AnimatedDimensionBars from "./AnimatedDimensionBars";
@@ -23,12 +23,6 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-function splitBullets(text: string): string[] {
-  return text
-    .split("\n")
-    .map((line) => line.replace(/^[-•]\s*/, "").trim())
-    .filter(Boolean);
-}
 
 function SectionHeading({ index, title, blurb, eyebrowColor = "#DE3A2C" }: { index: string; title: string; blurb: string; eyebrowColor?: string }) {
   return (
@@ -513,7 +507,7 @@ export default async function PublicSharePage({ params }: { params: Promise<{ to
               {interview.report.videoReport && (
                 <div className="bg-white border border-black/[0.08]" style={{ borderRadius: 22, padding: "26px 30px", marginBottom: 22 }}>
                   <p className="font-[family-name:var(--font-ibm-plex-mono)] uppercase text-[#6C6779]" style={{ fontSize: 11, letterSpacing: "0.1em", margin: "0 0 14px" }}>Video &amp; delivery notes</p>
-                  <p className="font-[family-name:var(--font-inter)] text-black" style={{ fontSize: 13.5, lineHeight: 1.75, margin: 0, whiteSpace: "pre-wrap" }}>{interview.report.videoReport}</p>
+                  <p className="font-[family-name:var(--font-inter)] text-black" style={{ fontSize: 13.5, lineHeight: 1.75, margin: 0, whiteSpace: "pre-wrap" }}><InlineText text={interview.report.videoReport} /></p>
                 </div>
               )}
               <p className="font-[family-name:var(--font-inter)] text-[#6C6779]" style={{ fontSize: 12.5, lineHeight: 1.6, margin: "16px 0 0", fontStyle: "italic" }}>

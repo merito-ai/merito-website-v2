@@ -2,7 +2,7 @@
 // (Exceptional/Proficient/Good/Unsatisfactory/Poor) instead of the 3-tier
 // Strong/Developing/Needs work bands getScoreBand/getScoreBandDark use
 // everywhere else in this panel (InterviewScoreGauge's overall gauge, the
-// fitment report). Thresholds (>=60/>=45/>=35/>=15/else) and the
+// fitment report). Thresholds (>60/>45/>35/>15/else; strict per IntervueBox PDF 2026-11-13: 60 = Proficient, 45 = Good) and the
 // success/success/warning/destructive/destructive color grouping are taken
 // verbatim from mockups/merito-dashboard-v34.html's cy()/cw() helpers and
 // its "Skill score distribution" 5-column grid. Colors are remapped onto
@@ -16,10 +16,10 @@ const WARNING = "#BD7E12";
 const DESTRUCTIVE = "#E8798F";
 
 export function getSkillDistributionTier(score: number): { label: string; textColor: string } {
-  if (score >= 60) return { label: "Exceptional", textColor: SUCCESS };
-  if (score >= 45) return { label: "Proficient", textColor: SUCCESS };
-  if (score >= 35) return { label: "Good", textColor: WARNING };
-  if (score >= 15) return { label: "Unsatisfactory", textColor: DESTRUCTIVE };
+  if (score > 60) return { label: "Exceptional", textColor: SUCCESS };
+  if (score > 45) return { label: "Proficient", textColor: SUCCESS };
+  if (score > 35) return { label: "Good", textColor: WARNING };
+  if (score > 15) return { label: "Unsatisfactory", textColor: DESTRUCTIVE };
   return { label: "Poor", textColor: DESTRUCTIVE };
 }
 

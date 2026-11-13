@@ -3,6 +3,8 @@
 import { useId, useRef, useState } from "react";
 import type { KeyboardEvent } from "react";
 import type { InterviewReportReady } from "@/lib/intervuebox/interviewReports";
+import { splitBullets } from "@/lib/intervuebox/markdownNotes";
+import { InlineText } from "../EvaluatorNotes";
 import { getCriteriaStatusColor, type CriteriaMatchStatus } from "@/lib/criteriaStatus";
 import ParameterScoreTile from "./ParameterScoreTile";
 import SkillReportTable from "./SkillReportTable";
@@ -13,16 +15,6 @@ import AnswerTranscript from "./AnswerTranscript";
 
 const EYEBROW = "font-[family-name:var(--font-poppins)] font-bold uppercase text-white/40";
 const CARD = "bg-[#141416] border border-white/[0.08]";
-
-// report.strengths/areasOfImprovement arrive as a single "- point\n- point"
-// string (IntervueBox's own format), not an array like the fitment report's
-// strongPoints/weakPoints -- split so both render bullet lists the same way.
-function splitBullets(text: string): string[] {
-  return text
-    .split("\n")
-    .map((line) => line.replace(/^[-•]\s*/, "").trim())
-    .filter(Boolean);
-}
 
 // Same light->dark remap as CriteriaMatchCard.tsx -- kept local rather than
 // exported since it's a 3-line table, not worth widening either file's props.
@@ -384,7 +376,7 @@ export default function InterviewTabs({ report }: { report: InterviewReportReady
                 Video &amp; delivery notes
               </p>
               <p className="font-[family-name:var(--font-poppins)] text-white/75" style={{ fontSize: 13.5, lineHeight: 1.75, margin: 0, whiteSpace: "pre-wrap" }}>
-                {report.videoReport}
+                <InlineText text={report.videoReport} />
               </p>
             </div>
           ) : (

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseInlineBold, parseEvaluatorNotes } from "../markdownNotes";
+import { parseInlineBold, parseEvaluatorNotes, splitBullets } from "../markdownNotes";
 
 describe("parseInlineBold", () => {
   it("splits bold spans from surrounding plain text", () => {
@@ -152,5 +152,41 @@ The candidate demonstrates strong leadership and sales strategy capabilities but
     expect(result!.recommendation).toBe(
       "Proceed to further rounds only if the candidate demonstrates improved depth and specificity in their responses during follow-ups."
     );
+  });
+});
+
+// Real feedbackToInterviewer pulled 2026-11-13 (Harsh Patil, Ad Operations):
+// `* **X:**` section labels and `*` items. Old parser only knew `-`, so SWOT
+// sections vanished and "Training Needs" rendered as an empty heading.
+describe("parseEvaluatorNotes '*' bullet shape", () => {
+  const REAL_NOTES_STAR_STYLE = `* **Strengths:**
+  - Demonstrates foundational knowledge in automation.
+  - Practical experience in digital campaign validation.
+
+* **Weaknesses:**
+  - Limited technical depth in advanced Excel functions.
+
+### Training Needs
+* Advanced Excel functions (Pivot Tables, VLOOKUP, Macros).
+* Ad metrics understanding (ROAS, CTR, and their calculations).
+
+### Recommendation
+Harsh shows potential and can be considered for further rounds.`;
+
+  it("parses '* **X:**' labels and '*' items", () => {
+    const result = parseEvaluatorNotes(REAL_NOTES_STAR_STYLE)!;
+    expect(result.sections.map((s) => [s.heading, s.items.length])).toEqual([
+      ["Strengths", 2],
+      ["Weaknesses", 1],
+      ["Training Needs", 2],
+    ]);
+    expect(result.sections[2].items[0]).toBe("Advanced Excel functions (Pivot Tables, VLOOKUP, Macros).");
+    expect(result.recommendation).toBe("Harsh shows potential and can be considered for further rounds.");
+  });
+});
+
+describe("splitBullets", () => {
+  it("strips '-', '*' and '•' markers but keeps a leading **bold** label", () => {
+    expect(splitBullets("* One.\n- Two.\n• Three.\n**Bold:** four")).toEqual(["One.", "Two.", "Three.", "**Bold:** four"]);
   });
 });

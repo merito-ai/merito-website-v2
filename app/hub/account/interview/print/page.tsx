@@ -6,7 +6,7 @@ import { Phone, Mail, MapPin, Sparkles, ShieldCheck, ShieldAlert, ListChecks, Th
 import { createSupabaseServerClient } from "@/lib/supabaseAuthServer";
 import { getCandidateResumeDetails } from "@/lib/intervuebox/reports";
 import { parseRoadmap } from "@/lib/intervuebox/parseRoadmap";
-import { parseEvaluatorNotes, parseInlineBold } from "@/lib/intervuebox/markdownNotes";
+import { parseEvaluatorNotes, parseInlineBold, splitBullets } from "@/lib/intervuebox/markdownNotes";
 import { readReportRaw } from "@/lib/intervuebox/reportRaw";
 
 export const metadata: Metadata = { title: "Mock interview" };
@@ -32,10 +32,10 @@ const TIER_COLORS: Record<string, { bg: string; fg: string }> = {
 const TIER_ORDER = ["Exceptional", "Proficient", "Good", "Unsatisfactory", "Poor"] as const;
 
 function tierFor(score: number): (typeof TIER_ORDER)[number] {
-  if (score >= 60) return "Exceptional";
-  if (score >= 45) return "Proficient";
-  if (score >= 35) return "Good";
-  if (score >= 15) return "Unsatisfactory";
+  if (score > 60) return "Exceptional";
+  if (score > 45) return "Proficient";
+  if (score > 35) return "Good";
+  if (score > 15) return "Unsatisfactory";
   return "Poor";
 }
 
@@ -170,7 +170,6 @@ export default async function InterviewPrintPage({
     currentOrganisation ? { label: "Current organisation", value: currentOrganisation } : null,
     { label: "Interview date", value: formattedDate },
     report.approxDurationMinutes != null ? { label: "Interview duration", value: `${report.approxDurationMinutes} min` } : null,
-    { label: "Overall score", value: `${Math.round(report.overallScore)}%` },
   ].filter((stat): stat is { label: string; value: string } => stat !== null);
 
   const conductFlagged = report.flagForSuspiciousActivity;
@@ -366,16 +365,27 @@ export default async function InterviewPrintPage({
         {report.strengths && (
           <SectionCard>
             <SectionHeading icon={<ThumbsUp size={16} style={{ color: "#D97706" }} />}>Strengths</SectionHeading>
-            <div className="flex items-start" style={{ gap: 8, fontSize: 13, lineHeight: 1.6, color: "#374151" }}>
-              <CheckCircle2 size={14} strokeWidth={2} style={{ marginTop: 2, flexShrink: 0, color: "#16A34A" }} />
-              {report.strengths}
+            <div className="flex flex-col" style={{ gap: 8 }}>
+              {splitBullets(report.strengths).map((point, i) => (
+                <div key={i} className="flex items-start" style={{ gap: 8, fontSize: 13, lineHeight: 1.6, color: "#374151" }}>
+                  <CheckCircle2 size={14} strokeWidth={2} style={{ marginTop: 2, flexShrink: 0, color: "#16A34A" }} />
+                  <span><InlineText text={point} /></span>
+                </div>
+              ))}
             </div>
           </SectionCard>
         )}
         {report.areasOfImprovement && (
           <SectionCard>
             <SectionHeading icon={<TrendingDown size={16} style={{ color: "#D97706" }} />}>Areas of improvement</SectionHeading>
-            <p style={{ fontSize: 13, lineHeight: 1.6, margin: 0, color: "#374151" }}>{report.areasOfImprovement}</p>
+            <div className="flex flex-col" style={{ gap: 8 }}>
+              {splitBullets(report.areasOfImprovement).map((point, i) => (
+                <div key={i} className="flex items-start" style={{ gap: 8, fontSize: 13, lineHeight: 1.6, color: "#374151" }}>
+                  <TrendingDown size={14} strokeWidth={2} style={{ marginTop: 2, flexShrink: 0, color: "#D97706" }} />
+                  <span><InlineText text={point} /></span>
+                </div>
+              ))}
+            </div>
           </SectionCard>
         )}
       </div>

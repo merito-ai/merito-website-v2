@@ -19,7 +19,17 @@ export function parseInlineBold(text: string): InlineSegment[] {
   return segments;
 }
 
-export type NotesSection = { heading: string; items: string[] };
+// strengths/areasOfImprovement/opportunities/threats arrive as one string of
+// `- point` or `* point` lines (vendor switched to `*` by 2026-11).
+export function splitBullets(text: string): string[] {
+  return text
+    .split("\n")
+    // `*` needs a following space so a leading `**bold**` label survives
+    .map((line) => line.trim().replace(/^(?:[-•]\s*|\*\s+)/, "").trim())
+    .filter(Boolean);
+}
+
+export type NotesSection ={ heading: string; items: string[] };
 export type ParsedNotes = { sections: NotesSection[]; recommendation: string | null };
 
 // feedbackToInterviewer is markdown: `### Heading` sections each containing
@@ -46,7 +56,8 @@ export function parseEvaluatorNotes(raw: string): ParsedNotes | null {
     if (!line) continue;
 
     const headingMatch = line.match(/^#{2,4}\s+(.+)/);
-    const boldHeadingMatch = !headingMatch ? line.match(/^-?\s*\*\*(.+?):\*\*\s*$/) : null;
+    // `- **X:**` or `* **X:**` (vendor uses both bullet chars)
+    const boldHeadingMatch = !headingMatch ? line.match(/^(?:[-*]\s*)?\*\*(.+?):\*\*\s*$/) : null;
     if (headingMatch || boldHeadingMatch) {
       if (current) sections.push(current);
       const heading = (headingMatch ?? boldHeadingMatch)![1].trim();
@@ -72,7 +83,7 @@ export function parseEvaluatorNotes(raw: string): ParsedNotes | null {
       continue;
     }
 
-    const itemMatch = line.match(/^(?:-|\d+\.)\s+(.+)/);
+    const itemMatch = line.match(/^(?:[-*•]|\d+\.)\s+(.+)/);
     if (itemMatch && current) {
       current.items.push(itemMatch[1].trim());
     }
