@@ -143,6 +143,26 @@ export async function sendRefundFailedAlert(params: RefundFailedParams): Promise
   });
 }
 
+// Ops-only alert: an Assess + Prepare refund left its paid upgrade order live (the upgrade no longer
+// confers a plan). Not auto-refunded, ops decides; same mechanism as sendRefundFailedAlert.
+export async function sendOrphanedUpgradeAlert(params: { userId: string; refundedOrderId: string }): Promise<void> {
+  const resend = getResendClient();
+  const text = `An Assess + Prepare order was refunded while the same user's paid upgrade (to Assess + Mentor + Apply) is still marked paid.
+
+Refunded order: ${params.refundedOrderId}
+User: ${params.userId}
+
+The upgrade no longer gives a plan, but its mentoring request is kept. Refund the upgrade too if that was intended.`;
+
+  await resend.emails.send({
+    from: getFromEmail(),
+    to: [getOpsEmail()],
+    subject: `⚠ Refund left a paid plan upgrade behind, order ${params.refundedOrderId}`,
+    text,
+    html: `<p>An Assess + Prepare order was refunded while the same user's paid upgrade (to Assess + Mentor + Apply) is still marked paid.</p><p>Refunded order: ${params.refundedOrderId}<br/>User: ${params.userId}</p><p>The upgrade no longer gives a plan, but its mentoring request is kept. Refund the upgrade too if that was intended.</p>`,
+  });
+}
+
 type StuckPaymentParams = {
   orderId: string;
   amountPaise: number;

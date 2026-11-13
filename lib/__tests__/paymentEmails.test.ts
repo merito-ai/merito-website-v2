@@ -126,6 +126,22 @@ describe("paymentEmails", () => {
     });
   });
 
+  describe("sendOrphanedUpgradeAlert", () => {
+    it("sends an ops alert with the refunded order and user, no em-dash, no Plan 1/2", async () => {
+      const { sendOrphanedUpgradeAlert } = await import("../paymentEmails");
+
+      await sendOrphanedUpgradeAlert({ userId: "user-1", refundedOrderId: "order_p" });
+
+      expect(sendMock).toHaveBeenCalledTimes(1);
+      const sent = sendMock.mock.calls[0][0];
+      expect(sent.to).toEqual(["shikha@merito.in"]);
+      expect(sent.subject).toContain("order_p");
+      expect(sent.text).toContain("user-1");
+      expect(sent.text).toContain("Assess + Prepare");
+      expect(`${sent.subject}${sent.text}${sent.html}`).not.toMatch(/—|Plan [12]/);
+    });
+  });
+
   describe("sendStuckPaymentAlert", () => {
     it("sends an ops alert with the order, rupee amount and age in hours", async () => {
       const { sendStuckPaymentAlert } = await import("../paymentEmails");

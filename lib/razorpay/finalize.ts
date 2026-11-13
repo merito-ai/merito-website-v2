@@ -6,7 +6,7 @@ import type { RazorpayProduct } from "@/lib/razorpay/pricing";
 import { countReferenceCredits } from "@/lib/referenceCredits";
 import { isPlanProduct, PLAN_PRODUCTS, PLAN_UPGRADE } from "@/lib/plans";
 import { applyPlanGrants } from "@/lib/planGrants";
-import { sendPlanWelcomeEmail } from "@/lib/paymentEmails";
+import { sendPlanWelcomeEmail, sendOrphanedUpgradeAlert } from "@/lib/paymentEmails";
 
 async function getRoleTitleForLead(
   supabase: ReturnType<typeof getSupabaseServerClient>,
@@ -247,6 +247,8 @@ async function flagOrphanedUpgrade(userId: string, refundedOrderId: string): Pro
     .eq("product", PLAN_UPGRADE);
   if ((count ?? 0) > 0) {
     console.error("refund: Plan 1 refunded while its paid plan upgrade remains; refund the upgrade too if intended", { userId, refundedOrderId });
+    // The refund itself already happened: a failed alert must not fail it.
+    await sendOrphanedUpgradeAlert({ userId, refundedOrderId }).catch((err) => console.error("refund: orphaned-upgrade alert email failed", err));
   }
 }
 

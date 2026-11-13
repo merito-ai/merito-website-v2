@@ -28,7 +28,8 @@ const applyPlanGrantsMock = vi.fn();
 vi.mock("@/lib/planGrants", () => ({ applyPlanGrants: applyPlanGrantsMock }));
 
 const sendPlanWelcomeEmailMock = vi.fn();
-vi.mock("@/lib/paymentEmails", () => ({ sendPlanWelcomeEmail: sendPlanWelcomeEmailMock }));
+const sendOrphanedUpgradeAlertMock = vi.fn();
+vi.mock("@/lib/paymentEmails", () => ({ sendPlanWelcomeEmail: sendPlanWelcomeEmailMock, sendOrphanedUpgradeAlert: sendOrphanedUpgradeAlertMock }));
 
 // Success flip is a compare-and-set: .eq(order).neq(status, success).select() -> rows actually flipped.
 let flippedRows: unknown[] = [{ order_id: "order_1" }];
@@ -647,6 +648,8 @@ describe("plan orders", () => {
     flippedRows = [{ order_id: "order_p" }];
     sendPlanWelcomeEmailMock.mockReset();
     sendPlanWelcomeEmailMock.mockResolvedValue(undefined);
+    sendOrphanedUpgradeAlertMock.mockReset();
+    sendOrphanedUpgradeAlertMock.mockResolvedValue(undefined);
     otherPersonalityCount = 0;
     unlocksQuery = chain({ error: null });
     counsellingQuery = chain({ data: [{ id: "c1", status: "requested" }, { id: "c2", status: "requested" }], error: null });
@@ -759,8 +762,25 @@ describe("plan orders", () => {
     expect(unlocksQuery.delete).toHaveBeenCalled();
     expect(countQuery.eq).toHaveBeenCalledWith("product", "plan_upgrade_mentor");
     expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining("upgrade"), expect.anything());
+    expect(sendOrphanedUpgradeAlertMock).toHaveBeenCalledWith({ userId: "user-1", refundedOrderId: "order_p" });
     expect(updateMock).toHaveBeenCalledWith({ status: "refunded" });
     errorSpy.mockRestore();
+  });
+
+  it("Plan 1 refund still completes when the orphan-upgrade alert email fails", async () => {
+    txnRow = { status: "success", product: "plan_prepare", user_id: "user-1", lead_id: null };
+    otherPersonalityCount = 1;
+    sendOrphanedUpgradeAlertMock.mockRejectedValueOnce(new Error("resend down"));
+    const { markRazorpayRefunded } = await import("../finalize");
+    expect(await markRazorpayRefunded("order_p")).toEqual({ ok: true, alreadyProcessed: false });
+    expect(updateMock).toHaveBeenCalledWith({ status: "refunded" });
+  });
+
+  it("Plan 1 refund without an upgrade sends no alert", async () => {
+    txnRow = { status: "success", product: "plan_prepare", user_id: "user-1", lead_id: null };
+    const { markRazorpayRefunded } = await import("../finalize");
+    await markRazorpayRefunded("order_p");
+    expect(sendOrphanedUpgradeAlertMock).not.toHaveBeenCalled();
   });
 
   it("leaves the txn initiated when plan grants throw (retry is real)", async () => {
