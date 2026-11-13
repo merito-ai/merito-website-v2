@@ -19,7 +19,7 @@ import ExportPreviewButton from "../ExportPreviewButton";
 import PlanFeatureNote from "@/app/hub/account/PlanFeatureNote";
 import NoRoleNotice, { NEEDS_ROLE_TAIL } from "@/app/hub/account/NoRoleNotice";
 import { Mic } from "lucide-react";
-import { readReportRaw } from "@/lib/intervuebox/reportRaw";
+import { readReportRaw, interviewHeadlineScore } from "@/lib/intervuebox/reportRaw";
 import { getPlanState } from "@/lib/plans";
 import { isSeminarUser } from "@/lib/firstVisit";
 import { interviewDeadline, isPastDeadline } from "@/lib/planFeatures";
@@ -277,7 +277,7 @@ export default async function InterviewReportPage({
           style={{ borderRadius: 14, padding: 20, gap: 20 }}
         >
           <div className="shrink-0" style={{ margin: "0 auto" }}>
-            <InterviewScoreGauge score={report.overallScore} />
+            <InterviewScoreGauge score={interviewHeadlineScore(report)} />
           </div>
           <div className={`grid grid-cols-2 ${report.tabChanges != null ? "sm:grid-cols-5" : "sm:grid-cols-4"}`} style={{ flex: 1, minWidth: 0, gap: 10, width: "100%" }}>
             <StatTile icon={ListChecks} value={String(report.answers.length)} label="Questions" />

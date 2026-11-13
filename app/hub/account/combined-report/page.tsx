@@ -4,6 +4,7 @@ import type { ComponentType } from "react";
 import { FileText, Brain, Mic, Users, Lock, ArrowRight, FileStack } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabaseAuthServer";
 import { loadCombinedReportData } from "@/lib/combinedReportData";
+import { interviewHeadlineScore } from "@/lib/intervuebox/reportRaw";
 import { getMatchBand } from "../report/ResumeMatchGauge";
 import { remapBandDark } from "./combinedBandColors";
 import { TRAITS, TRAIT_NAME } from "@/lib/personality";
@@ -173,7 +174,7 @@ export default async function CombinedReportPage({
       title: "Mock interview",
       included: Boolean(interview),
       href: interviewHref,
-      summary: interview ? `Scored ${Math.round(interview.report.overallScore)}% on your mock interview for ${interview.roleTitle}, with skill-wise feedback.` : null,
+      summary: interview ? `Scored ${Math.round(interviewHeadlineScore(interview.report))}% on your mock interview for ${interview.roleTitle}, with skill-wise feedback.` : null,
     },
     {
       key: "references",

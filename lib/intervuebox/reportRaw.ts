@@ -46,3 +46,10 @@ export function readReportRaw(raw: unknown): InterviewReportReady {
     knowledgeAnswers: r.knowledgeAnswers ?? [],
   } as InterviewReportReady;
 }
+
+// Headline interview score = IntervueBox's own "Overall Skill Score" (its PDF's
+// big number). overallScore is the parameter average the vendor never shows;
+// fall back to it only when the vendor sends no skill score.
+export function interviewHeadlineScore(report: Pick<InterviewReportReady, "overallSkillScore" | "overallScore">): number {
+  return report.overallSkillScore ?? report.overallScore;
+}

@@ -2,7 +2,7 @@ import { getSupabaseServerClient } from "@/lib/supabase";
 import { getReferenceCheckStatus, computeReferenceReport, listRefereeOverrideHistory, type ReferenceReport, type RefereeRow } from "@/lib/referenceChecks";
 import { getCandidateResumeDetails, getResumeMatchReport, scoreOutOfTen, type CandidateResumeDetails, type ResumeMatchReportReady } from "@/lib/intervuebox/reports";
 import { getInterviewReport, type InterviewReportReady } from "@/lib/intervuebox/interviewReports";
-import { buildReportRaw } from "@/lib/intervuebox/reportRaw";
+import { buildReportRaw, interviewHeadlineScore } from "@/lib/intervuebox/reportRaw";
 import type { Scores, Validity } from "@/lib/personality";
 import type { CultureScores } from "@/lib/psychometrics/scoring";
 import { isPersonalityComplete } from "@/lib/psychometrics/testFlow";
@@ -1005,8 +1005,9 @@ export async function overrideInterviewReport(
   }
 
   const existingRaw = row.report_raw as InterviewReportReady;
-  const priorValue = { overallScore: existingRaw.overallScore, overallSummary: existingRaw.overallSummary };
-  const mergedRaw: InterviewReportReady = { ...existingRaw, overallScore: updates.overallScore, overallSummary: updates.overallSummary };
+  const priorValue = { overallScore: interviewHeadlineScore(existingRaw), overallSummary: existingRaw.overallSummary };
+  // Headline shows overallSkillScore (vendor truth), so the override sets both.
+  const mergedRaw: InterviewReportReady = { ...existingRaw, overallScore: updates.overallScore, overallSkillScore: updates.overallScore, overallSummary: updates.overallSummary };
 
   const { error } = await supabase
     .from("fitment_interviews")

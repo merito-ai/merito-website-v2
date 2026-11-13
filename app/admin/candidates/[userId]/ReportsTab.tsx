@@ -19,6 +19,7 @@ import FitmentOverrideForm from "./FitmentOverrideForm";
 import InterviewOverrideForm from "./InterviewOverrideForm";
 import InterviewResync from "./InterviewResync";
 import VendorCompare from "./VendorCompare";
+import { interviewHeadlineScore } from "@/lib/intervuebox/reportRaw";
 import type { CandidateLeadDetail, CandidateDetail } from "@/lib/adminCandidates";
 
 const emptyNote: React.CSSProperties = { fontSize: 13 };
@@ -128,12 +129,12 @@ export default function ReportsTab({
 
           {lead.interviewReport ? (
             <div className="bg-white border border-black/[0.08]" style={{ borderRadius: 14, padding: 20, margin: "0 0 20px" }}>
-              <ReportHeading title="Interview report" score={`${lead.interviewReport.overallScore}/100`} />
+              <ReportHeading title="Interview report" score={`${interviewHeadlineScore(lead.interviewReport)}/100`} />
               {lead.interviewRow && (
                 <div className="flex items-start" style={{ gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
                   <InterviewOverrideForm
                     interviewRowId={lead.interviewRow.id}
-                    overallScore={lead.interviewReport.overallScore}
+                    overallScore={interviewHeadlineScore(lead.interviewReport)}
                     overallSummary={lead.interviewReport.overallSummary}
                     overridden={lead.interviewOverridden}
                     overrideHistory={lead.interviewOverrideHistory}
@@ -150,7 +151,7 @@ export default function ReportsTab({
                   Show full report and answers
                 </summary>
                 <div className="flex items-center justify-center" style={{ margin: "12px 0 16px" }}>
-                  <InterviewScoreGauge score={lead.interviewReport.overallScore} />
+                  <InterviewScoreGauge score={interviewHeadlineScore(lead.interviewReport)} />
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) minmax(0,1fr)", gap: 12, marginBottom: 16 }}>
                   {Object.entries(lead.interviewReport.skillMetrics ?? {}).map(([skill, score]) => (

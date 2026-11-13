@@ -69,7 +69,7 @@ export default function InterviewScoreGauge({ score }: { score: number }) {
         </div>
       </div>
       <span className="font-[family-name:var(--font-poppins)] text-white/40" style={{ fontSize: 12.5 }}>
-        Overall interview score
+        Overall skill score
       </span>
     </div>
   );

@@ -277,3 +277,9 @@ Where it is set:
 - Any later READY (refresh, admin retry) overwrites `FAILED` and clears the two columns.
 
 Readers: `leadReportState` returns `failed` only for `FAILED` (drop the time inference once the backfill runs). Check every `resume_match_status` reader before the constraint change: lib/adminAnalytics.ts, adminCandidates.ts, adminPayments.ts, combinedReportData.ts, completeReportUnlock.ts, prospectConversion.ts, recruiterPreviewSections.ts, vendor-compare route, and regenerate lib/database.types.ts. Deploy order: migration first (writers fail the check constraint otherwise).
+
+## Interview report vs IntervueBox PDF (2026-11-13)
+
+IntervueBox's own PDF is the source of truth. Done: headline = vendor `overallSkillScore`, strict tier cutoffs, `*` bullets, Training Needs.
+- Nice to have: headline band words ("Strong / Developing / Needs work", `getScoreBand` 70/40) are ours; vendor shows a tier (e.g. PROFICIENT). Swap to the tier label on the in-app gauge, combined and shared reports.
+- Nice to have: tier cutoffs 35 and 15 are inferred (only 60 and 45 confirmed against one vendor PDF). Confirm with a low-scoring vendor PDF.

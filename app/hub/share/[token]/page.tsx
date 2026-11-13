@@ -14,6 +14,7 @@ import CombinedRoadmapTimeline from "../../account/combined-report/CombinedRoadm
 import CondensedPersonalitySection from "../../account/combined-report/CondensedPersonalitySection";
 import { InlineText } from "../../account/EvaluatorNotes";
 import { parseEvaluatorNotes, splitBullets } from "@/lib/intervuebox/markdownNotes";
+import { interviewHeadlineScore } from "@/lib/intervuebox/reportRaw";
 import { getCriteriaStatusColor } from "@/lib/criteriaStatus";
 import AnimatedGauge from "./AnimatedGauge";
 import AnimatedDimensionBars from "./AnimatedDimensionBars";
@@ -138,9 +139,9 @@ export default async function PublicSharePage({ params }: { params: Promise<{ to
   if (references) sections.push({ key: "references", label: "Reference Check", blurb: `Seven categories rated by ${references.referees.length} verified former colleague${references.referees.length === 1 ? "" : "s"}` });
 
   const fitmentBand = fitment ? remapBand(getMatchBand(fitment.report.overallScore)) : null;
-  const interviewBand = interview ? remapBand(getScoreBand(interview.report.overallScore)) : null;
+  const interviewBand = interview ? remapBand(getScoreBand(interviewHeadlineScore(interview.report))) : null;
   const fitmentBandDark = fitment ? remapBandDark(getMatchBand(fitment.report.overallScore)) : null;
-  const interviewBandDark = interview ? remapBandDark(getScoreBand(interview.report.overallScore)) : null;
+  const interviewBandDark = interview ? remapBandDark(getScoreBand(interviewHeadlineScore(interview.report))) : null;
   const refBand = references ? referenceBand(references.overallScore) : null;
 
   return (
@@ -184,11 +185,11 @@ export default async function PublicSharePage({ params }: { params: Promise<{ to
             )}
             {interview && interviewBand && interviewBandDark && (
               <div className="bg-white/[0.04] border border-white/[0.1]" style={{ borderRadius: 16, padding: "18px 14px 16px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 10 }}>
-                <AnimatedGauge value={interview.report.overallScore} max={100} displayValue={`${Math.round(interview.report.overallScore)}%`} diameter={96} band={interviewBandDark} numberColor="#fff" />
+                <AnimatedGauge value={interviewHeadlineScore(interview.report)} max={100} displayValue={`${Math.round(interviewHeadlineScore(interview.report))}%`} diameter={96} band={interviewBandDark} numberColor="#fff" />
                 <span className="font-[family-name:var(--font-inter)] font-semibold text-white" style={{ fontSize: 12.5 }}>AI Interview</span>
                 <span
                   className="font-[family-name:var(--font-ibm-plex-mono)] uppercase"
-                  style={{ fontSize: 10, letterSpacing: "0.06em", padding: "3px 9px", borderRadius: 20, ...heroPillTint(interview.report.overallScore >= 70 ? "strong" : interview.report.overallScore >= 40 ? "mid" : "weak") }}
+                  style={{ fontSize: 10, letterSpacing: "0.06em", padding: "3px 9px", borderRadius: 20, ...heroPillTint(interviewHeadlineScore(interview.report) >= 70 ? "strong" : interviewHeadlineScore(interview.report) >= 40 ? "mid" : "weak") }}
                 >
                   {interviewBand.label}
                 </span>
@@ -355,8 +356,8 @@ export default async function PublicSharePage({ params }: { params: Promise<{ to
                 <>
                   <SummaryRow
                     pillLabel={interviewBand.label}
-                    pillTier={interview.report.overallScore >= 70 ? "strong" : interview.report.overallScore >= 40 ? "mid" : "weak"}
-                    gauge={<AnimatedGauge value={interview.report.overallScore} max={100} displayValue={`${Math.round(interview.report.overallScore)}%`} caption="Overall score" diameter={150} band={interviewBand} />}
+                    pillTier={interviewHeadlineScore(interview.report) >= 70 ? "strong" : interviewHeadlineScore(interview.report) >= 40 ? "mid" : "weak"}
+                    gauge={<AnimatedGauge value={interviewHeadlineScore(interview.report)} max={100} displayValue={`${Math.round(interviewHeadlineScore(interview.report))}%`} caption="Overall skill score" diameter={150} band={interviewBand} />}
                   >
                     {interview.report.overallSummary}
                   </SummaryRow>
@@ -381,11 +382,6 @@ export default async function PublicSharePage({ params }: { params: Promise<{ to
 
               {interviewSections.has("skillReport") && (
                 <>
-                  {interview.report.overallSkillScore != null && (
-                    <p className="font-[family-name:var(--font-inter)] text-[#6C6779]" style={{ fontSize: 12.5, margin: "0 0 20px" }}>
-                      Overall skill score: <strong className="text-black">{Math.round(interview.report.overallSkillScore)}%</strong>
-                    </p>
-                  )}
                   {Object.keys(interview.report.skillReport).length > 0 && <CombinedSkillTable skillReport={interview.report.skillReport} />}
                 </>
               )}
