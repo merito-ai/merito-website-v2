@@ -1,5 +1,6 @@
 import { getSupabaseServerClient } from "@/lib/supabase";
 import { logAdminAction } from "@/lib/adminAuditLog";
+import { CV_BUCKET } from "@/lib/cvDownload";
 
 const SYSTEM_ACTOR = "system:cron";
 
@@ -24,6 +25,24 @@ export async function purgeDueCandidateDeletions(): Promise<{ purgedCount: numbe
   let purgedCount = 0;
   for (const row of dueRows ?? []) {
     const userId = row.user_id;
+
+    // Stored CV files, removed before the RPC deletes the fitment_leads rows that point at them
+    // (by cv_path, not a {userId}/ prefix: claimed anonymous and merged leads live under other prefixes).
+    const { data: cvRows, error: cvError } = await supabase
+      .from("fitment_leads")
+      .select("cv_path")
+      .eq("user_id", userId)
+      .not("cv_path", "is", null);
+    if (cvError) {
+      throw new Error(`Failed to load stored CVs for ${userId}: ${cvError.message}`);
+    }
+    const cvPaths = (cvRows ?? []).map((r) => r.cv_path as string);
+    if (cvPaths.length > 0) {
+      const { error: removeError } = await supabase.storage.from(CV_BUCKET).remove(cvPaths);
+      if (removeError) {
+        throw new Error(`Failed to remove stored CVs for ${userId}: ${removeError.message}`);
+      }
+    }
 
     const { data: purgedTables, error: rpcError } = await supabase.rpc("purge_candidate_data", {
       target_user_id: userId,
@@ -53,7 +72,7 @@ export async function purgeDueCandidateDeletions(): Promise<{ purgedCount: numbe
       targetType: "candidate",
       targetId: userId,
       priorValue: null,
-      newValue: { purgedTables, emailScrubbed: true },
+      newValue: { purgedTables, cvFilesRemoved: cvPaths.length, emailScrubbed: true },
     });
 
     purgedCount++;

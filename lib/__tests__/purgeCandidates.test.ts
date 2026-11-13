@@ -5,14 +5,18 @@ const updateMock = vi.fn();
 const rpcMock = vi.fn();
 const updateUserByIdMock = vi.fn();
 const logAdminActionMock = vi.fn();
+const cvRowsMock = vi.fn();
+const removeMock = vi.fn();
 
 vi.mock("@/lib/supabase", () => ({
   getSupabaseServerClient: () => ({
     from: (table: string) => {
       if (table === "candidate_deletions") return { select: selectMock, update: updateMock };
+      if (table === "fitment_leads") return { select: () => ({ eq: () => ({ not: cvRowsMock }) }) };
       throw new Error(`Unexpected table in test: ${table}`);
     },
     rpc: rpcMock,
+    storage: { from: () => ({ remove: removeMock }) },
     auth: { admin: { updateUserById: updateUserByIdMock } },
   }),
 }));
@@ -38,6 +42,8 @@ describe("purgeDueCandidateDeletions", () => {
     updateUserByIdMock.mockResolvedValue({ error: null });
     logAdminActionMock.mockReset();
     logAdminActionMock.mockResolvedValue(undefined);
+    cvRowsMock.mockReset().mockResolvedValue({ data: [], error: null });
+    removeMock.mockReset().mockResolvedValue({ data: [], error: null });
   });
 
   it("purges each due candidate: runs the RPC, scrubs the email, marks purged, and logs", async () => {
@@ -56,7 +62,7 @@ describe("purgeDueCandidateDeletions", () => {
       targetType: "candidate",
       targetId: "user-1",
       priorValue: null,
-      newValue: { purgedTables: { fitment_leads: 2 }, emailScrubbed: true },
+      newValue: { purgedTables: { fitment_leads: 2 }, cvFilesRemoved: 0, emailScrubbed: true },
     });
   });
 
@@ -118,5 +124,26 @@ describe("purgeDueCandidateDeletions", () => {
       "Purged data but failed to mark user-1 as purged: constraint violation"
     );
     expect(logAdminActionMock).not.toHaveBeenCalled();
+  });
+
+  it("removes the candidate's stored CV files before the purge RPC", async () => {
+    mockDueRows({ data: [{ user_id: "user-1" }], error: null });
+    cvRowsMock.mockResolvedValue({ data: [{ cv_path: "user-1/l1/cv.pdf" }, { cv_path: "anon/l2/cv.docx" }], error: null });
+
+    const { purgeDueCandidateDeletions } = await importModule();
+    await purgeDueCandidateDeletions();
+
+    expect(removeMock).toHaveBeenCalledWith(["user-1/l1/cv.pdf", "anon/l2/cv.docx"]);
+    expect(removeMock.mock.invocationCallOrder[0]).toBeLessThan(rpcMock.mock.invocationCallOrder[0]);
+  });
+
+  it("throws before the purge RPC when removing CV files fails, so the next run retries", async () => {
+    mockDueRows({ data: [{ user_id: "user-1" }], error: null });
+    cvRowsMock.mockResolvedValue({ data: [{ cv_path: "user-1/l1/cv.pdf" }], error: null });
+    removeMock.mockResolvedValue({ data: null, error: { message: "storage down" } });
+
+    const { purgeDueCandidateDeletions } = await importModule();
+    await expect(purgeDueCandidateDeletions()).rejects.toThrow("Failed to remove stored CVs for user-1: storage down");
+    expect(rpcMock).not.toHaveBeenCalled();
   });
 });
