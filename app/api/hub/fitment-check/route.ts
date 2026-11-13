@@ -12,6 +12,7 @@ import { IntervueBoxError } from "@/lib/intervuebox/client";
 import { getSupabaseServerClient } from "@/lib/supabase";
 import { recordPipelineFailure } from "@/lib/pipelineFailures";
 import { createSupabaseServerClient } from "@/lib/supabaseAuthServer";
+import { CV_BUCKET, safeFileName } from "@/lib/cvDownload";
 
 export const runtime = "nodejs";
 
@@ -416,6 +417,25 @@ export async function POST(request: Request) {
   if (insertError || !inserted) {
     console.error("fitment_leads insert failed", insertError);
     return Response.json({ error: "Something went wrong saving your result." }, { status: 500 });
+  }
+
+  // Keep the original CV so the candidate and admins can download it. Never fail the check over it.
+  try {
+    const cvPath = `${sessionUser?.id ?? "anon"}/${inserted.id}/${safeFileName(cv.name)}`;
+    const { error: uploadError } = await supabase.storage
+      .from(CV_BUCKET)
+      .upload(cvPath, cv, { contentType: cv.type || "application/octet-stream" });
+    if (uploadError) throw uploadError;
+    const { error: cvUpdateError } = await supabase
+      .from("fitment_leads")
+      .update({ cv_path: cvPath, cv_filename: cv.name, cv_mime: cv.type || null })
+      .eq("id", inserted.id);
+    if (cvUpdateError) throw cvUpdateError;
+  } catch (err) {
+    console.error("CV storage failed, continuing without it", {
+      leadId: inserted.id,
+      errorMessage: err instanceof Error ? err.message : String((err as { message?: string })?.message ?? err),
+    });
   }
 
   if (report.status === "PENDING") {

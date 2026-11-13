@@ -47,9 +47,13 @@ vi.mock("@/lib/intervuebox/reports", () => ({
 const insertSelectSingleMock = vi.fn().mockResolvedValue({ data: { id: "lead-1" }, error: null });
 const insertSelectMock = vi.fn().mockReturnValue({ single: insertSelectSingleMock });
 const insertMock = vi.fn().mockReturnValue({ select: insertSelectMock });
+const uploadMock = vi.fn();
+const updateEqMock = vi.fn();
+const updateMock = vi.fn().mockReturnValue({ eq: updateEqMock });
 vi.mock("@/lib/supabase", () => ({
   getSupabaseServerClient: () => ({
-    from: () => ({ insert: insertMock }),
+    from: () => ({ insert: insertMock, update: updateMock }),
+    storage: { from: () => ({ upload: uploadMock }) },
   }),
 }));
 
@@ -84,6 +88,9 @@ describe("POST /api/hub/fitment-check", () => {
     insertSelectMock.mockClear();
     insertSelectSingleMock.mockClear();
     insertSelectSingleMock.mockResolvedValue({ data: { id: "lead-1" }, error: null });
+    uploadMock.mockReset().mockResolvedValue({ data: {}, error: null });
+    updateMock.mockClear();
+    updateEqMock.mockReset().mockResolvedValue({ error: null });
     extractJdTextMock.mockReset().mockResolvedValue("Sales and partnerships resume text.");
     getUserMock.mockReset().mockResolvedValue({ data: { user: null } });
     getsPlanInterviewLengthMock.mockReset().mockResolvedValue(false);
@@ -118,6 +125,28 @@ describe("POST /api/hub/fitment-check", () => {
         resume_match_status: "READY",
       })
     );
+  });
+
+  it("stores the original CV privately and records its path on the lead", async () => {
+    getUserMock.mockResolvedValue({ data: { user: { id: "user-9", email: "candidate@example.com" } } });
+    const { POST } = await importRoute();
+    const response = await POST(new Request("http://localhost/api/hub/fitment-check", { method: "POST", body: buildForm() }));
+    expect(response.status).toBe(200);
+    expect(uploadMock).toHaveBeenCalledWith("user-9/lead-1/resume.pdf", expect.any(Blob), { contentType: "application/pdf" });
+    expect(updateMock).toHaveBeenCalledWith({ cv_path: "user-9/lead-1/resume.pdf", cv_filename: "resume.pdf", cv_mime: "application/pdf" });
+    expect(updateEqMock).toHaveBeenCalledWith("id", "lead-1");
+  });
+
+  it("still succeeds when storing the CV throws", async () => {
+    uploadMock.mockRejectedValue(new Error("storage down"));
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const { POST } = await importRoute();
+    const response = await POST(new Request("http://localhost/api/hub/fitment-check", { method: "POST", body: buildForm() }));
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({ status: "ready", score: 7.8, verdict: "Good fit." });
+    expect(updateMock).not.toHaveBeenCalled();
+    expect(errorSpy).toHaveBeenCalledWith("CV storage failed, continuing without it", expect.anything());
+    errorSpy.mockRestore();
   });
 
   it("passes the CV's extracted text to createJob so skill selection can be grounded in it", async () => {
