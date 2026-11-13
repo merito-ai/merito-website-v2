@@ -75,4 +75,13 @@ describe("loadCombinedReportData fitment lead", () => {
     expect((await loadFitment(null)).fitment?.roleTitle).toBe("Designer");
     expect((await loadFitment("Gone")).fitment?.roleTitle).toBe("Designer");
   });
+  it("drops a locked fitment section unless includeLocked (admin export)", async () => {
+    const { isReportUnlocked } = await import("@/lib/reportUnlocks");
+    vi.mocked(isReportUnlocked).mockResolvedValue(false);
+    expect((await loadFitment(null)).fitment).toBeNull();
+    const admin = await loadCombinedReportData({
+      supabase: leadsClient(), userId: "u1", userEmail: null, include: new Set(["fitment"]), roleTitleParam: null, includeLocked: true,
+    });
+    expect(admin.fitment?.roleTitle).toBe("Designer");
+  });
 });

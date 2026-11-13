@@ -29,12 +29,15 @@ export async function loadCombinedReportData({
   userEmail,
   include,
   roleTitleParam,
+  includeLocked = false,
 }: {
   supabase: SupabaseClient;
   userId: string;
   userEmail: string | null | undefined;
   include: Set<string>;
   roleTitleParam: string | null;
+  /** Admin export only: include the fitment section even if the candidate hasn't unlocked it. */
+  includeLocked?: boolean;
 }): Promise<CombinedReportData> {
   // Fetched unconditionally (not gated by include.has("fitment")) because
   // fitment_leads.name is the only real-name source the public share page
@@ -54,7 +57,7 @@ export async function loadCombinedReportData({
 
   let fitment: CombinedReportData["fitment"] = null;
   if (include.has("fitment") && currentLead) {
-    const unlocked = await isReportUnlocked(userId, currentLead.id, currentLead.role_title);
+    const unlocked = includeLocked || (await isReportUnlocked(userId, currentLead.id, currentLead.role_title));
     if (unlocked && currentLead.resume_match_status === "READY" && currentLead.resume_match_raw) {
       fitment = {
         roleTitle: currentLead.role_title,
