@@ -7,18 +7,28 @@ import type { OwnedIndividually } from "./pricing/pricingCatalog";
 // interviewCredits: unused paid or plan interviews (lib/interviewCredits); ownedIndividually: non-holders only. Both added by /api/hub/plan-state.
 export type PlanState = BasePlanState & { interviewCredits?: number; ownedIndividually?: OwnedIndividually | null };
 
-// state === null (error / signed out) means "normal user": callers show today's pricing.
-export function usePlanState(): { loading: boolean; state: PlanState | null } {
-  const [result, setResult] = useState<{ loading: boolean; state: PlanState | null }>({ loading: true, state: null });
+export type PlanStateResult = { loading: boolean; state: PlanState | null; expired: boolean };
+
+// state === null (error) means "normal user": callers show today's pricing.
+// 401 = session expired: stay "loading" so no caller shows prices it can't know; AppShell shows the sign-in prompt.
+export async function loadPlanState(): Promise<PlanStateResult> {
+  try {
+    const res = await fetch("/api/hub/plan-state");
+    if (res.status === 401) return { loading: true, state: null, expired: true };
+    return { loading: false, state: res.ok ? ((await res.json()) as PlanState) : null, expired: false };
+  } catch {
+    return { loading: false, state: null, expired: false };
+  }
+}
+
+export function usePlanState(): PlanStateResult {
+  const [result, setResult] = useState<PlanStateResult>({ loading: true, state: null, expired: false });
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/hub/plan-state")
-      .then((res) => (res.ok ? (res.json() as Promise<PlanState>) : null))
-      .catch(() => null)
-      .then((state) => {
-        if (!cancelled) setResult({ loading: false, state });
-      });
+    loadPlanState().then((r) => {
+      if (!cancelled) setResult(r);
+    });
     return () => {
       cancelled = true;
     };

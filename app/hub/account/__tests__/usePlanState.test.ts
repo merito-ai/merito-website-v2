@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { isPlanOnly, freePlanReports, hasUnusedPlanInterview, hasUnusedInterviewCredit, planCardLabel } from "../usePlanState";
+import { describe, it, expect, vi, afterEach } from "vitest";
+import { loadPlanState, isPlanOnly, freePlanReports, hasUnusedPlanInterview, hasUnusedInterviewCredit, planCardLabel } from "../usePlanState";
 import type { PlanState } from "@/lib/plans";
 
 const plan = (over: Partial<NonNullable<PlanState["plan"]>> = {}): PlanState => ({
@@ -49,5 +49,27 @@ describe("plan paywall helpers", () => {
     expect(planCardLabel(plan({ reportCreditsLeft: 0, interviewUsed: true }), "personality")).toBe("Included in your plan");
     expect(planCardLabel({ allowlisted: true, plan: null }, "references")).toBe("Available with a plan");
     expect(planCardLabel(null, "references")).toBeNull();
+  });
+});
+
+describe("loadPlanState", () => {
+  afterEach(() => vi.unstubAllGlobals());
+  const respond = (status: number, body: unknown = {}) => vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify(body), { status })));
+
+  it("401 is an expired session: stays loading (no prices) and flags expired", async () => {
+    respond(401, { error: "Not signed in." });
+    expect(await loadPlanState()).toEqual({ loading: true, state: null, expired: true });
+  });
+
+  it("200 returns the plan state", async () => {
+    respond(200, { allowlisted: true, plan: null });
+    expect(await loadPlanState()).toEqual({ loading: false, state: { allowlisted: true, plan: null }, expired: false });
+  });
+
+  it("other errors fall back to a normal user, not expired", async () => {
+    respond(500);
+    expect(await loadPlanState()).toEqual({ loading: false, state: null, expired: false });
+    vi.stubGlobal("fetch", vi.fn(async () => { throw new Error("offline"); }));
+    expect(await loadPlanState()).toEqual({ loading: false, state: null, expired: false });
   });
 });

@@ -5,6 +5,7 @@ import TopBar from "./TopBar";
 import Sidebar from "./Sidebar";
 import ChangeRoleModal from "./ChangeRoleModal";
 import { HubUserProvider } from "./HubUserContext";
+import SessionExpiredNotice from "./SessionExpiredNotice";
 
 type Lead = {
   id: string;
@@ -57,6 +58,7 @@ export default function AppShell({
           <HubUserProvider value={{ name: userName === "there" ? "" : userName, email: userEmail }}>{children}</HubUserProvider>
         </div>
       </div>
+      <SessionExpiredNotice />
       {showChangeRole && (
         <ChangeRoleModal
           onClose={() => setShowChangeRole(false)}
