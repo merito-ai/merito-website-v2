@@ -16,7 +16,8 @@ const BODY_CELL_STYLE: React.CSSProperties = {
 
 export function Table({ children, minWidth = 640 }: { children: ReactNode; minWidth?: number }) {
   return (
-    <div className="bg-white border border-black/[0.08]" style={{ overflowX: "auto", borderRadius: 14 }}>
+    // position: relative so absolutely positioned children (sr-only labels) scroll inside the box instead of widening the page.
+    <div className="bg-white border border-black/[0.08]" style={{ overflowX: "auto", borderRadius: 14, position: "relative" }}>
       <table style={{ width: "100%", borderCollapse: "collapse", minWidth }}>{children}</table>
     </div>
   );

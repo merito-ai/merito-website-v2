@@ -1,5 +1,6 @@
 import type { BadgeVariant } from "@/app/admin/_components/Badge";
 import type { TransactionStatus } from "@/lib/adminPayments";
+import { PRODUCT_LABELS } from "@/lib/razorpay/pricing";
 
 const ABANDONED_AFTER_MS = 86_400_000;
 
@@ -10,9 +11,9 @@ export const PRODUCT_LABEL: Record<string, string> = {
   interview: "Interview",
   counselling: "Counselling",
   bundle: "Bundle",
-  plan_prepare: "Plan 1",
-  plan_mentor: "Plan 2",
-  plan_upgrade_mentor: "Plan upgrade",
+  plan_prepare: PRODUCT_LABELS.plan_prepare,
+  plan_mentor: PRODUCT_LABELS.plan_mentor,
+  plan_upgrade_mentor: "Upgrade",
 };
 
 // A checkout started but never paid for over a day is abandoned, not pending.

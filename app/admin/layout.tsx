@@ -13,9 +13,10 @@ export default async function AdminLayout({
 
   return (
     <ToastProvider>
-      <div style={{ display: "flex", minHeight: "100vh", background: "#f9fafd" }}>
+      {/* Narrow screens: sidebar stacks above the page so nothing scrolls sideways. */}
+      <div className="flex flex-col md:flex-row" style={{ minHeight: "100vh", background: "#f9fafd" }}>
         <AdminSidebar adminEmail={user.email ?? ""} recentViews={recentViews} />
-        <main style={{ flex: 1, minWidth: 0, padding: "40px 32px" }}>
+        <main className="px-4 py-6 md:px-8 md:py-10" style={{ flex: 1, minWidth: 0 }}>
           <div style={{ maxWidth: 1200, margin: "0 auto" }}>{children}</div>
         </main>
       </div>

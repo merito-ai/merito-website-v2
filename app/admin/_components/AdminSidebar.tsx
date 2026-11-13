@@ -80,10 +80,9 @@ export default function AdminSidebar({ adminEmail, recentViews }: { adminEmail: 
 
   return (
     <aside
+      className="w-full md:w-60 md:min-h-screen"
       style={{
-        width: 240,
         flexShrink: 0,
-        minHeight: "100vh",
         background: "#000",
         color: "#fff",
         display: "flex",
