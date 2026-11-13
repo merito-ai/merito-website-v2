@@ -252,3 +252,28 @@ Not fixed (Medium/Low):
 Not fixed (Low):
 - Font files cover Google's "latin" subset + Latin Extended-A + U+20A0-20C0 (₹). The Google loader also served latin-ext (Ext-B, Ext Additional), vietnamese, greek and cyrillic faces; those characters now render in the metric-matched Arial/Times fallback. Re-run the download (Google css2 `text=` per family) with more ranges if names or copy need them.
 - Before/after screenshots match by eye but are not pixel-identical: sub-pixel anti-aliasing differs on some text (Inter/IBM Plex Mono pages most). The same residual appears with Google's own byte-identical latin files under next/font/local, so it comes from the loader, not the font data.
+
+## Proposal: real "report failed" status (2026-11-13, design only, not built)
+
+Today `leadReportState` (lib/firstVisit.ts) calls a fitment report "failed" when `fitment_leads.resume_match_status` is still `PENDING` 24h after the check. The column only allows `PENDING | READY` (migration 0007 check constraint), and `getResumeMatchReport` errors at check time are swallowed as PENDING (app/api/hub/fitment-check/route.ts). So a vendor error shows "being prepared" for a day, and a slow-but-fine report flips to "failed" at 24h.
+
+Proposal: add `FAILED` to the status plus when/why columns.
+
+```sql
+-- 00xx_resume_match_failed.sql (draft, not applied)
+alter table fitment_leads drop constraint if exists fitment_leads_resume_match_status_check;
+alter table fitment_leads
+  add constraint fitment_leads_resume_match_status_check check (resume_match_status in ('PENDING', 'READY', 'FAILED')),
+  add column if not exists resume_match_failed_at timestamptz,
+  add column if not exists resume_match_error text;
+-- optional one-off backfill of today's inferred failures:
+-- update fitment_leads set resume_match_status = 'FAILED', resume_match_failed_at = now(), resume_match_error = 'backfill: pending > 24h'
+--   where resume_match_status = 'PENDING' and created_at < now() - interval '24 hours';
+```
+
+Where it is set:
+- `interview-sweep` cron (already runs): leads `PENDING` past a timeout (24h, same as now) after one last `getResumeMatchReport` try become `FAILED`, plus a `pipeline_failures` row (kind `resume_match_failed`) so admin sees it.
+- Dashboard refresh (app/hub/account/page.tsx, PENDING branch) and admin `retry-resume-match`: a non-transient vendor error (4xx, report not found) sets `FAILED` at once; network/5xx stays `PENDING`.
+- Any later READY (refresh, admin retry) overwrites `FAILED` and clears the two columns.
+
+Readers: `leadReportState` returns `failed` only for `FAILED` (drop the time inference once the backfill runs). Check every `resume_match_status` reader before the constraint change: lib/adminAnalytics.ts, adminCandidates.ts, adminPayments.ts, combinedReportData.ts, completeReportUnlock.ts, prospectConversion.ts, recruiterPreviewSections.ts, vendor-compare route, and regenerate lib/database.types.ts. Deploy order: migration first (writers fail the check constraint otherwise).
