@@ -504,7 +504,7 @@ describe("POST /api/hub/start-ai-interview — plan interview credit", () => {
     expect(response.status).toBe(200);
     expect(creditInMock).toHaveBeenCalledWith("product", ["interview", "plan_prepare", "plan_mentor"]);
     expect(consumeUpdateEqMock).toHaveBeenCalledWith("order_id", "order_plan");
-    expect(createInterviewAgentMock).toHaveBeenCalledWith("JOB_P", "Sales Executive", "entry", 45);
+    expect(createInterviewAgentMock).toHaveBeenCalledWith("JOB_P", "Sales Executive", "mid", 45);
   });
 
   it("keeps the level duration for a normal interview credit", async () => {
@@ -522,7 +522,7 @@ describe("POST /api/hub/start-ai-interview — plan interview credit", () => {
     const response = await POST(buildRequest({ leadId: "lead-plan" }));
 
     expect(response.status).toBe(200);
-    expect(createInterviewAgentMock).toHaveBeenCalledWith("JOB_P", "Sales Executive", "entry", 45);
+    expect(createInterviewAgentMock).toHaveBeenCalledWith("JOB_P", "Sales Executive", "mid", 45);
   });
 
   it("falls back to the level duration when the allowlist lookup fails", async () => {

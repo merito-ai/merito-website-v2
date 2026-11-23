@@ -181,7 +181,8 @@ export async function POST(request: Request) {
     stage = "createInterviewAgent";
     const candidateLevel = (lead.candidate_level as CandidateLevel) || "mid";
 
-    ({ ibAgentId } = await createInterviewAgent(ibJobId, lead.role_title, candidateLevel, planMinutes));
+    // Plan interviews are medium difficulty at every level (PM 2026-11-23); "mid" maps to complexity "medium".
+    ({ ibAgentId } = await createInterviewAgent(ibJobId, lead.role_title, planMinutes ? "mid" : candidateLevel, planMinutes));
 
     stage = "sendInterviewInvitation";
     const inviteResult = await sendInterviewInvitation(ibAgentId, [candidateId]);

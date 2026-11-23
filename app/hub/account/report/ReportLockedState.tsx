@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { FileText, Unlock } from "lucide-react";
 import { PRODUCT_PRICING, formatPrice, type CandidateLevel } from "@/lib/razorpay/pricing";
 import type { ResumeMatchReportReady } from "@/lib/intervuebox/reports";
@@ -45,7 +44,6 @@ export default function ReportLockedState({
   report: ResumeMatchReportReady | null;
 }) {
   const [modalOpen, setModalOpen] = useState(false);
-  const router = useRouter();
   const price = formatPrice(PRODUCT_PRICING.report[level]);
   const { loading: planLoading, state: planState } = usePlanState();
   const planLabel = planCardLabel(planState, "report");
@@ -92,7 +90,8 @@ export default function ReportLockedState({
             onClose={() => setModalOpen(false)}
             onUnlocked={() => {
               setModalOpen(false);
-              router.refresh();
+              // Full reload: router.refresh() left the page locked after a plan-credit unlock (preview E2E 2026-11-23).
+              window.location.reload();
             }}
           />
         ) : null

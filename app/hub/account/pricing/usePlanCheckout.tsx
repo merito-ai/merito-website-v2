@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { trackPurchase } from "@/lib/analytics";
 import { fetchWithTimeout, networkErrorMessage } from "@/lib/hub/fetchWithTimeout";
 import { planConfirmContent, type PlanCard } from "./pricingCatalog";
@@ -55,7 +54,6 @@ export type PlanBuy = PlanProduct | "plan_upgrade_mentor";
 
 // The one plan checkout (pricing table + plans popup): confirm dialog first, then Razorpay. Moved from PlanCardsClient.
 export function usePlanCheckout(plans: PlanCard[]) {
-  const router = useRouter();
   const [paying, setPaying] = useState<string | null>(null);
   const [error, setError] = useState<{ product: string; message: string } | null>(null);
   // Confirm before Razorpay opens; planState feeds the "you already have" note.
@@ -68,7 +66,8 @@ export function usePlanCheckout(plans: PlanCard[]) {
       setPaying(null);
       setError({ product, message });
     };
-    const onPaid = async () => router.refresh();
+    // Full reload: router.refresh() leaves usePlanState (sidebar locks etc.) on its pre-payment fetch.
+    const onPaid = async () => window.location.reload();
     setPaying(product);
     setError(null);
     try {
