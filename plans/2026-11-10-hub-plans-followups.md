@@ -117,3 +117,10 @@ Preview `merito-website-v2-git-preview-...vercel.app` (main becc3d0), Razorpay t
 - Kept as is (PM 2026-11-23: plan users get 45 min + medium either way): the add-role modal (ChangeRoleModal) asks for a seniority level, but rescore-role deliberately overwrites it with the first role's level (21225a7, tested). Either hide the dropdown for 2nd+ roles or let the chosen level win. The first-role form saves the chosen level correctly.
 - Minor: after the first role check the modal closed and the dashboard did not show the score until a reload (once, may be timing).
 - Not tested: personality questionnaire completion, referee invite, refund path (needs an admin login), welcome email delivery.
+
+## Multi-role + full-feature pass (2026-11-23, preview, account +seminar1 with 4 roles)
+
+PASS: per-role fitment reports (3 plan credits on roles 1-3, 4th asks ₹299); interview is one per plan, a second role offers "Pay ₹999 for a 45-min interview"; personality test completed in UI (104 statements, 8 pages) and shows on every role; 3 referees invited, 3 referee forms submitted, report "Based on 3 completed references" on every role, re-reference ₹299; consolidated report per role (3 of 4 sections), public share link renders the right role, PDF export 200 (420 KB); mentoring: admin sets session 1 Scheduled (confirm step), follow-up unlocks for the user; application assistance: admin In progress + companies, dashboard shows it; Resend delivered sign-in, plan-active (Plan 1 + upgrade) and referee invite emails.
+- FIXED e53810d: sidebar "Consolidated report" link passes ?lead=, page only read ?role= and fell back to the newest role (a multi-role user saw the wrong, often locked, role). Personality copy named the newest role for the same reason.
+- Minor (admin): after Save on /admin/assistance the row badge stays "Not contacted" until reload (value is saved).
+- Not tested (needs a human): completing the AI interview itself and its scored report (voice interview on IntervueBox), booking a real Calendly slot, mobile layout of these pages.
