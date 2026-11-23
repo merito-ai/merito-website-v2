@@ -100,7 +100,12 @@ export default async function CombinedReportPage({
   const params = await searchParams;
   const includeParam = typeof params.include === "string" ? params.include : "fitment,personality,interview,references";
   const include = new Set(includeParam.split(",").filter(Boolean));
-  const roleTitleParam = typeof params.role === "string" ? params.role : null;
+  let roleTitleParam = typeof params.role === "string" ? params.role : null;
+  // Sidebar links carry ?lead=<id> (the active role); without this the page fell back to the newest role.
+  if (!roleTitleParam && typeof params.lead === "string") {
+    const { data: leadRow } = await supabase.from("fitment_leads").select("role_title").eq("id", params.lead).eq("user_id", user.id).maybeSingle();
+    roleTitleParam = leadRow?.role_title ?? null;
+  }
   const DEFAULT_INTERVIEW_SECTIONS =
     "scoreGauge,overview,skillReport,criteriaMatch,skillEvaluation,strengths,integrity,roadmap";
   const interviewSectionsParam = typeof params.interviewSections === "string" ? params.interviewSections : DEFAULT_INTERVIEW_SECTIONS;

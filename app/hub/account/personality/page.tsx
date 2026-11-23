@@ -3,6 +3,7 @@ import { createSupabaseServerClient } from "@/lib/supabaseAuthServer";
 import { nameFromEmail, type Scores, type Validity } from "@/lib/personality";
 import type { CultureScores } from "@/lib/psychometrics/scoring";
 import { isProductUnlocked } from "@/lib/productUnlocks";
+import { resolveActiveLead } from "@/lib/activeLead";
 import { DEFAULT_LEVEL, type CandidateLevel } from "@/lib/razorpay/pricing";
 import PersonalityTestClient from "./PersonalityTestClient";
 import PersonalityLockedState from "./PersonalityLockedState";
@@ -29,16 +30,12 @@ export default async function PersonalityTestPage({
     .from("fitment_leads")
     .select("id, role_title, candidate_level, name")
     .eq("user_id", user.id)
-    .order("created_at", { ascending: false })
-    .limit(1);
-
-  const current = leads?.[0];
+    .order("created_at", { ascending: false });
 
   const { role, lead } = await searchParams;
+  // The test is candidate-wide; ?lead= only picks which role the copy names (the active role, not always the newest).
+  const current = leads?.length ? resolveActiveLead(leads, typeof lead === "string" ? lead : undefined) : undefined;
   let roleTitle = typeof role === "string" ? role : null;
-
-  // Note: ?lead= param is accepted for URL consistency but not used
-  // (personality tests are candidate-wide)
 
   if (!roleTitle) {
     roleTitle = current?.role_title ?? null;
