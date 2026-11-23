@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Merito HUB Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Gabarito:wght@600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Theme: Merito HUB dark + brand red. Change these to re-skin the deck. */
+:root {
+  --bg: #121014;
+  --panel: #1c1a1f;
+  --line: rgba(255,255,255,0.10);
+  --text: #ffffff;
+  --muted: rgba(255,255,255,0.68);
+  --red: #ed1a24;
+  --red-btn: #d9161f;
+  --red-soft: rgba(237,26,36,0.12);
+  --green: #3fcb8c;
+
+  --title-size: clamp(1.6rem, 5vw, 4rem);
+  --h2-size: clamp(1.25rem, 3.2vw, 2.5rem);
+  --h3-size: clamp(0.95rem, 1.8vw, 1.35rem);
+  --body-size: clamp(0.85rem, 1.45vw, 1.12rem);
+  --small-size: clamp(0.72rem, 1vw, 0.9rem);
+  --slide-padding: clamp(1rem, 4vw, 4rem);
+  --gap: clamp(0.75rem, 2.5vw, 2.5rem);
+}
+
+/* Viewport fitting: mandatory base */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow-x: hidden; background: var(--bg); color: var(--text); }
+html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+body { font-family: "Poppins", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+.slide {
+  width: 100vw; height: 100vh; height: 100dvh; overflow: hidden;
+  scroll-snap-align: start; display: flex; flex-direction: column; position: relative;
+  background:
+    radial-gradient(60vmax 60vmax at 110% -10%, rgba(237,26,36,0.16), transparent 60%),
+    radial-gradient(40vmax 40vmax at -10% 110%, rgba(237,26,36,0.08), transparent 60%),
+    var(--bg);
+}
+.slide::before { /* faint grid texture */
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.35;
+  background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse at center, black 20%, transparent 75%);
+}
+.slide-content {
+  flex: 1; display: flex; flex-direction: column; justify-content: center;
+  max-height: 100%; overflow: hidden; padding: var(--slide-padding); position: relative; z-index: 1;
+}
+h1, h2, h3 { font-family: "Gabarito", "Poppins", sans-serif; font-weight: 700; line-height: 1.08; }
+h1 { font-size: var(--title-size); }
+h2 { font-size: var(--h2-size); }
+h3 { font-size: var(--h3-size); font-weight: 600; }
+p, li { font-size: var(--body-size); line-height: 1.5; color: var(--muted); }
+strong { color: var(--text); font-weight: 600; }
+.red { color: var(--red); }
+
+.kicker {
+  display: inline-flex; align-items: center; gap: 0.5em; align-self: flex-start;
+  font-size: var(--small-size); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  color: #ff7a80; background: var(--red-soft); border: 1px solid rgba(237,26,36,0.35);
+  padding: 0.35em 0.8em; border-radius: 999px; margin-bottom: clamp(0.5rem, 1.5vh, 1rem);
+}
+.brand { font-family: "Gabarito", sans-serif; font-weight: 700; font-size: clamp(1rem, 2vw, 1.4rem); }
+.brand b { color: var(--red); }
+
+/* Step slide: text left, screenshot right; stacks on narrow/portrait */
+.step { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.3fr); gap: var(--gap); align-items: center; height: 100%; }
+.step .text { display: flex; flex-direction: column; gap: clamp(0.5rem, 1.6vh, 1.1rem); min-width: 0; }
+.step ol, .step ul { list-style: none; display: flex; flex-direction: column; gap: clamp(0.35rem, 1.1vh, 0.8rem); }
+.step li { padding-left: 1.6em; position: relative; }
+.step li::before { content: ""; position: absolute; left: 0.2em; top: 0.55em; width: 0.6em; height: 0.6em; border-radius: 50%; background: var(--red); }
+.shot { min-width: 0; min-height: 0; height: 100%; max-height: min(78dvh, 720px); display: flex; align-items: center; justify-content: center; }
+.shot img {
+  max-width: 100%; max-height: 100%; object-fit: contain; display: block;
+  border-radius: clamp(8px, 1vw, 14px); border: 1px solid var(--line);
+  box-shadow: 0 30px 80px -20px rgba(0,0,0,0.7), 0 0 0 6px rgba(255,255,255,0.03);
+}
+.shot.pair { gap: clamp(0.5rem, 1.5vw, 1rem); }
+.shot.pair img { max-width: calc(50% - 0.5rem); }
+.stepnum { font-family: "Gabarito", sans-serif; font-size: clamp(2.5rem, 7vw, 5.5rem); line-height: 0.9; color: transparent; -webkit-text-stroke: 1.5px var(--red); }
+.tip { font-size: var(--small-size); color: var(--muted); border-left: 3px solid var(--red); padding: 0.3em 0 0.3em 0.8em; }
+
+/* Cards */
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(0.5rem, 1.5vw, 1rem); margin-top: clamp(0.75rem, 2.5vh, 1.75rem); }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: clamp(0.7rem, 1.6vw, 1.25rem); display: flex; flex-direction: column; gap: 0.35em; }
+.card .ico { width: 2em; height: 2em; border-radius: 9px; background: var(--red-soft); color: #ff7a80; display: grid; place-items: center; font-size: var(--body-size); }
+.card p { font-size: var(--small-size); }
+
+/* Plans */
+.plans { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(0.6rem, 1.8vw, 1.25rem); margin-top: clamp(0.75rem, 2.5vh, 1.5rem); }
+.plan { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: clamp(0.8rem, 2vw, 1.5rem); display: flex; flex-direction: column; gap: 0.5em; }
+.plan.hl { border-color: rgba(237,26,36,0.55); background: linear-gradient(180deg, rgba(237,26,36,0.10), var(--panel) 60%); }
+.price { font-family: "Gabarito", sans-serif; font-size: clamp(1.6rem, 4vw, 3rem); color: var(--text); }
+.plan ul { list-style: none; display: flex; flex-direction: column; gap: 0.3em; }
+.plan li { font-size: var(--small-size); padding-left: 1.4em; position: relative; }
+.plan li::before { content: "✓"; position: absolute; left: 0; color: var(--green); font-weight: 700; }
+.badge { align-self: flex-start; font-size: var(--small-size); font-weight: 600; color: #fff; background: var(--red-btn); padding: 0.15em 0.65em; border-radius: 999px; }
+
+/* FAQ */
+.faq { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(0.5rem, 1.5vw, 1rem); margin-top: clamp(0.75rem, 2.5vh, 1.5rem); }
+.faq .card h3 { font-size: clamp(0.9rem, 1.5vw, 1.15rem); }
+
+.cta { display: inline-flex; align-items: center; gap: 0.5em; align-self: flex-start; margin-top: clamp(0.75rem, 2.5vh, 1.5rem);
+  background: var(--red-btn); color: #fff; text-decoration: none; font-weight: 600; font-size: var(--body-size);
+  padding: 0.75em 1.3em; border-radius: 10px; }
+.cta:focus-visible, .navbtn:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+/* Title slide */
+.hero { max-width: 1100px; display: flex; flex-direction: column; gap: clamp(0.6rem, 2vh, 1.4rem); }
+.hero p { font-size: clamp(0.95rem, 1.8vw, 1.35rem); max-width: 46ch; }
+.journey { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: clamp(0.5rem, 2vh, 1.25rem); }
+.journey span { font-size: var(--small-size); border: 1px solid var(--line); background: var(--panel); border-radius: 999px; padding: 0.35em 0.9em; color: var(--muted); }
+.journey span b { color: #ff7a80; margin-right: 0.35em; }
+
+/* Chrome: progress + counter + nav buttons */
+.progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--red); z-index: 10; transition: width 0.3s ease; }
+.counter { position: fixed; right: clamp(0.75rem, 2vw, 1.5rem); bottom: clamp(0.75rem, 2vh, 1.25rem); z-index: 10; display: flex; align-items: center; gap: 0.5rem; font-size: var(--small-size); color: var(--muted); }
+.navbtn { width: 44px; height: 44px; border-radius: 10px; border: 1px solid var(--line); background: rgba(28,26,31,0.85); color: #fff; font-size: 1.1rem; cursor: pointer; }
+
+/* Reveal */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.slide.visible .reveal { opacity: 1; transform: none; }
+.slide.visible .reveal:nth-child(2) { transition-delay: 0.08s; }
+.slide.visible .reveal:nth-child(3) { transition-delay: 0.16s; }
+.slide.visible .reveal:nth-child(4) { transition-delay: 0.24s; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* Portrait / narrow: stack text over screenshot */
+@media (max-aspect-ratio: 1/1), (max-width: 760px) {
+  .step { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); align-items: start; }
+  .shot { max-height: 100%; height: 100%; }
+  .shot img { max-height: 52dvh; }
+  .stepnum { font-size: clamp(2rem, 8vw, 3rem); }
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .step li:nth-child(n+4) { display: none; } /* keep step text short on phones */
+}
+@media (max-width: 520px) {
+  .plans, .faq { grid-template-columns: 1fr; }
+  .plan li:nth-child(n+4) { display: none; }
+  .faq .card:nth-child(n+5) { display: none; }
+  .grid .card p { display: none; }
+}
+@media (max-height: 520px) and (orientation: landscape) {
+  .step li:nth-child(n+3), .tip, .plan li:nth-child(n+3), .card p, .journey { display: none; }
+  .stepnum { font-size: 2rem; }
+  .step h2 { font-size: 1.1rem; }
+  .step li { font-size: 0.78rem; }
+}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"></div>
+<main id="deck">
+
+<!-- 1. Title -->
+<section class="slide" aria-label="Title">
+  <div class="slide-content">
+    <div class="hero">
+      <div class="brand reveal"><b>M</b>erito HUB</div>
+      <span class="kicker reveal">Getting started</span>
+      <h1 class="reveal">Your Merito HUB,<br><span class="red">step by step.</span></h1>
+      <p class="reveal">How to sign in, buy your plan, check your first role and use every part of your dashboard. About 5 minutes.</p>
+      <div class="journey reveal">
+        <span><b>1</b>Open Hub</span><span><b>2</b>Enter email</span><span><b>3</b>Check inbox</span><span><b>4</b>Click the link</span><span><b>5</b>Your dashboard</span><span><b>6</b>Pick a plan</span><span><b>7</b>Check a role</span><span><b>8</b>Start your steps</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. Before you start -->
+<section class="slide" aria-label="Before you start">
+  <div class="slide-content">
+    <span class="kicker reveal">Before you start</span>
+    <h2 class="reveal">Four things to keep handy</h2>
+    <div class="grid reveal" style="grid-template-columns:repeat(2,1fr)">
+      <div class="card"><div class="ico" aria-hidden="true">@</div><h3>Your registered email</h3><p>Use the <strong>same email you shared with Merito</strong> at the seminar. Plans are unlocked for that email only.</p></div>
+      <div class="card"><div class="ico" aria-hidden="true">✉</div><h3>Access to that inbox</h3><p>There is no password. We email you a sign-in link each time.</p></div>
+      <div class="card"><div class="ico" aria-hidden="true">⌁</div><h3>A laptop</h3><p>Use a laptop with a camera and microphone, needed for the mock interview.</p></div>
+      <div class="card"><div class="ico" aria-hidden="true">▤</div><h3>Your CV and a job description</h3><p>Your CV as PDF or Word (under 5 MB), and the full job description of a role you want.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. Open Hub -->
+<section class="slide" aria-label="Step 1: Open Merito HUB">
+  <div class="slide-content">
+    <div class="step">
+      <div class="text">
+        <div class="stepnum reveal" aria-hidden="true">01</div>
+        <h2 class="reveal">Open Merito HUB</h2>
+        <ul class="reveal">
+          <li>Go to <strong>www.merito.ai</strong> and click <strong>Hub</strong> in the top menu.</li>
+          <li>Or type <strong>merito.ai/hub</strong> directly.</li>
+          <li>Click the red <strong>Log in</strong> button (top right of the form card).</li>
+        </ul>
+        <p class="tip reveal">The form on this page is for a new free score. You only need <strong>Log in</strong>.</p>
+      </div>
+      <div class="shot reveal"><img src="assets/02-hub.png" alt="Merito HUB page with the Hub menu item and the Log in link"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. Enter email -->
+<section class="slide" aria-label="Step 2: Enter your email">
+  <div class="slide-content">
+    <div class="step">
+      <div class="text">
+        <div class="stepnum reveal" aria-hidden="true">02</div>
+        <h2 class="reveal">Enter your email</h2>
+        <ul class="reveal">
+          <li>Type your <strong>registered email</strong>.</li>
+          <li>Click <strong>Send link</strong>.</li>
+          <li>No password, no OTP to type.</li>
+        </ul>
+      </div>
+      <div class="shot reveal"><img src="assets/03-login.png" alt="Sign in to Merito HUB form with an email field and Send link button"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. Check inbox -->
+<section class="slide" aria-label="Step 3: Check your inbox">
+  <div class="slide-content">
+    <div class="step">
+      <div class="text">
+        <div class="stepnum reveal" aria-hidden="true">03</div>
+        <h2 class="reveal">Check your inbox</h2>
+        <ul class="reveal">
+          <li>The email comes from <strong>Merito Hub</strong> within a minute.</li>
+          <li>Not there? Look in <strong>Spam</strong> or <strong>Promotions</strong>.</li>
+          <li>Still nothing? Click <strong>Send a new link</strong>.</li>
+        </ul>
+      </div>
+      <div class="shot reveal"><img src="assets/04-check-email.png" alt="Check your email screen confirming the link was sent"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. Click the link -->
+<section class="slide" aria-label="Step 4: Click the button in the email">
+  <div class="slide-content">
+    <div class="step">
+      <div class="text">
+        <div class="stepnum reveal" aria-hidden="true">04</div>
+        <h2 class="reveal">Click the button in the email</h2>
+        <ul class="reveal">
+          <li><strong>First time:</strong> "Confirm email and go to my dashboard".</li>
+          <li><strong>Next times:</strong> the sign-in link email.</li>
+          <li>Each link works <strong>once</strong> and for a short time. Use the newest one.</li>
+        </ul>
+      </div>
+      <div class="shot pair reveal">
+        <img src="assets/05-email-confirmation.png" alt="First-time email: Confirm email and go to my dashboard">
+        <img src="assets/05-email-magic_link.png" alt="Returning sign-in email with the sign-in button">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. Dashboard -->
+<section class="slide" aria-label="Step 5: Your dashboard">
+  <div class="slide-content">
+    <div class="step">
+      <div class="text">
+        <div class="stepnum reveal" aria-hidden="true">05</div>
+        <h2 class="reveal">You land on your dashboard</h2>
+        <ul class="reveal">
+          <li>Look for <strong>Exclusive plans unlocked for you</strong>.</li>
+          <li><strong>Unlock plans</strong>: see both plans and pay.</li>
+          <li><strong>Check my fit for a role</strong>: add a role, job description and CV to get your score.</li>
+          <li>The right panel lists what your plan includes, step by step.</li>
+        </ul>
+        <p class="tip reveal">The role check is free and takes about a minute. Do it before or after you pick a plan.</p>
+      </div>
+      <div class="shot reveal"><img src="assets/06-dashboard.png" alt="Merito HUB dashboard with Unlock plans and Check my fit for a role buttons and the plan steps panel"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 8. Plans -->
+<section class="slide" aria-label="Step 6: Pick a plan">
+  <div class="slide-content">
+    <span class="kicker reveal">Step 06 · Click "Unlock plans"</span>
+    <h2 class="reveal">Pick the plan that fits you</h2>
+    <div class="plans reveal">
+      <div class="plan">
+        <h3>Assess + Prepare</h3>
+        <div class="price">₹2,996</div>
+        <ul>
+          <li>Detailed fitment reports for 3 roles</li>
+          <li>Personality + culture test</li>
+          <li>45-min mock AI interview</li>
+          <li>Reference checks + shareable profile</li>
+        </ul>
+      </div>
+      <div class="plan hl">
+        <span class="badge">Most complete</span>
+        <h3>Assess + Mentor + Apply</h3>
+        <div class="price">₹5,995</div>
+        <ul>
+          <li>Everything in Assess + Prepare</li>
+          <li>Mentoring: two 30-min expert sessions</li>
+          <li>Application help: 3 companies via Merito</li>
+          <li>Upgrade later from Prepare for ₹2,999</li>
+        </ul>
+      </div>
+    </div>
+    <p class="tip reveal" style="margin-top:clamp(0.6rem,2vh,1.2rem)">One-time payment. Features never expire, each can be used once. A 4th role report onwards is ₹299 each.</p>
+  </div>
+</section>
+
+<!-- 9. Confirm -->
+<section class="slide" aria-label="Step 7: Confirm and pay">
+  <div class="slide-content">
+    <div class="step">
+      <div class="text">
+        <div class="stepnum reveal" aria-hidden="true">07</div>
+        <h2 class="reveal">Confirm, then pay</h2>
+        <ul class="reveal">
+          <li>Click <strong>Choose this plan</strong> under your plan.</li>
+          <li>Check the summary, then click <strong>Continue to payment</strong>.</li>
+          <li>Pay securely with <strong>Razorpay</strong> (UPI, card, net banking).</li>
+          <li>The page refreshes and shows <strong>Your plan</strong>. Your receipt is in <strong>Order history</strong>.</li>
+        </ul>
+      </div>
+      <div class="shot reveal"><img src="assets/08-confirm.png" alt="Confirm your plan dialog listing what is included"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 9b. Role check -->
+<section class="slide" aria-label="Step 8: Check your first role">
+  <div class="slide-content">
+    <div class="step">
+      <div class="text">
+        <div class="stepnum reveal" aria-hidden="true">08</div>
+        <h2 class="reveal">Check your first role</h2>
+        <ul class="reveal">
+          <li>Click <strong>Check my fit for a role</strong>.</li>
+          <li>Add your name, phone and the role you want.</li>
+          <li>Pick your <strong>seniority level</strong> carefully. It stays the same for every role you add later.</li>
+          <li>Paste the full job description, upload your CV, then click <strong>Check my fit for a role</strong>.</li>
+        </ul>
+        <p class="tip reveal">Your score out of 10 appears in about a minute. Add more roles from the role menu at the top right.</p>
+      </div>
+      <div class="shot reveal"><img src="assets/09-role-check.png" alt="Check my fit for a role form with name, phone, role, seniority level, job description and CV upload"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 10. Menu guide -->
+<section class="slide" aria-label="Step 9: Work through your steps">
+  <div class="slide-content">
+    <span class="kicker reveal">Step 09 · Use the left menu</span>
+    <h2 class="reveal">Work through your steps</h2>
+    <div class="grid reveal">
+      <div class="card"><div class="ico" aria-hidden="true">▤</div><h3>Fitment report</h3><p>Click <strong>Unlock full report</strong>, then <strong>Use 1 of your 3 plan reports, free</strong>. A 4th role report is ₹299.</p></div>
+      <div class="card"><div class="ico" aria-hidden="true">◎</div><h3>Personality test</h3><p>104 statements in 2 parts, about 17 minutes. Progress saves after Part 1. Done once, counts for every role.</p></div>
+      <div class="card"><div class="ico" aria-hidden="true">◉</div><h3>Mock interview</h3><p>45 min, medium difficulty, up to 10 skills from your role, with a scored report. One per plan. See the next slide.</p></div>
+      <div class="card"><div class="ico" aria-hidden="true">☰</div><h3>Reference checks</h3><p>Click <strong>Start my reference check</strong>, add each referee's name, email and company (up to 10). 3 completed references give a verified report.</p></div>
+      <div class="card"><div class="ico" aria-hidden="true">⧉</div><h3>Consolidated report</h3><p>Fills in as you finish each step. Download it as a PDF or share it by link.</p></div>
+      <div class="card"><div class="ico" aria-hidden="true">✦</div><h3>Expert guidance</h3><p>Assess + Mentor + Apply: click <strong>Schedule your call</strong> to book your mentoring sessions.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 11. Interview tip -->
+<section class="slide" aria-label="Mock interview tips">
+  <div class="slide-content">
+    <span class="kicker reveal">Mock interview</span>
+    <h2 class="reveal">Before you start the interview</h2>
+    <div class="faq reveal">
+      <div class="card"><h3>Pick the role first</h3><p>The interview is for the role shown at the top right. Your plan includes one interview, and you can't switch its role later.</p></div>
+      <div class="card"><h3>Start it</h3><p>Open <strong>Mock interview</strong>, click <strong>Start my mock interview</strong>, then <strong>Start interview for</strong> your role. When ready, click <strong>Start Interview</strong>.</p></div>
+      <div class="card"><h3>Set up</h3><p>Laptop with camera and microphone, a quiet room and a stable network. Plan for 45 minutes in one go.</p></div>
+      <div class="card"><h3>10 days, resume once</h3><p>Finish by the date shown on the page (10 days). If it drops, you can resume once; a second drop can't be recovered. Your scored report appears on the same page.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 12. Mentor + Apply -->
+<section class="slide" aria-label="Mentoring and application help">
+  <div class="slide-content">
+    <span class="kicker reveal">Assess + Mentor + Apply</span>
+    <h2 class="reveal">Mentoring and application help</h2>
+    <div class="faq reveal">
+      <div class="card"><h3>Mentoring</h3><p>Two 30-min sessions with a Merito expert. In <strong>Expert guidance</strong>, click <strong>Schedule your call</strong> for session 1. The follow-up opens once session 1 is scheduled.</p></div>
+      <div class="card"><h3>Application help</h3><p>Our team gets in touch to pick 3 companies with you, then refers you through Merito's network.</p></div>
+      <div class="card"><h3>Track progress</h3><p>Your dashboard shows each step as it moves to In progress and Done.</p></div>
+      <div class="card"><h3>What we promise</h3><p>We refer you to the companies you choose. We can't guarantee interviews or offers.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 13. FAQ: sign-in -->
+<section class="slide" aria-label="Sign-in questions">
+  <div class="slide-content">
+    <span class="kicker reveal">Questions · Signing in</span>
+    <h2 class="reveal">Signing in</h2>
+    <div class="faq reveal">
+      <div class="card"><h3>No email arrived</h3><p>Check Spam and Promotions, wait a minute, then click Send a new link.</p></div>
+      <div class="card"><h3>"Link expired"</h3><p>Links work once and for a short time. Request a new one and use the latest email.</p></div>
+      <div class="card"><h3>I don't see my plans</h3><p>You signed in with a different email. Sign out and sign in with the email you shared with Merito.</p></div>
+      <div class="card"><h3>Is there a password?</h3><p>No. Every sign-in uses a fresh link sent to your email.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 14. FAQ: using Hub -->
+<section class="slide" aria-label="Using Hub questions">
+  <div class="slide-content">
+    <span class="kicker reveal">Questions · Using Hub</span>
+    <h2 class="reveal">Using Hub</h2>
+    <div class="faq reveal">
+      <div class="card"><h3>Do I have to finish everything now?</h3><p>No. Features never expire. Do the steps in any order, at your pace.</p></div>
+      <div class="card"><h3>Can I add another role?</h3><p>Yes. Open the role menu at the top right and click <strong>+ Check my fit for a role</strong>. 3 role reports are in your plan.</p></div>
+      <div class="card"><h3>Payment went through, plan missing</h3><p>Refresh the page and check Order history. Still missing after 10 minutes? Write to us.</p></div>
+      <div class="card"><h3>Interview got interrupted</h3><p>Open Mock interview and click Resume. You can resume once.</p></div>
+      <div class="card"><h3>Prepare now, Mentor later?</h3><p>Yes. Upgrade from Assess + Prepare to Assess + Mentor + Apply anytime for ₹2,999.</p></div>
+      <div class="card"><h3>Anything else</h3><p>Email <strong>admin@merito.ai</strong> with your registered email and a screenshot.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 14. End -->
+<section class="slide" aria-label="Start now">
+  <div class="slide-content">
+    <div class="hero">
+      <span class="kicker reveal">You're ready</span>
+      <h1 class="reveal">Start at <span class="red">merito.ai/hub</span></h1>
+      <p class="reveal">Sign in with your registered email, pick your plan, and work through your steps one by one.</p>
+      <a class="cta reveal" href="https://www.merito.ai/hub" target="_blank" rel="noopener">Open Merito HUB →</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<nav class="counter" aria-label="Slide navigation">
+  <button class="navbtn" type="button" data-dir="-1" aria-label="Previous slide">‹</button>
+  <span aria-live="polite"><span id="cur">1</span> / <span id="tot">1</span></span>
+  <button class="navbtn" type="button" data-dir="1" aria-label="Next slide">›</button>
+</nav>
+
+<script>
+// Presentation controller: keyboard, wheel, touch, buttons; progress + reveal.
+class Deck {
+  constructor() {
+    this.slides = [...document.querySelectorAll(".slide")];
+    this.i = 0; this.lock = false;
+    this.bar = document.querySelector(".progress");
+    document.getElementById("tot").textContent = this.slides.length;
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) e.target.classList.add("visible"); }), { threshold: 0.4 });
+    this.slides.forEach((s) => io.observe(s));
+    // Current slide = whichever slide's top is nearest the viewport top (works for any scroll container).
+    document.addEventListener("scroll", () => {
+      let best = 0, d = Infinity;
+      this.slides.forEach((s, k) => { const t = Math.abs(s.getBoundingClientRect().top); if (t < d) { d = t; best = k; } });
+      if (!this.moving) { this.i = best; this.ui(); }
+    }, { capture: true, passive: true });
+    addEventListener("keydown", (e) => {
+      if (["ArrowDown", "ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); this.go(1); }
+      if (["ArrowUp", "ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); this.go(-1); }
+      if (e.key === "Home") { e.preventDefault(); this.to(0); }
+      if (e.key === "End") { e.preventDefault(); this.to(this.slides.length - 1); }
+    });
+    addEventListener("wheel", (e) => { e.preventDefault(); if (Math.abs(e.deltaY) > 20) this.go(e.deltaY > 0 ? 1 : -1); }, { passive: false });
+    let y0 = null;
+    addEventListener("touchstart", (e) => { y0 = e.touches[0].clientY; }, { passive: true });
+    addEventListener("touchend", (e) => { if (y0 === null) return; const d = y0 - e.changedTouches[0].clientY; if (Math.abs(d) > 40) this.go(d > 0 ? 1 : -1); y0 = null; });
+    document.querySelectorAll(".navbtn").forEach((b) => b.addEventListener("click", () => this.go(+b.dataset.dir)));
+    this.ui();
+  }
+  go(d) { if (this.lock) return; this.lock = true; this.moving = true; setTimeout(() => (this.lock = this.moving = false), 650); this.to(this.i + d); }
+  to(n) { this.i = Math.max(0, Math.min(this.slides.length - 1, n)); this.slides[this.i].scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); this.ui(); }
+  ui() { document.getElementById("cur").textContent = this.i + 1; this.bar.style.width = ((this.i + 1) / this.slides.length) * 100 + "%"; }
+}
+new Deck();
+</script>
+</body>
+</html>
