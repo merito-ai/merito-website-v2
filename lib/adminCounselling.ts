@@ -17,6 +17,7 @@ export type CounsellingRequestRow = {
   notes: string | null;
   sessionLabel: string | null;
   sessionAt: string | null; // booked call time
+  calendlyLinked: boolean; // booked through Calendly: reschedule/cancel there, sync would undo queue edits
   autoCompleted: boolean; // status is still "scheduled" but the call has ended
   rating: number | null;
   feedback: string | null;
@@ -37,7 +38,7 @@ export function mentoringSessionLabel(product: string | null | undefined, sessio
 const productOf = (t: { product: string } | { product: string }[] | null) => (Array.isArray(t) ? t[0] : t)?.product;
 
 const COLUMNS =
-  "id, user_id, order_id, status, requested_at, scheduled_at, completed_at, notes, session, session_at, candidate_rating, candidate_feedback, feedback_at, razorpay_transactions(product)";
+  "id, user_id, order_id, status, requested_at, scheduled_at, completed_at, notes, session, session_at, calendly_event_uri, candidate_rating, candidate_feedback, feedback_at, razorpay_transactions(product)";
 
 const ACTIVE_STATUSES: CounsellingStatus[] = ["requested", "scheduled"];
 
@@ -76,6 +77,7 @@ type DbRow = {
   notes: string | null;
   session: number;
   session_at: string | null;
+  calendly_event_uri: string | null;
   candidate_rating: number | null;
   candidate_feedback: string | null;
   feedback_at: string | null;
@@ -95,6 +97,7 @@ function toRow(r: DbRow, email: string | undefined): CounsellingRequestRow {
     notes: r.notes,
     sessionLabel: mentoringSessionLabel(productOf(r.razorpay_transactions), r.session),
     sessionAt: r.session_at,
+    calendlyLinked: Boolean(r.calendly_event_uri),
     autoCompleted: r.status === "scheduled" && effectiveSessionStatus(r) === "completed",
     rating: r.candidate_rating,
     feedback: r.candidate_feedback,

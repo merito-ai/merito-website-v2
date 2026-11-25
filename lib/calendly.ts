@@ -1,4 +1,5 @@
 import { getSupabaseServerClient } from "@/lib/supabase";
+import { effectiveSessionStatus } from "@/lib/planPanel";
 
 // Calendly API v2 (personal access token; the free plan has no webhooks). Bookings reach counselling_requests
 // two ways: the expert page posts the popup's event_scheduled message (/api/hub/counselling/[id]/booked), and
@@ -34,11 +35,14 @@ export type SyncPatch = { id: string; from: string; patch: Record<string, string
 
 // Pure: which requested/scheduled rows Calendly moved. An active event tagged with the row id (or already linked
 // to it) schedules it at the event's start; when the row's linked event is canceled and nothing active replaces it,
-// the row goes back to requested. Rows scheduled by hand (no linked event) are never reverted.
+// the row goes back to requested. Rows scheduled by hand (no linked event) are never reverted. Calendly wins for
+// linked rows: admin reschedules or cancels those in Calendly, not in the queue.
+export const needsSync = (r: SyncRow, now: Date) => (r.status === "requested" || r.status === "scheduled") && effectiveSessionStatus(r, now) !== "completed";
+
 export function reconcileBookings(rows: SyncRow[], events: MatchedEvent[], now: string): SyncPatch[] {
   const out: SyncPatch[] = [];
   for (const r of rows) {
-    if (r.status !== "requested" && r.status !== "scheduled") continue;
+    if (!needsSync(r, new Date(now))) continue; // a finished call is final, even if canceled in Calendly later
     const mine = events.filter((e) => e.utmContent === r.id || e.uri === r.calendly_event_uri);
     const active = mine.filter((e) => e.status === "active").sort((a, b) => Date.parse(b.start_time) - Date.parse(a.start_time))[0];
     if (active) {
@@ -79,9 +83,10 @@ export async function syncCalendlyBookings(scope: { userId: string; email: strin
     const db = getSupabaseServerClient();
     let q = db.from("counselling_requests").select("id, status, session_at, scheduled_at, calendly_event_uri").in("status", ["requested", "scheduled"]);
     if (scope !== "all") q = q.eq("user_id", scope.userId);
-    const { data: rows, error } = await q;
+    const { data, error } = await q;
     if (error) throw new Error(error.message);
-    if (!rows?.length) return false;
+    const rows = (data ?? []).filter((r) => needsSync(r, new Date())); // finished calls never cost a Calendly call
+    if (!rows.length) return false;
     const known = new Set(rows.map((r) => r.calendly_event_uri).filter((u): u is string => Boolean(u)));
     const events = await eventsFor(scope === "all" ? null : scope.email ?? null, known);
     const patches = reconcileBookings(rows, events, new Date().toISOString());

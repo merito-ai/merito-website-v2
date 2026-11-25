@@ -77,7 +77,7 @@ export function mentoringSessions(rows: MentoringRow[], now: Date = new Date()):
 // Expert-page line under the two sessions; the caller appends the contact address.
 export function mentoringFooter([s1, s2]: MentoringSession[]): string {
   if (s1.status === "completed" && s2.status === "completed") {
-    return s1.rating && s2.rating ? "Both sessions done. Thanks for your feedback." : "Both sessions done. Tell us how they went below.";
+    return s1.rating && s2.rating ? "Both sessions done. Thanks for your feedback." : "Both sessions done. Tell us how they went.";
   }
   if (s2.status === "scheduled") return s2.sessionAt ? `See you on ${dateTime(s2.sessionAt)}.` : "Session 2 is scheduled.";
   if (s2.bookable) return "Session 2 is open. Pick a time that suits you. Your booking shows here once it is confirmed.";

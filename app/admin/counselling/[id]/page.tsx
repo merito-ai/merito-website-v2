@@ -60,6 +60,7 @@ export default async function AdminCounsellingDetailPage({
         currentStatus={request.status}
         currentNotes={request.notes}
         currentSessionAt={request.sessionAt ? isoToIstLocal(request.sessionAt) : ""}
+        calendlyLinked={request.calendlyLinked}
         allowedNext={ALLOWED_TRANSITIONS[request.status]}
         statusHistory={statusHistory}
       />

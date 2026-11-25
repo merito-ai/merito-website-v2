@@ -24,6 +24,7 @@ export default function CounsellingStatusForm({
   currentStatus,
   currentNotes,
   currentSessionAt,
+  calendlyLinked,
   allowedNext,
   statusHistory,
 }: {
@@ -31,6 +32,7 @@ export default function CounsellingStatusForm({
   currentStatus: CounsellingStatus;
   currentNotes: string | null;
   currentSessionAt: string; // IST datetime-local value, "" when not set
+  calendlyLinked: boolean;
   allowedNext: CounsellingStatus[];
   statusHistory: AdminActionRow[];
 }) {
@@ -51,7 +53,7 @@ export default function CounsellingStatusForm({
     );
   }
 
-  const scheduling = status === "scheduled";
+  const scheduling = status === "scheduled" && !calendlyLinked; // Calendly owns a linked booking's time
   const isReschedule = scheduling && currentStatus === "scheduled";
   const isNoOp = status === currentStatus && !(isReschedule && sessionAt !== currentSessionAt);
 
@@ -102,6 +104,12 @@ export default function CounsellingStatusForm({
           </option>
         ))}
       </select>
+
+      {calendlyLinked && (
+        <p className="font-[family-name:var(--font-poppins)] text-[#9c9c9c]" style={{ fontSize: 12, margin: "0 0 14px" }}>
+          Booked through Calendly. To move or cancel the call, do it in Calendly; this page updates on the next load.
+        </p>
+      )}
 
       {scheduling && (
         <>

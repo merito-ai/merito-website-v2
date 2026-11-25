@@ -55,6 +55,11 @@ describe("reconcileBookings", () => {
     ]);
   });
 
+  it("a call that has already ended is final: no revert on a late Calendly cancel", () => {
+    const done = row("r1", "scheduled", { session_at: "2026-11-20T10:30:00Z", calendly_event_uri: EV + "e1", scheduled_at: "2026-11-19T00:00:00Z" });
+    expect(reconcileBookings([done], [ev("e1", "canceled", "2026-11-20T10:30:00Z", "r1")], NOW)).toEqual([]);
+  });
+
   it("never touches hand-scheduled, completed or cancelled rows", () => {
     const manual = row("r1", "scheduled", { scheduled_at: "2026-11-25T00:00:00Z" });
     expect(reconcileBookings([manual], [ev("x", "canceled", "2026-11-27T10:30:00Z", "r1")], NOW)).toEqual([]);
@@ -103,6 +108,13 @@ describe("syncCalendlyBookings", () => {
     const listUrl = fetchMock.mock.calls.map((c) => c[0] as string).find((u) => u.includes("/scheduled_events?"))!;
     expect(new URL(listUrl).searchParams.get("invitee_email")).toBe("a@b.c");
     expect(updates).toEqual([{ patch: expect.objectContaining({ status: "scheduled", session_at: "2026-11-27T10:30:00Z", calendly_event_uri: EV + "e1" }), eqs: [["id", "r1"], ["status", "requested"]] }]);
+  });
+
+  it("only finished sessions: no Calendly calls at all", async () => {
+    vi.stubEnv("CALENDLY_API_TOKEN", "tok");
+    rows = [row("r1", "scheduled", { session_at: "2020-01-01T00:00:00Z" }), row("r2", "completed")];
+    expect(await syncCalendlyBookings({ userId: "u1", email: "a@b.c" })).toBe(false);
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 
   it("Calendly down: returns false instead of throwing", async () => {

@@ -221,7 +221,7 @@ describe("mentoringFooter", () => {
     expect(f([s(1, "requested"), s(2, "requested")])).toBe("Pick a time that suits you. Your booking shows here once it is confirmed. Session 2 opens once session 1 is booked.");
     expect(f([s(1, "scheduled", FUTURE), s(2, "requested")])).toMatch(/^Session 2 is open\. Pick a time that suits you\./);
     expect(f([s(1, "completed"), s(2, "scheduled", "2026-12-01T05:30:00Z")])).toBe("See you on 1 Dec 2026, 11:00 am.");
-    expect(f([s(1, "completed"), s(2, "completed")])).toBe("Both sessions done. Tell us how they went below.");
+    expect(f([s(1, "completed"), s(2, "completed")])).toBe("Both sessions done. Tell us how they went.");
     expect(f([s(1, "completed", null, { candidate_rating: 5 }), s(2, "completed", null, { candidate_rating: 4 })])).toBe("Both sessions done. Thanks for your feedback.");
   });
 });
