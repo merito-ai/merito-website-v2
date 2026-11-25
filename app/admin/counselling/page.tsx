@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { listCounsellingRequests, type CounsellingStatus } from "@/lib/adminCounselling";
+import { dateTime } from "@/lib/planPanel";
+import { syncCalendlyBookings } from "@/lib/calendly";
 import { Table, TableHeadRow, TableRow, TableCell, TableEmptyRow } from "@/app/admin/_components/Table";
 import Badge, { type BadgeVariant } from "@/app/admin/_components/Badge";
 import PageHeader from "@/app/admin/_components/PageHeader";
@@ -23,6 +25,7 @@ export default async function AdminCounsellingPage({
 }) {
   const { all } = await searchParams;
   const includeAll = all === "1";
+  await syncCalendlyBookings("all");
   const requests = await listCounsellingRequests(includeAll);
 
   return (
@@ -41,7 +44,7 @@ export default async function AdminCounsellingPage({
       </PageHeader>
 
       <Table>
-        <TableHeadRow columns={["Candidate", "Session", "Status", "Requested", "Scheduled"]} />
+        <TableHeadRow columns={["Candidate", "Session", "Status", "Requested", "Call (IST)", "Rating"]} />
         <tbody>
           {requests.map((r) => (
             <TableRow key={r.id}>
@@ -52,14 +55,15 @@ export default async function AdminCounsellingPage({
               </TableCell>
               <TableCell>{r.sessionLabel ?? "—"}</TableCell>
               <TableCell>
-                <Badge variant={STATUS_VARIANT[r.status]}>{r.status}</Badge>
+                {r.autoCompleted ? <Badge variant="success">completed (auto)</Badge> : <Badge variant={STATUS_VARIANT[r.status]}>{r.status}</Badge>}
               </TableCell>
               <TableCell>{formatDate(r.requestedAt)}</TableCell>
-              <TableCell>{formatDate(r.scheduledAt)}</TableCell>
+              <TableCell>{r.sessionAt ? dateTime(r.sessionAt) : "—"}</TableCell>
+              <TableCell>{r.rating ? `${r.rating}/5` : "—"}</TableCell>
             </TableRow>
           ))}
           {requests.length === 0 && (
-            <TableEmptyRow colSpan={5} message={includeAll ? "No counselling requests yet." : "Nothing to schedule."} />
+            <TableEmptyRow colSpan={6} message={includeAll ? "No counselling requests yet." : "Nothing to schedule."} />
           )}
         </tbody>
       </Table>

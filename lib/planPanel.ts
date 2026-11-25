@@ -8,7 +8,7 @@ export type PlanPanelInput = {
   personality: "none" | "part2" | "update" | "done"; // update = old v1 result, culture part not taken
   interview: "unused" | "in_progress" | "ready";
   references: "none" | "in_progress" | "completed";
-  mentoring: MentoringRow[]; // Plan 2 counselling_requests rows (session 1 + follow-up)
+  mentoring: MentoringRow[]; // Plan 2 counselling_requests rows (session 1 + session 2)
   hasRole?: boolean; // default true; false = bought a plan before checking any role
   reportLocked?: boolean; // the current role's detailed report is not unlocked yet
   interviewDueBy?: Date | null; // invited but not started: vendor link expiry, else invited_at + INTERVIEW_VALIDITY_DAYS
@@ -16,32 +16,73 @@ export type PlanPanelInput = {
   interviewRole?: string | null; // role the plan's one interview was used for
   rolesChecked?: number; // E9: distinct roles checked so far
   interviewExpired?: boolean; // E6: invited, never started, link past its 10 days
+  now?: Date; // auto-completes past mentoring sessions; default new Date()
 };
 
-export type MentoringRow = { session: number; status: string; scheduled_at: string | null };
-export type MentoringSession = { status: string; scheduledAt: string | null; bookable: boolean; state: string };
+export type MentoringRow = {
+  session: number;
+  status: string;
+  scheduled_at: string | null;
+  session_at?: string | null; // the booked call time (admin enters it on Scheduled)
+  completed_at?: string | null;
+  id?: string;
+  candidate_rating?: number | null;
+};
+export type MentoringSession = {
+  status: string; // effective: a past scheduled call reads as completed
+  sessionAt: string | null;
+  bookable: boolean;
+  state: string;
+  id: string | null;
+  rating: number | null;
+};
 
+export const SESSION_MINUTES = 30;
 const date = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kolkata" });
+export const dateTime = (iso: string) =>
+  new Date(iso).toLocaleString("en-GB", { day: "numeric", month: "short", year: "numeric", hour: "numeric", minute: "2-digit", hour12: true, timeZone: "Asia/Kolkata" });
 
-// [session 1, follow-up]. A missing row (legacy single-row order) reads as "requested" so the session stays visible.
-// The follow-up opens once session 1 is scheduled or completed (admin sets both in the counselling queue).
-export function mentoringSessions(rows: MentoringRow[]): [MentoringSession, MentoringSession] {
-  const at = (n: number) => rows.find((r) => r.session === n) ?? { status: "requested", scheduled_at: null };
+// No cron: a scheduled call counts as completed once it has ended. Read-time only, never written back.
+export function effectiveSessionStatus(r: { status: string; session_at?: string | null }, now: Date = new Date()): string {
+  return r.status === "scheduled" && r.session_at && now.getTime() >= Date.parse(r.session_at) + SESSION_MINUTES * 60_000 ? "completed" : r.status;
+}
+
+// [session 1, session 2]. A missing row (legacy single-row order) reads as "requested" so the session stays visible.
+// Session 2 opens once session 1 is scheduled or completed (admin sets both in the counselling queue).
+export function mentoringSessions(rows: MentoringRow[], now: Date = new Date()): [MentoringSession, MentoringSession] {
+  const at = (n: number): MentoringRow => rows.find((r) => r.session === n) ?? { session: n, status: "requested", scheduled_at: null };
   const [a, b] = [at(1), at(2)];
-  const firstBooked = a.status === "scheduled" || a.status === "completed";
-  // E16: session 1 first; the follow-up says when it unlocks.
-  const view = (r: typeof a, open: boolean, n: number): MentoringSession => ({
-    status: r.status,
-    scheduledAt: r.scheduled_at,
-    bookable: open && r.status === "requested",
-    state:
-      r.status === "completed" ? "Completed"
-      : r.status === "scheduled" ? (r.scheduled_at ? `Scheduled ${date(r.scheduled_at)}` : "Scheduled")
-      : r.status === "cancelled" ? "Cancelled"
-      : !open ? "Book after session 1"
-      : n === 2 ? "Unlocked, not booked yet" : "Not booked yet",
-  });
+  const firstBooked = ["scheduled", "completed"].includes(effectiveSessionStatus(a, now));
+  // E16: session 1 first; session 2 says when it unlocks.
+  const view = (r: MentoringRow, open: boolean, n: number): MentoringSession => {
+    const status = effectiveSessionStatus(r, now);
+    const done = r.session_at ?? r.completed_at; // the call itself, else when admin marked it
+    return {
+      status,
+      sessionAt: r.session_at ?? null,
+      bookable: open && status === "requested",
+      id: r.id ?? null,
+      rating: r.candidate_rating ?? null,
+      state:
+        status === "completed" ? (done ? `Completed ${date(done)}` : "Completed")
+        : status === "scheduled" ? (r.session_at ? dateTime(r.session_at) : "Scheduled")
+        : status === "cancelled" ? "Cancelled"
+        : !open ? "Book after session 1"
+        : n === 2 ? "Unlocked, not booked yet" : "Not booked yet",
+    };
+  };
   return [view(a, true, 1), view(b, firstBooked, 2)];
+}
+
+// Expert-page line under the two sessions; the caller appends the contact address.
+export function mentoringFooter([s1, s2]: MentoringSession[]): string {
+  if (s1.status === "completed" && s2.status === "completed") {
+    return s1.rating && s2.rating ? "Both sessions done. Thanks for your feedback." : "Both sessions done. Tell us how they went below.";
+  }
+  if (s2.status === "scheduled") return s2.sessionAt ? `See you on ${dateTime(s2.sessionAt)}.` : "Session 2 is scheduled.";
+  if (s2.bookable) return "Session 2 is open. Pick a time that suits you. Your booking shows here once it is confirmed.";
+  if (s1.bookable) return "Pick a time that suits you. Your booking shows here once it is confirmed. Session 2 opens once session 1 is booked.";
+  return "";
 }
 
 export type PlanPanelRow = {
@@ -88,7 +129,7 @@ export function buildPlanPanelRows(i: PlanPanelInput): PlanPanelRow[] {
     in_progress: { status: "Waiting on referees", action: { label: "View", href: "/hub/account/references" } },
     completed: { status: "Completed", action: { label: "View", href: "/hub/account/references" } },
   };
-  const [s1, s2] = mentoringSessions(i.mentoring);
+  const [s1, s2] = mentoringSessions(i.mentoring, i.now);
   const mentoringDone = s1.status === "completed" && s2.status === "completed";
   const expert = "/hub/account/expert";
   // Plan 1's Plan-2-only rows sell the upgrade; the pricing table carries the checkout.
@@ -96,9 +137,9 @@ export function buildPlanPanelRows(i: PlanPanelInput): PlanPanelRow[] {
   const mentoring: Pick<PlanPanelRow, "status" | "action"> = !mentor
     ? { status: "Not in your plan", action: upgrade }
     : {
-        status: mentoringDone ? "Both sessions completed" : `Session 1: ${s1.state}\nFollow-up: ${s2.state}`,
+        status: mentoringDone ? "Both sessions completed" : `Session 1: ${s1.state}\nSession 2: ${s2.state}`,
         action: s1.bookable ? { label: "Book session 1", href: expert }
-          : s2.bookable ? { label: "Book follow-up", href: expert }
+          : s2.bookable ? { label: "Book session 2", href: expert }
           : s1.status === "scheduled" || s2.status === "scheduled" ? { label: "View", href: expert }
           : null,
       };

@@ -222,14 +222,14 @@ for (const vp of VIEWPORTS) {
       await shot(page, `p2-all-done-${vp.name}`);
     });
 
-    test("Mentor + Apply: follow-up unlocked after session 1, assistance not contacted yet (E16)", async ({ page }) => {
+    test("Mentor + Apply: session 2 unlocked after session 1, assistance not contacted yet (E16)", async ({ page }) => {
       const u = await seedUser(`addon-p2-mentor-${vp.name}`);
       await seedLead(u, { role: ROLE });
       await seedOrder(u, "plan_mentor");
       const { error } = await db.from("counselling_requests").update({ status: "scheduled", scheduled_at: "2026-12-01T05:30:00Z" }).eq("user_id", u.id).eq("session", 1);
       if (error) throw new Error(error.message);
       await login(page, u.email);
-      await expect(panel(page).locator("li").filter({ hasText: "Mentoring" })).toContainText("Follow-up: Unlocked, not booked yet");
+      await expect(panel(page).locator("li").filter({ hasText: "Mentoring" })).toContainText("Session 2: Unlocked, not booked yet");
       await expect(panel(page).locator("li").filter({ hasText: "Application assistance" })).toContainText("Not contacted yet. Our team will call or email you");
       await page.waitForLoadState("networkidle");
       await navLocks(page, desktop, []);

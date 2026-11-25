@@ -175,34 +175,49 @@ export type Database = {
       }
       counselling_requests: {
         Row: {
+          calendly_event_uri: string | null
+          candidate_feedback: string | null
+          candidate_rating: number | null
           completed_at: string | null
+          feedback_at: string | null
           id: string
           notes: string | null
           order_id: string
           requested_at: string
           scheduled_at: string | null
+          session_at: string | null
           session: number
           status: string
           user_id: string
         }
         Insert: {
+          calendly_event_uri?: string | null
+          candidate_feedback?: string | null
+          candidate_rating?: number | null
           completed_at?: string | null
+          feedback_at?: string | null
           id?: string
           notes?: string | null
           order_id: string
           requested_at?: string
           scheduled_at?: string | null
+          session_at?: string | null
           session?: number
           status?: string
           user_id: string
         }
         Update: {
+          calendly_event_uri?: string | null
+          candidate_feedback?: string | null
+          candidate_rating?: number | null
           completed_at?: string | null
+          feedback_at?: string | null
           id?: string
           notes?: string | null
           order_id?: string
           requested_at?: string
           scheduled_at?: string | null
+          session_at?: string | null
           session?: number
           status?: string
           user_id?: string

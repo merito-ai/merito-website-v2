@@ -23,12 +23,14 @@ export default function CounsellingStatusForm({
   id,
   currentStatus,
   currentNotes,
+  currentSessionAt,
   allowedNext,
   statusHistory,
 }: {
   id: string;
   currentStatus: CounsellingStatus;
   currentNotes: string | null;
+  currentSessionAt: string; // IST datetime-local value, "" when not set
   allowedNext: CounsellingStatus[];
   statusHistory: AdminActionRow[];
 }) {
@@ -36,6 +38,7 @@ export default function CounsellingStatusForm({
   const { showToast } = useToast();
   const [status, setStatus] = useState<CounsellingStatus>(currentStatus);
   const [notes, setNotes] = useState(currentNotes ?? "");
+  const [sessionAt, setSessionAt] = useState(currentSessionAt);
   const [saving, setSaving] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
@@ -48,7 +51,9 @@ export default function CounsellingStatusForm({
     );
   }
 
-  const isNoOp = status === currentStatus;
+  const scheduling = status === "scheduled";
+  const isReschedule = scheduling && currentStatus === "scheduled";
+  const isNoOp = status === currentStatus && !(isReschedule && sessionAt !== currentSessionAt);
 
   async function handleSave() {
     setConfirmOpen(false);
@@ -57,7 +62,7 @@ export default function CounsellingStatusForm({
       const response = await fetch(`/api/admin/counselling/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status, notes }),
+        body: JSON.stringify(scheduling && sessionAt ? { status, notes, session_at: sessionAt } : { status, notes }),
       });
       if (response.ok) {
         showToast("success", "Counselling request updated.");
@@ -98,6 +103,26 @@ export default function CounsellingStatusForm({
         ))}
       </select>
 
+      {scheduling && (
+        <>
+          <label
+            htmlFor="session-at"
+            className="font-[family-name:var(--font-poppins)] font-semibold text-black"
+            style={{ fontSize: 13, display: "block", marginBottom: 8 }}
+          >
+            Call date and time (IST, optional: filled from Calendly when the candidate books there)
+          </label>
+          <input
+            id="session-at"
+            type="datetime-local"
+            value={sessionAt}
+            onChange={(e) => setSessionAt(e.target.value)}
+            className="font-[family-name:var(--font-poppins)]"
+            style={{ width: "100%", padding: "9px 12px", fontSize: 14, border: "1px solid #eee", borderRadius: 7, marginBottom: 14 }}
+          />
+        </>
+      )}
+
       <label
         htmlFor="notes"
         className="font-[family-name:var(--font-poppins)] font-semibold text-black"
@@ -116,11 +141,11 @@ export default function CounsellingStatusForm({
 
       {isNoOp && (
         <p className="font-[family-name:var(--font-poppins)] text-[#9c9c9c]" style={{ fontSize: 12, margin: "0 0 14px" }}>
-          Choose a new status above to save a change.
+          {isReschedule ? "Choose a new status or call time above to save a change." : "Choose a new status above to save a change."}
         </p>
       )}
 
-      <Button variant="primary" onClick={() => setConfirmOpen(true)} disabled={saving || isNoOp} loading={saving}>
+      <Button variant="primary" onClick={() => setConfirmOpen(true)} disabled={saving || isNoOp || (isReschedule && !sessionAt)} loading={saving}>
         Save
       </Button>
 
@@ -165,8 +190,12 @@ export default function CounsellingStatusForm({
 
       <ConfirmDialog
         open={confirmOpen}
-        title="Change counselling status?"
-        message={`This changes the status from "${STATUS_LABEL[currentStatus]}" to "${STATUS_LABEL[status]}".`}
+        title={isReschedule ? "Move the call?" : "Change counselling status?"}
+        message={
+          isReschedule
+            ? `This moves the call to ${sessionAt.replace("T", " ")} IST.`
+            : `This changes the status from "${STATUS_LABEL[currentStatus]}" to "${STATUS_LABEL[status]}"${scheduling && sessionAt ? ` with the call at ${sessionAt.replace("T", " ")} IST` : ""}.`
+        }
         confirmLabel="Confirm"
         busy={saving}
         onConfirm={handleSave}

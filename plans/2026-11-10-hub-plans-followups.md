@@ -124,3 +124,11 @@ PASS: per-role fitment reports (3 plan credits on roles 1-3, 4th asks ₹299); i
 - FIXED e53810d: sidebar "Consolidated report" link passes ?lead=, page only read ?role= and fell back to the newest role (a multi-role user saw the wrong, often locked, role). Personality copy named the newest role for the same reason.
 - Minor (admin): after Save on /admin/assistance the row badge stays "Not contacted" until reload (value is saved).
 - Not tested (needs a human): completing the AI interview itself and its scored report (voice interview on IntervueBox), booking a real Calendly slot, mobile layout of these pages.
+
+## Mentoring: Session 2 naming, auto-complete, Calendly sync, feedback (2026-11-25, branch feat/mentoring-feedback)
+
+Built: "Follow-up" renamed "Session 2" everywhere; migration 0075 (session_at, calendly_event_uri, candidate_rating/feedback, feedback_at); `effectiveSessionStatus` (scheduled + now >= session_at + 30 min = completed, read-time only) used by expert page, plan panel, session-2 gating, allowlist progress, admin queue and the feedback API; Calendly popup + POST /api/hub/counselling/[id]/booked + lazy `syncCalendlyBookings` on render (lib/calendly.ts); candidate rating per completed session, shown in /admin/counselling. Needs CALENDLY_API_TOKEN on Vercel; without it the team confirms bookings by hand as before.
+- Verify with a live Calendly booking: popup message -> booked route, cancel in Calendly -> back to requested, reschedule in Calendly -> new time. If a Calendly reschedule does not carry `utm_content` to the new invitee, the session reverts to requested instead of moving (sync could follow the canceled invitee's `new_invitee`).
+- Minor: admin counselling `formatDate` has no IST timeZone (dates near midnight can show a day off); call times use IST.
+- Minor: admin list sync("all") fetches invitees for every untagged Calendly event in the last 7 days on each load (standalone/non-hub bookings). Fine at current volume.
+- Nice to have: standalone (non-plan) counselling bookings are not captured from Calendly (no session id in the link); dashboard step 5 has no "Rate your sessions" action once both are done.

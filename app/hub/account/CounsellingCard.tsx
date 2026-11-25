@@ -74,7 +74,7 @@ export default function CounsellingCard({
               Schedule your call →
             </a>
             <span className="font-[family-name:var(--font-poppins)] text-white/55" style={{ fontSize: 11.5 }}>
-              Pick a slot in the next 48 hours
+              Usually confirmed within 48 hours
             </span>
           </div>
         ) : (

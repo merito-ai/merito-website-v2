@@ -31,6 +31,7 @@ const REQUEST_ROW = {
   scheduledAt: null,
   completedAt: null,
   notes: null,
+  sessionAt: null,
 };
 
 describe("PATCH /api/admin/counselling/[id]", () => {
@@ -48,17 +49,18 @@ describe("PATCH /api/admin/counselling/[id]", () => {
   it("updates the status and logs the admin action", async () => {
     const { PATCH } = await import("../route");
 
-    const response = await PATCH(buildRequest({ status: "scheduled" }), { params: Promise.resolve({ id: "req-1" }) });
+    const response = await PATCH(buildRequest({ status: "scheduled", session_at: "2026-11-27T16:00" }), { params: Promise.resolve({ id: "req-1" }) });
 
     expect(response.status).toBe(200);
-    expect(updateCounsellingStatusMock).toHaveBeenCalledWith("req-1", { status: "scheduled", scheduled_at: expect.any(String) }, undefined);
+    // 4:00 pm IST = 10:30 UTC
+    expect(updateCounsellingStatusMock).toHaveBeenCalledWith("req-1", { status: "scheduled", scheduled_at: expect.any(String), session_at: "2026-11-27T10:30:00.000Z" }, undefined);
     expect(logAdminActionMock).toHaveBeenCalledWith(
       expect.objectContaining({
         action: "counselling.status_change",
         targetType: "counselling_request",
         targetId: "req-1",
-        priorValue: { status: "requested" },
-        newValue: { status: "scheduled", notes: null },
+        priorValue: { status: "requested", session_at: null },
+        newValue: { status: "scheduled", notes: null, session_at: "2026-11-27T10:30:00.000Z" },
       })
     );
   });
@@ -87,8 +89,33 @@ describe("PATCH /api/admin/counselling/[id]", () => {
     logAdminActionMock.mockRejectedValue(new Error("db down"));
     const { PATCH } = await import("../route");
 
-    const response = await PATCH(buildRequest({ status: "scheduled" }), { params: Promise.resolve({ id: "req-1" }) });
+    const response = await PATCH(buildRequest({ status: "scheduled", session_at: "2026-11-27T16:00" }), { params: Promise.resolve({ id: "req-1" }) });
 
     expect(response.status).toBe(200);
+  });
+
+  it("call time is optional on schedule, but must be well-formed when given", async () => {
+    const { PATCH } = await import("../route");
+    const malformed = await PATCH(buildRequest({ status: "scheduled", session_at: "27/11/2026" }), { params: Promise.resolve({ id: "req-1" }) });
+    expect(malformed.status).toBe(400);
+    expect(updateCounsellingStatusMock).not.toHaveBeenCalled();
+
+    const without = await PATCH(buildRequest({ status: "scheduled" }), { params: Promise.resolve({ id: "req-1" }) });
+    expect(without.status).toBe(200);
+    expect(updateCounsellingStatusMock).toHaveBeenCalledWith("req-1", { status: "scheduled", scheduled_at: expect.any(String) }, undefined);
+  });
+
+  it("reschedules a scheduled session to a new call time", async () => {
+    getCounsellingRequestMock.mockResolvedValue({ ...REQUEST_ROW, status: "scheduled", sessionAt: "2026-11-27T10:30:00.000Z" });
+    const { PATCH } = await import("../route");
+
+    const moved = await PATCH(buildRequest({ status: "scheduled", session_at: "2026-11-28T09:15" }), { params: Promise.resolve({ id: "req-1" }) });
+    expect(moved.status).toBe(200);
+    expect(updateCounsellingStatusMock).toHaveBeenCalledWith("req-1", { status: "scheduled", session_at: "2026-11-28T03:45:00.000Z" }, undefined);
+
+    updateCounsellingStatusMock.mockClear();
+    const noTime = await PATCH(buildRequest({ status: "scheduled" }), { params: Promise.resolve({ id: "req-1" }) });
+    expect(noTime.status).toBe(400);
+    expect(updateCounsellingStatusMock).not.toHaveBeenCalled();
   });
 });

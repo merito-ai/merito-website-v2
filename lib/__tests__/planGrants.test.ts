@@ -35,7 +35,7 @@ describe("applyPlanGrants", () => {
     expect(fromMock).not.toHaveBeenCalledWith("counselling_requests");
   });
 
-  it("plan_mentor grants two mentoring sessions (first + follow-up)", async () => {
+  it("plan_mentor grants two mentoring sessions (session 1 + session 2)", async () => {
     await applyPlanGrants("u1", "o1", "plan_mentor");
     expect(unlockProductMock).toHaveBeenCalledTimes(2);
     expect(fromMock).toHaveBeenCalledWith("counselling_requests");
@@ -48,7 +48,7 @@ describe("applyPlanGrants", () => {
     expect(upsertMock).toHaveBeenCalledWith(twoSessions("up1"), IDEMPOTENT);
   });
 
-  it("replays are idempotent: upsert ignores existing (order_id, session) rows, so a legacy 1-row order only gains the follow-up", async () => {
+  it("replays are idempotent: upsert ignores existing (order_id, session) rows, so a legacy 1-row order only gains session 2", async () => {
     await applyPlanGrants("u1", "o1", "plan_mentor");
     await applyPlanGrants("u1", "o1", "plan_mentor");
     for (const call of upsertMock.mock.calls) expect(call[1]).toEqual(IDEMPOTENT);

@@ -73,7 +73,7 @@ export default async function AccountPage({
           name={name}
           planLabel={PRODUCT_LABELS[plan.product]}
           personality={personality}
-          panel={<PlanPanel userId={user.id} plan={plan} hasRole={false} />}
+          panel={<PlanPanel userId={user.id} email={user.email} plan={plan} hasRole={false} />}
         />
       );
     }
@@ -301,7 +301,7 @@ export default async function AccountPage({
       counsellingPriceLabel={counsellingPriceLabel}
       initialCounsellingRequested={Boolean(counsellingRequest)}
       applications={leads.map((l) => ({ id: l.id, roleTitle: l.role_title, score: l.score, createdAt: l.created_at }))}
-      planPanel={planState.plan ? <PlanPanel userId={user.id} plan={planState.plan} reportLocked={!reportUnlocked && reportState !== "failed"} rolesChecked={new Set(leads.map((l) => l.role_title)).size} /> : null}
+      planPanel={planState.plan ? <PlanPanel userId={user.id} email={user.email} plan={planState.plan} reportLocked={!reportUnlocked && reportState !== "failed"} rolesChecked={new Set(leads.map((l) => l.role_title)).size} /> : null}
       planOffer={planDashboardView(planState) === "offer" ? <PlanOfferBanner /> : null}
       recruiterActivity={RECRUITER_PREVIEW_ENABLED ? <RecruiterActivityPanel viewCount={recruiterViewCount} /> : null}
       // Seminar users without a plan get mentoring via the plans, so no single-price expert card.

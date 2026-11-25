@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildPlanPanelRows, mentoringSessions, planDashboardView, CONTACT_HREF, type PlanPanelInput } from "../planPanel";
+import { buildPlanPanelRows, mentoringSessions, mentoringFooter, effectiveSessionStatus, planDashboardView, CONTACT_HREF, type PlanPanelInput } from "../planPanel";
 import { ASSISTANCE_NEXT_STEP } from "../planFeatures";
 
 const base: PlanPanelInput = {
@@ -10,7 +10,9 @@ const base: PlanPanelInput = {
   references: "none",
   mentoring: [],
 };
-const s = (session: number, status: string, scheduled_at: string | null = null) => ({ session, status, scheduled_at });
+const s = (session: number, status: string, session_at: string | null = null, extra: object = {}) => ({ session, status, scheduled_at: null, session_at, ...extra });
+const NOW = new Date("2026-11-25T12:00:00Z");
+const FUTURE = "2026-11-27T10:30:00Z"; // 27 Nov 2026, 4:00 pm IST
 const row = (input: PlanPanelInput, key: string) => buildPlanPanelRows(input).find((r) => r.key === key)!;
 
 describe("buildPlanPanelRows", () => {
@@ -58,14 +60,14 @@ describe("buildPlanPanelRows", () => {
     expect(row(base, "assistance")).toMatchObject({ included: false, action: upgrade });
   });
 
-  it("Plan 2: session 1 bookable first; follow-up waits for session 1; assistance contact", () => {
-    const p2 = { ...base, product: "plan_mentor" as const };
+  it("Plan 2: session 1 bookable first; session 2 waits for session 1; assistance contact", () => {
+    const p2 = { ...base, product: "plan_mentor" as const, now: NOW };
     const fresh = row({ ...p2, mentoring: [s(1, "requested"), s(2, "requested")] }, "mentoring");
-    expect(fresh).toMatchObject({ included: true, done: false, status: "Session 1: Not booked yet\nFollow-up: Book after session 1", action: { label: "Book session 1", href: "/hub/account/expert" } });
-    const s1Sched = row({ ...p2, mentoring: [s(1, "scheduled", "2026-11-20T10:00:00Z"), s(2, "requested")] }, "mentoring");
-    expect(s1Sched).toMatchObject({ done: false, status: "Session 1: Scheduled 20 Nov 2026\nFollow-up: Unlocked, not booked yet", action: { label: "Book follow-up" } });
+    expect(fresh).toMatchObject({ included: true, done: false, status: "Session 1: Not booked yet\nSession 2: Book after session 1", action: { label: "Book session 1", href: "/hub/account/expert" } });
+    const s1Sched = row({ ...p2, mentoring: [s(1, "scheduled", FUTURE), s(2, "requested")] }, "mentoring");
+    expect(s1Sched).toMatchObject({ done: false, status: "Session 1: 27 Nov 2026, 4:00 pm\nSession 2: Unlocked, not booked yet", action: { label: "Book session 2" } });
     const bothSched = row({ ...p2, mentoring: [s(1, "completed"), s(2, "scheduled")] }, "mentoring");
-    expect(bothSched).toMatchObject({ done: false, status: "Session 1: Completed\nFollow-up: Scheduled", action: { label: "View" } });
+    expect(bothSched).toMatchObject({ done: false, status: "Session 1: Completed\nSession 2: Scheduled", action: { label: "View" } });
     expect(row({ ...p2, mentoring: [s(1, "completed"), s(2, "completed")] }, "mentoring")).toMatchObject({ done: true, status: "Both sessions completed", action: null });
     expect(row(p2, "assistance")).toMatchObject({ included: true, action: { href: "mailto:admin@merito.ai" } });
   });
@@ -162,19 +164,65 @@ describe("plan steps", () => {
 });
 
 describe("mentoringSessions", () => {
-  it("follow-up is bookable only once session 1 is scheduled or completed", () => {
+  it("session 2 is bookable only once session 1 is scheduled or completed", () => {
     expect(mentoringSessions([s(1, "requested"), s(2, "requested")]).map((x) => x.bookable)).toEqual([true, false]);
     expect(mentoringSessions([s(1, "scheduled"), s(2, "requested")]).map((x) => x.bookable)).toEqual([false, true]);
     expect(mentoringSessions([s(1, "completed"), s(2, "requested")]).map((x) => x.bookable)).toEqual([false, true]);
     expect(mentoringSessions([s(1, "completed"), s(2, "scheduled")]).map((x) => x.bookable)).toEqual([false, false]);
   });
-  it("legacy order with only the first-session row: follow-up reads as not booked (gated on session 1)", () => {
+  it("legacy order with only the first-session row: session 2 reads as not booked (gated on session 1)", () => {
     expect(mentoringSessions([s(1, "scheduled")])[1]).toMatchObject({ status: "requested", bookable: true, state: "Unlocked, not booked yet" });
     expect(mentoringSessions([s(1, "requested")])[1]).toMatchObject({ bookable: false, state: "Book after session 1" });
   });
   it("row order does not matter; cancelled sessions are not bookable", () => {
     expect(mentoringSessions([s(2, "requested"), s(1, "completed")]).map((x) => x.status)).toEqual(["completed", "requested"]);
     expect(mentoringSessions([s(1, "cancelled"), s(2, "cancelled")]).map((x) => [x.bookable, x.state])).toEqual([[false, "Cancelled"], [false, "Cancelled"]]);
+  });
+});
+
+describe("effectiveSessionStatus", () => {
+  const at = "2026-11-27T10:30:00Z";
+  const t = (iso: string) => new Date(iso);
+  it("a scheduled call auto-completes 30 minutes after its start", () => {
+    expect(effectiveSessionStatus({ status: "scheduled", session_at: at }, t("2026-11-27T10:59:59Z"))).toBe("scheduled");
+    expect(effectiveSessionStatus({ status: "scheduled", session_at: at }, t("2026-11-27T11:00:00Z"))).toBe("completed");
+    expect(effectiveSessionStatus({ status: "scheduled", session_at: at }, t("2026-11-28T00:00:00Z"))).toBe("completed");
+  });
+  it("no call time stays scheduled; other statuses are untouched", () => {
+    expect(effectiveSessionStatus({ status: "scheduled", session_at: null }, t("2030-01-01T00:00:00Z"))).toBe("scheduled");
+    expect(effectiveSessionStatus({ status: "scheduled" }, t("2030-01-01T00:00:00Z"))).toBe("scheduled");
+    expect(effectiveSessionStatus({ status: "cancelled", session_at: at }, t("2030-01-01T00:00:00Z"))).toBe("cancelled");
+    expect(effectiveSessionStatus({ status: "requested", session_at: null }, t("2030-01-01T00:00:00Z"))).toBe("requested");
+  });
+});
+
+describe("mentoringSessions with call times", () => {
+  const after = new Date("2026-11-28T00:00:00Z");
+  it("shows the call time while scheduled, then Completed <date> once it has passed", () => {
+    expect(mentoringSessions([s(1, "scheduled", FUTURE)], NOW)[0]).toMatchObject({ status: "scheduled", state: "27 Nov 2026, 4:00 pm" });
+    expect(mentoringSessions([s(1, "scheduled", FUTURE)], after)[0]).toMatchObject({ status: "completed", state: "Completed 27 Nov 2026" });
+  });
+  it("manual completion dates from completed_at when there is no call time", () => {
+    expect(mentoringSessions([s(1, "completed", null, { completed_at: "2026-11-25T06:00:00Z" })], NOW)[0].state).toBe("Completed 25 Nov 2026");
+  });
+  it("an auto-completed session 1 opens session 2; the dashboard step reads done when both calls passed", () => {
+    expect(mentoringSessions([s(1, "scheduled", FUTURE), s(2, "requested")], after)[1].bookable).toBe(true);
+    const both = [s(1, "scheduled", FUTURE), s(2, "scheduled", "2026-11-27T12:00:00Z")];
+    expect(row({ ...base, product: "plan_mentor", mentoring: both, now: after }, "mentoring")).toMatchObject({ done: true, status: "Both sessions completed" });
+  });
+  it("carries the row id and rating for the feedback form", () => {
+    expect(mentoringSessions([s(1, "completed", null, { id: "r1", candidate_rating: 4 })], NOW)[0]).toMatchObject({ id: "r1", rating: 4 });
+  });
+});
+
+describe("mentoringFooter", () => {
+  const f = (rows: ReturnType<typeof s>[], now = NOW) => mentoringFooter(mentoringSessions(rows, now));
+  it("follows the booking state", () => {
+    expect(f([s(1, "requested"), s(2, "requested")])).toBe("Pick a time that suits you. Your booking shows here once it is confirmed. Session 2 opens once session 1 is booked.");
+    expect(f([s(1, "scheduled", FUTURE), s(2, "requested")])).toMatch(/^Session 2 is open\. Pick a time that suits you\./);
+    expect(f([s(1, "completed"), s(2, "scheduled", "2026-12-01T05:30:00Z")])).toBe("See you on 1 Dec 2026, 11:00 am.");
+    expect(f([s(1, "completed"), s(2, "completed")])).toBe("Both sessions done. Tell us how they went below.");
+    expect(f([s(1, "completed", null, { candidate_rating: 5 }), s(2, "completed", null, { candidate_rating: 4 })])).toBe("Both sessions done. Thanks for your feedback.");
   });
 });
 

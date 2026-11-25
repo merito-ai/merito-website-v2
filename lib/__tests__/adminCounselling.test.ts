@@ -24,9 +24,9 @@ describe("nextCounsellingState", () => {
     expect(result).toEqual({ status: "cancelled" });
   });
 
-  it("scheduled -> requested clears scheduled_at", () => {
+  it("scheduled -> requested clears scheduled_at and the call time", () => {
     const result = nextCounsellingState("scheduled", "requested", NOW);
-    expect(result).toEqual({ status: "requested", scheduled_at: null });
+    expect(result).toEqual({ status: "requested", scheduled_at: null, session_at: null });
   });
 
   it("throws on requested -> completed (skips scheduling)", () => {
@@ -50,9 +50,9 @@ describe("nextCounsellingState", () => {
 });
 
 describe("mentoringSessionLabel", () => {
-  it("Plan 2 and upgrade orders label session 1 and the follow-up", () => {
+  it("Plan 2 and upgrade orders label session 1 and session 2", () => {
     expect(mentoringSessionLabel("plan_mentor", 1)).toBe("Session 1 of 2");
-    expect(mentoringSessionLabel("plan_upgrade_mentor", 2)).toBe("Follow-up (2 of 2)");
+    expect(mentoringSessionLabel("plan_upgrade_mentor", 2)).toBe("Session 2 of 2");
   });
   it("standalone counselling has no session label", () => {
     expect(mentoringSessionLabel("counselling", 1)).toBeNull();

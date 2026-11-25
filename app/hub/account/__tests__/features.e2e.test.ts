@@ -137,7 +137,7 @@ for (const vp of VIEWPORTS) {
       expect(posts).toEqual([]); // nothing sent: no referee email
     });
 
-    test("mentoring (Mentor + Apply): session 1 bookable, follow-up locked", async ({ page }) => {
+    test("mentoring (Mentor + Apply): session 1 bookable, session 2 locked", async ({ page }) => {
       const u = await seedUser(`feat-expert-${vp.name}`);
       await seedLead(u, { role: ROLE });
       await seedOrder(u, "plan_mentor");
@@ -145,7 +145,7 @@ for (const vp of VIEWPORTS) {
       await page.goto("/hub/account/expert");
       const items = page.locator("li");
       await expect(items.filter({ hasText: "Session 1" }).getByRole("link", { name: /Schedule your call/ })).toBeVisible();
-      await expect(items.filter({ hasText: "Follow-up" }).getByRole("link")).toHaveCount(0);
+      await expect(items.filter({ hasText: "Session 2" }).getByRole("link")).toHaveCount(0);
       await guards(page);
     });
 

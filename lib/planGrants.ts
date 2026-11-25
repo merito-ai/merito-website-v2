@@ -12,8 +12,8 @@ export async function applyPlanGrants(userId: string, orderId: string, product: 
     await unlockProduct(userId, "references");
   }
   if (product === "plan_prepare") return;
-  // Plan 2 mentoring = two 30-min sessions (first + follow-up), one row each. The (order_id, session) unique index
-  // makes replays no-ops and lets a legacy single-row order gain its follow-up.
+  // Plan 2 mentoring = two 30-min sessions (session 1 + session 2), one row each. The (order_id, session) unique index
+  // makes replays no-ops and lets a legacy single-row order gain session 2.
   const { error } = await getSupabaseServerClient()
     .from("counselling_requests")
     .upsert([1, 2].map((session) => ({ user_id: userId, order_id: orderId, session })), { onConflict: "order_id,session", ignoreDuplicates: true });

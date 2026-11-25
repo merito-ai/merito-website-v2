@@ -31,7 +31,7 @@ export type ProgressRow = AllowlistRow & {
   personalityDone: boolean;
   references: "none" | "waiting" | "done";
   interview: "none" | "invited" | "started" | "done" | "ended";
-  mentoring: [string, string] | null; // Plan 2 only: session 1 + follow-up states
+  mentoring: [string, string] | null; // Plan 2 only: session 1 + session 2 states
   assistance: AssistanceStatus | null; // Plan 2 only
 };
 
@@ -50,7 +50,7 @@ const group = <T extends { user_id: string }>(rows: T[]) => {
   return m;
 };
 
-export function buildAllowlistProgress(i: ProgressInput): ProgressRow[] {
+export function buildAllowlistProgress(i: ProgressInput, now: Date = new Date()): ProgressRow[] {
   const userByEmail = new Map(i.users.filter((u) => u.email).map((u) => [u.email!.trim().toLowerCase(), u]));
   const txns = group(i.txns);
   const personality = new Map(i.personality.map((p) => [p.user_id, p]));
@@ -68,7 +68,7 @@ export function buildAllowlistProgress(i: ProgressInput): ProgressRow[] {
     const order = plan?.upgradeOrderId ?? plan?.orderId;
     const iv = id ? interviews.get(id) : undefined;
     const ref = id ? refs.get(id) : undefined;
-    const [s1, s2] = mentoringSessions(i.mentoring.filter((m) => m.order_id === order));
+    const [s1, s2] = mentoringSessions(i.mentoring.filter((m) => m.order_id === order), now);
     return {
       ...a,
       userId: id,
@@ -141,7 +141,7 @@ export async function loadAllowlistProgress(allowlist: AllowlistRow[]): Promise<
   // Every plan order's sessions; buildAllowlistProgress picks the one order each Plan 2 holder's mentoring hangs off.
   const orderIds = txns.map((t) => t.order_id);
   const mentoring = orderIds.length
-    ? must("mentoring sessions", await db.from("counselling_requests").select("order_id, session, status, scheduled_at").in("order_id", orderIds))
+    ? must("mentoring sessions", await db.from("counselling_requests").select("order_id, session, status, scheduled_at, session_at, completed_at").in("order_id", orderIds))
     : [];
   return buildAllowlistProgress({ ...empty, leads, txns, personality, references, interviews, assistance, mentoring });
 }

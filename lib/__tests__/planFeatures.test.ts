@@ -23,7 +23,7 @@ describe("PLAN_FEATURE_DETAILS (facts must match code)", () => {
   });
   it("mentoring: Plan 2's hour is two 30-min sessions", () => {
     expect(PLAN_MENTORING_LABEL).toBe("Mentoring: 1 hour as two 30-min sessions");
-    expect(PLAN_FEATURE_DETAILS.mentoring).toBe("A first session and a follow-up with a Merito expert");
+    expect(PLAN_FEATURE_DETAILS.mentoring).toBe("Session 1 and session 2 with a Merito expert");
   });
   it("no em-dashes in user-facing copy", () => {
     for (const s of Object.values(PLAN_FEATURE_DETAILS)) expect(s).not.toContain("—");

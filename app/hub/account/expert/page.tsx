@@ -20,6 +20,7 @@ import { getPlanOrder } from "@/lib/plans";
 import PlanFeatureNote from "@/app/hub/account/PlanFeatureNote";
 import PlanMentoringCard from "./PlanMentoringCard";
 import { mentoringSessions } from "@/lib/planPanel";
+import { syncCalendlyBookings } from "@/lib/calendly";
 
 // Static bio + section content, verbatim from mockups/merito-dashboard-v34.html's
 // expert-guidance page (minified component `fz`). No live data for the bio itself --
@@ -187,9 +188,10 @@ export default async function ExpertBioPage({
     .limit(1)
     .maybeSingle();
 
+  if (mentorPlan) await syncCalendlyBookings({ userId: user.id, email: user.email });
   const sessions = mentorPlan
     ? mentoringSessions(
-        (await supabase.from("counselling_requests").select("session, status, scheduled_at").eq("order_id", planOrder.upgradeOrderId ?? planOrder.orderId)).data ?? []
+        (await supabase.from("counselling_requests").select("id, session, status, scheduled_at, session_at, completed_at, candidate_rating").eq("order_id", planOrder.upgradeOrderId ?? planOrder.orderId)).data ?? []
       )
     : null;
 
@@ -447,7 +449,11 @@ export default async function ExpertBioPage({
             30 minutes, video call, personalised guidance.
           </p>
           {(!sessions || sessions.some((x) => x.bookable)) && (
-            <ExpertBookingButton priceLabel={priceLabel} initialRequested={Boolean(sessions) || Boolean(counsellingRequest)} />
+            <ExpertBookingButton
+              priceLabel={priceLabel}
+              initialRequested={Boolean(sessions) || Boolean(counsellingRequest)}
+              sessionId={sessions?.find((x) => x.bookable)?.id}
+            />
           )}
           <p className="font-[family-name:var(--font-poppins)] text-white/40" style={{ fontSize: 11.5, margin: "12px 0 0" }}>
             {mentorPlan ? "Two 30-minute 1:1 sessions" : "30-minute 1:1 session"} · {priceLabel}
