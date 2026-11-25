@@ -47,6 +47,17 @@ export async function getPlanOrder(userId: string): Promise<PlanOrder | null> {
   return upgrade ? { ...plan, product: "plan_mentor", upgradeOrderId: upgrade.order_id } : plan;
 }
 
+// Batch twin of getPlanOrder over one user's successful plan rows (same rules), plus the base plan's date.
+export type PlanTxn = { order_id: string; product: string; consumed_at: string | null; created_at: string };
+export function planFromTransactions(rows: PlanTxn[]): (PlanOrder & { since: string }) | null {
+  const base = rows.filter((r) => isPlanProduct(r.product)).sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))[0];
+  if (!base) return null;
+  const plan = { orderId: base.order_id, product: base.product as PlanProduct, interviewUsed: base.consumed_at !== null, since: base.created_at };
+  if (plan.product !== "plan_prepare") return plan;
+  const upgrade = rows.find((r) => r.product === PLAN_UPGRADE && Date.parse(r.created_at) >= Date.parse(base.created_at));
+  return upgrade ? { ...plan, product: "plan_mentor", upgradeOrderId: upgrade.order_id } : plan;
+}
+
 export async function planReportCreditsLeft(orderId: string): Promise<number> {
   const { count, error } = await getSupabaseServerClient()
     .from("report_unlocks")
