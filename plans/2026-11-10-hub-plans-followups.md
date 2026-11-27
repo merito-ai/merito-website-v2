@@ -132,3 +132,23 @@ Built: "Follow-up" renamed "Session 2" everywhere; migration 0075 (session_at, c
 - Minor: admin counselling `formatDate` has no IST timeZone (dates near midnight can show a day off); call times use IST.
 - Minor: admin list sync("all") fetches invitees for every untagged Calendly event in the last 7 days on each load (standalone/non-hub bookings). Fine at current volume.
 - Nice to have: standalone (non-plan) counselling bookings are not captured from Calendly (no session id in the link); dashboard step 5 has no "Rate your sessions" action once both are done.
+
+## Admin: people with no role check (2026-11-27, branch feat/mentoring-feedback)
+
+Built: accounts with no role check (seminar plan buyers) are now listed, searchable, openable, grantable, broadcastable and named in Counselling and Home ("No role yet", funnel stage "Signed up, no role yet"); merging away an account with payments, open mentoring or plan assistance is refused; broadcasts skip role checks never linked to an account; lead claiming escapes like wildcards and matches exact emails only.
+Not doing (low impact, logged for later):
+- Recruiter visibility admin form reads `recruiter_preview_settings.sections`, which is gone in prod (42703), so the form shows empty. Recruiter preview is still "Soon" with 0 rows in `recruiter_preview_sections`; rework when the feature launches.
+- Interview and reference history: only the latest attempt or check per role is shown; a retake or refresh hides the earlier one.
+- Stuck-interview details (stuck_at, link expiry, launch fails) not shown on the candidate page.
+- Activity tab misses interview, counselling and allowlist actions.
+- Refund date not stored.
+- Calendly sync only looks back 7 days.
+- Role breakdown and role-filtered broadcast use only the latest role.
+- Merge leaves recruiter consent and recruiter tables on the old account.
+- Allowlist page interview and reference status uses the latest row only.
+- Pipeline-failures and extension email maps: those rows require a role.
+- Referee email and PDF-export name fallback to `full_name`.
+- The purge database function does not delete `plan_assistance`.
+- Merge database function does not move payments, plan unlocks, mentoring, assistance or notifications: covered for now by the merge guard (refuses merging a paying account away); moving them needs a hand-applied migration on the desynced ledger.
+- Candidates list now includes every login account, so banned merged-away accounts and team/admin logins also show as "No role yet" and count in the funnel's first step (Insights excludes ADMIN_INTERNAL_EMAILS when set). Hide banned/merged accounts from the list if it gets noisy.
+- A no-role account that finished the personality test is shown at "Personality test completed" (the funnel is a single furthest step), so it also counts as "Fitment check started" in the reached-or-further funnel.
