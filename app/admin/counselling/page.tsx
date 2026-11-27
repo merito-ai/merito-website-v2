@@ -52,6 +52,9 @@ export default async function AdminCounsellingPage({
                 <Link href={`/admin/counselling/${r.id}`} className="font-[family-name:var(--font-poppins)] font-semibold text-[#ed1a24]">
                   {r.email}
                 </Link>
+                <Link href={`/admin/candidates/${r.userId}`} className="font-[family-name:var(--font-poppins)] text-[#9c9c9c]" style={{ fontSize: 12, marginLeft: 8 }}>
+                  Profile
+                </Link>
               </TableCell>
               <TableCell>{r.sessionLabel ?? "—"}</TableCell>
               <TableCell>

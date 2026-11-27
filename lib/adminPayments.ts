@@ -5,9 +5,11 @@ import { createRefund } from "@/lib/razorpay/client";
 import { markRazorpayRefunded } from "@/lib/razorpay/finalize";
 import { unlockProduct, isProductUnlocked } from "@/lib/productUnlocks";
 import { completeReportUnlock } from "@/lib/completeReportUnlock";
-import type { RazorpayProduct, CandidateLevel } from "@/lib/razorpay/pricing";
+import { DEFAULT_LEVEL, type RazorpayProduct, type CandidateLevel } from "@/lib/razorpay/pricing";
 import { isPlanProduct, getPlanOrder, PLAN_UPGRADE } from "@/lib/plans";
 import { applyPlanGrants } from "@/lib/planGrants";
+import { fillAuthEmails, listAllAuthUsers } from "@/lib/authUsers";
+import { escapeLike } from "@/lib/claimFitmentLeads";
 
 export type TransactionStatus = "initiated" | "success" | "failed" | "refunded";
 
@@ -195,16 +197,6 @@ export async function listUnpaidUnlocks(): Promise<UnpaidUnlockRow[]> {
   return unpaid.map((u) => ({ ...u, email: emailByUser.get(u.userId) ?? "—" }));
 }
 
-// Plan buyers can pay before any role check, so they have no fitment_leads email: fall back to their login email.
-async function fillAuthEmails(supabase: ReturnType<typeof getSupabaseServerClient>,emailByUser: Map<string, string>, userIds: string[]): Promise<void> {
-  const missing = [...new Set(userIds)].filter((id) => id && !emailByUser.has(id));
-  const users = await Promise.all(missing.map((id) => supabase.auth.admin.getUserById(id).catch(() => null)));
-  users.forEach((res, i) => {
-    const email = res?.data?.user?.email;
-    if (email) emailByUser.set(missing[i], email);
-  });
-}
-
 export async function recordManualReconciliation(
   params: { userId: string; leadId: string | null; product: string; amountPaise: number },
   adminEmail: string
@@ -226,9 +218,8 @@ export async function recordManualReconciliation(
       .maybeSingle();
     level = data?.candidate_level ?? null;
   }
-  if (!level) {
-    throw new Error("Could not determine candidate level for this reconciliation.");
-  }
+  // No role check yet (plan bought first): no level on file, so use the default.
+  level ??= DEFAULT_LEVEL;
 
   const orderId = `manual_${randomUUID()}`;
   const { error } = await supabase.from("razorpay_transactions").insert({
@@ -320,18 +311,22 @@ export async function voidStuckTransaction(orderId: string, adminEmail: string):
 
 export type ResolvedCandidate = { userId: string; leadId: string | null; roleTitle: string | null };
 
+// Case-insensitive: admins type emails as they see them (often with capitals).
 export async function resolveCandidateByEmail(email: string): Promise<ResolvedCandidate | null> {
   const supabase = getSupabaseServerClient();
-  const { data: lead } = await supabase
+  const wanted = email.trim().toLowerCase();
+  const { data: leads } = await supabase
     .from("fitment_leads")
-    .select("id, user_id, role_title")
-    .eq("email", email)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .select("id, user_id, role_title, email")
+    .ilike("email", escapeLike(wanted))
+    .order("created_at", { ascending: false });
+  // Exact compare too: PostgREST treats * in a like pattern as a wildcard, which escaping can't stop.
+  const lead = (leads ?? []).find((l) => l.user_id && l.email.trim().toLowerCase() === wanted);
+  if (lead) return { userId: lead.user_id, leadId: lead.id, roleTitle: lead.role_title };
 
-  if (!lead) return null;
-  return { userId: lead.user_id, leadId: lead.id, roleTitle: lead.role_title };
+  // No role check yet: the login account itself.
+  const user = (await listAllAuthUsers(supabase)).find((u) => u.email?.trim().toLowerCase() === wanted);
+  return user ? { userId: user.id, leadId: null, roleTitle: null } : null;
 }
 
 export async function grantFreeAccess(
@@ -350,8 +345,8 @@ export async function grantFreeAccess(
   }
 
   const needsLead = params.product === "report" || params.product === "bundle";
-  if (needsLead && !candidate) {
-    throw new Error(`Candidate has no fitment lead — can't grant ${params.product} without one.`);
+  if (needsLead && !candidate?.leadId) {
+    throw new Error(`Candidate has no fitment lead, can't grant ${params.product} without one.`);
   }
   if (!candidate) {
     throw new Error("No candidate found for that email.");

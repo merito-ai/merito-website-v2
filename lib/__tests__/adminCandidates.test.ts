@@ -22,10 +22,19 @@ const recruiterPreviewUpsertMock = vi.fn();
 const profileOverrideSelectMock = vi.fn();
 const profileOverrideUpsertMock = vi.fn();
 const reportShareLinksSelectMock = vi.fn();
+const getUserByIdMock = vi.fn();
+// Merge-guard tables: chainable query resolving to the rows a test puts here.
+let guardRows: Record<string, unknown[]> = {};
+function guardQuery(table: string) {
+  const b: Record<string, unknown> = {};
+  for (const m of ["select", "eq", "in", "limit"]) b[m] = () => b;
+  b.then = (resolve: (v: unknown) => void) => resolve({ data: guardRows[table] ?? [], error: null });
+  return b;
+}
 
 vi.mock("@/lib/supabase", () => ({
   getSupabaseServerClient: () => ({
-    auth: { admin: { updateUserById: updateUserByIdMock, deleteUser: deleteUserMock, generateLink: generateLinkMock, listUsers: listUsersMock } },
+    auth: { admin: { updateUserById: updateUserByIdMock, deleteUser: deleteUserMock, generateLink: generateLinkMock, listUsers: listUsersMock, getUserById: getUserByIdMock } },
     from: (table: string) => {
       if (table === "fitment_leads") return { select: fitmentLeadsSelectMock, update: fitmentLeadsUpdateMock };
       if (table === "report_unlocks") return { select: reportUnlocksSelectMock };
@@ -37,6 +46,7 @@ vi.mock("@/lib/supabase", () => ({
       if (table === "recruiter_preview_settings") return { select: recruiterPreviewSelectMock, upsert: recruiterPreviewUpsertMock };
       if (table === "candidate_profile_overrides") return { select: profileOverrideSelectMock, upsert: profileOverrideUpsertMock };
       if (table === "report_share_links") return { select: reportShareLinksSelectMock };
+      if (table === "razorpay_transactions" || table === "counselling_requests" || table === "plan_assistance") return guardQuery(table);
       throw new Error(`Unexpected table in test: ${table}`);
     },
     rpc: rpcMock,
@@ -279,6 +289,20 @@ describe("mergeCandidateAccounts", () => {
     updateUserByIdMock.mockResolvedValue({ error: null });
     logAdminActionMock.mockReset();
     logAdminActionMock.mockResolvedValue(undefined);
+    guardRows = {};
+  });
+
+  it.each([
+    ["a successful payment", "razorpay_transactions"],
+    ["an open mentoring session", "counselling_requests"],
+    ["plan assistance", "plan_assistance"],
+  ])("refuses, without merging or banning, when the merged-away account has %s", async (_label, table) => {
+    guardRows = { [table]: [{ id: "x" }] };
+    const { mergeCandidateAccounts } = await import("../adminCandidates");
+
+    await expect(mergeCandidateAccounts("user-keep", "user-merge", "roshan@merito.in")).rejects.toThrow("merge this one into it");
+    expect(rpcMock).not.toHaveBeenCalled();
+    expect(updateUserByIdMock).not.toHaveBeenCalled();
   });
 
   it("runs the merge RPC, bans the merged-away account, and logs row counts", async () => {
@@ -584,6 +608,38 @@ describe("listCandidates", () => {
     personalityTestsSelectMock.mockReset();
     referenceChecksSelectMock.mockReset();
     referenceChecksEq.mockReset();
+    listUsersMock.mockReset();
+    listUsersMock.mockResolvedValue({ data: { users: [] }, error: null });
+  });
+
+  it("lists accounts with no role check yet as No role yet / signed_up, and finds them by name", async () => {
+    stubCandidates(1);
+    listUsersMock.mockResolvedValue({
+      data: {
+        users: [
+          { id: "user-0", email: "user0@example.com", created_at: "2026-01-01T00:00:00Z" }, // already has a lead
+          { id: "buyer", email: "Buyer@IIMA.ac.in", created_at: "2026-11-25T00:00:00Z", user_metadata: { full_name: "Abhishek J" } },
+          { id: "phone-only", email: null, created_at: "2026-11-26T00:00:00Z" },
+        ],
+      },
+      error: null,
+    });
+    const { listCandidates } = await import("../adminCandidates");
+
+    const result = await listCandidates(1);
+
+    expect(result.total).toBe(2);
+    expect(result.rows[0]).toEqual({
+      userId: "buyer",
+      email: "Buyer@IIMA.ac.in",
+      name: "Abhishek J",
+      latestRoleTitle: null,
+      firstSeenAt: "2026-11-25T00:00:00Z",
+      funnelStage: "signed_up",
+    });
+    expect(result.rows[1]).toMatchObject({ userId: "user-0", funnelStage: "fitment_started" });
+    expect((await listCandidates(1, { q: "abhishek" })).rows.map((r) => r.userId)).toEqual(["buyer"]);
+    expect((await listCandidates(1, { stage: "signed_up" })).rows.map((r) => r.userId)).toEqual(["buyer"]);
   });
 
   it("returns page 1 of 20 rows with correct total/totalPages when there are 25 candidates", async () => {
@@ -1009,6 +1065,25 @@ describe("resolveBroadcastAudience", () => {
     expect(result.map((c) => c.userId)).toEqual(["user-1", "user-0"]);
   });
 
+  it("includes accounts with no role check and skips role checks never linked to an account", async () => {
+    stubCandidates([]);
+    fitmentLeadsSelectMock.mockReturnValue({
+      order: () =>
+        Promise.resolve({
+          data: [
+            { user_id: "user-0", email: "user-0@example.com", name: "Name 0", role_title: "Product Manager", created_at: "2026-01-01T00:00:00Z" },
+            { user_id: null, email: "anon@example.com", name: null, role_title: "PM", created_at: "2026-02-01T00:00:00Z" },
+          ],
+        }),
+    });
+    listUsersMock.mockResolvedValue({ data: { users: [{ id: "buyer", email: "buyer@example.com", created_at: "2026-03-01T00:00:00Z" }] }, error: null });
+    const { resolveBroadcastAudience } = await import("../adminCandidates");
+
+    const result = await resolveBroadcastAudience({});
+
+    expect(result.map((c) => c.userId)).toEqual(["buyer", "user-0"]);
+  });
+
   it("filters by funnel stage", async () => {
     stubCandidates([
       { userId: "user-0", roleTitle: "Product Manager" },
@@ -1420,5 +1495,31 @@ describe("getCandidateDetail", () => {
 
     expect(detail!.leads[0].interviewReport).toBeNull();
     expect(detail!.leads[0].interviewRow?.id).toBe("iv-1");
+  });
+
+  it("opens an account with no role check from its login (plan bought first)", async () => {
+    stubLeadsAndInterviews([], []);
+    getUserByIdMock.mockResolvedValue({ data: { user: { id: "user-1", email: "buyer@iima.ac.in", user_metadata: { full_name: "Abhishek J" } } } });
+    const { getCandidateDetail } = await import("../adminCandidates");
+
+    const detail = await getCandidateDetail("user-1");
+
+    expect(detail).toMatchObject({ userId: "user-1", email: "buyer@iima.ac.in", name: "Abhishek J", phone: null, leads: [] });
+    expect(listActionsForTargetMock).toHaveBeenCalledWith("candidate", "buyer@iima.ac.in");
+  });
+
+  it("returns null (404) when there is no role check and no login account", async () => {
+    stubLeadsAndInterviews([], []);
+    getUserByIdMock.mockResolvedValue({ data: { user: null }, error: { message: "User not found" } });
+    const { getCandidateDetail } = await import("../adminCandidates");
+
+    expect(await getCandidateDetail("nobody")).toBeNull();
+  });
+
+  it("shows the latest non-empty phone from the role checks", async () => {
+    stubLeadsAndInterviews([lead({ id: "l2", phone: "  " }), lead({ id: "l1", phone: " +91 98765 43210 " })], []);
+    const { getCandidateDetail } = await import("../adminCandidates");
+
+    expect((await getCandidateDetail("user-1"))!.phone).toBe("+91 98765 43210");
   });
 });

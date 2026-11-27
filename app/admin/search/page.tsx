@@ -31,7 +31,7 @@ export default async function AdminSearchPage({ searchParams }: { searchParams: 
                   </Link>
                 </TableCell>
                 <TableCell>{c.email}</TableCell>
-                <TableCell>{c.latestRoleTitle}</TableCell>
+                <TableCell>{c.latestRoleTitle ?? "No role yet"}</TableCell>
                 <TableCell>
                   <Badge variant="neutral">{FUNNEL_STAGE_LABEL[c.funnelStage]}</Badge>
                 </TableCell>

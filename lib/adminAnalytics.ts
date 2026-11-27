@@ -4,7 +4,8 @@ import { isInternalEmail, parseInternalList } from "@/lib/adminInternal";
 import { listUnresolvedPipelineFailures } from "@/lib/pipelineFailures";
 import { listCounsellingRequests } from "@/lib/adminCounselling";
 import { listUnpaidUnlocks } from "@/lib/adminPayments";
-import { PLAN_PRODUCTS } from "@/lib/plans";
+import { PLAN_PRODUCTS, PLAN_UPGRADE } from "@/lib/plans";
+import { fillAuthEmails, listAllAuthUsers } from "@/lib/authUsers";
 
 const DAY_MS = 86_400_000;
 
@@ -15,11 +16,14 @@ async function fetchCandidates(includeInternal: boolean) {
 }
 
 // user_ids of internal/test accounts; empty (and no query) when the list is unset or includeInternal.
+// Login emails too: team test accounts often never check a role.
 async function internalUserIds(includeInternal: boolean): Promise<Set<string>> {
   const list = parseInternalList();
   if (includeInternal || list.length === 0) return new Set();
-  const { data } = await getSupabaseServerClient().from("fitment_leads").select("user_id, email");
-  return new Set((data ?? []).filter((r) => isInternalEmail(r.email, list)).map((r) => r.user_id as string));
+  const db = getSupabaseServerClient();
+  const [{ data }, users] = await Promise.all([db.from("fitment_leads").select("user_id, email"), listAllAuthUsers(db)]);
+  const rows = [...(data ?? []), ...users.map((u) => ({ user_id: u.id, email: u.email }))];
+  return new Set(rows.filter((r) => isInternalEmail(r.email, list)).map((r) => r.user_id as string));
 }
 
 export type FunnelDropoffRow = {
@@ -61,10 +65,11 @@ export async function getRoleTitleBreakdown(includeInternal = false): Promise<Ro
 
   const byRole = new Map<string, RoleTitleBreakdownRow>();
   for (const c of candidates) {
-    let row = byRole.get(c.latestRoleTitle);
+    const roleTitle = c.latestRoleTitle ?? "No role yet";
+    let row = byRole.get(roleTitle);
     if (!row) {
-      row = { roleTitle: c.latestRoleTitle, total: 0, ...(Object.fromEntries(FUNNEL_STAGES.map((s) => [s, 0])) as Record<FunnelStage, number>) };
-      byRole.set(c.latestRoleTitle, row);
+      row = { roleTitle, total: 0, ...(Object.fromEntries(FUNNEL_STAGES.map((s) => [s, 0])) as Record<FunnelStage, number>) };
+      byRole.set(roleTitle, row);
     }
     row.total += 1;
     const reachedIndex = stageIndex.get(c.funnelStage)!;
@@ -368,7 +373,7 @@ export async function getDataQualityStats(): Promise<DataQualityStats> {
   return { interviewsReady, interviewsMissingSkillReport, fitmentReady, fitmentMissingResumeText, fitmentMissingCategories };
 }
 
-// email is null when the account has no fitment check yet (no candidate page to open).
+// email is null only when the login account can't be read.
 export type AttentionPerson = { userId: string; email: string | null };
 export type AttentionItem = { key: string; label: string; count: number; href?: string; people?: AttentionPerson[] };
 
@@ -398,12 +403,19 @@ export async function getNeedsAttention(includeInternal = false): Promise<Attent
         .lt("created_at", weekAgo),
       // Older than an hour so checkouts still in progress are not flagged.
       supabase.from("razorpay_transactions").select("user_id").eq("status", "initiated").gte("created_at", weekAgo).lt("created_at", hourAgo),
-      supabase.from("razorpay_transactions").select("user_id").eq("product", "plan_mentor").eq("status", "success").gte("created_at", monthAgo),
+      // Upgraders need the same 7-day assistance contact as direct Plan 2 buyers.
+      supabase.from("razorpay_transactions").select("user_id").in("product", ["plan_mentor", PLAN_UPGRADE]).eq("status", "success").gte("created_at", monthAgo),
       supabase.from("fitment_leads").select("user_id, email"),
     ]);
 
   const emailByUser = new Map<string, string>();
   for (const l of leadRows ?? []) emailByUser.set(l.user_id as string, l.email as string);
+  // Plan buyers can have no role check: use their login email (also feeds the internal filter below).
+  await fillAuthEmails(
+    supabase,
+    emailByUser,
+    [stuckRows, creditRows, abandonedRows, planRows].flatMap((rows) => (rows ?? []).map((r) => r.user_id as string))
+  );
   const list = includeInternal ? [] : parseInternalList();
   const keepUser = (userId: string | null) => !userId || !isInternalEmail(emailByUser.get(userId), list);
   const keepEmail = (email: string) => !isInternalEmail(email, list);

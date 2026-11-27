@@ -63,8 +63,7 @@ export default async function PlanAllowlistPage({ searchParams }: { searchParams
           {rows.map((r) => (
             <TableRow key={r.email}>
               <TableCell>
-                {/* The candidate page needs at least one role check; before that there is nothing to open. */}
-                {r.userId && r.roles > 0 ? (
+                {r.userId ? (
                   <Link href={`/admin/candidates/${r.userId}`} className="font-semibold text-[#ed1a24]">{r.email}</Link>
                 ) : (
                   r.email

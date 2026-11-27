@@ -1,5 +1,6 @@
 import { getSupabaseServerClient } from "@/lib/supabase";
 import { effectiveSessionStatus } from "@/lib/planPanel";
+import { fillAuthEmails } from "@/lib/authUsers";
 
 export type CounsellingStatus = "requested" | "scheduled" | "completed" | "cancelled";
 
@@ -111,6 +112,7 @@ async function emailByUserId(supabase: ReturnType<typeof getSupabaseServerClient
   for (const lead of leadRows ?? []) {
     emailByUser.set(lead.user_id, lead.email);
   }
+  await fillAuthEmails(supabase, emailByUser, userIds); // Plan 2 is often bought before any role check
   return emailByUser;
 }
 

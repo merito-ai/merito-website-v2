@@ -119,6 +119,7 @@ export default async function AdminCandidateDetailPage({
                     </TableCell>
                   </TableRow>
                 ))}
+                {entitlements.roles.length === 0 && <TableEmptyRow colSpan={4} message="No role checked yet." />}
               </tbody>
             </Table>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 10, marginTop: 14 }}>
@@ -307,7 +308,8 @@ export default async function AdminCandidateDetailPage({
       </h2>
       <div className="flex items-center" style={{ gap: 10, flexWrap: "wrap", margin: "0 0 28px" }}>
         <span className="font-[family-name:var(--font-poppins)] text-[#4b4b4d]" style={{ fontSize: 13 }}>
-          {candidate.email} · Paid {formatAmount(entitlements.totalPaidPaise)}
+          {candidate.email}
+          {candidate.phone && ` · ${candidate.phone}`} · Paid {formatAmount(entitlements.totalPaidPaise)}
           {entitlements.unusedInterviewCredits > 0 && ` · ${entitlements.unusedInterviewCredits} unused interview credit${entitlements.unusedInterviewCredits === 1 ? "" : "s"}`}
         </span>
         {banned && <Badge variant="danger">Banned</Badge>}

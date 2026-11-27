@@ -24,7 +24,9 @@ const {
 }));
 vi.mock("@/lib/adminAuditLog", () => ({ logAdminAction: logAdminActionMock }));
 const getUserByIdMock = vi.hoisted(() => vi.fn(async (id: string) => ({ data: { user: { email: `${id}@auth.test` } } })));
-vi.mock("@/lib/supabase", () => ({ getSupabaseServerClient: () => ({ from: fromMock, auth: { admin: { getUserById: getUserByIdMock } } }) }));
+const listUsersMock = vi.hoisted(() => vi.fn());
+vi.mock("@/lib/supabase", () => ({ getSupabaseServerClient: () => ({ from: fromMock, auth: { admin: { getUserById: getUserByIdMock, listUsers: listUsersMock } } }) }));
+const leadsByEmail = (rows: unknown[]) => ({ select: () => ({ ilike: () => ({ order: () => Promise.resolve({ data: rows, error: null }) }) }) });
 vi.mock("@/lib/razorpay/client", () => ({ createRefund: createRefundMock }));
 vi.mock("@/lib/razorpay/finalize", () => ({ markRazorpayRefunded: markRazorpayRefundedMock }));
 vi.mock("@/lib/productUnlocks", () => ({ unlockProduct: unlockProductMock, isProductUnlocked: isProductUnlockedMock }));
@@ -216,6 +218,22 @@ describe("recordManualReconciliation", () => {
 
     expect(insertMock).toHaveBeenCalledWith(expect.objectContaining({ level: "senior", lead_id: null }));
   });
+
+  it("uses the default level when the account has no role check", async () => {
+    const insertMock = vi.fn().mockResolvedValue({ error: null });
+    fromMock.mockImplementation((table: string) => {
+      if (table === "fitment_leads") {
+        return { select: () => ({ eq: () => ({ order: () => ({ limit: () => ({ maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }) }) }) }) }) };
+      }
+      if (table === "razorpay_transactions") return { insert: insertMock };
+      throw new Error(`unexpected table ${table}`);
+    });
+
+    const { recordManualReconciliation } = await import("../adminPayments");
+    await recordManualReconciliation({ userId: "buyer", leadId: null, product: "personality", amountPaise: 19900 }, "roshan@merito.in");
+
+    expect(insertMock).toHaveBeenCalledWith(expect.objectContaining({ level: "entry", user_id: "buyer" }));
+  });
 });
 
 describe("refundTransaction", () => {
@@ -313,21 +331,35 @@ describe("voidStuckTransaction", () => {
 describe("resolveCandidateByEmail", () => {
   beforeEach(() => {
     fromMock.mockReset();
+    listUsersMock.mockReset();
+    listUsersMock.mockResolvedValue({ data: { users: [] }, error: null });
   });
 
-  it("returns the most recent lead for the email", async () => {
-    const maybeSingle = vi.fn().mockResolvedValue({ data: { id: "lead-1", user_id: "user-1", role_title: "Backend Engineer" }, error: null });
-    fromMock.mockImplementation(() => ({ select: () => ({ eq: () => ({ order: () => ({ limit: () => ({ maybeSingle }) }) }) }) }));
+  it("returns the most recent lead for the email, matching case-insensitively", async () => {
+    fromMock.mockImplementation(() =>
+      leadsByEmail([
+        { id: "lead-x", user_id: "user-9", role_title: "Other", email: "candidate*example.com" }, // only a wildcard match
+        { id: "lead-1", user_id: "user-1", role_title: "Backend Engineer", email: "candidate@example.com" },
+      ])
+    );
 
     const { resolveCandidateByEmail } = await import("../adminPayments");
-    const result = await resolveCandidateByEmail("candidate@example.com");
+    const result = await resolveCandidateByEmail(" Candidate@Example.com ");
 
     expect(result).toEqual({ userId: "user-1", leadId: "lead-1", roleTitle: "Backend Engineer" });
   });
 
-  it("returns null when no lead exists for the email", async () => {
-    const maybeSingle = vi.fn().mockResolvedValue({ data: null, error: null });
-    fromMock.mockImplementation(() => ({ select: () => ({ eq: () => ({ order: () => ({ limit: () => ({ maybeSingle }) }) }) }) }));
+  it("falls back to the login account when there is no role check (plan bought first)", async () => {
+    fromMock.mockImplementation(() => leadsByEmail([]));
+    listUsersMock.mockResolvedValue({ data: { users: [{ id: "buyer", email: "bpgp25@iima.ac.in", created_at: "2026-11-25T00:00:00Z" }] }, error: null });
+
+    const { resolveCandidateByEmail } = await import("../adminPayments");
+
+    expect(await resolveCandidateByEmail("BPGP25@IIMA.ac.in")).toEqual({ userId: "buyer", leadId: null, roleTitle: null });
+  });
+
+  it("returns null when neither a lead nor an account exists for the email", async () => {
+    fromMock.mockImplementation(() => leadsByEmail([]));
 
     const { resolveCandidateByEmail } = await import("../adminPayments");
     const result = await resolveCandidateByEmail("nobody@example.com");
@@ -351,9 +383,11 @@ describe("grantFreeAccess", () => {
     applyPlanGrantsMock.mockResolvedValue(undefined);
     getPlanOrderMock.mockReset();
     getPlanOrderMock.mockResolvedValue(null);
+    listUsersMock.mockReset();
+    listUsersMock.mockResolvedValue({ data: { users: [] }, error: null });
   });
 
-  function stubTables(leadRow: unknown) {
+  function stubTables(leadRow: Record<string, unknown> | null) {
     const insertMock = vi.fn().mockResolvedValue({ error: null });
     const leadDetailMaybeSingle = vi.fn().mockResolvedValue({
       data: leadRow
@@ -367,8 +401,9 @@ describe("grantFreeAccess", () => {
           select: () => ({
             eq: (col: string) => {
               if (col === "id") return { maybeSingle: leadDetailMaybeSingle };
-              return { order: () => ({ limit: () => ({ maybeSingle: vi.fn().mockResolvedValue({ data: leadRow, error: null }) }) }) };
+              throw new Error(`unexpected eq ${col}`);
             },
+            ilike: () => ({ order: () => Promise.resolve({ data: leadRow ? [{ email: "candidate@example.com", ...leadRow }] : [], error: null }) }),
           }),
         };
       }
@@ -411,10 +446,8 @@ describe("grantFreeAccess", () => {
       if (table === "fitment_leads") {
         return {
           select: () => ({
-            eq: (col: string, val: string) =>
-              col === "id"
-                ? { maybeSingle: vi.fn().mockResolvedValue({ data: leadById[val] ?? null, error: null }) }
-                : { order: () => ({ limit: () => ({ maybeSingle: vi.fn().mockResolvedValue({ data: { id: "lead-1", user_id: "user-1", role_title: "SDE" }, error: null }) }) }) },
+            eq: (_col: string, val: string) => ({ maybeSingle: vi.fn().mockResolvedValue({ data: leadById[val] ?? null, error: null }) }),
+            ilike: () => ({ order: () => Promise.resolve({ data: [{ id: "lead-1", user_id: "user-1", role_title: "SDE", email: "c@example.com" }], error: null }) }),
           }),
         };
       }
@@ -496,6 +529,21 @@ describe("grantFreeAccess", () => {
     await expect(
       grantFreeAccess({ email: "nobody@example.com", product: "report", level: "entry", reason: "goodwill" }, "admin@merito.in")
     ).rejects.toThrow("no fitment lead");
+  });
+
+  it("grants a plan to an account with no role check, and refuses a report for it", async () => {
+    const insertMock = stubTables(null);
+    listUsersMock.mockResolvedValue({ data: { users: [{ id: "buyer", email: "buyer@iima.ac.in", created_at: "2026-11-25T00:00:00Z" }] }, error: null });
+    const { grantFreeAccess } = await import("../adminPayments");
+
+    await grantFreeAccess({ email: "Buyer@IIMA.ac.in", product: "plan_prepare", level: "entry", reason: "seminar" }, "admin@merito.in");
+    expect(insertMock).toHaveBeenCalledWith(expect.objectContaining({ user_id: "buyer", lead_id: null, product: "plan_prepare", amount_paise: 0 }));
+
+    insertMock.mockClear();
+    await expect(
+      grantFreeAccess({ email: "buyer@iima.ac.in", product: "report", level: "entry", reason: "r" }, "admin@merito.in")
+    ).rejects.toThrow("no fitment lead");
+    expect(insertMock).not.toHaveBeenCalled();
   });
 });
 

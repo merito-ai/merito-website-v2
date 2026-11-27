@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCounsellingRequest, ALLOWED_TRANSITIONS, isoToIstLocal } from "@/lib/adminCounselling";
 import { dateTime } from "@/lib/planPanel";
@@ -31,6 +32,9 @@ export default async function AdminCounsellingDetailPage({
       <h2 className="font-[family-name:var(--font-gabarito)] font-semibold text-black" style={{ fontSize: "1.4rem", margin: "0 0 4px" }}>
         {request.email}
       </h2>
+      <Link href={`/admin/candidates/${request.userId}`} className="font-[family-name:var(--font-poppins)] font-semibold text-[#ed1a24]" style={{ fontSize: 13 }}>
+        Open candidate
+      </Link>
       <p className="font-[family-name:var(--font-poppins)] text-[#9c9c9c]" style={{ fontSize: 13, margin: "0 0 28px" }}>
         {request.sessionLabel && `${request.sessionLabel} · `}Order {request.orderId} · Requested {formatDate(request.requestedAt)}
         {request.scheduledAt && ` · Scheduled ${formatDate(request.scheduledAt)}`}

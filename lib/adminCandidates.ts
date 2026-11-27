@@ -12,13 +12,15 @@ import type { HubNotificationCategory } from "@/lib/hubNotifications";
 import { getAbsoluteUrl } from "@/lib/site";
 import { randomUUID } from "node:crypto";
 import { readReportRaw } from "@/lib/intervuebox/reportRaw";
+import { listAllAuthUsers, authDisplayName } from "@/lib/authUsers";
 
 const BAN_DURATION_INDEFINITE = "876000h"; // ~100 years, matches Supabase's ban_duration API shape for "indefinite"
 const DELETION_PURGE_WINDOW_DAYS = 30;
 
-export type FunnelStage = "fitment_started" | "report_unlocked" | "interview_ready" | "personality_completed" | "reference_completed";
+export type FunnelStage = "signed_up" | "fitment_started" | "report_unlocked" | "interview_ready" | "personality_completed" | "reference_completed";
 
 export const FUNNEL_STAGE_LABEL: Record<FunnelStage, string> = {
+  signed_up: "Signed up, no role yet",
   fitment_started: "Fitment check started",
   report_unlocked: "Report unlocked",
   interview_ready: "Interview completed",
@@ -27,6 +29,7 @@ export const FUNNEL_STAGE_LABEL: Record<FunnelStage, string> = {
 };
 
 export const FUNNEL_STAGES = [
+  "signed_up",
   "fitment_started",
   "report_unlocked",
   "interview_ready",
@@ -41,8 +44,9 @@ type FunnelSets = {
   referenceCompleted: Set<string>;
 };
 
-export function computeFunnelStage(userId: string, sets: FunnelSets): FunnelStage {
-  let stage: FunnelStage = "fitment_started";
+// A plan bought before any role check still counts later steps (e.g. a finished personality test).
+export function computeFunnelStage(userId: string, sets: FunnelSets, base: FunnelStage = "fitment_started"): FunnelStage {
+  let stage: FunnelStage = base;
   if (sets.reportUnlocked.has(userId)) stage = "report_unlocked";
   if (sets.interviewReady.has(userId)) stage = "interview_ready";
   if (sets.personalityCompleted.has(userId)) stage = "personality_completed";
@@ -54,7 +58,7 @@ export type CandidateListRow = {
   userId: string;
   email: string;
   name: string | null;
-  latestRoleTitle: string;
+  latestRoleTitle: string | null; // null: account with no role check yet
   firstSeenAt: string;
   funnelStage: FunnelStage;
 };
@@ -72,12 +76,14 @@ export async function fetchAllCandidates(): Promise<CandidateListRow[]> {
     { data: interviewRows, error: interviewError },
     { data: personalityRows, error: personalityError },
     { data: referenceRows, error: referenceError },
+    authUsers,
   ] = await Promise.all([
     supabase.from("fitment_leads").select("user_id, email, name, role_title, created_at").order("created_at", { ascending: true }),
     supabase.from("report_unlocks").select("user_id"),
     supabase.from("fitment_interviews").select("user_id").eq("status", "ready"),
     supabase.from("personality_tests").select("user_id, version, culture_scores"),
     supabase.from("reference_checks").select("user_id").eq("status", "completed"),
+    listAllAuthUsers(supabase),
   ]);
 
   if (leadError) throw new Error(`Failed to load fitment leads: ${leadError.message}`);
@@ -111,8 +117,14 @@ export async function fetchAllCandidates(): Promise<CandidateListRow[]> {
     }
   }
 
+  // Accounts with no role check yet (e.g. seminar plan buyers). Users with no email can't be shown or searched.
+  for (const u of authUsers) {
+    if (byUser.has(u.id) || !u.email) continue;
+    byUser.set(u.id, { userId: u.id, email: u.email, name: authDisplayName(u), latestRoleTitle: null, firstSeenAt: u.created_at, funnelStage: "signed_up" });
+  }
+
   return Array.from(byUser.values())
-    .map((c) => ({ ...c, funnelStage: computeFunnelStage(c.userId, sets) }))
+    .map((c) => ({ ...c, funnelStage: computeFunnelStage(c.userId, sets, c.latestRoleTitle === null ? "signed_up" : "fitment_started") }))
     .sort((a, b) => (a.firstSeenAt < b.firstSeenAt ? 1 : -1));
 }
 
@@ -122,25 +134,9 @@ export type BroadcastFilters = {
 };
 
 async function fetchBannedUserIds(supabase: ReturnType<typeof getSupabaseServerClient>): Promise<Set<string>> {
-  const banned = new Set<string>();
-  const perPage = 1000;
-  let page = 1;
-  for (;;) {
-    const { data, error } = await supabase.auth.admin.listUsers({ page, perPage });
-    if (error) {
-      throw new Error(`Failed to list users: ${error.message}`);
-    }
-    const users = data?.users ?? [];
-    const now = Date.now();
-    for (const u of users) {
-      if (u.banned_until && new Date(u.banned_until).getTime() > now) {
-        banned.add(u.id);
-      }
-    }
-    if (users.length < perPage) break;
-    page += 1;
-  }
-  return banned;
+  const now = Date.now();
+  const users = await listAllAuthUsers(supabase);
+  return new Set(users.filter((u) => u.banned_until && new Date(u.banned_until).getTime() > now).map((u) => u.id));
 }
 
 export async function resolveBroadcastAudience(filters: BroadcastFilters): Promise<CandidateListRow[]> {
@@ -160,10 +156,11 @@ export async function resolveBroadcastAudience(filters: BroadcastFilters): Promi
   const roleFilter = filters.roleTitles && filters.roleTitles.length > 0 ? new Set(filters.roleTitles) : null;
 
   return candidates.filter((c) => {
+    if (!c.userId) return false; // role checks never linked to an account: hub_notifications needs a user
     if (pendingDeletionIds.has(c.userId)) return false;
     if (bannedIds.has(c.userId)) return false;
     if (stageFilter && !stageFilter.has(c.funnelStage)) return false;
-    if (roleFilter && !roleFilter.has(c.latestRoleTitle)) return false;
+    if (roleFilter && !(c.latestRoleTitle && roleFilter.has(c.latestRoleTitle))) return false;
     return true;
   });
 }
@@ -279,6 +276,7 @@ export type CandidateDetail = {
   userId: string;
   email: string;
   name: string | null;
+  phone: string | null; // latest one typed on a role check
   leads: CandidateLeadDetail[];
   personality: { roleTitle: string; scores: Scores; validity: Validity; culture: { scores: CultureScores; reliable: boolean | null } | null } | null;
   references: {
@@ -301,15 +299,24 @@ export type CandidateDetail = {
 export async function getCandidateDetail(userId: string): Promise<CandidateDetail | null> {
   const supabase = getSupabaseServerClient();
 
-  const { data: leadRows } = await supabase
+  const { data: leadData } = await supabase
     .from("fitment_leads")
     .select(
-      "id, role_title, score, name, email, resume_match_status, resume_match_raw, resume_match_overridden, resume_text, ib_applied_job_id, created_at"
+      "id, role_title, score, name, email, phone, resume_match_status, resume_match_raw, resume_match_overridden, resume_text, ib_applied_job_id, created_at"
     )
     .eq("user_id", userId)
     .order("created_at", { ascending: false });
+  const leadRows = leadData ?? [];
 
-  if (!leadRows || leadRows.length === 0) return null;
+  // No role check yet (plan bought first): identify them from their login account instead.
+  let email = leadRows[0]?.email as string | undefined;
+  let name = (leadRows[0]?.name as string | null | undefined) ?? null;
+  if (!email) {
+    const { data } = await supabase.auth.admin.getUserById(userId).catch(() => ({ data: null }));
+    if (!data?.user) return null;
+    email = data.user.email ?? "";
+    name = authDisplayName(data.user);
+  }
 
   const { data: interviewRows } = await supabase
     .from("fitment_interviews")
@@ -389,7 +396,7 @@ export async function getCandidateDetail(userId: string): Promise<CandidateDetai
 
   const [candidateActionsByUserId, magicLinkActions, shareLinkActionsNested] = await Promise.all([
     listActionsForTarget("candidate", userId),
-    listActionsForTarget("candidate", leadRows[0].email),
+    listActionsForTarget("candidate", email),
     Promise.all((shareLinkRows ?? []).map((r) => listActionsForTarget("share_link", r.token))),
   ]);
   const candidateActions = [...candidateActionsByUserId, ...magicLinkActions, ...shareLinkActionsNested.flat()];
@@ -446,8 +453,9 @@ export async function getCandidateDetail(userId: string): Promise<CandidateDetai
 
   return {
     userId,
-    email: leadRows[0].email,
-    name: leadRows[0].name,
+    email,
+    name,
+    phone: leadRows.find((l) => l.phone?.trim())?.phone?.trim() ?? null,
     leads,
     personality:
       personalityRow && personalityRow.scores && personalityRow.validity && isPersonalityComplete(personalityRow)
@@ -626,6 +634,22 @@ export async function generateCandidateMagicLink(email: string, adminEmail: stri
 
 export async function mergeCandidateAccounts(keepUserId: string, mergeUserId: string, adminEmail: string): Promise<void> {
   const supabase = getSupabaseServerClient();
+
+  // The merge function doesn't move payments, plans, mentoring or assistance, and the merged-away account is banned,
+  // so merging a paying account away would strand what they paid for. Refuse; merging the other way is safe.
+  const [payments, mentoring, assistance] = await Promise.all([
+    supabase.from("razorpay_transactions").select("order_id").eq("user_id", mergeUserId).eq("status", "success").limit(1),
+    supabase.from("counselling_requests").select("id").eq("user_id", mergeUserId).in("status", ["requested", "scheduled"]).limit(1),
+    supabase.from("plan_assistance").select("user_id").eq("user_id", mergeUserId).limit(1),
+  ]);
+  for (const r of [payments, mentoring, assistance]) {
+    if (r.error) throw new Error(`Failed to check the account before merging: ${r.error.message}`);
+  }
+  if (payments.data?.length || mentoring.data?.length || assistance.data?.length) {
+    throw new Error(
+      "The account you picked has payments, open mentoring sessions or plan assistance, and merging it away would strand them. Open that account instead and merge this one into it."
+    );
+  }
 
   const { data: rowsMoved, error: rpcError } = await supabase.rpc("merge_candidate_accounts", {
     keep_user_id: keepUserId,

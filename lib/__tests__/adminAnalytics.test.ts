@@ -40,6 +40,7 @@ describe("getFunnelDropoff", () => {
 
   it("computes reached-or-further counts and percentages relative to start and previous stage", async () => {
     fetchAllCandidatesMock.mockResolvedValue([
+      candidate("u0", "SDE", "signed_up"),
       candidate("u1", "SDE", "fitment_started"),
       candidate("u2", "SDE", "report_unlocked"),
       candidate("u3", "SDE", "interview_ready"),
@@ -49,10 +50,12 @@ describe("getFunnelDropoff", () => {
     const { getFunnelDropoff } = await import("../adminAnalytics");
     const rows = await getFunnelDropoff();
 
-    expect(rows[0]).toMatchObject({ stage: "fitment_started", count: 4, pctOfStart: 100, pctOfPrevious: null });
-    expect(rows[1]).toMatchObject({ stage: "report_unlocked", count: 3, pctOfStart: 75 });
-    expect(rows[2]).toMatchObject({ stage: "interview_ready", count: 2, pctOfPrevious: expect.closeTo(66.7, 1) });
-    expect(rows[3]).toMatchObject({ stage: "personality_completed", count: 0, pctOfPrevious: 0 });
+    // Accounts with no role check yet are the funnel's first step.
+    expect(rows[0]).toMatchObject({ stage: "signed_up", count: 5, pctOfStart: 100, pctOfPrevious: null });
+    expect(rows[1]).toMatchObject({ stage: "fitment_started", count: 4, pctOfStart: 80, pctOfPrevious: 80 });
+    expect(rows[2]).toMatchObject({ stage: "report_unlocked", count: 3, pctOfStart: 60 });
+    expect(rows[3]).toMatchObject({ stage: "interview_ready", count: 2, pctOfPrevious: expect.closeTo(66.7, 1) });
+    expect(rows[4]).toMatchObject({ stage: "personality_completed", count: 0, pctOfPrevious: 0 });
   });
 
   it("returns all-zero rows without dividing by zero when there are no candidates", async () => {
@@ -87,6 +90,15 @@ describe("getRoleTitleBreakdown", () => {
     const pm = rows.find((r) => r.roleTitle === "PM")!;
     expect(pm.total).toBe(1);
     expect(pm.report_unlocked).toBe(1);
+  });
+
+  it("groups accounts with no role check under No role yet", async () => {
+    fetchAllCandidatesMock.mockResolvedValue([{ ...candidate("u1", "x", "signed_up"), latestRoleTitle: null }]);
+
+    const { getRoleTitleBreakdown } = await import("../adminAnalytics");
+    const rows = await getRoleTitleBreakdown();
+
+    expect(rows).toEqual([expect.objectContaining({ roleTitle: "No role yet", total: 1, signed_up: 1, fitment_started: 0 })]);
   });
 });
 

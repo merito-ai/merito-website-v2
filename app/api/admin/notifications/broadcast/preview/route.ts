@@ -16,13 +16,13 @@ export async function GET(request: Request) {
   // instead of re-running the 5 parallel queries + full listUsers sweep twice.
   const allEligible = await resolveBroadcastAudience({});
 
-  const roleTitleOptions = Array.from(new Set(allEligible.map((c) => c.latestRoleTitle))).sort();
+  const roleTitleOptions = Array.from(new Set(allEligible.flatMap((c) => (c.latestRoleTitle ? [c.latestRoleTitle] : [])))).sort();
 
   const stageFilter = funnelStages.length > 0 ? new Set(funnelStages) : null;
   const roleFilter = roleTitles.length > 0 ? new Set(roleTitles) : null;
   const count = allEligible.filter((c) => {
     if (stageFilter && !stageFilter.has(c.funnelStage)) return false;
-    if (roleFilter && !roleFilter.has(c.latestRoleTitle)) return false;
+    if (roleFilter && !(c.latestRoleTitle && roleFilter.has(c.latestRoleTitle))) return false;
     return true;
   }).length;
 

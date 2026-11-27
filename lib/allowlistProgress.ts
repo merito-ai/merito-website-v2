@@ -4,10 +4,11 @@ import { planFromTransactions, PLAN_PRODUCTS, PLAN_UPGRADE, type PlanProduct, ty
 import { mentoringSessions, type MentoringRow } from "@/lib/planPanel";
 import { isPersonalityComplete } from "@/lib/psychometrics/testFlow";
 import type { AssistanceStatus } from "@/lib/planFeatures";
+import { listAllAuthUsers, type AuthUser } from "@/lib/authUsers";
 
 // Admin plan-allowlist progress: how far each invited (seminar) email got. Reads only.
 
-export type AuthUser = { id: string; email?: string | null; created_at: string; last_sign_in_at?: string | null };
+export type { AuthUser };
 type ByUser<T> = { user_id: string } & T;
 
 export type ProgressInput = {
@@ -95,19 +96,6 @@ export function summarizeProgress(rows: ProgressRow[]) {
     references: n((r) => r.references === "done"),
     interview: n((r) => r.interview === "done"),
   };
-}
-
-// Paginated sweep of auth users (same loop as adminCandidates' banned-user sweep).
-async function listAllAuthUsers(db: ReturnType<typeof getSupabaseServerClient>): Promise<AuthUser[]> {
-  const out: AuthUser[] = [];
-  const perPage = 1000;
-  for (let page = 1; ; page++) {
-    const { data, error } = await db.auth.admin.listUsers({ page, perPage });
-    if (error) throw new Error(`Failed to list users: ${error.message}`);
-    const users = data?.users ?? [];
-    out.push(...users);
-    if (users.length < perPage) return out;
-  }
 }
 
 export async function loadAllowlistProgress(allowlist: AllowlistRow[]): Promise<ProgressRow[]> {

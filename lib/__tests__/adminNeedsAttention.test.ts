@@ -24,7 +24,8 @@ function builder(table: string) {
   return b;
 }
 
-vi.mock("@/lib/supabase", () => ({ getSupabaseServerClient: () => ({ from: (t: string) => builder(t) }) }));
+const getUserByIdMock = vi.fn(async (id: string) => ({ data: { user: { email: `${id}@login.test` } } }));
+vi.mock("@/lib/supabase", () => ({ getSupabaseServerClient: () => ({ from: (t: string) => builder(t), auth: { admin: { getUserById: getUserByIdMock } } }) }));
 
 const has = (calls: Call[], method: string, ...args: unknown[]) =>
   calls.some(([m, ...a]) => m === method && args.every((x, i) => JSON.stringify(a[i]) === JSON.stringify(x)));
@@ -77,6 +78,14 @@ describe("getNeedsAttention", () => {
     expect(byKey.pipeline.count).toBe(1);
     expect(byKey.credits.count).toBe(2);
     expect(byKey.abandoned).toBeUndefined();
+  });
+
+  it("counts Plan 2 upgraders as new Plan 2 buyers and names people with no role check by login email", async () => {
+    tables.razorpay_transactions = (calls) => (has(calls, "in", "product", ["plan_mentor", "plan_upgrade_mentor"]) ? [{ user_id: "buyer" }] : []);
+    const { getNeedsAttention } = await import("../adminAnalytics");
+    const byKey = Object.fromEntries((await getNeedsAttention(true)).map((i) => [i.key, i]));
+
+    expect(byKey.plan2).toMatchObject({ count: 1, people: [{ userId: "buyer", email: "buyer@login.test" }] });
   });
 
   it("asks only for unconsumed successful interview or plan credits older than 7 days", async () => {

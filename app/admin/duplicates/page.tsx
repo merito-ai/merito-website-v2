@@ -21,7 +21,7 @@ function CandidateChip({ candidate }: { candidate: CandidateListRow }) {
         {candidate.email}
       </p>
       <p className="font-[family-name:var(--font-poppins)] text-[#9c9c9c]" style={{ fontSize: 11, margin: "0 0 2px" }}>
-        {candidate.latestRoleTitle} · first seen {formatDate(candidate.firstSeenAt)}
+        {candidate.latestRoleTitle ?? "No role yet"} · first seen {formatDate(candidate.firstSeenAt)}
       </p>
       <p className="font-[family-name:var(--font-poppins)] text-[#9c9c9c]" style={{ fontSize: 10.5, margin: 0, wordBreak: "break-all" }}>
         {candidate.userId}
