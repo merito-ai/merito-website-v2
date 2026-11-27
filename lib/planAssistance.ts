@@ -10,6 +10,7 @@ export const ASSISTANCE_STATUSES = ["not_contacted", "in_progress", "done"] as c
 export type AssistanceRow = {
   userId: string;
   email: string;
+  phone: string | null; // latest one typed on a role check
   planSince: string;
   status: AssistanceStatus;
   companies: string | null;
@@ -42,10 +43,12 @@ export async function listAssistance(): Promise<AssistanceRow[]> {
 
   const [{ data: rows, error: rowsError }, { data: leads }] = await Promise.all([
     db.from("plan_assistance").select("user_id, status, companies, updated_at").in("user_id", userIds),
-    db.from("fitment_leads").select("user_id, email").in("user_id", userIds),
+    db.from("fitment_leads").select("user_id, email, phone, created_at").in("user_id", userIds).order("created_at", { ascending: false }),
   ]);
   if (rowsError) throw new Error(`Failed to load assistance rows: ${rowsError.message}`);
   const emails = new Map((leads ?? []).map((l) => [l.user_id, l.email as string]));
+  const phones = new Map<string, string>();
+  for (const l of leads ?? []) if (l.phone?.trim() && !phones.has(l.user_id)) phones.set(l.user_id, l.phone.trim());
   for (const id of userIds) {
     if (!emails.has(id)) {
       const { data } = await db.auth.admin.getUserById(id); // plan bought before any fitment check
@@ -60,6 +63,7 @@ export async function listAssistance(): Promise<AssistanceRow[]> {
       return {
         userId: id,
         email: emails.get(id)!,
+        phone: phones.get(id) ?? null,
         planSince: since.get(id)!,
         status: (r?.status as AssistanceStatus | undefined) ?? "not_contacted",
         companies: r?.companies ?? null,

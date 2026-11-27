@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { requireAdmin } from "@/lib/adminAuth";
 import { listAssistance, type AssistanceStatus } from "@/lib/planAssistance";
 import { Table, TableHeadRow, TableRow, TableCell, TableEmptyRow } from "@/app/admin/_components/Table";
@@ -22,7 +23,12 @@ export default async function AdminAssistancePage() {
         <tbody>
           {rows.map((r) => (
             <TableRow key={r.userId}>
-              <TableCell>{r.email}</TableCell>
+              <TableCell>
+                <Link href={`/admin/candidates/${r.userId}`} className="font-semibold text-[#ed1a24]">
+                  {r.email}
+                </Link>
+                {r.phone && <div className="text-[#9c9c9c]">{r.phone}</div>}
+              </TableCell>
               <TableCell>{new Date(r.planSince).toLocaleDateString("en-IN", { year: "numeric", month: "short", day: "numeric" })}</TableCell>
               <TableCell>
                 <Badge variant={VARIANT[r.status]}>{ASSISTANCE_LABEL[r.status]}</Badge>

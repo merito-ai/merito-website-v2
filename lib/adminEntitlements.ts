@@ -3,6 +3,7 @@ import { isPersonalityComplete } from "@/lib/psychometrics/testFlow";
 import { getPlanOrder, isPlanProduct, PLAN_UPGRADE } from "@/lib/plans";
 import { PRODUCT_LABELS } from "@/lib/razorpay/pricing";
 import { INTERVIEW_CREDIT_PRODUCTS } from "@/lib/interviewCredits";
+import { effectiveSessionStatus } from "@/lib/planPanel";
 
 // One plain-words status per product, for the admin candidate page.
 export type EntitlementTone = "neutral" | "success" | "warning" | "danger";
@@ -15,7 +16,7 @@ export type CandidateEntitlements = {
   unusedInterviewCredits: number;
 };
 
-type Txn = { order_id: string; product: string; lead_id: string | null; amount_paise: number; status: string; consumed_at: string | null };
+type Txn = { order_id: string; product: string; lead_id: string | null; amount_paise: number; status: string; consumed_at: string | null; created_at: string };
 
 const NOT_BOUGHT: EntitlementStatus = { label: "Not bought", tone: "neutral" };
 
@@ -44,14 +45,14 @@ export async function getCandidateEntitlements(userId: string): Promise<Candidat
     plan,
   ] = await Promise.all([
     supabase.from("fitment_leads").select("id, role_title, candidate_level, created_at").eq("user_id", userId).order("created_at", { ascending: false }),
-    supabase.from("razorpay_transactions").select("order_id, product, lead_id, amount_paise, status, consumed_at").eq("user_id", userId),
+    supabase.from("razorpay_transactions").select("order_id, product, lead_id, amount_paise, status, consumed_at, created_at").eq("user_id", userId),
     supabase.from("report_unlocks").select("lead_id").eq("user_id", userId),
     supabase.from("product_unlocks").select("product").eq("user_id", userId),
     supabase.from("fitment_interviews").select("lead_id, role_title, status, updated_at").eq("user_id", userId).order("updated_at", { ascending: false }),
     supabase.from("personality_tests").select("version, culture_scores").eq("user_id", userId),
     supabase.from("reference_checks").select("status").eq("user_id", userId),
     // Plan 2 mentoring has one row per session (unique order_id + session), so count rows, not orders.
-    supabase.from("counselling_requests").select("order_id, session, status").eq("user_id", userId),
+    supabase.from("counselling_requests").select("order_id, session, status, session_at").eq("user_id", userId),
     getPlanOrder(userId),
   ]);
 
@@ -107,7 +108,8 @@ export async function getCandidateEntitlements(userId: string): Promise<Candidat
           ? { label: "Refunded", tone: "warning" }
           : NOT_BOUGHT;
 
-  const sessions = counsellingRows ?? [];
+  // A booked call whose time has passed counts as done, as in the queue and the hub.
+  const sessions = (counsellingRows ?? []).map((r) => ({ ...r, status: effectiveSessionStatus(r) }));
   const byStatus = (s: string) => sessions.filter((r) => r.status === s).length;
   const parts = [
     byStatus("completed") && `${byStatus("completed")} done`,
@@ -123,11 +125,16 @@ export async function getCandidateEntitlements(userId: string): Promise<Candidat
         : NOT_BOUGHT;
 
   const planTxn = plan ? success.find((t) => t.order_id === plan.orderId) : undefined;
+  const upgradeTxn = success.find((t) => (plan?.upgradeOrderId ? t.order_id === plan.upgradeOrderId : t.product === PLAN_UPGRADE));
+  const upgraded = upgradeTxn ? `, upgraded (${howPaid(upgradeTxn)}, ${new Date(upgradeTxn.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })})` : "";
   const planStatus: EntitlementStatus = plan
-    ? { label: `${PRODUCT_LABELS[plan.product]}, ${howPaid(planTxn)}${plan.upgradeOrderId ? ", upgraded" : ""}`, tone: "success" }
-    : refunded.some((t) => isPlanProduct(t.product) || t.product === PLAN_UPGRADE)
-      ? { label: "Refunded", tone: "warning" }
-      : { label: "None", tone: "neutral" };
+    ? { label: `${PRODUCT_LABELS[plan.product]}, ${howPaid(planTxn)}${plan.upgradeOrderId ? upgraded : ""}`, tone: "success" }
+    : upgradeTxn && refunded.some((t) => isPlanProduct(t.product))
+      ? // getPlanOrder drops a refunded base plan, but the upgrade payment still stands: needs a refund decision.
+        { label: `Plan 1 refunded, upgrade still paid (${howPaid(upgradeTxn)})`, tone: "danger" }
+      : refunded.some((t) => isPlanProduct(t.product) || t.product === PLAN_UPGRADE)
+        ? { label: "Refunded", tone: "warning" }
+        : { label: "None", tone: "neutral" };
 
   return {
     roles,

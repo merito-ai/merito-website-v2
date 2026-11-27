@@ -88,6 +88,31 @@ describe("getCandidateEntitlements", () => {
     const { getCandidateEntitlements } = await import("../adminEntitlements");
     expect((await getCandidateEntitlements("u1")).roles[0].report.label).toBe("Unlocked, free grant");
   });
+
+  it("counts a booked call whose time has passed as done", async () => {
+    tables = { counselling_requests: [{ order_id: "p1", session: 1, status: "scheduled", session_at: "2026-01-01T10:00:00Z" }] };
+    const { getCandidateEntitlements } = await import("../adminEntitlements");
+    expect((await getCandidateEntitlements("u1")).account.counselling.label).toBe("1 session: 1 done");
+  });
+
+  it("shows the upgrade amount and date, and flags a refunded Plan 1 whose upgrade is still paid", async () => {
+    getPlanOrderMock.mockResolvedValue({ orderId: "p1", product: "plan_mentor", interviewUsed: false, upgradeOrderId: "up1" });
+    tables = {
+      razorpay_transactions: [
+        txn({ order_id: "p1", product: "plan_prepare", amount_paise: 299900, created_at: "2026-11-01T00:00:00Z" }),
+        txn({ order_id: "up1", product: "plan_upgrade_mentor", amount_paise: 299600, created_at: "2026-11-20T00:00:00Z" }),
+      ],
+    };
+    const { getCandidateEntitlements } = await import("../adminEntitlements");
+    expect((await getCandidateEntitlements("u1")).account.plan.label).toBe("Assess + Mentor + Apply, paid ₹2,999, upgraded (paid ₹2,996, 20 Nov 2026)");
+
+    getPlanOrderMock.mockResolvedValue(null); // getPlanOrder drops a refunded base plan
+    tables.razorpay_transactions = [
+      txn({ order_id: "p1", product: "plan_prepare", amount_paise: 299900, status: "refunded" }),
+      txn({ order_id: "up1", product: "plan_upgrade_mentor", amount_paise: 299600, created_at: "2026-11-20T00:00:00Z" }),
+    ];
+    expect((await getCandidateEntitlements("u1")).account.plan).toEqual({ label: "Plan 1 refunded, upgrade still paid (paid ₹2,996)", tone: "danger" });
+  });
 });
 
 describe("getBillingSummaries", () => {
