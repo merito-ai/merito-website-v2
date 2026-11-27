@@ -320,7 +320,7 @@ export async function resolveCandidateByEmail(email: string): Promise<ResolvedCa
     .select("id, user_id, role_title, email")
     .ilike("email", escapeLike(wanted))
     .order("created_at", { ascending: false });
-  // Exact compare too: PostgREST treats * in a like pattern as a wildcard, which escaping can't stop.
+  // Exact compare: like wildcards can still widen the ilike result (see escapeLike).
   const lead = (leads ?? []).find((l) => l.user_id && l.email.trim().toLowerCase() === wanted);
   if (lead) return { userId: lead.user_id, leadId: lead.id, roleTitle: lead.role_title };
 

@@ -1,6 +1,7 @@
 import { getSupabaseServerClient } from "@/lib/supabase";
 
-// ilike treats % and _ as wildcards (and \ as the escape), so a literal email must escape them.
+// ilike treats % and _ as wildcards. Best effort only: a 2026-11-27 prod probe showed escaped _ and % still matching
+// any character, so the exact email compare after each ilike is the real guard. Escaping never drops a true match.
 export const escapeLike = (value: string) => value.replace(/[\\%_]/g, "\\$&");
 
 export async function claimFitmentLeads(userId: string, email: string): Promise<{ claimedCount: number }> {
@@ -16,7 +17,7 @@ export async function claimFitmentLeads(userId: string, email: string): Promise<
     throw new Error(`Failed to claim fitment leads: ${findError.message}`);
   }
 
-  // PostgREST also reads * in a like pattern as a wildcard, which escaping can't stop: keep exact matches only.
+  // Keep exact matches only: wildcards (incl. PostgREST's * alias) can still widen the ilike result.
   const ids = (candidates ?? []).filter((r) => r.email.trim().toLowerCase() === wanted).map((r) => r.id);
   if (ids.length === 0) return { claimedCount: 0 };
 
