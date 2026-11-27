@@ -1,9 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
+const findIsMock = vi.fn();
 const ilikeMock = vi.fn();
-const isMock = vi.fn();
-const selectMock = vi.fn();
+const findSelectMock = vi.fn();
 const updateMock = vi.fn();
+const inMock = vi.fn();
+const updateIsMock = vi.fn();
+const updateSelectMock = vi.fn();
 const fromMock = vi.fn();
 
 vi.mock("@/lib/supabase", () => ({
@@ -14,52 +17,74 @@ vi.mock("@/lib/supabase", () => ({
 
 describe("claimFitmentLeads", () => {
   beforeEach(() => {
-    fromMock.mockReset();
-    updateMock.mockReset();
-    ilikeMock.mockReset();
-    isMock.mockReset();
-    selectMock.mockReset();
+    for (const m of [fromMock, findSelectMock, ilikeMock, findIsMock, updateMock, inMock, updateIsMock, updateSelectMock]) m.mockReset();
 
-    // Chain: from("fitment_leads").update({...}).ilike("email", ...).is("user_id", null).select("id")
-    fromMock.mockReturnValue({ update: updateMock });
-    updateMock.mockReturnValue({ ilike: ilikeMock });
-    ilikeMock.mockReturnValue({ is: isMock });
-    isMock.mockReturnValue({ select: selectMock });
+    // Find: from("fitment_leads").select("id, email").ilike("email", ...).is("user_id", null)
+    // Claim: from("fitment_leads").update({...}).in("id", ids).is("user_id", null).select("id")
+    fromMock.mockReturnValue({ select: findSelectMock, update: updateMock });
+    findSelectMock.mockReturnValue({ ilike: ilikeMock });
+    ilikeMock.mockReturnValue({ is: findIsMock });
+    updateMock.mockReturnValue({ in: inMock });
+    inMock.mockReturnValue({ is: updateIsMock });
+    updateIsMock.mockReturnValue({ select: updateSelectMock });
   });
 
-  it("updates every unclaimed row matching the email and returns the claimed count", async () => {
-    selectMock.mockResolvedValue({ data: [{ id: "a" }, { id: "b" }], error: null });
+  it("claims every unclaimed row matching the email and returns the claimed count", async () => {
+    findIsMock.mockResolvedValue({ data: [{ id: "a", email: "candidate@example.com" }, { id: "b", email: "Candidate@Example.com" }], error: null });
+    updateSelectMock.mockResolvedValue({ data: [{ id: "a" }, { id: "b" }], error: null });
     const { claimFitmentLeads } = await import("../claimFitmentLeads");
 
     const result = await claimFitmentLeads("user-123", "candidate@example.com");
 
     expect(fromMock).toHaveBeenCalledWith("fitment_leads");
-    expect(updateMock).toHaveBeenCalledWith({ user_id: "user-123" });
     expect(ilikeMock).toHaveBeenCalledWith("email", "candidate@example.com");
-    expect(isMock).toHaveBeenCalledWith("user_id", null);
+    expect(findIsMock).toHaveBeenCalledWith("user_id", null);
+    expect(updateMock).toHaveBeenCalledWith({ user_id: "user-123" });
+    expect(inMock).toHaveBeenCalledWith("id", ["a", "b"]);
+    expect(updateIsMock).toHaveBeenCalledWith("user_id", null);
     expect(result).toEqual({ claimedCount: 2 });
   });
 
-  it("uses case-insensitive match so a differently-cased stored email is still claimed", async () => {
-    selectMock.mockResolvedValue({ data: [{ id: "a" }], error: null });
+  it("matches case-insensitively", async () => {
+    findIsMock.mockResolvedValue({ data: [{ id: "a", email: "john.doe@gmail.com" }], error: null });
+    updateSelectMock.mockResolvedValue({ data: [{ id: "a" }], error: null });
     const { claimFitmentLeads } = await import("../claimFitmentLeads");
 
     await claimFitmentLeads("user-123", "John.Doe@Gmail.com");
 
-    expect(ilikeMock).toHaveBeenCalledWith("email", "John.Doe@Gmail.com");
+    expect(ilikeMock).toHaveBeenCalledWith("email", "john.doe@gmail.com");
+    expect(inMock).toHaveBeenCalledWith("id", ["a"]);
   });
 
-  it("returns zero when nothing matches", async () => {
-    selectMock.mockResolvedValue({ data: [], error: null });
+  it("escapes like wildcards and never claims a lead that only matched a wildcard", async () => {
+    // a_b would match aXb unescaped; * is a PostgREST wildcard alias that escaping can't stop.
+    findIsMock.mockResolvedValue({ data: [{ id: "x", email: "aXb@x.com" }, { id: "y", email: "a_b@x.com" }], error: null });
+    updateSelectMock.mockResolvedValue({ data: [{ id: "y" }], error: null });
+    const { claimFitmentLeads } = await import("../claimFitmentLeads");
+
+    await claimFitmentLeads("user-123", "a_b@x.com");
+
+    expect(ilikeMock).toHaveBeenCalledWith("email", "a\\_b@x.com");
+    expect(inMock).toHaveBeenCalledWith("id", ["y"]);
+  });
+
+  it("escapes % and backslash", async () => {
+    const { escapeLike } = await import("../claimFitmentLeads");
+    expect(escapeLike("a%b\\c_d")).toBe("a\\%b\\\\c\\_d");
+  });
+
+  it("returns zero without updating when nothing matches", async () => {
+    findIsMock.mockResolvedValue({ data: [], error: null });
     const { claimFitmentLeads } = await import("../claimFitmentLeads");
 
     const result = await claimFitmentLeads("user-123", "nobody@example.com");
 
     expect(result).toEqual({ claimedCount: 0 });
+    expect(updateMock).not.toHaveBeenCalled();
   });
 
   it("throws if Supabase returns an error", async () => {
-    selectMock.mockResolvedValue({ data: null, error: { message: "db error" } });
+    findIsMock.mockResolvedValue({ data: null, error: { message: "db error" } });
     const { claimFitmentLeads } = await import("../claimFitmentLeads");
 
     await expect(claimFitmentLeads("user-123", "candidate@example.com")).rejects.toThrow();
