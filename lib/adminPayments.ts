@@ -96,6 +96,7 @@ async function fetchAllTransactions(): Promise<TransactionRow[]> {
     emailByUser.set(lead.user_id, lead.email);
     roleByLead.set(lead.id, lead.role_title);
   }
+  await fillAuthEmails(supabase, emailByUser, (txnRows ?? []).map((t) => t.user_id));
 
   return (txnRows ?? []).map((t) => ({
     orderId: t.order_id,
@@ -190,7 +191,18 @@ export async function listUnpaidUnlocks(): Promise<UnpaidUnlockRow[]> {
     successfulTransactions: (txnRows ?? []).map((t) => ({ userId: t.user_id, product: t.product, leadId: t.lead_id })),
   });
 
+  await fillAuthEmails(supabase, emailByUser, unpaid.map((u) => u.userId));
   return unpaid.map((u) => ({ ...u, email: emailByUser.get(u.userId) ?? "—" }));
+}
+
+// Plan buyers can pay before any role check, so they have no fitment_leads email: fall back to their login email.
+async function fillAuthEmails(supabase: ReturnType<typeof getSupabaseServerClient>,emailByUser: Map<string, string>, userIds: string[]): Promise<void> {
+  const missing = [...new Set(userIds)].filter((id) => id && !emailByUser.has(id));
+  const users = await Promise.all(missing.map((id) => supabase.auth.admin.getUserById(id).catch(() => null)));
+  users.forEach((res, i) => {
+    const email = res?.data?.user?.email;
+    if (email) emailByUser.set(missing[i], email);
+  });
 }
 
 export async function recordManualReconciliation(

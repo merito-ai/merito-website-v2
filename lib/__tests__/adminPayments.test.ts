@@ -23,7 +23,8 @@ const {
   completeReportUnlockMock: vi.fn(),
 }));
 vi.mock("@/lib/adminAuditLog", () => ({ logAdminAction: logAdminActionMock }));
-vi.mock("@/lib/supabase", () => ({ getSupabaseServerClient: () => ({ from: fromMock }) }));
+const getUserByIdMock = vi.hoisted(() => vi.fn(async (id: string) => ({ data: { user: { email: `${id}@auth.test` } } })));
+vi.mock("@/lib/supabase", () => ({ getSupabaseServerClient: () => ({ from: fromMock, auth: { admin: { getUserById: getUserByIdMock } } }) }));
 vi.mock("@/lib/razorpay/client", () => ({ createRefund: createRefundMock }));
 vi.mock("@/lib/razorpay/finalize", () => ({ markRazorpayRefunded: markRazorpayRefundedMock }));
 vi.mock("@/lib/productUnlocks", () => ({ unlockProduct: unlockProductMock, isProductUnlocked: isProductUnlockedMock }));
@@ -520,6 +521,15 @@ describe("listTransactions", () => {
 
   beforeEach(() => {
     fromMock.mockReset();
+  });
+
+  it("falls back to the login email when the buyer has no role check (plan bought first)", async () => {
+    stubTransactions(1);
+    const { listTransactions } = await import("../adminPayments");
+
+    const result = await listTransactions(1);
+
+    expect(result.rows[0].email).toBe("user-0@auth.test");
   });
 
   it("returns page 1 of 20 rows with correct total/totalPages when there are 25 transactions", async () => {
