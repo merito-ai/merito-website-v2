@@ -61,7 +61,7 @@ export default async function AdminCandidatesPage({ searchParams }: { searchPara
                   )}
                 </TableCell>
                 <TableCell>{c.email}</TableCell>
-                <TableCell>{b?.roles ?? 1}</TableCell>
+                <TableCell>{b?.roles ?? (c.latestRoleTitle ? 1 : 0)}</TableCell>
                 <TableCell>{b && b.paidPaise > 0 ? `₹${(b.paidPaise / 100).toLocaleString("en-IN")}` : "None"}</TableCell>
                 <TableCell>{b && b.unusedInterviewCredits > 0 ? <Badge variant="warning">{b.unusedInterviewCredits}</Badge> : "None"}</TableCell>
                 <TableCell>
